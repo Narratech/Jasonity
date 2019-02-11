@@ -1,27 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 
 /**
  * Represents a list node as in prolog .(t1,.(t2,.(t3,.))).
@@ -36,7 +18,72 @@ import org.w3c.dom.Element;
  */
 namespace Jason.Logic.AsSyntax
 {
-    public class ListTermImpl: Structure, ListTerm
+    public class ListTermImpl : Structure, ListTerm
     {
+        public Term this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public int Count => throw new NotImplementedException();
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public void Add(Term item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(Term other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(Term item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(Term[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<Term> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(Term item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, Term item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(Term item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

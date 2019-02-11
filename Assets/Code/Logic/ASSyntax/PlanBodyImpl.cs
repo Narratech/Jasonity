@@ -3,15 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  *  Represents a plan body item (achieve, test, action, ...) and its successors.
@@ -27,7 +18,16 @@ import org.w3c.dom.Element;
  */
 namespace Jason.Logic.AsSyntax
 {
-    public class PlanBodyImpl: Structure, PlanBody //Iterable<PlanBody>
+    public class PlanBodyImpl : Structure, PlanBody//, Iterable<PlanBody>
     {
+        public object Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(Term other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

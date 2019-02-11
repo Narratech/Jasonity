@@ -10,7 +10,7 @@ using System.Threading.Tasks;
  */
 namespace Jason.Logic.AsSyntax
 {
-    interface StringTerm: Term
+    public interface StringTerm: Term
     {
     }
 }

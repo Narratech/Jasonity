@@ -3,17 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import jason.NoValueException;
-import jason.asSyntax.parser.ParseException;
-import jason.asSyntax.parser.as2j;
-import jason.asSyntax.parser.as2jConstants;
 
 /**
   Factory for objects used in Jason AgentSpeak syntax.

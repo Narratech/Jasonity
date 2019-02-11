@@ -1,12 +1,9 @@
-﻿using System;
+﻿using Logica.ASSemantic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-
-import java.util.Iterator;
 
 /**
  * Represents a logical formula (p, p & q, not p, 3 > X, ...) which can be
@@ -17,7 +14,14 @@ import java.util.Iterator;
  */
 namespace Jason.Logic.AsSyntax
 {
-    interface LogicalFormula: Term, ICloneable
+    public interface LogicalFormula: Term, ICloneable
     {
+        /**
+     * Checks whether the formula is a
+     * logical consequence of the belief base.
+     *
+     * Returns an iterator for all unifiers that are consequence.
+     */
+        IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un);
     }
 }

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-import jason.asSyntax.Term;
-
-import java.io.Serializable;
 
 /**
  *
@@ -14,6 +11,7 @@ import java.io.Serializable;
  */
 namespace Logica.ASSemantic
 {
+    [Serializable]
     public abstract class DefaultArithAction: ArithFunction
     {
     }

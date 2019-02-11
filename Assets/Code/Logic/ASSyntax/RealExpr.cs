@@ -3,17 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-import jason.asSemantics.Agent;
-import jason.asSemantics.Unifier;
-import jason.asSyntax.parser.as2j;
-
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 
 /**
@@ -37,7 +26,16 @@ import org.w3c.dom.Element;
  */
 namespace Jason.Logic.AsSyntax
 {
-    public class RealExpr: BinaryStructure, LogicalFormula
+    public class RealExpr : BinaryStructure, LogicalFormula
     {
+        public object Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(Term other)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

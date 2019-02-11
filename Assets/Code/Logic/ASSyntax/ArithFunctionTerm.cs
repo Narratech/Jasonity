@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 /**
- A particular type of literal used to represent internal actions (which has a "." in the functor).
-
- @navassoc - ia - InternalAction
-
+ * Represents an arithmetic function, like math.max(arg1,arg2) -- a functor (math.max) and two arguments.
+ * A Structure is thus used to store the data.
+ *
+ * @composed - "arguments (from Structure.terms)" 0..* Term
+ *
+ *
  */
+
 namespace Jason.Logic.AsSyntax
 {
-    public class InternalActionListener : Structure, LogicalFormula
+    public class ArithFunctionTerm : Structure, NumberTerm
     {
         public object Clone()
         {
