@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Code.Agent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,5 +58,20 @@ namespace Logica.ASSemantic
 {
     public class TransitionSystem
     {
+        private Assets.Code.Agent.Agent ag;
+        private object p;
+        private AgentArchitecture agArch;
+
+        public TransitionSystem(Assets.Code.Agent.Agent ag, object p, AgentArchitecture agArch)
+        {
+            this.ag = ag;
+            this.p = p;
+            this.agArch = agArch;
+        }
+
+        internal void addGoalListener(GoalListenerForMetaEvents goalListenerForMetaEvents)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

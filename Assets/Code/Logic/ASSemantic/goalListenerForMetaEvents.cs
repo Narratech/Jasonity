@@ -13,7 +13,10 @@ import jason.asSyntax.Trigger.TEType;
 
 namespace Logica.ASSemantic
 {
-    public class GoalListenerForMetaEvents: GoalListener
+    public class GoalListenerForMetaEvents : GoalListener
     {
+        public GoalListenerForMetaEvents(TransitionSystem ts)
+        {
+        }
     }
 }

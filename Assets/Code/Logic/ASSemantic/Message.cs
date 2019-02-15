@@ -14,5 +14,6 @@ namespace Logica.ASSemantic
     [Serializable]
     public class Message
     {
+        internal static object kqmlDefaultPlans;
     }
 }

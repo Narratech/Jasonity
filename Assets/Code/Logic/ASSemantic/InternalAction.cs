@@ -14,6 +14,6 @@ namespace Logica.ASSemantic
 {
     public interface InternalAction
     {
-
+        void destroy();
     }
 }

@@ -8,7 +8,10 @@ using UnityEngine;
 */
 
 
-public class Architecture : MonoBehaviour
+namespace Assets.Code.Agent
 {
-    
+    class AgentArchitecture
+    {
+        
+    }
 }
