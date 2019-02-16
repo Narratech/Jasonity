@@ -1,11 +1,10 @@
 // Implements a default Belief Base
-using Jason.Logic.AsSyntax;
-using Logica.ASSemantic;
-using NUnit.Framework.Internal;
-using System;
 using System.Collections.Generic;
+using Assets.Code.Agent;
+using Assets.Code.Logic;
 
-namespace BDIManager.Beliefs {
+namespace BDIManager.Beliefs
+{
     public class DefaultBeliefBase : BeliefBase
     {
         private Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>> nameSpaces = new Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>>();
@@ -13,12 +12,12 @@ namespace BDIManager.Beliefs {
 
         private int size = 0;
 
-        protected HashSet<Literal> percepts = new HashSet<Literal>();
+        public List<Literal> percepts = new List<Literal>();
         private object TPercept;
 
         public DefaultBeliefBase()
         {
-            nameSpaces = (Literal.DefaultNS, belsMapDefaultNS);
+            // ??? nameSpaces = (Literal.DefaultNS, belsMapDefaultNS);
         }
 
         public bool Add(Literal l)
@@ -32,7 +31,7 @@ namespace BDIManager.Beliefs {
             percepts.Clear();
             belsMapDefaultNS.Clear();
             nameSpaces.Clear();
-            nameSpaces = (Literal.DefaultNS, belsMapDefaultNS);
+            // ??? nameSpaces = (Literal.DefaultNS, belsMapDefaultNS);
         }
 
         public Literal Contains(Literal l)

@@ -1,8 +1,8 @@
 // Interface for Belief Bases
 // Holds all of the agents' beliefs
 // Allows the user to modify the Belief Base and check for relevant data
-using Jason.Logic.AsSyntax;
-using Logica.ASSemantic;
+using Assets.Code.Agent;
+using Assets.Code.Logic;
 
 namespace BDIManager.Beliefs
 {
