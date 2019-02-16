@@ -42,8 +42,8 @@ namespace Assets.Code.Agent
                 Agent ag = new Agent();
                 ag.ts = new TransitionSystem(ag, null, agArch);
                 ag.bb = new DefaultBeliefBase();
-                ag.initAgente();
-                ag.load(asSrc);
+                ag.InitAgente();
+                ag.Load(asSrc);
 
                 return ag;
             }
@@ -118,16 +118,16 @@ namespace Assets.Code.Agent
 
         public void StopAgent()
         {
-            if (bb.getLock())
+            if (bb.GetLock())
             {
-                bb.stop();
+                bb.Stop();
             }
 
             foreach (InternalAction ia in internalActions.Values)
             {
                 try
                 {
-                    ia.destroy();
+                    ia.Destroy();
                 }
                 catch (Exception e)
                 {
@@ -149,18 +149,68 @@ namespace Assets.Code.Agent
             //No está implementado porque no se si hace falta
         }
 
-        public void initDefaultFunctions()
+        public void InitDefaultFunctions()
         {
             if (functions == null)
             {
                 functions = new Dictionary<string, ArithFunction>(); 
             }
-            addFunction();
+            AddFunction();
         }
 
-        private void addFunction(ArithFunction c)
+        private void AddFunction()
         {
+            //Esto tampoco está implementado 
+        }
 
+        public void AddInitialBel(Literal b)
+        {
+            initialBeliefs.Add(b);
+        } 
+
+        public List<Literal> getInitialBelifs()
+        {
+            return initialBeliefs;
+        }
+
+        public void AddInitialBelsInBB()
+        {
+            for(int i = initialBeliefs.Count-1; i >=0; i--)
+            {
+                AddInitialBel(initialBeliefs.ElementAt(i));
+            }
+            initialBeliefs.Clear();
+        }
+
+        protected void AddInitialBelsFromProjectInBB()
+        {
+            String sBels = ts.GetSettings.GetUserParameter(Settings.INIT_BELS);
+            if(sBels != null)
+            {
+                try
+                {
+                    for(Term t in ASSyntax.ParseList("["+sBels+"]"))
+                    {
+                        AddInitialBel(((Literal)t).ForceFullLiteralImpl());
+                    }
+                } catch(Exception e)
+                {
+
+                }
+            }
+        }
+
+        private void AddInitBeli(Literal b)
+        {
+            if(!b.IsRule() && !b.IsGround())
+            {
+                b = new Rule(b, Literal.LTrue);
+            }
+            if(!b.HasSource())
+            {
+
+            }
         }
     }
+}
 }
