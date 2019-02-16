@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
+    /*Father class for all the terms of text file rules*/
     public abstract class Term
     {
-        //private string @class;
+        /*Name of the term*/
         private string name;
 
         public Term(string name)
         {
-            //this.@class = @class;
             this.name = name;
         }
 

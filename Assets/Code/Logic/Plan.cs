@@ -8,8 +8,11 @@ namespace Assets.Code.Logic
 {
     public class Plan : Term
     {
+        /*Condition of the plan*/
         private Belief condition;
+        /*Objective of the plan*/
         private Objective planObjective;
+        
         private string actionFocus;
 
         public Plan(Objective objective, Belief belief, string name, string aFocus) : base(name)

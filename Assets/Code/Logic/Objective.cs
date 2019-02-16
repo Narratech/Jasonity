@@ -8,6 +8,7 @@ namespace Assets.Code.Logic
 {
     public class Objective : Term
     {
+        /*This is the object of the objective*/
         private ObjectOfTheObjective @object;
 
         public Objective(string name, string @object) : base(name)
@@ -19,5 +20,8 @@ namespace Assets.Code.Logic
         {
             return true;
         }
+
+        /*Get for the object of the objective*/
+        public ObjectOfTheObjective Object { get => this.@object; }
     }
 }
