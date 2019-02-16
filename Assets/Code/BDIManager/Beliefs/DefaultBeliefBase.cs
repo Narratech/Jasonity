@@ -5,7 +5,7 @@ using Assets.Code.Logic;
 
 namespace BDIManager.Beliefs
 {
-    public class DefaultBeliefBase : BeliefBase
+    class DefaultBeliefBase : BeliefBase
     {
         private Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>> nameSpaces = new Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>>();
         private Dictionary<PredicateIndicator, BelEntry> belsMapDefaultNS = new Dictionary<PredicateIndicator, BelEntry>();
