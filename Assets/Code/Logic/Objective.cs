@@ -11,6 +11,10 @@ namespace Assets.Code.Logic
         /*This is the object of the objective*/
         private ObjectOfTheObjective @object;
 
+        /*Constructor
+            name: string
+            @object: string
+        */
         public Objective(string name, string @object) : base(name)
         {
             this.@object = new ObjectOfTheObjective(@object);

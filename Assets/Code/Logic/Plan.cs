@@ -12,10 +12,16 @@ namespace Assets.Code.Logic
         private Belief condition;
         /*Objective of the plan*/
         private Objective planObjective;
-        
+        /*Focus of the action of the plan*/
         private string actionFocus;
 
-        public Plan(Objective objective, Belief belief, string name, string aFocus) : base(name)
+        /*Constructor
+            objective: Objective
+            belief: Belief
+            name: string
+            aFocus: focus
+        */
+        public Plan(Objective objective, Belief belief, string action, string aFocus) : base(action)
         {
             this.condition = belief;
             this.planObjective = objective;
@@ -27,10 +33,11 @@ namespace Assets.Code.Logic
             return true;
         }
 
+        /*Get for the condition of the plan*/
         public Belief Condition { get => this.condition; }
-
+        /*Get for the objective of the plan*/
         public Objective PlanObjective { get => this.planObjective; }
-
+        /*Get for the focus of the action of the plan*/
         public string AFocus { get => this.actionFocus; }
     }
 }
