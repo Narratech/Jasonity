@@ -180,6 +180,11 @@ namespace Assets.Code.BDIManager
             }
         }
 
+        private AgentArchitecture GetUserAgArch()
+        {
+            return agArch;
+        }
+
         public void Deliberate()
         {
             try

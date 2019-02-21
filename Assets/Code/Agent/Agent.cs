@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Assets.Code.BDIManager;
+using Assets.Code.Logic;
 using BDIManager.Beliefs;
 using BDIManager.Intentions;
-using Jason.Logic.AsSyntax;
-using Logica.ASSemantic;
 
 /**
- * La clase agente tiene la base de creencias y la librería de 
- * planes. 
+ * The agent class has the belief base and the library plan
  */
 namespace Assets.Code.Agent
 {
@@ -19,13 +16,14 @@ namespace Assets.Code.Agent
         protected BeliefBase bb = null;
         protected PlanLibrary planLibrary = null;
         protected String aslSource = null;
-        protected TransitionSystem ts = null;
+        protected Reasoner reasoner = null; //Reference to the reasoner
 
         private List<Literal> initialGoals = null;
         private List<Literal> initialBeliefs = null;
 
-        private Dictionary<String, InternalAction> internalActions = null;
-        private Dictionary<String, ArithFunction> functions = null;
+        //This might be needed in the future
+        //private Dictionary<String, InternalAction> internalActions = null;
+        //private Dictionary<String, ArithFunction> functions = null;
 
         public Agent()
         {
@@ -33,18 +31,18 @@ namespace Assets.Code.Agent
         }
 
         /**
-         *  Crea un agente y su BB
+         * Creates an agent and it's belief base
          */
         public static Agent Create(AgentArchitecture agArch, String agClass, String asSrc)
         {
             try
             {
                 Agent ag = new Agent();
-                ag.ts = new TransitionSystem(ag, null, agArch);
                 ag.bb = new DefaultBeliefBase();
                 ag.InitAgente();
                 ag.Load(asSrc);
-
+                Reasoner r = new Reasoner(ag, null, agArch);
+                ag.reasoner = r;
                 return ag;
             }
             catch (Exception e)
@@ -53,6 +51,14 @@ namespace Assets.Code.Agent
             }
         }
 
+        public void SetReasoner(Reasoner r)
+        {
+            reasoner = r;
+        }
+
+        /**
+         * Initializes the belief base, the plan library, the initial goals and the initial beliefs of the agent 
+         */
         public void InitAgente()
         {
             if (bb == null)
@@ -63,44 +69,23 @@ namespace Assets.Code.Agent
                 initialGoals = new List<Literal>();
             if (initialBeliefs == null)
                 initialBeliefs = new List<Literal>();
-
-            InitDefaultFunctions();
-
         }
 
-        public void InitAgente(String asSrc)
-        {
-            try
-            {
-                InitAgente();
-                Load(asSrc);
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error loading the source: " + e.Message);
-            }
-        }
-
+        /**
+         *  Parse and load the source code of the agent
+         */
         public void Load(String asSrc)
         {
             try
             {
-                if (asSrc != null && (asSrc.Length > 0))
+                if (!String.IsNullOrEmpty(asSrc)) //If the source isn't null or empty
                 {
                     asSrc = asSrc.Replace("\\", "/");
-                    //Aqui utilizan una clase que se llama SourcePath que no he puesto porque no se si hace falta
-                    if (planLibrary.hasMetaEventPlans()) //Esto no se muy bien qué es
-                    {
-                        ts.addGoalListener(new GoalListenerForMetaEvents(ts));
-                        AddInitialBelsFromProjectInBB();
-                        AddInitialBelsInBB();
-                        AddInitialGoalsFromProjectInBB();
-                        AddInitialGoalsInTS();
-                        FixAgInIAandFunctions(this);
-                    }
 
-                    LoadKqmlPlans();
-                    AddInitialBelsInBB();
+                    AddInitialBeliefsFromProjectInBB();
+                    AddInitialBeliefsInBB();
+                    AddInitialGoalsFromProjetInBB();
+
 
                     aslSource = asSrc;
                 }
@@ -111,106 +96,18 @@ namespace Assets.Code.Agent
             }
         }
 
-        public void LoadKqmlPlans()
-        {
-            //Esto no lo he implementado porque no se muy bien que hace
-        }
-
         public void StopAgent()
         {
-            if (bb.GetLock())
-            {
-                bb.Stop();
-            }
-
-            foreach (InternalAction ia in internalActions.Values)
-            {
-                try
-                {
-                    ia.Destroy();
-                }
-                catch (Exception e)
-                {
-                    //Aqui hace un printStackTrace que no se como se hace
-                }
-            }
+            //This maybe needs to be synchronized
+            bb.Stop();
         }
 
-
-        public Agent Clone(AgentArchitecture arch)
+        //This is not implemented yet but might be needed in the future
+        public void Clone()
         {
-            //Esto no está implementado porque no se si hace falta
-            return null;
+            throw new NotImplementedException();
         }
 
-        
-        private void FixAgInIAandFunctions(Agent a)
-        {
-            //No está implementado porque no se si hace falta
-        }
-
-        public void InitDefaultFunctions()
-        {
-            if (functions == null)
-            {
-                functions = new Dictionary<string, ArithFunction>(); 
-            }
-            AddFunction();
-        }
-
-        private void AddFunction()
-        {
-            //Esto tampoco está implementado 
-        }
-
-        public void AddInitialBel(Literal b)
-        {
-            initialBeliefs.Add(b);
-        } 
-
-        public List<Literal> getInitialBelifs()
-        {
-            return initialBeliefs;
-        }
-
-        public void AddInitialBelsInBB()
-        {
-            for(int i = initialBeliefs.Count-1; i >=0; i--)
-            {
-                AddInitialBel(initialBeliefs.ElementAt(i));
-            }
-            initialBeliefs.Clear();
-        }
-
-        protected void AddInitialBelsFromProjectInBB()
-        {
-            String sBels = ts.GetSettings.GetUserParameter(Settings.INIT_BELS);
-            if(sBels != null)
-            {
-                try
-                {
-                    for(Term t in ASSyntax.ParseList("["+sBels+"]"))
-                    {
-                        AddInitialBel(((Literal)t).ForceFullLiteralImpl());
-                    }
-                } catch(Exception e)
-                {
-
-                }
-            }
-        }
-
-        private void AddInitBeli(Literal b)
-        {
-            if(!b.IsRule() && !b.IsGround())
-            {
-                b = new Rule(b, Literal.LTrue);
-            }
-            if(!b.HasSource())
-            {
-
-            }
-        }
     }
 }
-}
+
