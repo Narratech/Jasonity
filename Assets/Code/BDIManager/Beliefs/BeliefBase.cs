@@ -3,16 +3,12 @@
 // Allows the user to modify the Belief Base and check for relevant data
 using Assets.Code.Agent;
 using Assets.Code.Logic;
+using System.Collections.Generic;
 
 namespace BDIManager.Beliefs
 {
     interface BeliefBase
     {
-        // Called before the execution with the agent that uses this BB
-        void Init(Agent ag, string[] args);
-
-        // Called before the end of execution
-        void Stop();
 
         // Removes all beliefs from BB
         void Clear();
@@ -20,6 +16,9 @@ namespace BDIManager.Beliefs
         // Adds a belief at the end of the BB
         // Returns true if success
         bool Add(Literal l);
+
+        // Adds a belief at the index position of the BB
+        bool Add(int index, Literal l);
 
         // Returns the literal
         Literal Contains(Literal l);
