@@ -6,15 +6,10 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Subject : Term
+    public class Var : Term
     {
-        public Subject(string name) : base(name)
+        public Var(string functor) : base(functor)
         {
-        }
-
-        public override bool IsSubject()
-        {
-            return true;
         }
     }
 }

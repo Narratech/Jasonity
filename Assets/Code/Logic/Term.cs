@@ -8,40 +8,61 @@ namespace Assets.Code.Logic
 {
     public abstract class Term
     {
-        //private string @class;
-        private string name;
+        private string functor;
 
-        public Term(string name)
+        public Term(string functor)
         {
-            //this.@class = @class;
-            this.name = name;
+            this.functor = functor;
         }
 
-        public virtual bool IsBelief()
-        {
-            return false;
-        }
-
-        public virtual bool IsSubject()
+        //An atom, structure, predicate,...
+        public virtual bool IsLiteral()
         {
             return false;
         }
 
-        public virtual bool IsObjective()
+        //A structure with annotations: functor(arguments)[functor(arguments)]
+        public virtual bool IsPredicate()
         {
             return false;
         }
 
-        public virtual bool IsObjectOfTheObjective()
+        //A functor with arguments: "functor(arguments)"
+        public virtual bool IsStructure()
         {
             return false;
         }
 
-        public virtual bool IsPlan()
+        //No variable term
+        public virtual bool IsAtom()
         {
             return false;
         }
 
-        public string Name { get => this.name; }
+        //Body of the plan: " a <- (plan body)"
+        public virtual bool IsPlanBody()
+        {
+            return false;
+        }
+
+        //Internal action
+        public virtual bool IsInternalAction()
+        {
+            return false;
+        }
+
+        //A literal with a body: "a : b <- c"
+        //                            (body)
+        public virtual bool IsRule()
+        {
+            return false;
+        }
+
+        public bool IsTerm()
+        {
+            return true;
+        }
+
+        public string Functor { get => this.functor; }
     }
 }

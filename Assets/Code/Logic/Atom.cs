@@ -6,17 +6,13 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class ObjectOfTheObjective : Term
+    public class Atom : Literal
     {
-        public ObjectOfTheObjective(string name) : base(name)
-        {
-        }
+        public Atom(string functor, bool b) : base(functor, b) { }
 
-        public override bool IsObjectOfTheObjective()
+        public override bool IsAtom()
         {
             return true;
         }
     }
-
-
 }
