@@ -10,13 +10,12 @@ namespace Assets.Code.Logic
     public class Parser
     {
         /*
-        * Notes:
-        *  -There is just one form of negation in this version of the parser,
-        *   unlike the original Jason where there are two
-        *  
-        *  -A functor with no parameters still keeps the parenthesis in order 
-        *   to simplify the parser
-       */
+         * Notes:
+         *  -There is just one form of negation in this version of the parser,
+         *   unlike the original Jason where there are two
+         *   
+         *   -The parser do not interpret lists
+        */
 
         private Term BeliefsList;
         private Term ObjectivesList;
@@ -29,75 +28,170 @@ namespace Assets.Code.Logic
 
         public void ClassifierParser()
         {
-
-            Dictionary<int, Tuple<string, bool>> data = new Dictionary<int, Tuple<string, bool>>();
             int i = 0;
+            Dictionary<int, string> data = new Dictionary<int, string>();
 
-            foreach (string line in File.ReadLines(@"E:\VisualStudio\Pruebas\Pruebas\Bob.txt"))
+            foreach (string line in File.ReadLines(@"E:\VisualStudio\Pruebas\Pruebas\miner.txt"))
             {
+                //La creencia, objetivo o plan ha terminado su definición
                 if (line.EndsWith("."))
-                    //This means that this line is the end of a rule, objective, belief...
-                    data.Add(i, new Tuple<string, bool>(line, true));
+                {
+                    switch (data.First().Value[0])
+                    {
+                        case '!':
+                            break;
+                        case '?':
+                            break;
+                        case '+':
+                            break;
+                        case '-':
+                            break;
+                        default:
+                            ParserBelief(data);
+
+                            //Reseteo los datos del diccionario 
+                            //para la próxima definición
+                            data.Clear();
+                            break;
+                    }
+                }
+                //La definición de aún no ha terminado
                 else
-                    data.Add(i, new Tuple<string, bool>(line, false));
+                {
+                    //La añado al diccionario
+                    data.Add(i, line);
+                    i++;
+                }
+
+            }
+        }
+
+
+
+        private Term ParserBelief(Dictionary<int, string> data)
+        {
+            //The belief is true by default
+            bool fake = false;
+            string line = data.First().Value;
+
+            //Check if the belief is false
+            if (line.IndexOf('t') == 2)
+            {
+                fake = true;
             }
 
-            while (data.Count() > 0)
+            //Check if it's functor
+            if (!line.Contains("(") && !line.Contains("["))
             {
-                switch (data[0].Item1[0])
+                //Check if it's a rule
+                if (line.EndsWith(":-"))
                 {
-                    //Plan: add
-                    case '+':
 
-                        break;
+                }
+                //Or just a functor
+                else
+                {
+                    return new Atom(line, fake);
+                }
+            }
+            //Check if it's structure
+            else if (line.Contains("(") && !line.Contains("["))
+            {
+                //Check if it's a rule
+                if (line.EndsWith(":-"))
+                {
 
-                    //Plan: remove
-                    case '-':
+                }
+                else
+                {
+                    string functor = line.Substring(0, line.IndexOf('('));
+                    CheckBrackets(line.Substring(line.IndexOf('(') + 1, line.IndexOf(':') - 1));
+                }
+            }
+            //Check if it's predicate
+            else
+            {
+                //Check if it's a rule
+                if (line.EndsWith(":-"))
+                {
 
-                        break;
-
-                    //Test goal
-                    case '?':
-
-                        break;
-
-                    //Goal
-                    case '!':
-
-                        break;
-
-                    //Belief
-                    default:
-                        ParserBelief(data);
-                        //Hacer cosas
-                        break;
+                }
+                else
+                {
+                    string functor = line.Substring(0, line.IndexOf('('));
+                    CheckBrackets(line.Substring(line.IndexOf('(') + 1, line.IndexOf(':') - 1));
                 }
             }
         }
 
-        private Term ParserBelief(Dictionary<int, Tuple<string, bool>> data)
+
+
+
+        private List<Term> CheckBrackets(string line)
         {
-            bool negation = false;
-            string functor;
-            //not functor(arguments)
-            if (data[0].Item1.Substring(0, 3).Equals("not "))
+            List<Term> args = new List<Term>();
+
+            //Check if the first argument is not a structure
+            if (!line.Contains('('))
             {
-                negation = true;
-                functor = data[0].Item1.Substring(4, data[0].Item1.IndexOf("("));
+                if (!line.Substring(0, line.IndexOf('(')).Contains(','))
+                {
+                    //Check if it's a variable
+                    if (Char.IsUpper(line, 0))
+                    {
+                        //Check if it's the only argument
+                        if (!line.Contains(','))
+                        {
+                            args.Add(new Var(line.Substring(0, line.IndexOf(')'))));
+                            return args;
+                        }
+                        //Or not
+                        else
+                        {
+                            args.Add(new Var(line.Substring(0, line.IndexOf(','))));
+                            args.AddRange(CheckBrackets(line.Substring(line.IndexOf(',') + 1)));
+                            return args;
+                        }
+                    }
+                    //Or an atom
+                    else
+                    {
+                        //Check if it's the only argument
+                        if (!line.Contains(','))
+                        {
+                            args.Add(new Atom(line.Substring(0, line.IndexOf(')')), true));
+                            return args;
+                        }
+                        //Or not
+                        else
+                        {
+                            args.Add(new Atom(line.Substring(0, line.IndexOf(')')), true));
+                            args.AddRange(CheckBrackets(line.Substring(line.IndexOf(',') + 1)));
+                            return args;
+                        }
+                    }
+                }
             }
-            //functor(arguments)
+            //Or it's a structure
             else
             {
-                functor = data[0].Item1.Substring(0, data[0].Item1.IndexOf("("));
+                string functor = line.Substring(0, line.IndexOf('('));
+
+                //Check if it's the only argument
+                if (!line.Contains(','))
+                {
+                    args.Add(new Structure(functor, true, CheckBrackets(line.Substring(line.IndexOf('(') + 1))));
+                    return args;
+                }
+                //Or not
+                else
+                {
+                    args.Add(new Structure(functor, true, CheckBrackets(line.Substring(line.IndexOf('(') + 1))));
+                    args.AddRange(CheckBrackets(line.Substring(')') + 1));
+                    return args;
+
+                }
             }
-
-            if (data[0].Item1.EndsWith("."))
-                return new Atom(functor, negation);
-            else
-            {
-
-            }
-
         }
     }
 }
