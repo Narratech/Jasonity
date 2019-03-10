@@ -9,14 +9,19 @@ namespace Assets.Code.BDIManager
 {
     class Circumstance
     {
+        private Queue<CircumstanceListener> listeners;
+
         internal void AddEventListener(CircumstanceListener cl)
         {
-            throw new NotImplementedException();
+            listeners.Enqueue(cl);
         }
 
         internal void RemoveEventListener(CircumstanceListener cl)
         {
-            throw new NotImplementedException();
+            if (cl != null)
+            {
+                listeners.Dequeue(); // ???
+            }
         }
     }
 }

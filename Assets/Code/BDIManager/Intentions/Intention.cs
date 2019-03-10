@@ -1,15 +1,15 @@
 // Implements an Intention (which is a stack of IntentionMeans)
-using Logica.ASSemantic;
 using System.Collections.Generic;
 
-namespace BDIManager.Intentions {
+namespace BDIManager.Intentions
+{
     public class Intention
     {
         public static Intention emptyInt = null;
         private static int id = 0;
         private int count = 0;
 
-        private List<IntendedMeans> intendedMeans = new List<IntendedMeans>();
+        private List<Plan> plans = new List<Plan>();
 
         public Intention()
         {
@@ -21,15 +21,16 @@ namespace BDIManager.Intentions {
             return id;
         }
 
-        public void Push(IntendedMeans im)
+        public void Push(Plan plan)
         {
-            intendedMeans.Add(im);
+            plan.Push(plan);
             count++;
         }
 
-        public IntendedMeans Pop()
+        public Plan Pop()
         {
-            // IntendedMeans top = intendedMeans.Remove(intendedMeans.???);
+            // Plan top = plans.Remove(plans.FindLastIndex());
+            Plan top = null;
             if (IsAtomic() && top.IsAtomic())
             {
                 count--;
@@ -44,27 +45,23 @@ namespace BDIManager.Intentions {
 
         public bool IsFinished()
         {
-            // ???
-            return intendedMeans.Count == 0;
+            return plans.Count == 0;
         }
 
         public int Size()
         {
-            // ???
-            return intendedMeans.Count;
+            return plans.Count;
         }
 
         public void clearIM()
         {
-            intendedMeans.Clear();
+            plans.Clear();
         }
 
-        public IntendedMeans GetBottom()
+        public Plan GetBottom()
         {
-            // ??? return intendedMeans.LastIndexOf();
+            // ??? return plans.GetLast(); 
             return null;
         }
-
-
     }
 }
