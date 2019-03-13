@@ -16,5 +16,10 @@ namespace Assets.Code.Logic
         }
 
         public bool IsItFalse { get => this.isItFalse; }
+
+        public class DefaultNameSpace : Atom
+        {
+
+        }
     }
 }
