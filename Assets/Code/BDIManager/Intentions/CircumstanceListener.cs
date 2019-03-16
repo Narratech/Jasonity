@@ -7,31 +7,16 @@ using BDIManager.Intentions;
 
 namespace Assets.Code.BDIManager
 {
-    class CircumstanceListener 
+    interface CircumstanceListener 
     {
-        public void EventAdded(Event e)
-        {
-            throw new NotImplementedException();
-        }
+        void EventAdded(Event e);
 
-        public void IntentionAdded(Intention i)
-        {
-            throw new NotImplementedException();
-        }
+        void IntentionAdded(Intention i);
 
-        public void IntentionDropped(Intention i)
-        {
-            throw new NotImplementedException();
-        }
+        void IntentionDropped(Intention i);
 
-        public void IntentionResumed(Intention i)
-        {
-            throw new NotImplementedException();
-        }
+        void IntentionResumed(Intention i);
 
-        public void IntentionSuspended(Intention i, string reason)
-        {
-            throw new NotImplementedException();
-        }
+        void IntentionSuspended(Intention i, string reason);
     }
 }

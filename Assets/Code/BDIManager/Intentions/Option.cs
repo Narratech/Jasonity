@@ -1,0 +1,40 @@
+﻿// Interface for plans
+// Allows the user to modify and check an agent's plans
+using Assets.Code.Logic;
+using System;
+
+namespace BDIManager.Intentions
+{
+    public class Option
+    {
+
+        private Plan plan;
+        private Unifier unif;
+
+        Option(Plan p, Unifier u)
+        {
+            plan = p;
+            unif = u;
+        }
+
+        public void SetPlan(Plan p)
+        {
+            plan = p;
+        }
+
+        internal Plan GetPlan()
+        {
+            return plan;
+        }
+
+        public void SetUnifier(Unifier u)
+        {
+            unif = u;
+        }
+
+        internal Unifier getUnifier()
+        {
+            return unif;
+        }
+    }
+}

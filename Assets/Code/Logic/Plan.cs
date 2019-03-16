@@ -19,6 +19,11 @@ namespace Assets.Code.Logic
             this.actionFocus = aFocus;
         }
 
+        internal PlanBody getBody()
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool IsPlan()
         {
             return true;
@@ -29,5 +34,10 @@ namespace Assets.Code.Logic
         public Objective PlanObjective { get => this.planObjective; }
 
         public string AFocus { get => this.actionFocus; }
+
+        internal bool IsAtomic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

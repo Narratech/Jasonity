@@ -23,7 +23,7 @@ namespace BDIManager.Intentions
 
         public void Push(Plan plan)
         {
-            plan.Push(plan);
+            plans.Push(plan);
             count++;
         }
 

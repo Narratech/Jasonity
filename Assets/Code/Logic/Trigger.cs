@@ -19,5 +19,15 @@ namespace Assets.Code.Logic
         {
 
         }
+
+        internal bool IsAddition()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool IsGoal()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
