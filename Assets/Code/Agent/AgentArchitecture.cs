@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using UnityEngine;
-
+using Assets.Code.ReasoningCycle;
+using BDIMaAssets.Code.ReasoningCycle;
 
 /*
     THis is the base architecture for agents.
@@ -63,6 +64,19 @@ namespace Assets.Code.Agent
             }
         }
 
+        public void Act(ExecuteAction action)
+        {
+            throw new NotImplementedException();
+        }
 
+        internal bool IsRunning()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetAgName()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
