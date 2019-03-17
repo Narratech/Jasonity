@@ -1,4 +1,4 @@
-// Implements an Intention (which is a stack of IntentionMeans)
+// Implements an Intention (which is a stack of IntendedPlans)
 using System.Collections.Generic;
 
 namespace BDIManager.Intentions
@@ -9,7 +9,7 @@ namespace BDIManager.Intentions
         private static int id = 0;
         private int count = 0;
 
-        private List<Plan> plans = new List<Plan>();
+        private List<IntendedPlan> plans = new List<IntendedPlan>();
 
         public Intention()
         {
@@ -21,16 +21,16 @@ namespace BDIManager.Intentions
             return id;
         }
 
-        public void Push(Plan plan)
+        public void Push(IntendedPlan plan)
         {
             plans.Push(plan);
             count++;
         }
 
-        public Plan Pop()
+        public IntendedPlan Pop()
         {
             // Plan top = plans.Remove(plans.FindLastIndex());
-            Plan top = null;
+            IntendedPlan top = null;
             if (IsAtomic() && top.IsAtomic())
             {
                 count--;
@@ -58,7 +58,7 @@ namespace BDIManager.Intentions
             plans.Clear();
         }
 
-        public Plan GetBottom()
+        public IntendedPlan GetBottom()
         {
             // ??? return plans.GetLast(); 
             return null;

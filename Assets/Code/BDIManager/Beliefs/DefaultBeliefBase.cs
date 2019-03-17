@@ -16,21 +16,25 @@ namespace BDIManager.Beliefs
         public HashSet<Literal> percepts = new HashSet<Literal>();
         private object TPercept;
 
+        // Constructor
         public DefaultBeliefBase()
         {
             nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);    // Literal.DefaultNS must be Atom
         }
 
+        // Returns the namespaces
         public HashSet<Atom> GetNameSpaces()
         {
             return new HashSet<Atom>(nameSpaces.Keys);
         }
 
+        // Returns the size
         public int Size()
         {
             return size;
         }
 
+        // Clears the belief base
         public void Clear()
         {
             size = 0;
@@ -39,27 +43,31 @@ namespace BDIManager.Beliefs
             nameSpaces.Clear();
             nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);    // Literal.DefaultNS must be Atom
         }
-
+        
         public IEnumerable<Literal> GetPercepts()
         {
             throw new NotImplementedException();
         } 
 
+        // Returns percepts
         public HashSet<Literal> GetPerceptsSet()
         {
             return percepts;
         }
 
+        // Adds a new literal
         public bool Add(Literal l)
         {
             return Add(l, false);
         }
 
+        // Adds a new literal in a specific index
         public bool Add(int index, Literal l)
         {
             return Add(l, index != 0);
         }
 
+        // Adds a new literal at the end of the belief base
         protected bool Add(Literal l, bool addInEnd)
         {
             Literal bl = Contains(l);
@@ -114,6 +122,7 @@ namespace BDIManager.Beliefs
             return entry;
         }
 
+        // Removes a literal from the belief base
         public bool Remove(Literal l)
         {
             Literal bl = Contains(l);
@@ -153,6 +162,7 @@ namespace BDIManager.Beliefs
             }
         }
 
+        // Checks if the belief base contains a specific literal
         public Literal Contains(Literal l)
         {
             Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : nameSpaces[l.GetNS()]);
@@ -171,9 +181,10 @@ namespace BDIManager.Beliefs
             }
         }
 
+        // Each predicate indicator has one BelEntry assigned
         class BelEntry
         {
-            private List<Literal> list = new List<Literal>();
+            private List<Literal> list = new List<Literal>(); // Keeps the order of the beliefs
             private Dictionary<StructureWrapperForLiteral, Literal> map = new Dictionary<StructureWrapperForLiteral, Literal>();
 
             public void Add(Literal l, bool addInEnd)
@@ -185,7 +196,7 @@ namespace BDIManager.Beliefs
                 }
                 else
                 {
-                    list.Insert(list.Count, l); // ???
+                    list.Insert(list.Count, l);
                 }
             }
 

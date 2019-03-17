@@ -1,5 +1,4 @@
-﻿// Interface for plans
-// Allows the user to modify and check an agent's plans
+﻿// A Plan and the Unifier that makes it relevant and applicable
 using Assets.Code.Logic;
 using System;
 
