@@ -51,7 +51,7 @@ namespace Pruebas
                         case '-':
                             break;
                         default:
-                            ParserBelief(data);
+                            this.BeliefsList.Add(ParserBelief(data));
 
                             //Reseteo los datos del diccionario 
                             //para la próxima definición
@@ -74,64 +74,106 @@ namespace Pruebas
             }
         }
 
-
-
-        private void ParserBelief(Dictionary<int, string> data)
+        private Term ParserBelief(Dictionary<int, string> data)
         {
             //The belief is true by default
-            bool notFake = true;
-            string line = data.First().Value;
+            bool notFake = true, isARule = false;
 
-            //Check if the belief is false
-            if (line.IndexOf('t') == 2)
-            {
-                notFake = true;
-            }
+            Dictionary<Literal, string> terms = new Dictionary<Literal, string>();
 
-            //Check if it's functor
-            if (!line.Contains("(") && !line.Contains("["))
+            foreach (KeyValuePair<int, string> entry in data)
             {
-                //Check if it's a rule
-                if (line.EndsWith(":-"))
+                string line = entry.Value;
+
+                if (line.IndexOf("not ") == 0)
                 {
-
+                    notFake = false;
                 }
-                //Or just a functor
+
+                //Check if it's functor
+                if (!line.Contains("(") && !line.Contains("["))
+                {
+                    //Check if it's a rule
+                    if (line.EndsWith(":-"))
+                    {
+                        isARule = true;
+                        terms.Add(new Atom(line.Substring(0, line.IndexOf(":")), notFake), "");
+                    }
+                    //Or just a functor
+                    else
+                    {
+                        string @operator = line.Substring(line.Length - 1);
+                        terms.Add(new Atom(line.Substring(0, line.IndexOf(@operator)), notFake), @operator);
+                    }
+                }
+                //Check if it's structure
+                else if (line.Contains("(") && !line.Contains("["))
+                {
+                    //Check if it's a rule
+                    if (line.EndsWith(":-"))
+                    {
+                        isARule = true;
+                        string functor = line.Substring(0, line.IndexOf("("));
+                        string parameters = line.Substring(line.IndexOf("(") + 1,
+                            line.IndexOf(".") - 1 - (line.IndexOf("(") + 1));
+                        terms.Add(new Structure(functor, notFake, CheckBrackets(parameters)), "");
+                    }
+                    //Or jus a structure
+                    else
+                    {
+                        string functor = line.Substring(0, line.IndexOf("("));
+                        string @operator = line.Substring(line.Length - 1);
+                        string parameters = line.Substring(line.IndexOf("(") + 1,
+                            line.IndexOf(@operator) - 1 - (line.IndexOf("(") + 1));
+                        terms.Add(new Structure(functor, notFake, CheckBrackets(parameters)), @operator);
+                    }
+                }
+                //Check if it's predicate
                 else
                 {
-                    this.BeliefsList.Add(new Atom(line.Substring(0, line.IndexOf(".") - 1), notFake));
-                }
-            }
-            //Check if it's structure
-            else if (line.Contains("(") && !line.Contains("["))
-            {
-                //Check if it's a rule
-                if (line.EndsWith(":-"))
-                {
+                    //Check if it's a rule
+                    if (line.EndsWith(":-"))
+                    {
+                        isARule = true;
+                        string functor = line.Substring(0, line.IndexOf("("));
 
-                }
-                else
-                {
-                    string functor = line.Substring(0, line.IndexOf("("));
-                    string parameters = line.Substring
-                        (line.IndexOf("(") + 1, line.IndexOf(".") - 1 - (line.IndexOf("(") + 1));
-                    this.BeliefsList.Add(new Structure(functor, notFake, CheckBrackets(parameters)));
+                        List<Term> args, annots = new List<Term>();
+
+                        args = CheckBrackets(line.Substring(line.IndexOf("(") + 1,
+                            line.IndexOf("[") - 1 - (line.IndexOf("(") + 1)));
+
+                        annots = CheckBrackets(line.Substring(line.IndexOf("[") + 1,
+                            line.IndexOf("]") - (line.IndexOf("[") + 1)));
+
+                        terms.Add(new Predicate(functor, notFake, args, annots), "");
+                    }
+                    //Or just a predicate
+                    else
+                    {
+                        string functor = line.Substring(0, line.IndexOf("("));
+
+                        List<Term> args, annots = new List<Term>();
+
+                        args = CheckBrackets(line.Substring(line.IndexOf("(") + 1,
+                            line.IndexOf("[") - 1 - (line.IndexOf("(") + 1)));
+
+                        annots = CheckBrackets(line.Substring(line.IndexOf("[") + 1,
+                            line.IndexOf("]") - (line.IndexOf("[") + 1)));
+
+                        terms.Add(new Predicate(functor, notFake, args, annots), line.Substring(line.Length - 1));
+                    }
                 }
             }
-            //Check if it's predicate
+
+            //Two ways to return the value, depending if it was a rule
+            if (isARule)
+            {
+                return new Rule(terms, notFake);
+            }
+            //Or not
             else
             {
-                //Check if it's a rule
-                if (line.EndsWith(":-"))
-                {
-
-                }
-                else
-                {
-                    string functor = line.Substring(0, line.IndexOf("("));
-                    this.BeliefsList.Add(new Predicate(functor, notFake,
-                        CheckBrackets(line.Substring(line.IndexOf('(') + 1, line.IndexOf(')') - 1))));
-                }
+                return terms.First().Key;
             }
         }
 
@@ -166,9 +208,9 @@ namespace Pruebas
                 else
                 {
                     //Check if the first parameter is a variable
-                    if (Char.IsUpper(line, 0))
+                    if (Char.IsUpper(line, 0) || line.Substring(0, 1) == "_")
                     {
-                        args.Add(new Var(line.Substring(0, line.IndexOf(","))));
+                        args.Add(new Variable(line.Substring(0, line.IndexOf(","))));
                         args.AddRange(CheckBrackets(line.Substring(line.IndexOf(",") + 1)));
                         return args;
                     }
@@ -185,18 +227,18 @@ namespace Pruebas
             else
             {
                 //Check if the first parameter is a variable
-                if (Char.IsUpper(line, 0))
+                if (Char.IsUpper(line, 0) || line.Substring(0, 1) == "_")
                 {
                     //Check if the variable was NOT the last parameter
                     if (line.Contains(","))
                     {
-                        args.Add(new Var(line.Substring(0, line.IndexOf(","))));
+                        args.Add(new Variable(line.Substring(0, line.IndexOf(","))));
                         args.AddRange(CheckBrackets(line.Substring(line.IndexOf(",") + 1)));
                         return args;
                     }
                     else
                     {
-                        args.Add(new Var(line));
+                        args.Add(new Variable(line));
                         return args;
                     }
                 }
