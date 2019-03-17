@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Code.BDIManager;
 using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
 using BDIManager.Intentions;
-
 /**
  * The agent class has the belief base and the library plan
  */
@@ -41,7 +40,7 @@ namespace Assets.Code.Agent
                 ag.bb = new DefaultBeliefBase();
                 ag.InitAgente();
                 ag.Load(asSrc);
-                Reasoner r = new Reasoner(ag, null, agArch);
+                Assets.Code.ReasoningCycle.Reasoner r = new Assets.Code.ReasoningCycle.Reasoner(ag, null, agArch);
                 ag.reasoner = r;
                 return ag;
             }
@@ -82,9 +81,9 @@ namespace Assets.Code.Agent
                 {
                     asSrc = asSrc.Replace("\\", "/");
 
-                    AddInitialBeliefsFromProjectInBB();
-                    AddInitialBeliefsInBB();
-                    AddInitialGoalsFromProjetInBB();
+                    //AddInitialBeliefsFromProjectInBB();
+                   // AddInitialBeliefsInBB();
+                   // AddInitialGoalsFromProjetInBB();
 
 
                     aslSource = asSrc;
@@ -99,7 +98,7 @@ namespace Assets.Code.Agent
         public void StopAgent()
         {
             //This maybe needs to be synchronized
-            bb.Stop();
+            //bb.Stop();
         }
 
         //This is not implemented yet but might be needed in the future
@@ -108,6 +107,10 @@ namespace Assets.Code.Agent
             throw new NotImplementedException();
         }
 
+        public PlanLibrary GetPlanLibrary()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

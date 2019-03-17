@@ -1,5 +1,8 @@
 // Implements an Intention (which is a stack of IntentionMeans)
+using System;
 using System.Collections.Generic;
+using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions
 {
@@ -62,6 +65,11 @@ namespace BDIManager.Intentions
         {
             // ??? return plans.GetLast(); 
             return null;
+        }
+
+        public bool HasTrigger(Trigger t , Unifier unifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

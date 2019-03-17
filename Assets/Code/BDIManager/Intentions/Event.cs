@@ -3,11 +3,11 @@
 using Assets.Code.Logic;
 
 namespace BDIManager.Intentions {
-    public class Event
+    class Event
     {
 
-        Trigger trigger = null;
-        Intention intention = Intention.emptyInt;
+        private Trigger trigger = null;
+        private Intention intention = Intention.emptyInt;
 
         Event(Trigger t, Intention i)
         {
@@ -15,12 +15,12 @@ namespace BDIManager.Intentions {
             intention = i;
         }
 
-        Trigger GetTrigger()
+        public Trigger GetTrigger()
         {
             return trigger;
         }
 
-        Intention GetIntention()
+        public Intention GetIntention()
         {
             return intention;
         }
