@@ -1,9 +1,12 @@
 // Implements an Intention (which is a stack of IntendedPlans)
+using System;
 using System.Collections.Generic;
+using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions
 {
-    public class Intention
+    class Intention
     {
         public static Intention emptyInt = null;
         private static int id = 0;
@@ -62,6 +65,16 @@ namespace BDIManager.Intentions
         {
             // ??? return plans.GetLast(); 
             return null;
+        }
+
+        public bool HasTrigger(Trigger t, Unifier unifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IntendedPlan Peek()
+        {
+            throw new NotImplementedException();
         }
     }
 }

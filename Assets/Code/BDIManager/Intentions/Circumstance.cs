@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
@@ -67,6 +68,46 @@ namespace Assets.Code.BDIManager
         }
 
         internal void AddPendingAction(ExecuteAction action)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetReasoner(Reasoner reasoner)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DropRunningIntention(Intention i)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Create()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasMsg()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasRunningIntention()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool IsAtomicIntentionSuspended()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasFeedbackAction()
         {
             throw new NotImplementedException();
         }

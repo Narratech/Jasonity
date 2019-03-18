@@ -52,15 +52,19 @@ namespace Assets.Code.ReasoningCycle
 
         private int nrcslbr = Settings.DEFAULT_NUMBER_REASONING_CYCLES; //number of reasoning cycles since last belief revision
 
-        //private TransitionSystem confP;
-        //private TransitionSystem conf;
+        //I don't understand this. Both conf and confP point to this object, this is just to make it look more like the SOS. What is the SOS??
+        private Reasoner conf;
+        private Reasoner confP;
 
         //private ConcurrentQueue taskForBeginOfCycle = new ConcurrentQueue(); - I don't know how to use this
 
         private Dictionary<Desire, CircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
 
+        // the semantic rules are referred to in comments in the functions below
+        //private const string kqmlReceivedFunctor = Config.get().getKqmlFunctor();
 
-        public Reasoner(Assets.Code.Agent.Agent agent, Circumstance c, AgentArchitecture ar, Settings s)
+
+        public Reasoner(Agent.Agent agent, Circumstance c, AgentArchitecture ar, Settings s)
         {
             ag = agent;
             agArch = ar;
@@ -80,13 +84,13 @@ namespace Assets.Code.ReasoningCycle
             {
                 circumstance = c;
             }
+            circumstance.SetReasoner(this);
+            conf = confP = this;
             if (agent != null) agent.SetReasoner(this);
             if (ar != null) ar.SetReasoner(this);
         }
 
-
         //Desire listeners support methods
-
 
         //Adds an object that will be notified about events on desires (creation, suspension...)
         public void AddDesireListener(Desire desire)
@@ -161,8 +165,6 @@ namespace Assets.Code.ReasoningCycle
 
             return desireListeners.Remove(desire);
         }
-
-
 
         /*
          It's the main loop
@@ -249,7 +251,7 @@ namespace Assets.Code.ReasoningCycle
             } catch (Exception e)
             {
                 //print(e.StackTrace());
-                //conf.C.Create();
+                conf.GetCircumstance().Create();
             }
         } 
 
@@ -274,7 +276,7 @@ namespace Assets.Code.ReasoningCycle
             catch (Exception e)
             {
                 //print(e.StackTrace());
-                //conf.C.Create();
+                conf.GetCircumstance().Create();
             }
         }
 
@@ -299,30 +301,290 @@ namespace Assets.Code.ReasoningCycle
             } catch (Exception e)
             {
                 // print(e.StackTrace());
-                // conf.C.Create();
+                conf.GetCircumstance().Create();
             }
         }
 
         public bool CanSleep()
         {
-            return true;
+            return (circumstance.IsAtomicIntentionSuspended() && !circumstance.HasFeedbackAction() && !conf.GetCircumstance().HasMsg())  // atomic case
+                  || (!conf.GetCircumstance().HasEvent() &&    // other cases (deliberate)
+                      !conf.GetCircumstance().HasRunningIntention() && !conf.GetCircumstance().HasFeedbackAction() && // (action)
+                      !conf.GetCircumstance().HasMsg() &&  // (sense)
+                      taskForBeginOfCycle.IsEmpty() &&
+                      GetUserAgArch().CanSleep());
         }
 
-        public void ApplySemanticRuleSense()
+        private void ApplySemanticRuleSense()
         {
-
+            switch (stepSense)
+            {
+                case State.StartRC:
+                    ApplyProcMsg();
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public void ApplySemanticRuleDeliberate()
+        private void ApplySemanticRuleDeliberate()
         {
-
+            switch (stepDeliberate)
+            {
+                case State.SelEv:
+                    ApplySelEv();
+                    break;
+                case State.RelPl:
+                    ApplyRelPl();
+                    break;
+                case State.ApplPl:
+                    ApplyApplPl();
+                    break;
+                case State.SelAppl:
+                    ApplySelAppl();
+                    break;
+                case State.FindOp:
+                    ApplyFindOp();
+                    break;
+                case State.AddIM:
+                    ApplyAddIM();
+                    break;
+                default:
+                    break;
+            }
         }
 
         public void ApplySemanticRuleAct()
         {
+            switch (stepAct)
+            {
+                case State.ProAct:
+                    ApplyProcAct();
+                    break;
+                case State.SelInt:
+                    ApplySelInt();
+                    break;
+                case State.ExecInt:
+                    ApplyExecInt();
+                    break;
+                case State.ClrInt:
+                    confP.stepAct = State.StartRC;
+                    ApplyClrInt(conf.GetCircumstance().SI);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ApplyClrInt(Intention i)
+        {
+            while(true) //Quit the method by return
+            {
+                //Rule ClrInt
+                if (i == null)
+                    return;
+                if (i.IsFinished())
+                {
+                    //Intention finished, remove it
+                    confP.GetCircumstance().DropRunningIntention(i);
+                    return;
+                }
+
+                IntendedPlan ip = i.Peek();
+                if (!ip.IsFinished())
+                {
+                    //Nothing to do
+                    return;
+                }
+
+                IntendedPlan topIP = i.Pop();
+                Trigger topTrigger = topIP.GetTrigger();
+                Literal topLiteral = topTrigger.GetLiteral();
+
+                //produce ^!g[state(finished)[reason(achieved)]] event
+                if (!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
+                {
+                    foreach (Desire desire in desireListeners)
+                    {
+                        desire.GoalFinished(topTrigger, FinishStates.achieved);
+                    }
+                }
+
+                //if hash finished a failure handling IP ...
+                if (ip.GetTrigger().IsGoal() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
+                {
+                    ip = i.Peek();
+                    if (ip.IsFinished() || !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve)
+                        || ip.GetCurrentStep().GetBodyTerm() == typeof(VarTerm))
+                    {
+                        ip = i.Pop();
+                    }
+                    while(!i.IsFinished() &&
+                        !(ip.GetUnify().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsGoal()) &&
+                        !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve))
+                    {
+                        ip = i.Pop();
+                    }
+                } 
+
+                if(!i.IsFinished())
+                {
+                    ip = i.Peek();
+                    if(!ip.IsFinished())
+                    {
+                        JoinRenamedVarsIntoIntentionUnifier(ip, topIP.GetUnifier());
+                        ip.RemoveCurrentStep();
+                    }
+                }
+            }
+        }
+
+        private void ApplyExecInt()
+        {
+            confP.stepAct = State.ClrInt; //default next step
+            Intention curInt = conf.GetCircumstance().SI;
+            if(curInt == null)
+            {
+                return;
+            }
+
+            if (curInt.IsFinished())
+            {
+                return;
+            }
+
+            IntendedPlan ip = curInt.Peek();
+
+            if (ip.IsFinished())
+            {
+                //For empty plans! may need unif, etc
+                UpdateIntention(curInt);
+                return;
+            }
+            Unifier u = ip.GetUnifier();
+            PlanBody h = ip.GetCurrentStep();
+
+            Term bTerm = h.GetBodyTerm();
+
+            if(bTerm == typeof(VarTerm))
+            {
+                bTerm = bTerm.Capply(u);
+                if(bTerm.IsVar()) //The case of !A with A not ground
+                {
+                    return;
+                }
+                if (bTerm.IsPlanBody())
+                {
+                    if(h.getBodyType() != PlanBody.BodyType.action)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            if (bTerm.IsPlanBody())
+            {
+                h = (PlanBody)bTerm;
+                if(bTerm.IsPlanBody())
+                {
+                    h = (PlanBody)bTerm;
+                    if(h.GetPlanSize() > 1)
+                    {
+                        h = (PlanBody)bTerm.Clone();
+                        h.Add(ip.GetCurrentStep().GetBodyNext());
+                        ip.InsertAsNextStep(h.GetBodyNext());
+                    }
+                    bTerm = h.GetBodyTerm();
+                }
+            }
+
+            Literal body = null;
+            if(bTerm.GetType() == typeof(Literal))
+            {
+                body = (Literal)bTerm;
+            }
+
+            switch (h.getBodyType())
+            {
+                case PlanBody.BodyType.none:
+                    break;
+                //Rule action
+                case PlanBody.BodyType.action:
+                    body = (Literal)body.Capply(u);
+                    confP.GetCircumstance().A = new ExecuteAction(body, curInt);
+                    break;
+                case PlanBody.BodyType.internalAction:
+                    
+                    break;
+                case PlanBody.BodyType.constraint:
+                    break;
+                    //Rule achieve
+                case PlanBody.BodyType.achieve:
+                    break;
+                //Rule achieve as a new focus (!! operator)
+                case PlanBody.BodyType.achieveNF:
+                    break;
+                //Rule test
+                case PlanBody.BodyType.test:
+                    break;
+                case PlanBody.BodyType.delAddBel:
+                    break;
+                //Add the belief, no breaks
+                case PlanBody.BodyType.addBel:
+                case PlanBody.BodyType.addBelBegin:
+                case PlanBody.BodyType.addBelEnd:
+                case PlanBody.BodyType.addBelNewFocus:
+                    break;
+                case PlanBody.BodyType.delBelNewFocus:
+                case PlanBody.BodyType.delBel:
+                    break;
+            }
+        }
+
+        private void ApplySelInt()
+        {
 
         }
 
+        private void ApplyProcAct()
+        {
+
+        }
+
+        private void ApplyAddIM()
+        {
+
+        }
+
+        private void ApplyFindOp()
+        {
+
+        }
+
+        private void ApplySelAppl()
+        {
+
+        }
+
+        private void ApplyApplPl()
+        {
+
+        }
+
+        private void ApplyRelPl()
+        {
+
+        }
+
+        private void ApplySelEv()
+        {
+
+        }
+
+        private void ApplyProcMsg()
+        {
+
+        }
 
         public Agent.Agent GetAgent()
         {

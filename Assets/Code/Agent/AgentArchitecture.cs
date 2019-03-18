@@ -78,5 +78,10 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal bool CanSleep()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -3,15 +3,16 @@
 // Previously IntendedMeans, was renamed
 using System;
 using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions {
-    public class IntendedPlan
+    class IntendedPlan
     {
         protected PlanBody planBody;
         protected Plan plan;
         private Trigger trigger;
 
-        IntendedPlan(Option opt, Trigger te)
+        public IntendedPlan(Option opt, Trigger te)
         {
             plan = opt.GetPlan();
             planBody = plan.getBody();
@@ -48,22 +49,22 @@ namespace BDIManager.Intentions {
             return plan;
         }
 
-        Trigger GetTrigger()
+        public Trigger GetTrigger()
         {
             return trigger;
         }
 
-        void SetTrigger(Trigger tr)
+        public void SetTrigger(Trigger tr)
         {
             trigger = tr;
         }
 
-        internal bool IsAtomic()
+        public bool IsAtomic()
         {
             return plan != null && plan.IsAtomic();
         }
 
-        private bool IsFinished()
+        public bool IsFinished()
         {
             return planBody == null || planBody.IsEmptyBody();
         }
@@ -71,6 +72,11 @@ namespace BDIManager.Intentions {
         public bool IsGoalAdd()
         {
             return trigger.IsAddition() && trigger.IsGoal();
+        }
+
+        public Unifier GetUnify()
+        {
+            throw new NotImplementedException();
         }
     }
 }

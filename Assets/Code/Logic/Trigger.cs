@@ -10,22 +10,27 @@ namespace Assets.Code.Logic
 
     class Trigger
     {
-        internal Literal GetLiteral()
+        public Literal GetLiteral()
         {
             throw new NotImplementedException();
         }
 
-        internal TEType GetType()
-        {
-
-        }
-
-        internal bool IsAddition()
+        public void GetType()
         {
             throw new NotImplementedException();
         }
 
-        internal bool IsGoal()
+        public bool IsAddition()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsGoal()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsMetaEvent()
         {
             throw new NotImplementedException();
         }

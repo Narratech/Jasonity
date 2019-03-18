@@ -4,20 +4,11 @@ using System.Collections.Generic;
 using Assets.Code.Logic;
 using UnityEngine;
 
-public class PlanBody : MonoBehaviour
+class PlanBody
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    public enum BodyType { none, action, internalAction, achieve, test, addBel, addBelNewFocus, addBelBegin, addBelEnd, delBel, delBelNewFocus, delAddBel, achieveNF, constraint }
+    
     internal Term GetBodyTerm()
     {
         throw new NotImplementedException();
@@ -33,7 +24,7 @@ public class PlanBody : MonoBehaviour
         throw new NotImplementedException();
     }
 
-    internal object getBodyType()
+    public BodyType getBodyType()
     {
         throw new NotImplementedException();
     }

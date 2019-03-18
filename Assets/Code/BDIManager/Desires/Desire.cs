@@ -23,5 +23,6 @@ namespace BDIManager.Desires {
 
         // Desire is resumed
         void DesireResumed(Trigger desire);
+        void GoalFinished(Trigger trigger, FinishStates state);
     }
 }
