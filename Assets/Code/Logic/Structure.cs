@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pruebas
+namespace Assets.Code.Logic
 {
     public class Structure : Literal
     {
-        List<Term> arguments;
+        List<Term> parameters;
 
         public Structure(string functor, bool b, List<Term> args) : base(functor, b)
         {
-            arguments = new List<Term>();
+            parameters = new List<Term>();
             foreach (Term term in args)
-                arguments.Add(term);
+                parameters.Add(term);
         }
     }
 }

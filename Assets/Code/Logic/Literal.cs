@@ -6,20 +6,36 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Literal: Term
+    public class Literal : Term
     {
-        private bool isItFalse;
+        private bool imNotFalse;
+        private DefaultNameSpace defaultNS;
 
-        public Literal(string functor, bool b) : base(functor)
+        public Literal(string functor, bool b)
         {
-            this.isItFalse = b;
+            this.imNotFalse = b;
+            this.defaultNS = new DefaultNameSpace(functor);
         }
 
-        public bool IsItFalse { get => this.isItFalse; }
+        public bool IsItFalse { get => this.imNotFalse; }
 
-        public class DefaultNameSpace : Atom
+        public DefaultNameSpace DefaultNS { get => this.defaultNS; }
+
+        public override bool IsLiteral()
         {
+            return true;
+        }
 
+        public class DefaultNameSpace
+        {
+            private string functor;
+
+            public DefaultNameSpace(string functor)
+            {
+                this.functor = functor;
+            }
+
+            public string Functor { get => this.functor; }
         }
     }
 }

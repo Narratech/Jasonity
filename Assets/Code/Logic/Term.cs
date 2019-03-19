@@ -8,12 +8,7 @@ namespace Assets.Code.Logic
 {
     public abstract class Term
     {
-        private string functor;
-
-        public Term(string functor)
-        {
-            this.functor = functor;
-        }
+        public Term() { }
 
         //An atom, structure, predicate,...
         public virtual bool IsLiteral()
@@ -62,7 +57,5 @@ namespace Assets.Code.Logic
         {
             return true;
         }
-
-        public string Functor { get => this.functor; }
     }
 }

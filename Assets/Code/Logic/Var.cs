@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Var : Term
+    public class Variable : Term
     {
-        public Var(string functor) : base(functor)
+        private string var;
+
+        public Variable(string name)
         {
+            this.var = name;
         }
+
+        public string Var { get => this.var; set => this.var = value; }
     }
 }

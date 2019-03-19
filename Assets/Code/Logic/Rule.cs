@@ -28,3 +28,4 @@ namespace Assets.Code.Logic
 
         public Dictionary<Literal, string> Condition { get => this.condition; }
     }
+}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Atom : Literal
+    public class Atom: Literal
     {
         public Atom(string functor, bool b) : base(functor, b) { }
 

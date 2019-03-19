@@ -18,13 +18,13 @@ namespace Pruebas
         */
 
         private List<Term> BeliefsList;
-        private List<Term> ObjectivesList;
+        private Dictionary<Term, string> GoalList;
         private List<Term> PlansList;
 
         public Parser()
         {
             this.BeliefsList = new List<Term>();
-            this.ObjectivesList = new List<Term>();
+            this.GoalList = new Dictionary<Term, string>();
             this.PlansList = new List<Term>();
         }
 
@@ -42,17 +42,29 @@ namespace Pruebas
                     data.Add(i, line);
                     switch (data.First().Value[0])
                     {
+                        //The goal
                         case '!':
+                            this.GoalList.Add(GoalParser(data), "Real");
+                            //Reseteo los datos del diccionario 
+                            //para la próxima definición
+                            data.Clear();
+                            i = 0;
                             break;
                         case '?':
+                            this.GoalList.Add(GoalParser(data), "Test");
+                            //Reseteo los datos del diccionario 
+                            //para la próxima definición
+                            data.Clear();
+                            i = 0;
                             break;
                         case '+':
+
                             break;
                         case '-':
+
                             break;
                         default:
-                            this.BeliefsList.Add(ParserBelief(data));
-
+                            this.BeliefsList.Add(BeliefParser(data));
                             //Reseteo los datos del diccionario 
                             //para la próxima definición
                             data.Clear();
@@ -70,11 +82,35 @@ namespace Pruebas
                     data.Add(i, line);
                     i++;
                 }
-
             }
         }
 
-        private Term ParserBelief(Dictionary<int, string> data)
+        /*
+            IN: Dictionary
+            OUT: Term
+        */
+        private Term GoalParser(Dictionary<int, string> data)
+        {
+            string justTheLiteral = data.First().Value.Substring(1);
+            data.Remove(0);
+            data.Add(0, justTheLiteral);
+            return CommonParser(data);
+        }
+
+        /*
+            IN: Dictionary
+            OUT: Term
+        */
+        private Term BeliefParser(Dictionary<int, string> data)
+        {
+            return CommonParser(data);
+        }
+
+        /*
+            IN: Dictionary
+            OUT: Term
+        */
+        private Term CommonParser(Dictionary<int, string> data)
         {
             //The belief is true by default
             bool notFake = true, isARule = false;

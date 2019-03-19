@@ -8,7 +8,7 @@ namespace Assets.Code.Logic
 {
     public class InternalAction : Term
     {
-        public InternalAction(string functor) : base(functor)
+        public InternalAction(string functor)
         {
         }
     }
