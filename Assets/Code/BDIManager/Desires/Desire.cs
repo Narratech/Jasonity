@@ -24,5 +24,8 @@ namespace BDIManager.Desires {
         // Desire is resumed
         void DesireResumed(Trigger desire);
         void GoalFinished(Trigger trigger, FinishStates state);
+        void GoalSuspended(Trigger trigger, string reason);
+        void GoalResumed(Trigger trigger);
+        void GoalStarted(Event e);
     }
 }

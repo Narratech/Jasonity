@@ -11,7 +11,7 @@ using BDIManager.Intentions;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using BDIMaAssets.Code.ReasoningCycle;
-using Assets.Code.BDIManager.Intentions;
+using Assets.Code.Utilities;
 
 /*
  * Implements the reasoning cycle. There are 10 steps in the cycle: 
@@ -56,7 +56,9 @@ namespace Assets.Code.ReasoningCycle
         private Reasoner conf;
         private Reasoner confP;
 
-        //private ConcurrentQueue taskForBeginOfCycle = new ConcurrentQueue(); - I don't know how to use this
+        //Make a runnable interface and implement it as an innner class
+        //private ConcurrentQueue<Runnable> taskForBeginOfCycle = new ConcurrentQueue(); - I don't know how to use this
+        private ConcurrentQueue<Runnable> taskForBeginOfCycle = new ConcurrentQueue<Runnable>();
 
         private Dictionary<Desire, CircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
 
@@ -110,37 +112,9 @@ namespace Assets.Code.ReasoningCycle
                     }
                 }
 
-                CircumstanceListener cl = new CircumstanceListenerImplementation();
-                /*CircumstanceListener cl = new CircumstanceListener() {
-
-                    public void intentionDropped(Intention i) {
-                        for (IntendedMeans im: i) //.getIMs())
-                            if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                                gl.goalFinished(im.getTrigger(), FinishStates.dropped);
-                    }
-
-                    public void intentionSuspended(Intention i, String reason) {
-                        for (IntendedMeans im: i) //.getIMs())
-                            if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                                gl.goalSuspended(im.getTrigger(), reason);
-                    }
-
-                    public void intentionResumed(Intention i) {
-                        for (IntendedMeans im: i) //.getIMs())
-                            if (im.getTrigger().isAddition() && im.getTrigger().isGoal())
-                                gl.goalResumed(im.getTrigger());
-                    }
-
-                    public void eventAdded(Event e) {
-                        if (e.getTrigger().isAddition() && e.getTrigger().isGoal())
-                            gl.goalStarted(e);
-                    }
-
-                    public void intentionAdded(Intention i) {  }
-                };*/
+                CircumstanceListener cl = new CLImplementation(desire);
                 circumstance.AddEventListener(cl);
                 listenersMap.Add(desire, cl);
-
                 desireListeners.Add(desire);
             }
         }
@@ -261,6 +235,12 @@ namespace Assets.Code.ReasoningCycle
             {
                 circumstance.ResetDeliberate();
                 // run tasks allocated to be performed in the begin of the cycle
+                Runnable r;
+                while(taskForBeginOfCycle.TryDequeue(out r))
+                {
+                    r.Run();
+                }
+                
                 // Runnable r = taskForBeginOfCycle.poll();
                 // while(r != null) 
                 // {
@@ -311,7 +291,7 @@ namespace Assets.Code.ReasoningCycle
                   || (!conf.GetCircumstance().HasEvent() &&    // other cases (deliberate)
                       !conf.GetCircumstance().HasRunningIntention() && !conf.GetCircumstance().HasFeedbackAction() && // (action)
                       !conf.GetCircumstance().HasMsg() &&  // (sense)
-                      taskForBeginOfCycle.IsEmpty() &&
+                      taskForBeginOfCycle.IsEmpty &&
                       GetUserAgArch().CanSleep());
         }
 
@@ -369,7 +349,7 @@ namespace Assets.Code.ReasoningCycle
                     break;
                 case State.ClrInt:
                     confP.stepAct = State.StartRC;
-                    ApplyClrInt(conf.GetCircumstance().SI);
+                    ApplyClrInt(conf.GetCircumstance().GetSI());
                     break;
                 default:
                     break;
@@ -414,14 +394,14 @@ namespace Assets.Code.ReasoningCycle
                 if (ip.GetTrigger().IsGoal() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
                 {
                     ip = i.Peek();
-                    if (ip.IsFinished() || !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve)
-                        || ip.GetCurrentStep().GetBodyTerm() == typeof(VarTerm))
+                    if (ip.IsFinished() || !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == PlanBody.BodyType.achieve)
+                        || ip.GetCurrentStep().GetBodyTerm().GetType() == typeof(VarTerm))
                     {
                         ip = i.Pop();
                     }
                     while(!i.IsFinished() &&
                         !(ip.GetUnify().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsGoal()) &&
-                        !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve))
+                        !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == PlanBody.BodyType.achieve))
                     {
                         ip = i.Pop();
                     }
@@ -439,10 +419,15 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
+        private void JoinRenamedVarsIntoIntentionUnifier(IntendedPlan ip, object p)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ApplyExecInt()
         {
             confP.stepAct = State.ClrInt; //default next step
-            Intention curInt = conf.GetCircumstance().SI;
+            Intention curInt = conf.GetCircumstance().GetSI();
             if(curInt == null)
             {
                 return;
@@ -475,7 +460,7 @@ namespace Assets.Code.ReasoningCycle
                 }
                 if (bTerm.IsPlanBody())
                 {
-                    if(h.getBodyType() != PlanBody.BodyType.action)
+                    if(h.GetBodyType() != PlanBody.BodyType.action)
                     {
                         return;
                     }
@@ -539,6 +524,11 @@ namespace Assets.Code.ReasoningCycle
                 case PlanBody.BodyType.delBel:
                     break;
             }
+        }
+
+        private void UpdateIntention(Intention curInt)
+        {
+            throw new NotImplementedException();
         }
 
         private void ApplySelInt()
@@ -618,6 +608,55 @@ namespace Assets.Code.ReasoningCycle
         public override string ToString()   
         {
             return "Reasoning cycle of agent " + GetUserAgArch().GetAgName();
+        }
+
+
+        private class CLImplementation : CircumstanceListener
+        {
+            private Desire d;
+
+            public CLImplementation(Desire desire)
+            {
+                d = desire;
+            }
+
+            public void EventAdded(Event e)
+            {
+                if (e.GetTrigger().IsAddition() && e.GetTrigger().IsGoal())
+                    d.GoalStarted(e);
+            }
+
+            public void IntentionAdded(Intention i)
+            {
+                
+            }
+
+            public void IntentionDropped(Intention i)
+            {
+                foreach (IntendedPlan ip in i.GetIntendedPlan())
+                {
+                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
+                        d.DesireFinished(ip.GetTrigger(), FinishStates.dropped);
+                }
+            }
+
+            public void IntentionResumed(Intention i)
+            {
+                foreach (IntendedPlan ip in i.GetIntendedPlan())
+                {
+                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
+                        d.GoalResumed(ip.GetTrigger());
+                }
+            }
+
+            public void IntentionSuspended(Intention i, string reason)
+            {
+                foreach (IntendedPlan ip in i.GetIntendedPlan())
+                {
+                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
+                        d.GoalSuspended(ip.GetTrigger(), reason);
+                }
+            }
         }
     }
 }

@@ -76,5 +76,10 @@ namespace BDIManager.Intentions
         {
             throw new NotImplementedException();
         }
+
+        internal IEnumerable<IntendedPlan> GetIntendedPlan()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

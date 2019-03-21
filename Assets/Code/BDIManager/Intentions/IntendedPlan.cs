@@ -39,7 +39,7 @@ namespace BDIManager.Intentions {
 
         public PlanBody InsertAsNextStep(PlanBody pb)
         {
-            planBody = new PlanBodyImpl(planBody.getBodyType(), planBody.GetBodyTerm());
+            planBody = new PlanBodyImpl(planBody.GetBodyType(), planBody.GetBodyTerm());
             planBody.SetBodyNext(pb);
             return planBody;
         }
@@ -75,6 +75,11 @@ namespace BDIManager.Intentions {
         }
 
         public Unifier GetUnify()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Unifier GetUnifier()
         {
             throw new NotImplementedException();
         }

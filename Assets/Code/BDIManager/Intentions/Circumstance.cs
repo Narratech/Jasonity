@@ -13,6 +13,14 @@ namespace Assets.Code.BDIManager
     class Circumstance
     {
         private Queue<CircumstanceListener> listeners;
+        private Intention SI;
+
+
+
+        public Intention GetSI()
+        {
+            return SI;
+        }
 
         internal void AddEventListener(CircumstanceListener cl)
         {

@@ -24,7 +24,7 @@ class PlanBody
         throw new NotImplementedException();
     }
 
-    public BodyType getBodyType()
+    public BodyType GetBodyType()
     {
         throw new NotImplementedException();
     }
