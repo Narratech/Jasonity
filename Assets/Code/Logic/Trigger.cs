@@ -15,7 +15,7 @@ namespace Assets.Code.Logic
             throw new NotImplementedException();
         }
 
-        public void GetType()
+        public TEType GetType()
         {
             throw new NotImplementedException();
         }
@@ -30,7 +30,17 @@ namespace Assets.Code.Logic
             throw new NotImplementedException();
         }
 
+        internal object GetNS()
+        {
+            throw new NotImplementedException();
+        }
+
         public bool IsMetaEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal PredicateIndicator GetPredicateIndicator()
         {
             throw new NotImplementedException();
         }

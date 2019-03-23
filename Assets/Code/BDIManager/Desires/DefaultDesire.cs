@@ -1,13 +1,14 @@
 using System;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 
 //Implements the Desire interface
 namespace BDIManager.Desires {
     class DefaultDesire : Desire
     {
-        private Reasoner reasoner;
+        Reasoner reasoner;
         
         public DefaultDesire(Reasoner r)
         {

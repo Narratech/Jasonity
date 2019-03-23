@@ -42,6 +42,11 @@ namespace Assets.Code.BDIManager
 
         internal void AddExternalEv(Trigger trigger)
         {
+            AddEvent(new Event(trigger, Intention.emptyInt));
+        }
+
+        private void AddEvent(Event @event)
+        {
             throw new NotImplementedException();
         }
 

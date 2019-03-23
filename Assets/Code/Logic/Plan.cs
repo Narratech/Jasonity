@@ -31,6 +31,11 @@ namespace Assets.Code.Logic
 
         public Belief Condition { get => this.condition; }
 
+        internal object GetTrigger()
+        {
+            throw new NotImplementedException();
+        }
+
         public Objective PlanObjective { get => this.planObjective; }
 
         public string AFocus { get => this.actionFocus; }

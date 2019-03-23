@@ -113,7 +113,7 @@ namespace BDIManager.Beliefs
                     nameSpaces.Add(l.GetNS(), belsMap);
                 }
             }
-            BelEntry entry = belsMap.GetObjectData(l.GetPredicateIndicator());
+            BelEntry entry = belsMap[l.GetPredicateIndicator()];
             if (entry == null)
             {
                 entry = new BelEntry();
