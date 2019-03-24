@@ -5,51 +5,51 @@ using Assets.Code.Logic;
 namespace BDIManager.Intentions {
     class Event
     {
-        Trigger trigger = null;
-        Intention intention = Intention.emptyInt;
+        private Trigger trigger = null;
+        private Intention intention = Intention.emptyInt;
 
-        Event(Trigger t, Intention i)
+        public Event(Trigger t, Intention i)
         {
             trigger = t;
             intention = i;
         }
 
-        Trigger GetTrigger()
+        public Trigger GetTrigger()
         {
             return trigger;
         }
 
-        Intention GetIntention()
+        public Intention GetIntention()
         {
             return intention;
         }
 
-        void SetIntention(Intention i)
+        public void SetIntention(Intention i)
         {
             intention = i;
         }
 
-        bool SameTE(object t)
+        public bool SameTE(object t)
         {
             return trigger.Equals(t);
         }
 
-        bool IsExternal()
+        public bool IsExternal()
         {
             return intention == Intention.emptyInt;
         }
 
-        bool IsInternal()
+        public bool IsInternal()
         {
             return intention != Intention.emptyInt;
         }
 
-        bool IsAtomic()
+        public bool IsAtomic()
         {
             return intention != null && intention.IsAtomic();
         }
 
-        int HashCode()
+        public int HashCode()
         {
             int r = trigger.GetHashCode();
             if (intention != null)
