@@ -8,6 +8,6 @@ namespace Assets.Code.Utilities
 {
     interface Runnable
     {
-        public void Run();
+        void Run();
     }
 }
