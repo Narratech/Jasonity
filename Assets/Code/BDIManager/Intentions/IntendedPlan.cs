@@ -11,6 +11,7 @@ namespace BDIManager.Intentions {
         protected PlanBody planBody;
         protected Plan plan;
         private Trigger trigger;
+        private Unifier unif = null;
 
         public IntendedPlan(Option opt, Trigger te)
         {
@@ -74,24 +75,9 @@ namespace BDIManager.Intentions {
             return trigger.IsAddition() && trigger.IsGoal();
         }
 
-        public Unifier GetUnify()
+        public Unifier GetUnif()
         {
-            throw new NotImplementedException();
-        }
-
-        public Unifier GetUnifier()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal object GetRenamedVars()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Unifier GetUnif()
-        {
-            throw new NotImplementedException();
+            return unif;
         }
     }
 }

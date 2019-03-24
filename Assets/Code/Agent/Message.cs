@@ -8,24 +8,46 @@ namespace Assets.Code.Agent
 {
     class Message
     {
-        internal object GetPropCont()
+        private object propCont = null;
+        private string inReplyTo = null;
+
+        public string[] knownPerformatives = { "tell", "untell", "achieve", "unachieve", "askOne", "askAll", "tellHow", "untellHow", "askHow" };
+        private string ilForce = null;
+        private string sender = null;
+
+        void SetPropCont(object o)
         {
-            throw new NotImplementedException();
+            propCont = o;
         }
 
-        internal object GetInReplyTo()
+        internal object GetPropCont()
         {
-            throw new NotImplementedException();
+            return propCont;
+        }
+
+        internal string GetInReplyTo()
+        {
+            return inReplyTo;
+        }
+
+        void SetInReplyTo(string inReplyTo)
+        {
+            this.inReplyTo = inReplyTo;
         }
 
         internal bool IsUntell()
         {
-            throw new NotImplementedException();
+            return ilForce.StartsWith("untell");
         }
 
-        internal object GetSender()
+        internal string GetSender()
         {
-            throw new NotImplementedException();
+            return sender;
+        }
+
+        void SetSender(string agName)
+        {
+            sender = agName;
         }
     }
 }

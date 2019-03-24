@@ -81,5 +81,10 @@ namespace BDIManager.Intentions
         {
             throw new NotImplementedException();
         }
+
+        internal void SetSuspendedReason(object p)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
