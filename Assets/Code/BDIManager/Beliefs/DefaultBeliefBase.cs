@@ -1,7 +1,6 @@
 // Implements a default Belief Base
 using System;
 using System.Collections.Generic;
-using Assets.Code.Agent;
 using Assets.Code.Logic;
 
 namespace BDIManager.Beliefs
@@ -165,7 +164,7 @@ namespace BDIManager.Beliefs
         // Checks if the belief base contains a specific literal
         public Literal Contains(Literal l)
         {
-            Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : nameSpaces[l.GetNS()]);
+            Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : nameSpaces[l.GetNS()];
             if (belsMap == null)
             {
                 return null;
@@ -202,7 +201,8 @@ namespace BDIManager.Beliefs
 
             public void Remove(Literal l)
             {
-                Literal linmap = map.Remove(new StructureWrapperForLiteral(l)); // ???
+                Literal linmap = map[new StructureWrapperForLiteral(l)];
+                map.Remove(new StructureWrapperForLiteral(l));
                 if (linmap != null)
                 {
                     list.Remove(linmap);

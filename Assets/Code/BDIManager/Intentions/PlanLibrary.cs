@@ -1,10 +1,5 @@
 ﻿using Assets.Code.Logic;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BDIManager.Intentions
 {
@@ -31,9 +26,9 @@ namespace BDIManager.Intentions
             List<Plan> l = null;
             if (trigger.GetLiteral().IsVar() || trigger.GetNS().IsVar())
             {
-                for (Plan p : this) // ???
+                foreach (var p in this) // ???
                 {
-                    if (p.GetTrigger().GetType() == trigger.GetType()) // ???
+                    if (p.GetTrigger().GetType() == trigger.GetType())
                     {
                         if (l == null)
                         {
@@ -48,9 +43,9 @@ namespace BDIManager.Intentions
                 l = relPlans[trigger.GetPredicateIndicator()];
                 if ((l == null || l.Count == 0) && !(varPlans.Count == 0) && trigger != TE_JAG_SLEEPING && trigger != TE_JAG_AWAKING)
                 {
-                    for (Plan p: varPlans) // ???
+                    foreach (var p in varPlans)
                     {
-                        if (p.GetTrigger().GetType() == trigger.GetType()) // ???
+                        if (p.GetTrigger().GetType() == typeof(Trigger))
                         {
                             if (l == null)
                             {
@@ -62,7 +57,6 @@ namespace BDIManager.Intentions
             }
             // If no relevant plan, return null instead of empty list
             return l;
-            }
         }
     }
 }

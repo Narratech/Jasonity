@@ -1,7 +1,6 @@
 // Interface for plans
 // Allows the user to modify and check an agent's plans
 // Previously IntendedMeans, was renamed
-using System;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 

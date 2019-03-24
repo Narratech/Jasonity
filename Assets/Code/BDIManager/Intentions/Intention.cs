@@ -26,7 +26,7 @@ namespace BDIManager.Intentions
 
         public void Push(IntendedPlan plan)
         {
-            plans.Push(plan);
+            plans.Add(plan);
             count++;
         }
 
@@ -77,12 +77,12 @@ namespace BDIManager.Intentions
             throw new NotImplementedException();
         }
 
-        internal IEnumerable<IntendedPlan> GetIntendedPlan()
+        public IEnumerable<IntendedPlan> GetIntendedPlan()
         {
             throw new NotImplementedException();
         }
 
-        internal void SetSuspendedReason(object p)
+        public void SetSuspendedReason(object p)
         {
             throw new NotImplementedException();
         }

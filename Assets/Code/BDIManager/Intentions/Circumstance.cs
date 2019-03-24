@@ -3,11 +3,7 @@ using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Code.BDIManager
 {
@@ -37,12 +33,12 @@ namespace Assets.Code.BDIManager
             return SI;
         }
 
-        internal void AddEventListener(CircumstanceListener cl)
+        public void AddEventListener(CircumstanceListener cl)
         {
             listeners.Enqueue(cl);
         }
 
-        internal void RemoveEventListener(CircumstanceListener cl)
+        public void RemoveEventListener(CircumstanceListener cl)
         {
             if (cl != null)
             {
@@ -55,7 +51,7 @@ namespace Assets.Code.BDIManager
 
         }
 
-        internal void AddExternalEv(Trigger trigger)
+        public void AddExternalEv(Trigger trigger)
         {
             AddEvent(new Event(trigger, Intention.emptyInt));
         }
@@ -81,22 +77,22 @@ namespace Assets.Code.BDIManager
             }
         }
 
-        internal bool HasMsg()
+        public bool HasMsg()
         {
             return MB.Count != 0;
         }
 
-        internal bool HasEvt()
+        public bool HasEvt()
         {
             return AE != null || E.Count != 0;
         }
 
-        internal IEnumerable<Event> GetEvents()
+        public IEnumerable<Event> GetEvents()
         {
             return E;
         }
 
-        internal void ResetDeliberate()
+        public void ResetDeliberate()
         {
             RP = null;
             AP = null;
@@ -104,18 +100,18 @@ namespace Assets.Code.BDIManager
             SO = null;
         }
 
-        internal void ResetAct()
+        public void ResetAct()
         {
             A = null;
             SI = null;
         }
 
-        internal ExecuteAction GetAction()
+        public ExecuteAction GetAction()
         {
             return A;
         }
 
-        internal void AddPendingAction(ExecuteAction action)
+        public void AddPendingAction(ExecuteAction action)
         {
             Intention i = action.GetIntention();
             if (i.IsAtomic())
@@ -141,18 +137,18 @@ namespace Assets.Code.BDIManager
             AI = i;
         }
 
-        internal void SetReasoner(Reasoner reasoner)
+        public void SetReasoner(Reasoner reasoner)
         {
             this.reasoner = reasoner;
         }
 
-        internal bool DropRunningIntention(Intention i)
+        public bool DropRunningIntention(Intention i)
         {
             if (RemoveRunningIntention(i))
             {
                 if (listeners != null)
                 {
-                    for (CircumstanceListener el : listeners)
+                    foreach (var el in listeners)
                     {
                         el.IntentionDropped(i);
                     }
@@ -179,7 +175,7 @@ namespace Assets.Code.BDIManager
         }
 
         // Creates new collections for E, I, MB, PA, PI, and FA
-        internal void Create()
+        public void Create()
         {
             E = new Queue<Event>();
             I = new Queue<Intention>();
@@ -190,39 +186,40 @@ namespace Assets.Code.BDIManager
             FA = new List<ExecuteAction>();
         }
 
-        internal bool HasRunningIntention()
+        public bool HasRunningIntention()
         {
             return (I != null && I.Count != 0) || AI != null;
         }
 
-        internal bool HasEvent()
+        public bool HasEvent()
         {
             return AE != null || E.Count != 0;
         }
 
-        internal bool IsAtomicIntentionSuspended()
+        public bool IsAtomicIntentionSuspended()
         {
             return AI != null && atomicIntSuspended;
         }
 
-        internal bool HasFeedbackAction()
+        public bool HasFeedbackAction()
         {
             return FA.Count != 0;
         }
 
-        internal object GetMailBox()
+        public object GetMailBox()
         {
             return MB;
         }
 
-        internal object GetPendingIntentions()
+        public object GetPendingIntentions()
         {
             return PI;
         }
 
-        internal Intention RemovePendingIntention(string msgId)
+        public Intention RemovePendingIntention(string msgId)
         {
-            Intention i = PI.Remove(msgId); // ???
+            Intention i = PI[msgId];
+            PI.Remove(msgId);
             if (i != null && i.IsAtomic())
             {
                 atomicIntSuspended = false;
@@ -230,7 +227,7 @@ namespace Assets.Code.BDIManager
             return i;
         }
 
-        internal void ResumeIntention(Intention i)
+        public void ResumeIntention(Intention i)
         {
             AddRunningIntention(i);
 
@@ -261,13 +258,13 @@ namespace Assets.Code.BDIManager
             return SE;
         }
 
-        internal bool HasAtomicIntention()
+        public bool HasAtomicIntention()
         {
             return AI != null;
         }
 
         // Remove and returns the event with atomic intention, null if none
-        internal Event RemoveAtomicEvent()
+        public Event RemoveAtomicEvent()
         {
             Event e = AE;
             AE = null;
@@ -281,17 +278,17 @@ namespace Assets.Code.BDIManager
             return e;
         }
 
-        internal void SetSE(Event ev)
+        public void SetSE(Event ev)
         {
             SE = ev;
         }
 
-        internal void SetRP(List<Option> rp)
+        public void SetRP(List<Option> rp)
         {
             RP = rp;
         }
 
-        internal List<Option> GetRp()
+        public List<Option> GetRp()
         {
             return RP;
         }

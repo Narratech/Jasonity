@@ -3,24 +3,28 @@ using System.Collections.Generic;
 using Assets.Code.Logic;
 using UnityEngine;
 
-public class StructureWrapperForLiteral : MonoBehaviour
+namespace Assets.Code.Logic
 {
-    private Literal l;
-
-    public StructureWrapperForLiteral(Literal l)
+    class StructureWrapperForLiteral
     {
-        this.l = l;
-    }
+        private Literal l;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+        public StructureWrapperForLiteral(Literal l)
+        {
+            this.l = l;
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Start is called before the first frame update
+        void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }
+

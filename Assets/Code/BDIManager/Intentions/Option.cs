@@ -1,6 +1,5 @@
 ﻿// A Plan and the Unifier that makes it relevant and applicable
 using Assets.Code.Logic;
-using System;
 
 namespace BDIManager.Intentions
 {

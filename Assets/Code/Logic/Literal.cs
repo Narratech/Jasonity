@@ -41,6 +41,11 @@ namespace Assets.Code.Logic
             throw new NotImplementedException();
         }
 
+        internal bool IsVar()
+        {
+            throw new NotImplementedException();
+        }
+
         internal bool ImportAnnots(Literal l)
         {
             throw new NotImplementedException();
@@ -56,7 +61,7 @@ namespace Assets.Code.Logic
             throw new NotImplementedException();
         }
 
-        internal SerializationInfo GetPredicateIndicator()
+        internal PredicateIndicator GetPredicateIndicator()
         {
             throw new NotImplementedException();
         }
