@@ -16,5 +16,15 @@ namespace Assets.Code.ReasoningCycle
         {
             throw new NotImplementedException();
         }
+
+        public bool Unifies(Term term, Term topLiteral)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Unifies(Literal literal, Literal topLiteral)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

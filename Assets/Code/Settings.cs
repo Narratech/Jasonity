@@ -27,5 +27,15 @@ namespace Assets.Code
         {
             nrcbp = n;
         }
+
+        internal int Verbose()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool Retrieve()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

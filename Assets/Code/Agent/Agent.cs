@@ -111,6 +111,21 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal Message SelectMessage(object p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object SelectEvent(IEnumerable<Event> enumerable)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasCustomSelectOption()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

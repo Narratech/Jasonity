@@ -14,7 +14,7 @@ namespace Assets.Code.BDIManager
     {
         private Queue<CircumstanceListener> listeners;
         private Intention SI;
-
+        private Event SE;
 
 
         public Intention GetSI()
@@ -121,6 +121,56 @@ namespace Assets.Code.BDIManager
         }
 
         internal bool HasFeedbackAction()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetMailBox()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetPendingIntentions()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Intention RemovePendingIntention(string msgId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ResumeIntention(Intention i)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Event GetSE()
+        {
+            return SE;
+        }
+
+        internal bool HasAtomicIntention()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object RemoveAtomicEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetSE(object v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetRP(object v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetRp()
         {
             throw new NotImplementedException();
         }

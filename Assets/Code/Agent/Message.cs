@@ -17,5 +17,15 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal bool IsUntell()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetSender()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

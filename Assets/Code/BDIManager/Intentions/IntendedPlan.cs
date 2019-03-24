@@ -83,5 +83,15 @@ namespace BDIManager.Intentions {
         {
             throw new NotImplementedException();
         }
+
+        internal object GetRenamedVars()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Unifier GetUnif()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

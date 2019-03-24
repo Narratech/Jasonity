@@ -3,9 +3,6 @@ using BDIManager.Desires;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using BDIManager.Intentions;
 using Assets.Code.BDIManager;
@@ -33,7 +30,7 @@ namespace Assets.Code.ReasoningCycle
 {
     class Reasoner
     {
-        public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProAct, SelInt, ExecInt, ClrInt }
+        public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProcAct, SelInt, ExecInt, ClrInt }
 
 
         private Assets.Code.Agent.Agent ag = null; 
@@ -43,7 +40,7 @@ namespace Assets.Code.ReasoningCycle
 
         private State stepSense = State.StartRC;
         private State stepDeliberate = State.SelEv;
-        private State stepAct = State.ProAct;
+        private State stepAct = State.ProcAct;
 
         private List<Desire> desireListeners;
 
@@ -251,7 +248,7 @@ namespace Assets.Code.ReasoningCycle
                 do
                 {
                     ApplySemanticRuleDeliberate();
-                } while (stepDeliberate != State.ProAct && GetUserAgArch().IsRunning());
+                } while (stepDeliberate != State.ProcAct && GetUserAgArch().IsRunning());
             }
             catch (Exception e)
             {
@@ -265,7 +262,7 @@ namespace Assets.Code.ReasoningCycle
             try
             {
                 circumstance.ResetAct();
-                stepAct = State.ProAct;
+                stepAct = State.ProcAct;
                 do
                 {
                     ApplySemanticRuleAct();
@@ -338,7 +335,7 @@ namespace Assets.Code.ReasoningCycle
         {
             switch (stepAct)
             {
-                case State.ProAct:
+                case State.ProcAct:
                     ApplyProcAct();
                     break;
                 case State.SelInt:
@@ -358,172 +355,17 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplyClrInt(Intention i)
         {
-            while(true) //Quit the method by return
-            {
-                //Rule ClrInt
-                if (i == null)
-                    return;
-                if (i.IsFinished())
-                {
-                    //Intention finished, remove it
-                    confP.GetCircumstance().DropRunningIntention(i);
-                    return;
-                }
-
-                IntendedPlan ip = i.Peek();
-                if (!ip.IsFinished())
-                {
-                    //Nothing to do
-                    return;
-                }
-
-                IntendedPlan topIP = i.Pop();
-                Trigger topTrigger = topIP.GetTrigger();
-                Literal topLiteral = topTrigger.GetLiteral();
-
-                //produce ^!g[state(finished)[reason(achieved)]] event
-                if (!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
-                {
-                    foreach (Desire desire in desireListeners)
-                    {
-                        desire.GoalFinished(topTrigger, FinishStates.achieved);
-                    }
-                }
-
-                //if hash finished a failure handling IP ...
-                if (ip.GetTrigger().IsGoal() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
-                {
-                    ip = i.Peek();
-                    if (ip.IsFinished() || !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == PlanBody.BodyType.achieve)
-                        || ip.GetCurrentStep().GetBodyTerm().GetType() == typeof(VarTerm))
-                    {
-                        ip = i.Pop();
-                    }
-                    while(!i.IsFinished() &&
-                        !(ip.GetUnify().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsGoal()) &&
-                        !(ip.GetUnify().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == PlanBody.BodyType.achieve))
-                    {
-                        ip = i.Pop();
-                    }
-                } 
-
-                if(!i.IsFinished())
-                {
-                    ip = i.Peek();
-                    if(!ip.IsFinished())
-                    {
-                        JoinRenamedVarsIntoIntentionUnifier(ip, topIP.GetUnifier());
-                        ip.RemoveCurrentStep();
-                    }
-                }
-            }
+            
         }
 
-        private void JoinRenamedVarsIntoIntentionUnifier(IntendedPlan ip, object p)
+        private void JoinRenamedVarsIntoIntentionUnifier(IntendedPlan ip, Unifier values)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void ApplyExecInt()
         {
-            confP.stepAct = State.ClrInt; //default next step
-            Intention curInt = conf.GetCircumstance().GetSI();
-            if(curInt == null)
-            {
-                return;
-            }
-
-            if (curInt.IsFinished())
-            {
-                return;
-            }
-
-            IntendedPlan ip = curInt.Peek();
-
-            if (ip.IsFinished())
-            {
-                //For empty plans! may need unif, etc
-                UpdateIntention(curInt);
-                return;
-            }
-            Unifier u = ip.GetUnifier();
-            PlanBody h = ip.GetCurrentStep();
-
-            Term bTerm = h.GetBodyTerm();
-
-            if(bTerm == typeof(VarTerm))
-            {
-                bTerm = bTerm.Capply(u);
-                if(bTerm.IsVar()) //The case of !A with A not ground
-                {
-                    return;
-                }
-                if (bTerm.IsPlanBody())
-                {
-                    if(h.GetBodyType() != PlanBody.BodyType.action)
-                    {
-                        return;
-                    }
-                }
-            }
-
-            if (bTerm.IsPlanBody())
-            {
-                h = (PlanBody)bTerm;
-                if(bTerm.IsPlanBody())
-                {
-                    h = (PlanBody)bTerm;
-                    if(h.GetPlanSize() > 1)
-                    {
-                        h = (PlanBody)bTerm.Clone();
-                        h.Add(ip.GetCurrentStep().GetBodyNext());
-                        ip.InsertAsNextStep(h.GetBodyNext());
-                    }
-                    bTerm = h.GetBodyTerm();
-                }
-            }
-
-            Literal body = null;
-            if(bTerm.GetType() == typeof(Literal))
-            {
-                body = (Literal)bTerm;
-            }
-
-            switch (h.getBodyType())
-            {
-                case PlanBody.BodyType.none:
-                    break;
-                //Rule action
-                case PlanBody.BodyType.action:
-                    body = (Literal)body.Capply(u);
-                    confP.GetCircumstance().A = new ExecuteAction(body, curInt);
-                    break;
-                case PlanBody.BodyType.internalAction:
-                    
-                    break;
-                case PlanBody.BodyType.constraint:
-                    break;
-                    //Rule achieve
-                case PlanBody.BodyType.achieve:
-                    break;
-                //Rule achieve as a new focus (!! operator)
-                case PlanBody.BodyType.achieveNF:
-                    break;
-                //Rule test
-                case PlanBody.BodyType.test:
-                    break;
-                case PlanBody.BodyType.delAddBel:
-                    break;
-                //Add the belief, no breaks
-                case PlanBody.BodyType.addBel:
-                case PlanBody.BodyType.addBelBegin:
-                case PlanBody.BodyType.addBelEnd:
-                case PlanBody.BodyType.addBelNewFocus:
-                    break;
-                case PlanBody.BodyType.delBelNewFocus:
-                case PlanBody.BodyType.delBel:
-                    break;
-            }
+            
         }
 
         private void UpdateIntention(Intention curInt)
@@ -558,22 +400,235 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplyApplPl()
         {
+            confP.GetCircumstance().SetAP(ApplicablePlans(confP.GetCircumstance().GetRp()));
 
+            // Rule Appl1
+            if (confP.GetCircumstance().GetAP() != null || GetSettings().Retrieve())
+            {
+                //Retrieve is mainly for Coo-AgentSpeak
+                confP.stepDeliberate = State.SelAppl;
+            } else
+            {
+                ApplyRelApplPlRule2("applicable");
+            }
+        }
+
+        private object ApplicablePlans(object v)
+        {
+            throw new NotImplementedException();
         }
 
         private void ApplyRelPl()
         {
+            //Get all relevant plans for the selected event
+            confP.GetCircumstance().SetRP(relevantPlans(conf.GetCircumstance().GetSE().GetTrigger()));
 
+            //Rule Rel1
+            if (confP.GetCircumstance().GetRp() != null || GetSettings().Retrieve())
+            {
+                //Is mainly for coo--AgentSpeak
+                confP.stepDeliberate = State.ApplPl;
+            } else
+            {
+                ApplyRelApplPlRule2("relevant");
+            }
+        }
+
+        //Generates desire deletion event
+        private void ApplyRelApplPlRule2(string m)
+        {
+            throw new NotImplementedException();
+        }
+
+        private object relevantPlans(Trigger trigger)
+        {
+            throw new NotImplementedException();
         }
 
         private void ApplySelEv()
         {
+            // Rule for atomic, if there is an atomic intention, do not select event
+            if (GetCircumstance().HasAtomicIntention())
+            {
+                confP.stepDeliberate = State.ProcAct; //Need to go to ProcAct to see if an atomic intention received a feedback action
+                return;
+            }
 
+            // Rule for atomic, events from atomic intention have priority
+            confP.GetCircumstance().SetSE(GetCircumstance().RemoveAtomicEvent());
+            if(confP.GetCircumstance().GetSE() != null)
+            {
+                confP.stepDeliberate = State.RelPl;
+                return;
+            }
+
+            if (conf.GetCircumstance().HasEvent())
+            {
+                //Rule SelEv1
+                confP.GetCircumstance().SetSE(conf.GetAgent().SelectEvent(confP.GetCircumstance().GetEvents()));
+                if (confP.GetCircumstance().GetSE() != null)
+                {
+                    if (GetAgent().HasCustomSelectOption() || GetSettings().Verbose() == 2) //verbose == debug mode
+                    {
+                        confP.stepDeliberate = State.RelPl;
+                    } else
+                    {
+                        confP.stepDeliberate = State.FindOp;
+                    }
+                    return;
+                }
+            }
+            //Rule SelEv2 directly to ProcAct if no event to handle
+            confP.stepDeliberate = State.ProcAct;
         }
 
         private void ApplyProcMsg()
         {
+            confP.stepSense = State.SelEv;
+            if (conf.GetCircumstance().HashMsg())
+            {
+                Message m = conf.ag.SelectMessage(conf.GetCircumstance().GetMailBox());
+                if (m == null)
+                {
+                    return; //If there's no mail, there's nothing more to do
+                }
 
+                //Get the content of the message, it can be any term (literal, list, number, ...;)
+                Term content = null;
+                if (m.GetPropCont().GetType() == typeof(Term))
+                {
+                    content = (Term)m.GetPropCont();
+                } else
+                {
+                    try
+                    {
+                        content = Parser.ParseTerm(m.GetPropCont().ToString()); //This needs to be implemented
+                    } catch (Exception e)
+                    {
+                        content = new ObjectTermImpl(m.GetPropCont()); //This needs to be implemented
+                    }
+                }
+
+                //Checks if an intention was suspended waiting this message
+                Intention intention = null;
+                if (m.GetInReplyTo() != null)
+                {
+                    intention = GetCircumstance().GetPendingIntentions().Get(m.GetInReplyTo());
+                }
+                //Is it a pending intention?
+                if (intention != null)
+                {
+                    //Unify the message answer with the .send fourth argument.
+                    //the send that put the intention in Pending state was
+                    //something like
+                    //  .send(ag1,askOne,value, X)
+                    //if the answer was tell 3, unifies X=3
+                    //if the answer was untell 3, unifies X=false
+                    Structure send = (Structure)intention.Peek().GetCurrentStep().GetBodyTerm(); //This needs to be implemented
+                    if (m.IsUntell() && send.GetTerm(1).ToString().Equals("askOne"))
+                    {
+                        content = Literal.LFalse;
+                    } else if (content.IsLiteral())
+                    {
+                        content = add_nested_source.AddAnnotToList(content, new Atom(m.GetSender()));
+                    } else if (send.GetTerm(1).ToString().Equals("askAll") && content.IsList()) //Adds source in each answer if possible
+                    {
+                        ListTerm tail = new ListTermImpl();
+                        foreach (Term t in ((ListTerm)content))
+                        {
+                            t = add_nested_source.AddAnnotToList(t, new Atom(m.GetSender()));
+                            tail.Append(t);
+                        }
+                        content = tail;
+                    }
+
+                    //Test the case of sync ask with many receivers
+                    Unifier un = intention.Peek().GetUnif();
+                    Term rec = send.GetTerm(0).Capply(un);
+                    if (rec.IsList()) //Send to many receivers
+                    {
+                        //Put the answers in the unifier
+                        Var answers = new Var("AnsList___" + m.GetInReplyTo());
+                        ListTerm listOfAnswers = (ListTerm)un.Get(answers);
+                        if (listOfAnswers == null)
+                        {
+                            listOfAnswers = new ListTermImpl();
+                            un.Unifies(answers, listOfAnswers);
+                        }
+                        listOfAnswers.Append(content);
+                        int nbReceivers = ((ListTerm)send.GetTerm(0)).Size();
+                        if(listOfAnswers.Size() == nbReceivers)
+                        {
+                            //All agents have answered
+                            ResumeSyncAskIntention(m.GetInReplyTo(), send.GetTerm(3), listOfAnswers);
+                        }
+                    } else
+                    {
+                        ResumeSyncAskIntention(m.GetInReplyTo(), send.GetTerm(3), content);
+                    }
+                } else if (conf.ag.SocAcc(m))
+                {
+                    if (!m.IsReplyToSyncAsk())
+                    {
+                        //Ignore answer after the timeout
+                        String sender = m.GetSender();
+                        if (sender.Equals(GetUserAgArch().GetAgName()))
+                        {
+                            sender = "self";
+                        }
+
+                        bool added = false;
+                        if (!settings.IsSync() && !ag.GetPlanLibrary().HasUserKqmlReceivedPlans() && content.IsLiteral() && !content.IsList())
+                        {
+                            //Optimisation to jump kqmlPlans
+                            if (m.GetIlForce().Equals("achieve"))
+                            {
+                                content = add_nested_source.AddAnnotToList(content, new Atom(sender));
+                                GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt());
+                                added = true;
+                            } else if (m.GetIlForce().Equals("tell"))
+                            {
+                                content = add_nested_source.AddAnnotToList(content, new Atom(sender));
+                                GetAgent().AddBel((Literal)content);
+                                added = true;
+                            }
+
+                        }
+
+                        if (!added)
+                        {
+                            Literal received = new LiteralImpl(kqmlReceivedFunctor).AddTerms(
+                                new Atom(sender),
+                                new Atom(m.GetIlForce()),
+                                content,
+                                new Atom(m.GetMessageId()));
+
+                            UpdateEvents(new Event(new Trigger(TEOPerator.add, TEType.achieve, received), Intention.emptyInt()));
+                        }
+                    } else
+                    {
+                        //logger.fine("Ignoring message "+m+" because it is received after the timeout.");
+                    }
+                }
+            }
+        }
+
+        private void ResumeSyncAskIntention(String msgId, Term answerVar, Term answerValue)
+        {
+            Intention i = GetCircumstance().RemovePendingIntention(msgId);
+            i.Peek().RemoveCurrentStep();
+            if (i.Peek().GetUnif().Unifies(answerVar, answerValue))
+            {
+                GetCircumstance().ResumeIntention(i);
+            } else
+            {
+                GenerateDesireDeletion(i/*, JasonException.createBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')"))*/);
+            }
+        }
+
+        private void GenerateDesireDeletion(Intention i)
+        {
+            throw new NotImplementedException();
         }
 
         public Agent.Agent GetAgent()
@@ -611,6 +666,9 @@ namespace Assets.Code.ReasoningCycle
         }
 
 
+        /*
+         This innner class is here to imitate the anonymous interface implementation that exist on Java but not here
+         */
         private class CLImplementation : CircumstanceListener
         {
             private Desire d;
@@ -623,7 +681,7 @@ namespace Assets.Code.ReasoningCycle
             public void EventAdded(Event e)
             {
                 if (e.GetTrigger().IsAddition() && e.GetTrigger().IsGoal())
-                    d.GoalStarted(e);
+                    d.DesireStarted(e);
             }
 
             public void IntentionAdded(Intention i)
@@ -645,7 +703,7 @@ namespace Assets.Code.ReasoningCycle
                 foreach (IntendedPlan ip in i.GetIntendedPlan())
                 {
                     if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
-                        d.GoalResumed(ip.GetTrigger());
+                        d.DesireResumed(ip.GetTrigger());
                 }
             }
 
@@ -654,7 +712,7 @@ namespace Assets.Code.ReasoningCycle
                 foreach (IntendedPlan ip in i.GetIntendedPlan())
                 {
                     if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
-                        d.GoalSuspended(ip.GetTrigger(), reason);
+                        d.DesireSuspended(ip.GetTrigger(), reason);
                 }
             }
         }
