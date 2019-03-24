@@ -37,5 +37,10 @@ namespace Assets.Code
         {
             throw new NotImplementedException();
         }
+
+        internal bool Requeue()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

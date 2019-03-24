@@ -191,7 +191,7 @@ namespace Assets.Code.ReasoningCycle
                     }
                 } else if (sleepingEvt) //Code to turn idleEvent false again
                 {
-                    if(circumstance.HashMsg())
+                    if(circumstance.HasMsg())
                     {
                         sleepingEvt = false;
                     } else if (circumstance.HasEvt())
@@ -390,12 +390,45 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplyFindOp()
         {
+            confP.stepDeliberate = State.AddIM;
 
+            List<Plan> candidateRPs = conf.GetAgent().GetPlanLibrary().GetCandidatePlans(conf.GetCircumstance().GetSE().GetTrigger());
+            if (candidateRPs != null)
+            {
+                foreach (Plan p in candidateRPs)
+                {
+                    Unifier relUn = p.IsRelevant(conf.GetCircumstance().GetSE().GetTrigger());
+                    if (relUn != null)
+                    {
+                        LogicalFormula context = p.GetContext();
+                        if (context != null)
+                        {
+                            confP.GetCircumstance().SetSO(new Option(p, relUn));
+                            return;
+                        } else
+                        {
+                            
+                        }
+                    }
+                }
+            }
         }
 
         private void ApplySelAppl()
         {
+            //Rule SelAppl
+            confP.GetCircumstance().SetSO(conf.GetAgent().HasCustomSelectOption(confP.GetCircumstance().GetAP()));
 
+            if (confP.GetCircumstance().GetSO() != null)
+            {
+                confP.stepDeliberate = State.AddIM;
+                //if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+confP.C.SO+" for event "+confP.C.SE);
+            } else
+            {
+                //logger.fine("** selectOption returned null!");
+                generateGoalDeletionFromEvent(/*JasonException.createBasicErrorAnnots("no_option", "selectOption returned null")*/);
+                confP.stepDeliberate = State.ProcAct;
+            }
         }
 
         private void ApplyApplPl()
@@ -436,6 +469,46 @@ namespace Assets.Code.ReasoningCycle
 
         //Generates desire deletion event
         private void ApplyRelApplPlRule2(string m)
+        {
+            confP.stepDeliberate = State.ProcAct; //Default next step
+            if (conf.GetCircumstance().GetSE().GetTrigger().IsGoal() && !conf.GetCircumstance().GetSE().GetTrigger().IsMetaEvent())
+            {
+                //Can't carry on, no relevant/applicable plan
+                try
+                {
+                    if (conf.GetCircumstance().GetSE().GetIntention() != null && conf.GetCircumstance().GetSE().GetIntention().Size() > 3000) //I don't know why is 3000
+                    {
+                        //logger.warning("we are likely in a problem with event " + conf.C.SE.getTrigger() + " the intention stack has already " + conf.C.SE.getIntention().size() + " intended means!");
+                    }
+                    string msg = "Found a goal for which there is no " + m + " plan:" + conf.GetCircumstance().GetSE().GetTrigger();
+                    if (!generateGoalDeletionFromEvent(/*JasonException.createBasicErrorAnnots("no_" + m, msg)*/))
+                    {
+                        //logger.warning(msg);
+                    }
+                } catch (Exception e)
+                {
+                    return;
+                }
+            } else if (conf.GetCircumstance().GetSE().IsInternal())
+            {
+                // e.g. belief addition as internal event, just go ahead
+                // but note that the event was relevant, yet it is possible
+                // the programmer just wanted to add the belief and it was
+                // relevant by chance, so just carry on instead of dropping the
+                // intention
+                Intention i = conf.GetCircumstance().GetSE().GetIntention();
+                JoinRenamedVarsIntoIntentionUnifier(i.Peek(), i.Peek().GetUnif());
+                UpdateIntention(i);
+            } else if (GetSettings().Requeue())
+            {
+                confP.GetCircumstance().AddEvent(conf.GetCircumstance().GetSE());
+            } else
+            {
+                confP.stepDeliberate = State.SelEv;
+            }
+        }
+
+        private bool generateGoalDeletionFromEvent()
         {
             throw new NotImplementedException();
         }
@@ -485,7 +558,7 @@ namespace Assets.Code.ReasoningCycle
         private void ApplyProcMsg()
         {
             confP.stepSense = State.SelEv;
-            if (conf.GetCircumstance().HashMsg())
+            if (conf.GetCircumstance().HasMsg())
             {
                 Message m = conf.ag.SelectMessage(conf.GetCircumstance().GetMailBox());
                 if (m == null)
@@ -584,7 +657,7 @@ namespace Assets.Code.ReasoningCycle
                             if (m.GetIlForce().Equals("achieve"))
                             {
                                 content = add_nested_source.AddAnnotToList(content, new Atom(sender));
-                                GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt());
+                                GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt()));
                                 added = true;
                             } else if (m.GetIlForce().Equals("tell"))
                             {

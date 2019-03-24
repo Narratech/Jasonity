@@ -49,5 +49,10 @@ namespace Assets.Code.Agent
         {
             sender = agName;
         }
+
+        internal bool IsReplyToSyncAsk()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

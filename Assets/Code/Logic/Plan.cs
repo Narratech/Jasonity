@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.Logic
 {
@@ -41,6 +42,11 @@ namespace Assets.Code.Logic
         public string AFocus { get => this.actionFocus; }
 
         internal bool IsAtomic()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Unifier IsRelevant(Trigger trigger)
         {
             throw new NotImplementedException();
         }

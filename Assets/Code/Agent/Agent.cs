@@ -126,6 +126,11 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal bool HasCustomSelectOption(object v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
