@@ -8,12 +8,12 @@ namespace Assets.Code.Logic
 {
     public class Structure : Literal
     {
-        List<Term> parameters;
+        List<DefaultTerm> parameters;
 
-        public Structure(string functor, bool b, List<Term> args) : base(functor, b)
+        public Structure(string functor, bool b, List<DefaultTerm> args) : base(functor, b)
         {
-            parameters = new List<Term>();
-            foreach (Term term in args)
+            parameters = new List<DefaultTerm>();
+            foreach (DefaultTerm term in args)
                 parameters.Add(term);
         }
     }

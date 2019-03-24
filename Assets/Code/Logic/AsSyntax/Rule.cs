@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Rule : Term
+    public class Rule : DefaultTerm
     {
         Dictionary<Literal, string> condition;
         Literal belief;

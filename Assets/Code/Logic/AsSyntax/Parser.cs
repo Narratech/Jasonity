@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pruebas
+namespace Assets.Code.Logic
 {
     public class Parser
     {
@@ -17,15 +17,15 @@ namespace Pruebas
          *   -The parser do not interpret lists
         */
 
-        private List<Term> BeliefsList;
-        private Dictionary<Term, string> GoalList;
-        private List<Term> PlansList;
+        private List<DefaultTerm> BeliefsList;
+        private Dictionary<DefaultTerm, string> GoalList;
+        private List<DefaultTerm> PlansList;
 
         public Parser()
         {
-            this.BeliefsList = new List<Term>();
-            this.GoalList = new Dictionary<Term, string>();
-            this.PlansList = new List<Term>();
+            this.BeliefsList = new List<DefaultTerm>();
+            this.GoalList = new Dictionary<DefaultTerm, string>();
+            this.PlansList = new List<DefaultTerm>();
         }
 
         public void ClassifierParser()
@@ -89,7 +89,7 @@ namespace Pruebas
             IN: Dictionary
             OUT: Term
         */
-        private Term GoalParser(Dictionary<int, string> data)
+        private DefaultTerm GoalParser(Dictionary<int, string> data)
         {
             string justTheLiteral = data.First().Value.Substring(1);
             data.Remove(0);
@@ -101,7 +101,7 @@ namespace Pruebas
             IN: Dictionary
             OUT: Term
         */
-        private Term BeliefParser(Dictionary<int, string> data)
+        private DefaultTerm BeliefParser(Dictionary<int, string> data)
         {
             return CommonParser(data);
         }
@@ -110,7 +110,7 @@ namespace Pruebas
             IN: Dictionary
             OUT: Term
         */
-        private Term CommonParser(Dictionary<int, string> data)
+        private DefaultTerm CommonParser(Dictionary<int, string> data)
         {
             //The belief is true by default
             bool notFake = true, isARule = false;
@@ -173,7 +173,7 @@ namespace Pruebas
                         isARule = true;
                         string functor = line.Substring(0, line.IndexOf("("));
 
-                        List<Term> args, annots = new List<Term>();
+                        List<DefaultTerm> args, annots = new List<DefaultTerm>();
 
                         args = CheckBrackets(line.Substring(line.IndexOf("(") + 1,
                             line.IndexOf("[") - 1 - (line.IndexOf("(") + 1)));
@@ -188,7 +188,7 @@ namespace Pruebas
                     {
                         string functor = line.Substring(0, line.IndexOf("("));
 
-                        List<Term> args, annots = new List<Term>();
+                        List<DefaultTerm> args, annots = new List<DefaultTerm>();
 
                         args = CheckBrackets(line.Substring(line.IndexOf("(") + 1,
                             line.IndexOf("[") - 1 - (line.IndexOf("(") + 1)));
@@ -217,9 +217,9 @@ namespace Pruebas
             IN: string
             OUT: List<Term>
         */
-        private List<Term> CheckBrackets(string line)
+        private List<DefaultTerm> CheckBrackets(string line)
         {
-            List<Term> args = new List<Term>();
+            List<DefaultTerm> args = new List<DefaultTerm>();
 
             //Check if the parameters contains a structure
             if (line.Contains("("))

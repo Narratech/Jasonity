@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class InternalAction : Term
+    public class InternalAction : DefaultTerm
     {
         public InternalAction(string functor)
         {

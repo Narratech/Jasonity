@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Literal : Term
+    public class Literal : DefaultTerm
     {
         private bool imNotFalse;
         private DefaultNameSpace defaultNS;

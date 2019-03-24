@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Variable : Term
+    public class Variable : DefaultTerm
     {
         private string var;
 

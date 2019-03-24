@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Code.Logic.AsSyntax;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public abstract class Term
+    public abstract class DefaultTerm: Term
     {
-        public Term() { }
+        public DefaultTerm() { }
 
         //An atom, structure, predicate,...
         public virtual bool IsLiteral()
@@ -24,6 +25,11 @@ namespace Assets.Code.Logic
 
         //A functor with arguments: "functor(arguments)"
         public virtual bool IsStructure()
+        {
+            return false;
+        }
+
+        public bool IsList()
         {
             return false;
         }
@@ -56,6 +62,51 @@ namespace Assets.Code.Logic
         public bool IsTerm()
         {
             return true;
+        }
+
+        public bool IsVar()
+        {
+            return false;
+        }
+
+        public bool IsUnnamedVar()
+        {
+            return false;
+        }
+
+        public bool IsString()
+        {
+            return false;
+        }
+
+        public bool IsArithExpr()
+        {
+            return false;
+        }
+
+        public bool IsNumeric()
+        {
+            return false;
+        }
+
+        public bool IsGround()
+        {
+            return false;
+        }
+
+        public bool IsCyclicTerm()
+        {
+            return false;
+        }
+
+        public object Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }
