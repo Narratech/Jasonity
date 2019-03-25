@@ -42,5 +42,10 @@ namespace Assets.Code
         {
             throw new NotImplementedException();
         }
+
+        internal bool IsTROon()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

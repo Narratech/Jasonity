@@ -3,6 +3,7 @@ using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
+using System;
 using System.Collections.Generic;
 
 namespace Assets.Code.BDIManager
@@ -291,6 +292,21 @@ namespace Assets.Code.BDIManager
         public List<Option> GetRp()
         {
             return RP;
+        }
+
+        internal void SetSO(bool v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetAP()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Option GetSO()
+        {
+            throw new NotImplementedException();
         }
     }
 }

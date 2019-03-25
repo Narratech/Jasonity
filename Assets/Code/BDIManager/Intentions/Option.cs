@@ -1,5 +1,6 @@
 ﻿// A Plan and the Unifier that makes it relevant and applicable
 using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions
 {
@@ -8,11 +9,19 @@ namespace BDIManager.Intentions
 
         private Plan plan;
         private Unifier unif;
+        private Plan p;
+        private Unifier current;
 
         Option(Plan p, Unifier u)
         {
             plan = p;
             unif = u;
+        }
+
+        public Option(Plan p, Unifier current)
+        {
+            this.p = p;
+            this.current = current;
         }
 
         public void SetPlan(Plan p)

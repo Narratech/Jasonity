@@ -131,6 +131,11 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal object SelectIntention(object v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

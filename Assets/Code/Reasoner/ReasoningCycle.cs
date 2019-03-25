@@ -324,7 +324,7 @@ namespace Assets.Code.ReasoningCycle
                     ApplyFindOp();
                     break;
                 case State.AddIM:
-                    ApplyAddIM();
+                    ApplyAddIP();
                     break;
                 default:
                     break;
@@ -365,7 +365,86 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplyExecInt()
         {
-            
+            confP.stepAct = State.ClrInt;
+
+            Intention curInt = conf.GetCircumstance().GetSI();
+            if (curInt == null)
+            {
+                return;
+            } 
+            if(curInt.IsFinished())
+            {
+                return;
+            }
+
+            IntendedPlan ip = curInt.Peek();
+
+            if (ip.IsFinished())
+            {
+                UpdateIntention(curInt);
+                return;
+            }
+
+            Unifier u = ip.GetUnif();
+            PlanBody h = ip.GetCurrentStep();
+            Term bTerm = h.GetBodyTerm();
+
+            if (bTerm.GetType() == typeof(Var))
+            {
+                bTerm = bTerm.Cappply(u);
+                if (bTerm.IsVar())
+                {
+                    string msg = h.GetSrcInfo() + ": " + "Variable '" + bTerm + "' must be ground.";
+                    if (!GenerateDesireDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_without_value", msg)))
+                    {
+                        //logger.log(Level.SEVERE, msg);
+                    }
+                    return;
+                }
+                if (bTerm.IsPlanBody())
+                {
+                    if (h.GetBodyType() != BodyType.action)
+                    {
+                        String msg = h.GetSrcInfo() + ": " + "The operator '" + h.GetBodyType() + "' is lost with the variable '" + bTerm + "' unified with a plan body. ";
+                        if (!GenerateDesireDeletion(curInt, JasonException.createBasicErrorAnnots("body_var_with_op", msg)))
+                        {
+                            //logger.log(Level.SEVERE, msg);
+                        }
+                        return;
+                    }
+                }
+            }
+
+            if (bTerm.IsPlanBody())
+            {
+                h = (PlanBody)bTerm;
+                if (h.GetPlanSize() > 1)
+                {
+                    h = (PlanBody)bTerm.Clone();
+                    h.Add(ip.GetCurrentStep().GetBodyNext());
+                    ip.InsertAsNextStep(h.GetBodyNext());
+                }
+                bTerm = h.GetBodyTerm();
+            }
+
+            Literal body = null;
+            if (bTerm.GetType() == typeof(Literal))
+            {
+                body = (Literal)bTerm;
+            }
+
+            switch (h.GetBodyType())
+            {
+                case PlanBody.BodyType.none:
+                    break;
+                case PlanBody.BodyType.action:
+                    body = (Literal)body.Capply(u);
+                    confP.GetCircumstance().setA(new ExecuteAction(body, curInt));
+                    break;
+                case PlanBody.BodyType.internalAction:
+                    break;
+
+            }
         }
 
         private void UpdateIntention(Intention curInt)
@@ -375,17 +454,132 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplySelInt()
         {
+            confP.stepAct = State.ExecInt;
 
+            confP.GetCircumstance().SetSI(GetCircumstance().RemoveAtomicIntention());
+            if (confP.GetCircumstance().GetSI() != null)
+            {
+                return;
+            }
+
+            if (!conf.GetCircumstance().IsAtomicIntentionSuspended() && conf.GetCircumstance().HasRunningIntention())
+            {
+                confP.GetCircumstance().SetSI(conf.GetAgent().SelectIntention(conf.GetCircumstance().GetRunningIntentions()));
+                //if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention " + confP.C.SI);
+                if (confP.GetCircumstance().GetSI() != null)
+                { 
+                    return;
+                }
+            }
+
+            confP.stepAct = State.StartRC;
         }
 
         private void ApplyProcAct()
         {
+            confP.stepAct = State.SelInt;
+            if (conf.GetCircumstance().HasFeedbackAction())
+            {
+                ExecuteAction a = null;
+                /*synchronized (conf.GetCircumstance().GetFeedbackActions()){
+                    a = conf.GetAgent().SelectAction(conf.GetCircumstance().GetFeedbackActions());
+                }*/
 
+                if (a != null)
+                {
+                    Intention curInt = a.GetIntention();
+                
+                    if (GetCircumstance().RemovePendingIntention(curInt.GetID()) != null) {
+                        if (a.GetResult())
+                        {
+                            UpdateIntention(curInt);
+                            ApplyClrInt(curInt);
+
+                            if (HasGoalListener())
+                            {
+                                foreach (Desire desire in GetDesiresListeners())
+                                {
+                                    foreach (IntendedPlan ip in curInt.GetIntendedPlan())
+                                    {
+                                        desire.DesireResumed(ip.GetTrigger());
+                                    }
+                                }
+                            }
+                        } else
+                        {
+                            String reason = a.GetFailureMsg();
+                            if (reason == null)
+                            {
+                                reason = "";
+                            }
+                            ListTerm annots = JasonException.createBasicErrorAnnots("action_failed", reason);
+                            if (a.GetFailureReason() != null)
+                            {
+                                annots.Append(a.GetFailureReason());
+                            }
+                            GenerateDesireDeletion(curInt, annots);
+                            GetCircumstance().RemoveAtomicIntention();
+                        }
+                    } else
+                    {
+                        ApplyProcAct();
+                    }
+                }
+            }
         }
 
-        private void ApplyAddIM()
+        private void ApplyAddIP()
         {
+            //Create a new intended plan
+            IntendedPlan ip = new IntendedPlan(conf.GetCircumstance().GetSO(), conf.GetCircumstance().GetSE().GetTrigger());
 
+            //Rule ExtEv
+            if (conf.GetCircumstance().GetSE().GetIntention() == Intention.emptyInt)
+            {
+                Intention intention = new Intention();
+                intention.Push(ip);
+                confP.GetCircumstance().AddRunningIntention(intention);
+            } else
+            {
+                //Rule IntEv
+                if(GetSettings().IsTROon())
+                {
+                    IntendedPlan top = confP.GetCircumstance().GetSE().GetIntention().Peek();
+
+                    if(top != null && top.GetTrigger().IsAddition() && ip.GetTrigger().IsAddition() && 
+                        top.GetTrigger().IsGoal() && ip.GetTrigger().IsGoal() &&
+                        top.GetCurrentStep().GetBodyNext() == null &&
+                        top.GetTrigger().GetLiteral().GetPredicateIndicator().Equals(ip.GetTrigger().GetLiteral().GetPredicateIndicator()))
+                    {
+                        confP.GetCircumstance().GetSE().GetIntention().Pop();
+
+                        IntendedPlan ipBase = confP.GetCircumstance().GetSE().GetIntention().Peek();
+                        if (ipBase != null && ipBase.GetRenamedVars() != null)
+                        {
+                            foreach (Var var in ipBase.GetRenamedVars())
+                            {
+                                Var vl = (Var)ipBase.GetRenamedVars().GetFunction().Get(var);
+                                Term t = top.GetUnif().Get(vl);
+                                if (t != null)
+                                {
+                                    if (t.GetType() == typeof(Literal))
+                                    {
+                                        Literal l = (Literal)t.Capply(top.GetUnif());
+                                        l.MakeVarsAnnon(top.GetRenamedVars());
+                                        ip.GetUnif().GetFunction().Put(vl, l);
+                                    } else
+                                    {
+                                        ip.GetUnif().GetFunction().Put(vl, t);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                confP.GetCircumstance().GetSE().GetIntention().Push(ip);
+                confP.GetCircumstance().AddRunningIntention(confP.GetCircumstance().GetSE().GetIntention());
+            }
+            confP.stepDeliberate = State.ProcAct;
         }
 
         private void ApplyFindOp()
@@ -407,10 +601,20 @@ namespace Assets.Code.ReasoningCycle
                             return;
                         } else
                         {
-                            
+                            IEnumerator<Unifier> r = context.LogicalConsecuence(ag, relUn);
+                            if (r != null && r.MoveNext())
+                            {
+                                confP.GetCircumstance().SetSO(new Option(p, r.Current));
+                                return;
+                            }
                         }
                     }
                 }
+                ApplyRelApplPlRule2("applicable");
+            } else
+            {
+                //Problem: no plan
+                ApplyRelApplPlRule2("relevant");
             }
         }
 
@@ -513,7 +717,7 @@ namespace Assets.Code.ReasoningCycle
             throw new NotImplementedException();
         }
 
-        private object relevantPlans(Trigger trigger)
+        private List<Option> relevantPlans(Trigger trigger)
         {
             throw new NotImplementedException();
         }

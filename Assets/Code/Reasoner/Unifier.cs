@@ -26,5 +26,10 @@ namespace Assets.Code.ReasoningCycle
         {
             throw new NotImplementedException();
         }
+
+        internal object GetFunction()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

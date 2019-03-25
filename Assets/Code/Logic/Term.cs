@@ -43,5 +43,10 @@ namespace Assets.Code.Logic
         }
 
         public string Name { get => this.name; }
+
+        internal bool IsPlanBody()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

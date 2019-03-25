@@ -38,4 +38,9 @@ class PlanBody
     {
         throw new NotImplementedException();
     }
+
+    internal string getSrcInfo()
+    {
+        throw new NotImplementedException();
+    }
 }

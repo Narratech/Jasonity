@@ -50,5 +50,10 @@ namespace Assets.Code.Logic
         {
             throw new NotImplementedException();
         }
+
+        internal LogicalFormula GetContext()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
