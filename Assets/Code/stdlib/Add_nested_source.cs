@@ -7,14 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-namespace Assets.Code.stdlib
+/*
+ * Description: adds a source annotation to a literal (used in communication)
+ */
+namespace Assets.Code.Stdlib
 {
     public class Add_nested_source:DefaultInternalAction
     {
         private static InternalAction singleton = null;
 
-        private static InternalAction create()
+        private static InternalAction Create()
         {
             if (singleton == null)
             {
@@ -38,7 +40,7 @@ namespace Assets.Code.stdlib
             CheckArguments(args);
             try
             {
-                return un.unifies(addAnnotToList(args[0], args[1], args[2]));
+                return un.Unifies(AddAnnotToList(args[0], args[1], args[2]));
             }
             catch (Exception e)
             {
@@ -46,30 +48,30 @@ namespace Assets.Code.stdlib
             }
         }
 
-        public static DefaultTerm addAnnotToList(DefaultTerm l, DefaultTerm source)
+        public static Term AddAnnotToList(DefaultTerm l, DefaultTerm source)
         {
             if (l.IsList())
             {
                 ListTerm result = new ListTermImpl();
                 foreach (Term lTerm in (ListTerm)l)
                 {
-                    Term t = addAnnotToList(lTerm, source);
+                    Term t = AddAnnotToList(lTerm, source);
                     if (t != null)
                     {
-                        result.add(t);
+                        result.Add(t);
                     }
                 }
                 return result;
             }
             else if (l.IsLiteral())
             {
-                Literal result = ((Literal)l).forceFullLiteralImpl().copy();
+                Literal result = ((Literal)l).ForceFullLiteralImpl().copy();
 
                 //Create the source annots
-                Literal ts = Predicate.createSource(source).addAnnots(result.getAnnots("source"));
+                Literal ts = Predicate.CreateSource(source).AddAnnots(result.GetAnnots("source"));
 
-                result.delSources();
-                result.addAnnots(ts);
+                result.DelSources();
+                result.AddAnnots(ts);
                 return result;
             }
             else

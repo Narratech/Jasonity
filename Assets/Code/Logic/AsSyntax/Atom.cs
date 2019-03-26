@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public class Atom: Literal
+    public class Atom
     {
-        public Atom(string functor, bool b) : base(functor, b) { }
+        public Atom(string a) { } 
 
-        public override bool IsAtom()
-        {
-            return true;
-        }
+        
     }
 }

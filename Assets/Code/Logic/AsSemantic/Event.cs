@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.Logic.AsSemantic
 {
-    public class Trigger
+    public class Event
     {
     }
 }
