@@ -136,6 +136,16 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal List<Literal>[] brf(object p, Literal b2, Intention curInt)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<Literal>[] brf(Literal body, object p, Intention curInt, bool v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

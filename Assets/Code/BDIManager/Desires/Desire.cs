@@ -1,7 +1,9 @@
 /*
  Interface used to notify changes in the states of the desires
 */
+using Assets.Code.BDIManager;
 using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 
 namespace BDIManager.Desires {
@@ -23,5 +25,6 @@ namespace BDIManager.Desires {
 
         // Desire is resumed
         void DesireResumed(Trigger desire);
+        object AllDesires(Circumstance circumstance, Literal body, object p, Unifier unifier);
     }
 }

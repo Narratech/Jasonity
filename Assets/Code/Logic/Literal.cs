@@ -81,5 +81,15 @@ namespace Assets.Code.Logic
         {
             throw new NotImplementedException();
         }
+
+        internal void AddAnnot(object self)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetAnnot(string v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

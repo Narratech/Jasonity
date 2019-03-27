@@ -1,14 +1,16 @@
 ﻿using Assets.Code.Agent;
-using BDIManager.Desires;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.Concurrent;
-using BDIManager.Intentions;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
-using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.Utilities;
+using BDIMaAssets.Code.ReasoningCycle;
+using BDIManager.Beliefs;
+using BDIManager.Desires;
+using BDIManager.Intentions;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using TMPro;
 
 /*
  * Implements the reasoning cycle. There are 10 steps in the cycle: 
@@ -61,6 +63,8 @@ namespace Assets.Code.ReasoningCycle
 
         // the semantic rules are referred to in comments in the functions below
         //private const string kqmlReceivedFunctor = Config.get().getKqmlFunctor();
+
+        private static readonly Atom aNOCODE = new Atom("no_code");
 
 
         public Reasoner(Agent.Agent agent, Circumstance c, AgentArchitecture ar, Settings s)
@@ -353,14 +357,88 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private void ApplyClrInt(Intention i)
+        public void ApplyClrInt(Intention i)
         {
-            
+            while (true) 
+            {
+                if (i == null)
+                {
+                    return;
+                } 
+
+                if (i.IsFinished())
+                {
+                    confP.GetCircumstance().DropRunningIntention(i);
+                    return;
+                }
+
+                IntendedPlan ip = i.Peek();
+                if(!ip.IsFinished())
+                {
+                    return;
+                }
+
+                IntendedPlan topIP = i.Pop();
+                Trigger topTrigger = topIP.GetTrigger();
+                Literal topLiteral = topTrigger.GetLiteral();
+                //if (logger.isLoggable(Level.FINE))
+                //{
+                //logger.fine("Returning from IM " + topIM.getPlan().getLabel() + ", te=" + topTrigger + " unif=" + topIM.unif);
+                //}
+                if(!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
+                {
+                    foreach (Desire desire in desireListeners)
+                    {
+                        desire.DesireFinished(topTrigger, FinishStates.achieved);
+                    }
+                }
+
+                if(ip.GetTrigger().IsGoal() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
+                {
+                    ip = i.Peek();
+                    if (ip.IsFinished() || !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == PlanBody.BodyType.achieve) ||
+                        ip.GetCurrentStep().GetBodyTerm().GetType() == typeof(Var))
+                    {
+                        ip.Pop();
+                    }
+                    while (!i.IsFinished() && !(ip.GetUnif().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsGoal())
+                        && !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == PlanBody.BodyType.achieve)){
+                        ip = i.Pop();
+                    }
+                }
+
+                if (!i.IsFinished())
+                {
+                    ip = i.Peek();
+                    if (!ip.IsFinished())
+                    {
+                        JoinRenamedVarsIntoIntentionUnifier(ip, topIP.GetUnif());
+                        ip.RemoveCurrentStep();
+                    }
+                }
+            }
         }
 
         private void JoinRenamedVarsIntoIntentionUnifier(IntendedPlan ip, Unifier values)
         {
-            
+            if (ip.GetRenamedVars() != null)
+            {
+                foreach (Var var in ip.GetRenamedVars().Function().KeySet())
+                {
+                    UnnamedVar vt = (UnnamedVar)ip.GetRenamedVars().Function().Get(var);
+                    ip.GetUnif().Unifies(var, vt);
+                    Term vl = values.GetFunction().Get(vt);
+                    if(vl != null)
+                    {
+                        vl = vl.Capply(values);
+                        if(vl.IsLiteral())
+                        {
+                            ((Literal)vl).makeVarsAnnon();
+                        }
+                        ip.GetUnif().Bind(vt, vl);
+                    }
+                }
+            }
         }
 
         private void ApplyExecInt()
@@ -442,14 +520,475 @@ namespace Assets.Code.ReasoningCycle
                     confP.GetCircumstance().setA(new ExecuteAction(body, curInt));
                     break;
                 case PlanBody.BodyType.internalAction:
+                    bool ok = false;
+                    List<Term> errorAnnots = null;
+                    try
+                    {
+                        InternalActions ia = ((InternalAction)bTerm).GetIA(ag);
+                        Term[] terms = ia.PrepareArguments(body, u);
+                        Object result = ia.Execute(this, u, terms);
+                        if (result != null)
+                        {
+                            ok = result.GetType() == typeof(bool) && (bool)result;
+                            if (!ok && result.GetType() == typeof(IEnumerator<Unifier>))
+                            {
+                                IEnumerator<Unifier> iu = (IEnumerator<Unifier>)result;
+                                if (iu.MoveNext())
+                                {
+                                    ip.SetUnif(iu.Current);
+                                    ok = true;
+                                }
+                            }
+                            if (!ok)
+                            {
+                                //errorAnnots = JasonException.createBasicErrorAnnots("ia_failed", "");
+                            }
+                        }
+                        if (ok && ia.SuspendedIntention())
+                        {
+                            UpdateIntention(curInt);
+                        }
+                    }
+                    catch (NoValueException e)
+                    {
+                        string msg = e.getMessage() + " Ungrounded variables = [";
+                        string v = "";
+                        foreach (Var var in body.GetSingletonVars())
+                        {
+                            if (u.Get(var) == null)
+                            {
+                                msg += v + var;
+                                v = ",";
+                            }
+                        }
+                        msg += "].";
+                        e = new NoValueException(msg);
+                        errorAnnots = e.GetErrorTerms();
+                        if (!GenerateDesireDeletion(curInt, errorAnnots))
+                        {
+                            //logger.log(Level.SEVERE, body.getErrorMsg() + ": " + e.getMessage());
+                        }
+
+                        ok = true;
+
+                    }
+                    catch (JasonException e)
+                    {
+                        errorAnnots = e.getErrorTerms();
+                        if (!GenerateDesireDeletion(curInt, errorAnnots))
+                        {
+                            //logger.log(Level.SEVERE, body.getErrorMsg() + ": " + e.getMessage());
+                        }
+                        ok = true; 
+                    }
+                    catch (Exception e)
+                    {
+                        if (body == null)
+                        {
+                            //logger.log(Level.SEVERE, "Selected an intention with null body in '" + h + "' and IM " + im, e);
+                        }
+                        else
+                        {
+                            // logger.log(Level.SEVERE, body.getErrorMsg() + ": " + e.getMessage(), e);
+                        }
+                    }
+                    if (!ok)
+                    {
+                        GenerateDesireDeletion(curInt, errorAnnots);
+                    }
                     break;
 
+                case PlanBody.BodyType.constraint:
+                    IEnumerator<Unifier> iu = ((LogicalFormula)bTerm).LogicalConsecuence(ag, u);
+                    if (iu.MoveNext())
+                    {
+                        ip.SetUnif(iu.Current);
+                        UpdateIntention(curInt);
+                    } else
+                    {
+                        string msg = "Constraint " + h + " was not satisfied (" + h.GetSrcInfo() + ") un=" + u;
+                        GenerateDesireDeletion(curInt, JasonException.createBasicErrorAnnots(new Atom("constraint_failed"), msg));
+                        //logger.fine(msg);
+                    }
+                    break;
+
+                case PlanBody.BodyType.achieve:
+                    body = PrepareBodyForEvent(body, u, curInt.Peek());
+                    Event evt = conf.GetCircumstance().AddAchieveDesire(body, curInt);
+                    confP.stepAct = State.StartRC;
+                    CheckHardDeadline(evt);
+                    break;
+
+                case PlanBody.BodyType.achieveNF:
+                    body = PrepareBodyForEvent(body, u, null);
+                    evt = conf.GetCircumstance().AddAchieveDesire(body, Intention.emptyInt);
+                    CheckHardDeadline(evt);
+                    UpdateIntention(curInt);
+                    break;
+
+                case PlanBody.BodyType.test:
+                    LogicalFormula f = (LogicalFormula)bTerm;
+                    if(conf.GetAgent().Believes(f, u))
+                    {
+                        UpdateIntention(curInt);
+                    } else
+                    {
+                        bool fail = true;
+                        if (f.IsLiteral() && f.GetType() != typeof(BinaryStructure))
+                        {
+                            body = PrepareBodyForEvent(body, u, curInt.Peek());
+                            if (body.IsLiteral())
+                            {
+                                Trigger t = new Trigger(TEOperator.add, TEType.test, body);
+                                evt = new Event(t, curInt);
+                                if(ag.GetPlanLibrary().HasCandidatePlan(t))
+                                {
+                                    //if (logger.isLoggable(Level.FINE)) 
+                                    //{
+                                     //   logger.fine("Test Goal '" + bTerm + "' failed as simple query. Generating internal event for it: " + te);
+                                    //}
+                                    conf.GetCircumstance().addEvent(evt);
+                                    confP.stepAct = State.StartRC;
+                                    fail = false;
+                                }
+                            }
+                        }
+                        if(fail)
+                        {
+                           // if (logger.isLoggable(Level.FINE))
+                           // {
+                            //    logger.fine("Test '" + bTerm + "' failed (" + h.getSrcInfo() + ").");
+                          //  }
+                            GenerateDesireDeletion(curInt, JasonException.createBasicErrorAnnots("test_goal_failed", "Failed to test '" + bTerm + "'"));
+                        }
+                    }
+                    break;
+
+                case PlanBody.BodyType.delAddBel:
+                    Literal b2 = PrepareBodyForEvent(body, u, curInt.Peek());
+                    b2.MakeTermsAnnon();
+                    try
+                    {
+                        List<Literal>[] result = ag.brf(null, b2, curInt);
+                        if (result != null)
+                        {
+                            UpdateEvents(result, Intention.emptyInt);
+                        }
+                    } catch (RevisionFailedException re)
+                    {
+                        GenerateDesireDeletion(curInt, JasonException.createBasicErrorAnnots("belief_revision_failed", "BRF failed for '" + body + "'"));
+                        break;
+                    }
+
+                    //The original one doesn't have the break, but if i don't put it here there are compiler errors for some misterious reasons
+                    break;
+
+                case PlanBody.BodyType.addBel:
+                case PlanBody.BodyType.addBelBegin:
+                case PlanBody.BodyType.addBelEnd:
+                case PlanBody.BodyType.addBelNewFocus:
+                    //But here i don't have breaks and all works because there's no logic anywhere
+                    Intention newFocus = Intention.emptyInt;
+                    Boolean isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != PlanBody.BodyType.addBelNewFocus;
+                    if (isSameFocus)
+                    {
+                        newFocus = curInt;
+                        body = PrepareBodyForEvent(body, u, newFocus.Peek());
+                    } else
+                    {
+                        body = PrepareBodyForEvent(body, u, null);
+                    }
+
+                    try
+                    {
+                        List<Literal>[] result;
+                        if (h.GetBodyType() == PlanBody.BodyType.addBelEnd)
+                        {
+                            result = GetAgent().brf(body, null, curInt, true);
+                        }
+                        else
+                        {
+                            result = GetAgent().brf(body, null, curInt);
+                        }
+                        if (result != null)
+                        {
+                            UpdateEvents(result, newFocus);
+                            if(!isSameFocus)
+                            {
+                                UpdateIntention(curInt);
+                            }
+                        } else
+                        {
+                            UpdateIntention(curInt);
+                        }
+                    } catch (RevisionFailedException re)
+                    {
+                        GenerateDesireDeletion(curInt, null);
+                    }
+
+                    break;
+
+                case PlanBody.BodyType.delBelNewFocus:
+                case PlanBody.BodyType.delBel:
+                    newFocus = Intention.emptyInt; //Here it isnt declare because why not
+                    isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != PlanBody.BodyType.delBelNewFocus;
+                    if (isSameFocus)
+                    {
+                        newFocus = curInt;
+                        body = PrepareBodyForEvent(body, u, newFocus.Peek());
+                    } else
+                    {
+                        body = PrepareBodyForEvent(body, u, null);
+                    } 
+                    try
+                    {
+                        List<Literal>[] result = GetAgent().brf(null, body, curInt);
+                        if (result != null)
+                        {
+                            UpdateEvents(result, newFocus);
+                            if(!isSameFocus)
+                            {
+                                UpdateIntention(curInt);
+                            }
+                        } else {
+                            UpdateIntention(curInt);
+                        }
+                    } catch(RevisionFailedEception re)
+                    {
+                        GenerateDesireDeletion(curInt, null);
+                    }
+                    break;
             }
         }
 
-        private void UpdateIntention(Intention curInt)
+        public void UpdateEvents(List<Literal>[] result, Intention focus)
         {
-            throw new NotImplementedException();
+            if (result == null)
+            {
+                return;
+            }
+
+            foreach (Literal lAdd in result[0])
+            {
+                Trigger t = new Trigger(TEOperator.add, TEType.belief, lAdd);
+                UpdateEvents(new Event(t, focus));
+                focus = Intention.emptyInt;
+            }
+
+            foreach (Literal lRem in result[1])
+            {
+                Trigger t = new Trigger(TEOperator.del, TEType.belief, lRem);
+                UpdateEvents(new Event(t, focus));
+                focus = Intention.emptyInt;
+            }
+        }
+
+        public void UpdateEvents(Event ev)
+        {
+            if (ev.IsInternal() || GetCircumstance().HasListener() || ag.GetPlanLibrary().HasCandidatePlan(ev.GetTrigger()))
+            {
+                GetCircumstance().AddEvent(ev);
+                //if (logger.isLoggable(Level.FINE)) logger.fine("Added event " + e+ ", events = "+C.getEvents());
+            }
+        }
+
+        private Literal PrepareBodyForEvent(Literal body, Unifier u, IntendedPlan ipRenamedVars)
+        {
+            body = (Literal)body.Capply(u);
+            Unifier renamedVars = new Unifier();
+            body.MakeVarsAnnon(renamedVars);
+            if (ipRenamedVars != null)
+            {
+                ipRenamedVars.SetRenamedVars(renamedVars);
+                if (GetSettings().IsTROon())
+                {
+                    Dictionary<VarTerm, Term> adds = null;
+                    foreach (VarTerm v in renamedVars)
+                    {
+                        Term t = u.Function().Get(v);
+                        if (t != null && t.IsVar())
+                        {
+                            if (adds == null)
+                                adds = new Dictionary<VarTerm, Term>();
+                            try
+                            {
+                                adds.Add((VarTerm)t, renamedVars.Function().Get(v));
+                            } catch (Exception e)
+                            {
+                                //logger.log(Level.SEVERE, "*** Error adding var into renamed vars. var=" + v + ", value=" + t + ".", e);
+                            }
+                        }
+                    }
+                    if (adds != null)
+                    {
+                        renamedVars.Function().PutAll(adds);
+                    }
+                }
+            }
+
+            body = body.ForceFullLiteralImpl();
+            if(!body.HasSource())
+            {
+                body.AddAnnot(BeliefBase.TSelf);
+            }
+            return body;
+        }
+
+        private void CheckHardDeadline(Event evt)
+        {
+            Literal body = evt.GetTrigger().GetLiteral();
+            Literal hdl = body.GetAnnot(/*ASSyntax.*/GetHardDeadLineStr);
+            if (hdl == null)
+            {
+                return;
+            }
+            if (hdl.GetArity() < 1)
+            {
+                return;
+            }
+
+            Intention i = evt.GetIntention();
+            int iSize;
+            if (i == null)
+            {
+                iSize = 0;
+            }
+            else
+            {
+                iSize = i.Size();
+            }
+            int deadline = 0;
+            try
+            {
+                deadline = (int)((NumberTerm)hdl.GetTerm(0)).Solve(); //I have to look this 
+            }
+            catch (NoValueException e)
+            {
+
+            }
+
+            Agent.GetScheduler().Schedule(new RunnableImpl(), deadline, TimeUnit.MILLISECONDS);
+
+        }
+
+        public bool GenerateDesireDeletion(Intention i, List<Term> errorAnnots)
+        {
+            bool failEventIsRelevant = false;
+            IntendedPlan ip = i.Peek();
+            Event failEvent = FindEventForFailure(i, ip.GetTrigger());
+            if (failEvent != null)
+            {
+                failEventIsRelevant = true;
+            } else
+            {
+                failEvent = new Event(ip.GetTrigger().Clone(), i);
+            }
+
+            Term bodyPart = ip.GetCurrentStep().GetBodyTerm().Capply(ip.GetUnif());
+            SetDefaultFailureAnnots(failEvent, bodyPart, errorAnnots);
+            if (ip.IsGoalAdd())
+            {
+                if (HasGoalListener())
+                {
+                    foreach (Desire desire in desireListeners)
+                    {
+                        desire.DesireFailed(ip.GetTrigger());
+                        if (!failEventIsRelevant)
+                        {
+                            desire.DesireFinished(ip.GetTrigger(), FinishStates.unachieved);
+                        }
+                    }
+                }
+
+                if (failEventIsRelevant)
+                {
+                    confP.GetCircumstance().AddEvent(failEvent);
+                    //if (logger.isLoggable(Level.FINE)) logger.fine("Generating goal deletion " + failEvent.getTrigger() + " from goal: " + im.getTrigger());
+                }
+                else
+                {
+                    //logger.warning("No failure event was generated for " + failEvent.getTrigger() + "\n" + i);
+                    i.Fail(GetCircumstance());
+                }
+            } else if(GetSettings().Requeue())
+            {
+                ip = ip.Peek();
+                confP.GetCircumstance().AddExternalEv(ip.GetTrigger());
+            } else
+            {
+                //logger.warning("Could not finish intention: " + i + "\tTrigger: " + failEvent.getTrigger());
+            }
+            return failEventIsRelevant;
+        }
+
+        private static void SetDefaultFailureAnnots(Event failEvent, Term body, List<Term> errorAnnots)
+        {
+            if (errorAnnots == null)
+            {
+                errorAnnots = JasonException.createBasicErrorAnnots(JasonException.UNKNOW_ERROR, "");
+            }
+
+            Literal eLiteral = failEvent.GetTrigger().GetLiteral().ForceFullLiteralImpl();
+            eLiteral.AddAnnot(errorAnnots);
+
+            Literal bodyTerm = aNOCODE;
+            Term codesrc = aNOCODE;
+            Term codeline = aNOCODE;
+            if (body != null && body.GetType() == typeof(Literal))
+            {
+                bodyTerm = (Literal)body;
+                if (bodyTerm.GetSrcInfo() != null)
+                {
+                    if(bodyTerm.GetSrcInfo().GetSrcFile() != null)
+                    {
+                        codesrc = new StringTermImpl(bodyTerm.GetSrcInfo().GetSrcFile());
+                    }
+                }
+                codeline = new NumberTermImpl(bodyTerm.GetSrcInfo().GetSrcLine());
+            }
+
+            if (eLiteral.GetAnnot("code") == null)
+            {
+                eLiteral.AddAnnot(/*ASSyntax.*/CreateStructure("code", bodyTerm.Copy().MakeVarsAnnon()));
+            }
+
+            if (eLiteral.GetAnnot("code_src") == null)
+            {
+                eLiteral.AddAnnot(/*ASSyntax.*/CreateStructure("code_src", codesrc));
+            }
+
+            if(eLiteral.GetAnnot("code_line") == null)
+            {
+                eLiteral.AddAnnot(/*ASSyntax.*/CreateStructure("code_line", codeline));
+            }
+        }
+
+        public Event FindEventForFailure(Intention i, Trigger trigger)
+        {
+            if (i != Intention.emptyInt)
+            {
+                return i.FindEventForFailure(trigger, GetAgent().GetPlanLibrary(), GetCircumstance().GetFirst());
+            } else if (trigger.IsGoal() && trigger.IsAddition())
+            {
+                Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetType(), trigger.GetLiteral());
+                if(GetAgent().GetPlanLibrary().HasCandidatePlan(failTrigger))
+                {
+                    return new Event(failTrigger.Clone(), i);
+                }
+            }
+            return null;
+        }
+
+        private void UpdateIntention(Intention i)
+        {
+            if (!i.IsFinished())
+            {
+                i.Peek().RemoveCurrentStep();
+                confP.GetCircumstance().AddRunningIntention(i);
+            } else
+            {
+                //logger.fine("trying to update a finished intention!");
+            }
         }
 
         private void ApplySelInt()
@@ -650,15 +1189,58 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private object ApplicablePlans(object v)
+        public List<Option> ApplicablePlans(List<Option> rp)
         {
-            throw new NotImplementedException();
+            //synchronized (GetCircumstance().SyncApplyPlanSense) {
+            List<Option> ap = null;
+            if(rp != null)
+            {
+                foreach (Option o in rp) 
+                {
+                    LogicalFormula context = o.GetPlan().GetContext();
+                    if (context == null)
+                    {
+                        if (ap == null)
+                        {
+                            ap = new List<Option>();
+                        }
+                        ap.Add(o);
+                    } else
+                    {
+                        bool allU = o.GetPlan().IsAllUnifs();
+                        IEnumerator<Unifier> r = context.LogicalConsecuence(ag, o.getUnifier());
+                        if ( r != null)
+                        {
+                            while(r.MoveNext())
+                            {
+                                o.SetUnifier(r.Current);
+                                if(ap == null)
+                                {
+                                    ap = new List<Option>();
+                                }
+
+                                ap.Add(o);
+
+                                if (!allU)
+                                    break;
+
+                                if(r.MoveNext())
+                                {
+                                    o = new Option(o.GetPlan(), null);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return ap;
+            //}
         }
 
         private void ApplyRelPl()
         {
             //Get all relevant plans for the selected event
-            confP.GetCircumstance().SetRP(relevantPlans(conf.GetCircumstance().GetSE().GetTrigger()));
+            confP.GetCircumstance().SetRP(RelevantPlans(conf.GetCircumstance().GetSE().GetTrigger()));
 
             //Rule Rel1
             if (confP.GetCircumstance().GetRp() != null || GetSettings().Retrieve())
@@ -712,14 +1294,75 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private bool generateGoalDeletionFromEvent()
+        private bool GenerateDesireDeletionFromEvent(List<Term> failAnnots)
         {
-            throw new NotImplementedException();
+            Event e = conf.GetCircumstance().GetSE();
+            if (e == null)
+            {
+                //logger.warning("** It was impossible to generate a goal deletion event because SE is null! " + conf.C);
+                return false;
+            }
+
+            Trigger t = e.GetTrigger();
+            bool failEventGenerated = false;
+            if(t.IsAddition() && t.IsGoal())
+            {
+                if (HasGoalListener())
+                {
+                    foreach (Desire d in desireListeners)
+                    {
+                        d.DesireFailed(t);
+                    }
+                }
+
+                Event failE = FindEventForFailure(e.GetIntention(), t);
+                if (failE != null)
+                {
+                    SetDefaultFailureAnnots(failE, t.GetLiteral(), failAnnots);
+                    confP.GetCircumstance().AddEvent(failE);
+                    failEventGenerated = true;
+                } else
+                {
+                    if (e.GetIntention() != null)
+                    {
+                        e.GetIntention().Fail(GetCircumstance());
+                    }
+                }
+            } else if (e.IsInternal())
+            {
+                //logger.warning("Could not finish intention:\n" + ev.intention);
+            } else if (GetSettings().Requeue())
+            {
+                confP.GetCircumstance().AddEvent(e);
+            } else
+            {
+                //logger.warning("Discarding external event: " + ev);
+            }
+            return failEventGenerated;
         }
 
-        private List<Option> relevantPlans(Trigger trigger)
+        public List<Option> RelevantPlans(Trigger trigger)
         {
-            throw new NotImplementedException();
+            Trigger t = trigger.Clone();
+            List<Option> rp = null;
+            List<Plan> candidateRP = conf.GetAgent().GetPlanLibrary().GetCandidatePlans(t);
+
+            if(candidateRP != null)
+            {
+                foreach (Plan p in candidateRP)
+                {
+                    Unifier u = p.IsRelevant(t);
+                    if (u != null)
+                    {
+                        if (rp == null)
+                        {
+                            rp = new List<Option>();
+                        }
+                        rp.Add(new Option(p, u));
+                    }
+                }
+            }
+            return rp;
         }
 
         private void ApplySelEv()
@@ -922,6 +1565,26 @@ namespace Assets.Code.ReasoningCycle
             return step;
         }*/
 
+        private void RunAtBeginOfNextCycle(Runnable r)
+        {
+            taskForBeginOfCycle.Enqueue(r);
+        }
+
+        public bool CanSleepSense()
+        {
+            return !GetCircumstance().HasMsg() && GetUserAgArch().CanSleep();
+        }
+
+        public bool CanSleepDeliberate()
+        {
+            return !GetCircumstance().HasEvent() && taskForBeginOfCycle.IsEmpty && GetCircumstance().GetSelectedEvent() == null && GetUserAgArch().CanSleep();
+        }
+
+        public bool CanSleepAct()
+        {
+            return !GetCircumstance().HasRunningIntention() && !GetCircumstance().HasFeedbackAction() && GetCircumstance().GetSelectedIntention() == null && GetUserAgArch().CanSleep();
+        }
+
         public Settings GetSettings()
         {
             return settings;
@@ -942,10 +1605,64 @@ namespace Assets.Code.ReasoningCycle
             return "Reasoning cycle of agent " + GetUserAgArch().GetAgName();
         }
 
+        class FailWithDeadline : fail_goal
+        {
+            Intention intToDrop;
+            Trigger t;
+
+            public FailWithDeadline(Intention inten, Trigger te)
+            {
+                intToDrop = inten;
+                t = te;
+            }
+
+            public int DropDesire(Intention i, Trigger te, Reasoner r, Unifier u)
+            {
+                if (i != null)
+                {
+                    if (intToDrop != null)
+                    {
+                        if (t != i.GetBottom().GetTrigger())
+                        {
+                            return 0;
+                        }
+                    } else if (!intToDrop.Equals(i))
+                    {
+                        return 0;
+                    }
+
+                    if (i.DropDesire(te, u))
+                    {
+                        if (r.HasGoalListener())
+                        {
+                            foreach (Desire d in r.GetDesiresListeners())
+                            {
+                                d.DesireFailed(te);
+                            }
+                        }
+
+                        Event failEvent = r.FindEventForFailure(i, te);
+                        if (failEvent != null)
+                        {
+                            failEvent.GetTrigger().GetLiteral().AddAnnot(JasonException.createBasicErrorAnnots("deadline_reached", ""));
+                            r.GetCircumstance().AddEvent(failEvent);
+                            //ts.getLogger().fine("'hard_deadline(" + g + ")' is generating a goal deletion event: " + failEvent.getTrigger());
+                            return 2;
+                        } else
+                        {
+                            //ts.getLogger().fine("'hard_deadline(" + g + ")' is removing the intention without event:\n" + i);
+                            return 3;
+                        }
+                    }
+                    return 0;
+                }
+            }
+        }
 
         /*
          This innner class is here to imitate the anonymous interface implementation that exist on Java but not here
          */
+
         private class CLImplementation : CircumstanceListener
         {
             private Desire d;
@@ -990,6 +1707,77 @@ namespace Assets.Code.ReasoningCycle
                 {
                     if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
                         d.DesireSuspended(ip.GetTrigger(), reason);
+                }
+            }
+        }
+
+        private class RunnableImpl : Runnable
+        {
+            Intention i;
+            Desire d;
+            int iSize;
+            Reasoner r;
+            Literal body;
+            Event e;
+
+            public RunnableImpl(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
+            {
+                Intention i = intention;
+                Desire d = des;
+                int iSize = size;
+                Reasoner r = res;
+                Literal body = b;
+                Event e = ev;
+            }
+
+            public void Run()
+            {
+                r.RunAtBeginOfNextCycle(new RunnableImpl2(i, d, iSize, r, body, e));
+                r.GetUserAgArch().WakeUpSense();
+            }
+
+            private class RunnableImpl2 : Runnable
+            {
+                Intention i;
+                Desire d;
+                int iSize;
+                Reasoner r;
+                Literal body;
+                Event e;
+
+                public RunnableImpl2(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
+                {
+                    Intention i = intention;
+                    Desire d = des;
+                    int iSize = size;
+                    Reasoner r = res;
+                    Literal body = b;
+                    Event e = ev;
+                }
+
+                public void Run()
+                {
+                    bool drop = false;
+                    if (i == null)
+                    { // deadline in !!g, test if the agent still desires it
+                        drop = d.AllDesires(r.GetCircumstance(), body, null, new Unifier()).Next();
+                    }
+                    else if (i.Size() >= iSize && i.HasTrigger(e.GetTrigger(), new Unifier()))
+                    {
+                        drop = true;
+                    }
+                    if (drop)
+                    {
+                        try
+                        {
+                            FailWithDeadline ia = new FailWithDeadline(i, e.getTrigger());
+                            ia.FindGoalAndDrop(r, body, new Unifier());
+                        }
+                        catch (Exception e)
+                        {
+                            
+                        }
+                    }
                 }
             }
         }

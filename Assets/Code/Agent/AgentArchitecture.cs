@@ -83,5 +83,10 @@ namespace Assets.Code.Agent
         {
             throw new NotImplementedException();
         }
+
+        internal void WakeUpSense()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

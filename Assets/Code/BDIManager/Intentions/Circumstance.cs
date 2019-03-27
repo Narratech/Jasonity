@@ -57,7 +57,7 @@ namespace Assets.Code.BDIManager
             AddEvent(new Event(trigger, Intention.emptyInt));
         }
 
-        private void AddEvent(Event ev)
+        public void AddEvent(Event ev)
         {
             if (ev.IsAtomic())
             {
@@ -242,7 +242,7 @@ namespace Assets.Code.BDIManager
             }
         }
 
-        private void AddRunningIntention(Intention i)
+        public void AddRunningIntention(Intention i)
         {
             if (i.IsAtomic())
             {
@@ -307,6 +307,16 @@ namespace Assets.Code.BDIManager
         public Option GetSO()
         {
             return SO;
+        }
+
+        internal Event AddAchieveDesire(Literal body, Intention curInt)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasListener()
+        {
+            throw new NotImplementedException();
         }
     }
 }

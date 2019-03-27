@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Logic;
+using System;
 using System.Collections.Generic;
 
 namespace BDIManager.Intentions
@@ -57,6 +58,11 @@ namespace BDIManager.Intentions
             }
             // If no relevant plan, return null instead of empty list
             return l;
+        }
+
+        internal bool HasCandidatePlan(Trigger t)
+        {
+            throw new NotImplementedException();
         }
     }
 }

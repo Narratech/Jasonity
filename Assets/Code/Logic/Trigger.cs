@@ -10,6 +10,17 @@ namespace Assets.Code.Logic
 
     class Trigger
     {
+        private object add;
+        private TEType belief;
+        private Literal lAdd;
+
+        public Trigger(object add, TEType belief, Literal lAdd)
+        {
+            this.add = add;
+            this.belief = belief;
+            this.lAdd = lAdd;
+        }
+
         public Literal GetLiteral()
         {
             throw new NotImplementedException();
@@ -41,6 +52,11 @@ namespace Assets.Code.Logic
         }
 
         internal PredicateIndicator GetPredicateIndicator()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Trigger Clone()
         {
             throw new NotImplementedException();
         }

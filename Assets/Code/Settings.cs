@@ -47,5 +47,10 @@ namespace Assets.Code
         {
             throw new NotImplementedException();
         }
+
+        internal bool SameFocus()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

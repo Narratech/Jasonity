@@ -1,6 +1,7 @@
 // Implements an Intention (which is a stack of IntendedPlans)
 using System;
 using System.Collections.Generic;
+using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
@@ -83,6 +84,21 @@ namespace BDIManager.Intentions
         }
 
         public void SetSuspendedReason(object p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Fail(Circumstance circumstance)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Event FindEventForFailure(Trigger trigger, PlanLibrary planLibrary, object v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool DropDesire(Trigger te, Unifier u)
         {
             throw new NotImplementedException();
         }

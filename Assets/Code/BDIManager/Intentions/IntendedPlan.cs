@@ -1,6 +1,7 @@
 // Interface for plans
 // Allows the user to modify and check an agent's plans
 // Previously IntendedMeans, was renamed
+using System;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
@@ -77,6 +78,26 @@ namespace BDIManager.Intentions {
         public Unifier GetUnif()
         {
             return unif;
+        }
+
+        internal object GetRenamedVars()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetUnif(Unifier current)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetRenamedVars(Unifier renamedVars)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void Pop()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -55,5 +55,10 @@ namespace Assets.Code.Logic
         {
             throw new NotImplementedException();
         }
+
+        internal bool IsAllUnifs()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
