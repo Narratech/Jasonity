@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.Mas2J
 {
-    public class Structure
+    public class ClassParameters
     {
-        
     }
 }

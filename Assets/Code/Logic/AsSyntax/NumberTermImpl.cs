@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic.AsSyntax
 {
-    public interface StringTerm
+    public class NumberTermImpl : DefaultTerm, NumberTerm
     {
+        public double solve()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

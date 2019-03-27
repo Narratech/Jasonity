@@ -8,8 +8,6 @@ namespace Assets.Code.Logic
 {
     public class Atom
     {
-        public Atom(string a) { } 
-
-        
+                
     }
 }
