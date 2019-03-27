@@ -10,6 +10,7 @@ namespace Assets.Code.Logic
     class Literal
     {
         internal static Atom DefaultNS;
+        internal static object LPos;
 
         internal bool HasSubsetAnnot(Literal bl)
         {
@@ -62,6 +63,21 @@ namespace Assets.Code.Logic
         }
 
         internal PredicateIndicator GetPredicateIndicator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Literal(Term v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Literal(void v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Literal(Pred v)
         {
             throw new NotImplementedException();
         }

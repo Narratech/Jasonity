@@ -14,6 +14,7 @@ namespace Assets.Code.Agent
         public string[] knownPerformatives = { "tell", "untell", "achieve", "unachieve", "askOne", "askAll", "tellHow", "untellHow", "askHow" };
         private string ilForce = null;
         private string sender = null;
+        private string msgIdSyncAskPrefix = "samid";
 
         void SetPropCont(object o)
         {
@@ -52,7 +53,7 @@ namespace Assets.Code.Agent
 
         internal bool IsReplyToSyncAsk()
         {
-            throw new NotImplementedException();
+            return inReplyTo != null && inReplyTo.StartsWith(msgIdSyncAskPrefix);
         }
     }
 }

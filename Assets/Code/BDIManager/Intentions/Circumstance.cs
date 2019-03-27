@@ -294,19 +294,19 @@ namespace Assets.Code.BDIManager
             return RP;
         }
 
-        internal void SetSO(bool v)
+        internal void SetSO(Option o)
         {
-            throw new NotImplementedException();
+            SO = o;
         }
 
         internal object GetAP()
         {
-            throw new NotImplementedException();
+            return AP;
         }
 
         public Option GetSO()
         {
-            throw new NotImplementedException();
+            return SO;
         }
     }
 }
