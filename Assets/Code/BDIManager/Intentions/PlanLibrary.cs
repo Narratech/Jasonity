@@ -44,7 +44,7 @@ namespace BDIManager.Intentions
                 l = relPlans[trigger.GetPredicateIndicator()];
                 if ((l == null || l.Count == 0) && !(varPlans.Count == 0) && trigger != TE_JAG_SLEEPING && trigger != TE_JAG_AWAKING)
                 {
-                    foreach (var p in varPlans)
+                    foreach (Plan p in varPlans)
                     {
                         if (p.GetTrigger().GetType() == typeof(Trigger))
                         {
@@ -60,9 +60,9 @@ namespace BDIManager.Intentions
             return l;
         }
 
-        internal bool HasCandidatePlan(Trigger t)
+        public bool HasCandidatePlan(Trigger t)
         {
-            throw new NotImplementedException();
+            return t == null ? false : GetCandidatePlans(t) != null;
         }
     }
 }

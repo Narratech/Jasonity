@@ -21,6 +21,10 @@ namespace Assets.Code.Logic
             this.lAdd = lAdd;
         }
 
+        public Trigger()
+        {
+        }
+
         public Literal GetLiteral()
         {
             throw new NotImplementedException();

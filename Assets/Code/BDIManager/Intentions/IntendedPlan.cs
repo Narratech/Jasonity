@@ -13,6 +13,8 @@ namespace BDIManager.Intentions {
         private Trigger trigger;
         private Unifier unif = null;
 
+        private Unifier renamedVars = null;
+
         public IntendedPlan(Option opt, Trigger te)
         {
             plan = opt.GetPlan();
@@ -82,17 +84,17 @@ namespace BDIManager.Intentions {
 
         internal object GetRenamedVars()
         {
-            throw new NotImplementedException();
+            return renamedVars;
         }
 
         internal void SetUnif(Unifier current)
         {
-            throw new NotImplementedException();
+            this.unif = current;
         }
 
         internal void SetRenamedVars(Unifier renamedVars)
         {
-            throw new NotImplementedException();
+            this.renamedVars = renamedVars;
         }
 
         internal void Pop()

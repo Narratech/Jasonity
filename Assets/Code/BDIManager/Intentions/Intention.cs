@@ -14,6 +14,7 @@ namespace BDIManager.Intentions
         private int count = 0;
 
         private List<IntendedPlan> plans = new List<IntendedPlan>();
+        private string suspendedReason = null;
 
         public Intention()
         {
@@ -70,37 +71,78 @@ namespace BDIManager.Intentions
 
         public bool HasTrigger(Trigger t, Unifier unifier)
         {
-            throw new NotImplementedException();
+            foreach (var p in plans)
+            {
+                if (unifier.Unifies(t, p.GetTrigger()))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
+        // Returns the head of the list, null if empty
         public IntendedPlan Peek()
         {
-            throw new NotImplementedException();
+            if (plans.Count == 0)
+            {
+                return null;
+            }
+            return plans[0];
         }
 
         public IEnumerable<IntendedPlan> GetIntendedPlan()
         {
-            throw new NotImplementedException();
+            return plans;
         }
 
-        public void SetSuspendedReason(object p)
+        public void SetSuspendedReason(string r)
         {
-            throw new NotImplementedException();
+            suspendedReason = r;
         }
 
+        // This function is empty in the original code. Should it do something?
         internal void Fail(Circumstance circumstance)
         {
-            throw new NotImplementedException();
+            
         }
 
-        internal Event FindEventForFailure(Trigger trigger, PlanLibrary planLibrary, object v)
+        internal Event FindEventForFailure(Trigger trigger, PlanLibrary planLibrary, Circumstance c)
         {
+            Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetType(), trigger.GetLiteral());
+            int posInStack = Size();
+            // Synchronized???
             throw new NotImplementedException();
         }
 
         internal bool DropDesire(Trigger te, Unifier u)
         {
-            throw new NotImplementedException();
+            bool r = false;
+            IntendedPlan p = GetIntendedPlan(te, u);
+            while (p != null)
+            {
+                r = true;
+                // Remove until p-1
+                while (Peek() != p)
+                {
+                    Pop();
+                }
+                Pop(); // Remove plan
+                p = GetIntendedPlan(te, u);
+            }
+            return r;
+        }
+
+        private IntendedPlan GetIntendedPlan(Trigger te, Unifier u)
+        {
+            foreach (var p in plans)
+            {
+                if (u.Unifies(te, p.GetTrigger()))
+                {
+                    return p;
+                }
+            }
+            return null;
         }
     }
 }

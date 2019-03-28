@@ -124,6 +124,11 @@ namespace Assets.Code.ReasoningCycle
             return ok;
         }
 
+        internal bool Unifies(Trigger t, Trigger trigger)
+        {
+            return t.GetType() == trigger.GetType() && Unifies(t.GetLiteral(), trigger.GetLiteral());
+        }
+
         private bool Bind(VarTerm term, Pred pvl)
         {
             throw new NotImplementedException();

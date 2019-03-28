@@ -311,12 +311,14 @@ namespace Assets.Code.BDIManager
 
         internal Event AddAchieveDesire(Literal body, Intention curInt)
         {
-            throw new NotImplementedException();
+            Event evt = new Event(new Trigger(TEOperator.add, TEType.achieve, body), curInt);
+            AddEvent(evt);
+            return evt;
         }
 
         internal bool HasListener()
         {
-            throw new NotImplementedException();
+            return listeners.Count != 0;
         }
     }
 }
