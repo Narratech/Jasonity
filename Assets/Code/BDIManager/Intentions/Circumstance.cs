@@ -175,6 +175,11 @@ namespace Assets.Code.BDIManager
             }
         }
 
+        internal void AddFeedbackAction(ExecuteAction action)
+        {
+            throw new NotImplementedException();
+        }
+
         // Creates new collections for E, I, MB, PA, PI, and FA
         public void Create()
         {
