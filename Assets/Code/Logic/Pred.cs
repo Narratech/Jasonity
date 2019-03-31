@@ -64,7 +64,22 @@ public class Pred : MonoBehaviour
         throw new NotImplementedException();
     }
 
+    public static implicit operator Pred(CyclicTerm v)
+    {
+        throw new NotImplementedException();
+    }
+
     internal void SetNegated(object lPos)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal bool IsCyclicTerm()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal bool HasVar(VarTerm term, Unifier unifier)
     {
         throw new NotImplementedException();
     }

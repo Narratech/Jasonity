@@ -94,5 +94,30 @@ namespace Assets.Code.Logic
         {
             throw new NotImplementedException();
         }
+
+        internal bool IsLiteral()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Term(Pred v)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static implicit operator Term(CyclicTerm v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasVar(VarTerm term, Unifier unifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static explicit operator Term(VarTerm v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

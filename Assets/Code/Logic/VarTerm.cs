@@ -37,4 +37,29 @@ public class VarTerm : MonoBehaviour
     {
         throw new NotImplementedException();
     }
+
+    internal VarTerm Clone()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal VarTerm CloneNS(Atom defaultNS)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void SetNegated(object lPos)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal VarTerm GetNS()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal int CompareTo(VarTerm vt2)
+    {
+        throw new NotImplementedException();
+    }
 }

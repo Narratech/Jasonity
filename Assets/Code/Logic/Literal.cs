@@ -91,5 +91,20 @@ namespace Assets.Code.Logic
         {
             throw new NotImplementedException();
         }
+
+        internal bool Negated()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetNegated(object lPos)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Pred CloneNS(Atom defaultNS)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

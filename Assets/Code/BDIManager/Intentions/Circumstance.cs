@@ -175,9 +175,14 @@ namespace Assets.Code.BDIManager
             }
         }
 
-        internal void AddFeedbackAction(ExecuteAction action)
+        internal void AddFeedbackAction(ExecuteAction action) // SYNCHRONIZED
         {
-            throw new NotImplementedException();
+            if (action.GetIntention() != null)
+            {
+                // synchronized (FA) {
+                    FA.Add(action);
+                // }
+            }
         }
 
         // Creates new collections for E, I, MB, PA, PI, and FA
