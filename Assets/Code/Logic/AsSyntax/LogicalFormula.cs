@@ -8,6 +8,6 @@ namespace Assets.Code.Logic.AsSyntax
 {
     interface LogicalFormula:Term, ICloneable
     {
-
+        IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un);
     }
 }

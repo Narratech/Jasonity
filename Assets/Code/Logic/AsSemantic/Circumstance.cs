@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.Logic.AsSemantic
 {
-    public class Predicate
+    [Serializable]
+    public class Circumstance
     {
-        
     }
 }

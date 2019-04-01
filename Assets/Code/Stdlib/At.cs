@@ -13,12 +13,12 @@ namespace Assets.Code.Stdlib
     {
         public static readonly string atAtom = ".at";
         
-        public override int GetMinArgs()
+        public int GetMinArgs()
         {
             return 2;
         }
 
-        public override int GetMaxArgs()
+        public int GetMaxArgs()
         {
             return 2;
         }
@@ -85,7 +85,7 @@ namespace Assets.Code.Stdlib
         ///******************************************************************
         private ConcurrentDictionary<int?, CheckDeadline> ats = new ConcurrentDictionary<int?, CheckDeadline>();
 
-        public void cancelAts()
+        public void CancelAts()
         {
             foreach(CheckDeadline t in ats.Values)
             {

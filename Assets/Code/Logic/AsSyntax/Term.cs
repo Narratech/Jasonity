@@ -17,11 +17,31 @@ namespace Assets.Code.Logic.AsSyntax
         bool IsInternalAction();
         bool IsArithExpr();
         bool IsNumeric();
-        bool IsPredicate();
+        bool IsPred();
         bool IsGround();
         bool IsStructure();
         bool IsAtom();
         bool IsPlanBody();
         bool IsCyclicTerm();
+
+        bool HasVar(VarTerm t, Unifier u);
+        VarTerm GetCyclicVar();
+
+        void CountVars(Dictionary<VarTerm, int?> c);
+
+        new Term Clone();
+
+        bool Equals(object o);
+
+        bool Subsumes(Term l);
+
+        /** clone and applies together (and faster than clone and then apply) */
+        Term Capply(Unifier u);
+
+        /** clone in another namespace */
+        Term CloneNS(Atom Newnamespace);
+
+        void SetSrcInfo(SourceInfo s);
+        SourceInfo GetSrcInfo();
     }
 }

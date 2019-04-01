@@ -12,6 +12,6 @@ namespace Assets.Code.Logic.AsSyntax
     public interface NumberTerm
     {
         /** returns the numeric value of the term */
-        double solve();
+        double Solve();
     }
 }

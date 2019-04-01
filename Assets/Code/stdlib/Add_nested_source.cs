@@ -68,7 +68,7 @@ namespace Assets.Code.Stdlib
                 Literal result = ((Literal)l).ForceFullLiteralImpl().copy();
 
                 //Create the source annots
-                Literal ts = Predicate.CreateSource(source).AddAnnots(result.GetAnnots("source"));
+                Literal ts = Pred.CreateSource(source).AddAnnots(result.GetAnnots("source"));
 
                 result.DelSources();
                 result.AddAnnots(ts);

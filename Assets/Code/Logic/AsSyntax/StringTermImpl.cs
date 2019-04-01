@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic.AsSyntax
 {
-    public class StringTermImpl:DefaultTerm, StringTerm
+    public class StringTermImpl : DefaultTerm, StringTerm
     {
+        private string v;
+
+        public StringTermImpl(string v)
+        {
+            this.v = v;
+        }
     }
 }
