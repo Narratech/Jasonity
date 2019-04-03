@@ -93,6 +93,11 @@ namespace Assets.Code.Logic
             return false;
         }
 
+        public List<Term> GetTerms()
+        {
+            return Structure.emptyTermList;
+        }
+
         /** returns all terms of this literal */
         public Term[] GetTermsArray()
         {
@@ -356,14 +361,227 @@ namespace Assets.Code.Logic
 
         public IEnumerator<Unifier> LogicalConsecuence(Agent ag, Unifier un)
         {
+            IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
+            if (il == null)
+            {
+                return LogExpr.EMPTY_UNIF_LIST.iterator();
+            }
 
+            AgArch arch = (ag != null && ag.GetTs() != null ? ag.GetTS().GetUserAgArch() : null);
+            int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Size() : 0);
+
+            Acabaaaaaaaaaarrrrr
         }
 
+        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        {
+            throw new NotImplementedException();
+        }
 
+        private void UseDerefVars(Term p, Unifier un)
+        {
+            if (p.GetType() == typeof(Literal))
+            {
+                Literal l = p as Literal;
+                for (int i = 0; i < l.GetArity(); i++)
+                {
+                    Term t = l.GetTerm(i);
+                    if (t.IsVar())
+                    {
+                        l.SetTerm(i, un.Deref(t as VarTerm));
+                    }
+                    else
+                    {
+                        UseDerefVars(t, un);
+                    }
+                }
+            }
+        }
 
+        /** returns this literal as a list with three elements: [functor, list of terms, list of annots] */
+        private ListTerm GetAsListOfTerms()
+        {
+            ListTerm l = new ListTermImpl();
+            l.Add(GetNS());
+            l.Add(new LiteralImpl(!Negated(), GetFunctor()));
+            ListTerm lt = new ListTermImpl();
+            l.Add(lt);
+            if (HasAnnot())
+            {
+                l.Add(GetAnnots().CloneLT());
+            }
+            else
+            {
+                l.Add(new ListTermImpl());
+            }
+            return l;
+        }
 
+        /** creates a literal from a list with four elements: [namespace, functor, list of terms, list of annots]
+         *  (namespace is optional)
+         */
+        public static Literal NewFromListOfTerms(ListTerm lt)
+        {
+            try
+            {
+                IEnumerator<Term> i = lt.Iterator();
 
+                Atom ns = DefaultNS;
+                if (lt.Size() == 4)
+                {
+                    ns = i.Current as Atom;
+                }
+                Term tFunctor = i.Current;
 
+                bool pos = Literal.LPos;
+                if (tFunctor.IsLiteral() && (tFunctor as Literal).Negated())
+                {
+                    pos = Literal.LNeg;
+                }
+                if (tFunctor.IsString())
+                {
+                    tFunctor = AsSyntax.ParseTerm((tFunctor as Literal).GetString());
+                }
+
+                Literal l = new LiteralImpl(ns, pos, (tFunctor as Atom).GetFunctor());
+
+                if (i.Current != null)
+                {
+                    l.SetTerms((i.Current as ListTerm).CloneLT());
+                }
+                if (i.Current != null)
+                {
+                    l.SetAnnots((i.Current as ListTerm).CloneLT());
+                }
+                return l;
+            }
+            catch (Exception e)
+            {
+                throw new JasonException("Error creating literal from"+lt);
+            }
+        }
+
+        /**
+         * Transforms this into a full literal (which implements all methods of Literal), if it is an Atom;
+         * otherwise returns 'this'
+         */
+        public Literal ForceFullLiteralImpl()
+        {
+            if (this.IsAtom() && !(this.GetType() == typeof(LiteralImpl)))
+            {
+                return new LiteralImpl(this);
+            }
+            else
+            {
+                return this;
+            }
+        }
+
+        sealed class TrueLiteral : Atom
+        {
+            public TrueLiteral() : base("true")
+            {
+
+            }
+
+            public override Literal CloneNS(Atom newNamespace)
+            {
+                return this;
+            }
+
+            public override Term Capply(Unifier u)
+            {
+                return this;
+            }
+
+            public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+            {
+                return LogExpr.CreateUnifIterator(un);
+            }
+
+            protected object ReadResolve()
+            {
+                return Literal.LTrue;
+            }
+        }
+
+        sealed class FalseLiteral: Atom
+        {
+            public FalseLiteral() : base("false")
+            {
+
+            }
+
+            public override Literal CloneNS(Atom newNamespace)
+            {
+                return this;
+            }
+
+            public override Term Capply(Unifier u)
+            {
+                return this;
+            }
+
+            public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+            {
+                return LogExpr.EMPTY_UNIFY_LIST.iterator();
+            }
+
+            protected object ReadResolve()
+            {
+                return Literal.LFalse;
+            }
+        }
+
+        internal sealed class DefaultNameSpace : Atom
+        {
+            public DefaultNameSpace() : base(null, "default")
+            {
+
+            }
+
+            protected override int? CalcHashCode()
+            {
+                return GetFunctor().GetHashCode();
+            }
+
+            public override Term Capply(Unifier u)
+            {
+                return this;
+            }
+
+            public override Literal CloneNS(Atom newnamespace)
+            {
+                return this;
+            }
+
+            public override Atom GetNS()
+            {
+                return this;
+            }
+
+            public override bool Equals(object o)
+            {
+                if (o == null) return false;
+                if (o == this) return true;
+                if (o.GetType() == typeof(Atom))
+                {
+                    Atom a = o as Atom;
+                    return a.IsAtom() && GetFunctor().Equals(a.GetFunctor());
+                }
+                return false;
+            }
+
+            public override string ToString()
+            {
+                return GetFunctor();
+            }
+
+            protected object ReadResolver()
+            {
+                return Literal.DefaultNS;
+            }
+        }
 
         public override Term Clone()
         {
@@ -371,11 +589,6 @@ namespace Assets.Code.Logic
         }
 
         protected override int? CalcHashCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             throw new NotImplementedException();
         }

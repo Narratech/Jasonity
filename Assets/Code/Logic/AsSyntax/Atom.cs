@@ -49,12 +49,12 @@ namespace Assets.Code.Logic
             srcInfo = l.srcInfo;
         }
 
-        public string GetFunctor()
+        public override string GetFunctor()
         {
             return functor;
         }
 
-        public Atom GetNS()
+        public override Atom GetNS()
         {
             return this; //since this object is inmutable
         }
