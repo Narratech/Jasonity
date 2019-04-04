@@ -1,4 +1,48 @@
-// Implements a default Belief Base
+using System;
+using Assets.Code.Logic;
+using Assets.Code.ReasoningCycle;
+using BDIManager.Intentions;
+
+//Implements the Desire interface
 namespace BDIManager.Desires {
-    public abstract class DefaultDesire : Desire {}
+    class DefaultDesire : Desire
+    {
+        Reasoner reasoner;
+        
+        public DefaultDesire(Reasoner r)
+        {
+            reasoner = r;
+        }
+
+        public void DesireStarted(Event desire)
+        {
+            GenerateDesireStateEvent(desire.GetTrigger().GetLiteral(), TEType.achieve, DesireStates.started, null);
+        }
+
+        public void DesireFailed(Trigger desire)
+        {
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.failed, null);
+        }
+
+        public void DesireFinished(Trigger desire, FinishStates result)
+        {
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.finished, result.ToString());
+        }
+
+        public void DesireResumed(Trigger desire)
+        {
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.resumed, null);
+        }
+        
+        public void DesireSuspended(Trigger desire, string reason)
+        {
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.suspended, reason);
+        }
+
+        private void GenerateDesireStateEvent(Literal desire, TEType type, DesireStates state, String reason)
+        {
+            reasoner.RunAtBeginOfNextCycle();
+            reasoner.GetUserAgArch().WakeUpDeliberate();
+        }
+    }
 }
