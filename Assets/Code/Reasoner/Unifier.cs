@@ -19,7 +19,7 @@ namespace Assets.Code.ReasoningCycle
             return function.Remove(v);
         }
 
-        public bool Unifies(Term term, Literal topLiteral)
+        public bool Unifies(Term term, Literal topLiteral) // ???
         {
             throw new NotImplementedException();
         }
@@ -129,7 +129,19 @@ namespace Assets.Code.ReasoningCycle
             return t.GetType() == trigger.GetType() && Unifies(t.GetLiteral(), trigger.GetLiteral());
         }
 
-        private bool Bind(VarTerm term, Pred pvl)
+        private bool Bind(VarTerm term, Pred pvl) // This one is weird because I need it but it doesn't exist in the original
+        {
+            throw new NotImplementedException();
+        }
+
+        private VarTerm GetVarForUnifier(VarTerm term)
+        {
+            term = Deref(term).CloneNS(Literal.DefaultNS);
+            term.SetNegated(Literal.LPos);
+            return term;
+        }
+
+        private bool UnifiesNamespace(VarTerm term, Literal lpvl) // This one is weird too, original uses two Literals, I'm confused
         {
             throw new NotImplementedException();
         }
@@ -152,7 +164,108 @@ namespace Assets.Code.ReasoningCycle
 
         private bool UnifyTerms(Term term, Term term2)
         {
+            if (term.IsArithExpr())
+            {
+                term = term.Capply(this);
+            }
+            if (term2.IsArithExpr())
+            {
+                term2 = term2.Capply(this);
+            }
+
+            bool termIsVar = term.IsVar();
+            bool term2IsVar = term2.IsVar();
+
+            // One of them is a variable
+            if (termIsVar || term2IsVar)
+            {
+                VarTerm termv = termIsVar ? (VarTerm)term : null;
+                VarTerm term2v = term2IsVar ? (VarTerm)term2 : null;
+
+                // Get their values
+                Term termvl = termIsVar ? Get(termv) : term; // ???
+                Term term2vl = term2IsVar ? Get(term2v) : term2; // ???
+
+                if (termvl != null && term2vl != null) // Unify the values of the two variables
+                {
+                    return UnifiesNoUndo(termvl, term2vl);
+                }
+                else if (termvl != null) // Unify a variable with a value
+                {
+                    return Bind(term2v, termvl);
+                }
+                else if (term2vl != null)
+                {
+                    return Bind(termv, term2vl);
+                }
+                else // Unify two variables
+                {
+                    if (!UnifyTerms(termv.GetNS(), term2v.GetNS()))
+                    {
+                        return false;
+                    }
+                    if (termv.Negated() != term2v.Negated())
+                    {
+                        return false;
+                    }
+                    Bind(termv, term2v);
+                    return true;
+                }
+            }
+        }
+
+        private void Bind(VarTerm vt1, VarTerm vt2)
+        {
+            vt1 = GetVarForUnifier(vt1);
+            vt2 = GetVarForUnifier(vt2);
+            int compare = vt1.CompareTo(vt2);
+            if (compare < 0)
+            {
+                function.Add(vt1, (Term)vt2);
+            }
+            else if (compare > 0)
+            {
+                function.Add(vt2, (Term)vt1);
+            }
+            // Doesn't bind if (compare == 0), because they are the same
+        }
+
+        private bool UnifyTerms(VarTerm varTerm1, VarTerm varTerm2) // Yet again, something that doesn't exist! I hate this!
+        {
             throw new NotImplementedException();
+        }
+
+        private bool Bind(VarTerm vt, Term term)
+        {
+            if (vt.Negated()) // Negated variables unify only with negated literals
+            {
+                if (!term.IsLiteral() || !((Literal)term).Negated())
+                {
+                    return false;
+                }
+                term = (Literal)term.Clone(); // I don't understand this cast, but the original code does it, so I don't know
+                ((Literal)term).SetNegated(Literal.LPos);
+            }
+
+            // Namespace
+            if (term.IsLiteral())
+            {
+                Literal lterm = (Literal)term;
+                if (!UnifiesNamespace(vt, lterm))
+                {
+                    return false;
+                }
+                if (lterm.GetNS() != Literal.DefaultNS)
+                {
+                    term = (Term)lterm.CloneNS(Literal.DefaultNS);
+                }
+            }
+            if (!term.IsCyclicTerm() && term.HasVar(vt, this))
+            {
+                term = new CyclicTerm((Literal)term, vt.Clone());
+            }
+            function.Add(GetVarForUnifier(vt), term);
+            return true;
         }
 
         private object Get(VarTerm var)
@@ -165,7 +278,7 @@ namespace Assets.Code.ReasoningCycle
             return vl;
         }
 
-        public bool Unifies(Literal literal, Literal topLiteral) // ???
+        public bool Unifies(Literal literal, Literal topLiteral) // Why does this exist? Why?!
         {
             throw new NotImplementedException();
         }
