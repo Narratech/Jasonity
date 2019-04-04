@@ -12,139 +12,120 @@ namespace Assets.Code.Agent
 {
     class Agent
     {
-        protected BeliefBase bb = null;
-        protected PlanLibrary planLibrary = null;
-        protected String aslSource = null;
-        protected Reasoner reasoner = null; //Reference to the reasoner
-
+        private BeliefBase bb = null;
+        private PlanLibrary pl = null;
+        private Reasoner reasoner = null;
+        private string aslSource = null;
+        //The ones in the source code
         private List<Literal> initialGoals = null;
         private List<Literal> initialBeliefs = null;
-
-        //This might be needed in the future
-        //private Dictionary<String, InternalAction> internalActions = null;
-        //private Dictionary<String, ArithFunction> functions = null;
+        private Dictionary<string, InternalAction> internalActions = null;
+        private Dictionary<string, ArithFunction> functions = null;
+        private bool hasCustomSelOp = true;
+        //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
 
         public Agent()
         {
-
+            CheckCustomSelectOption();
         }
 
-        /**
-         * Creates an agent and it's belief base
-         */
-        public static Agent Create(AgentArchitecture agArch, String agClass, String asSrc)
+        public static Agent Create(AgentArchitecture agArch, string agClass, ClassParameters bbPars, string asSrc, Settings stts)  
         {
             try
             {
+                //Agent ag = (Agent) Class.forName(agClass).newInstance(); //???
                 Agent ag = new Agent();
-                ag.bb = new DefaultBeliefBase();
-                ag.InitAgente();
+                Reasoner r = new Reasoner(ag, null, agArch, stts);
+                BeliefBase bb = null;
+                if (bbPars == null)
+                {
+                    bb = new DefaultBeliefBase();
+                } else
+                {
+                    //bb = (BeliefBase) Class.forName(bbPars.getClassName()).newInstance();
+                }
+
+                ag.SetBB(bb);
+                ag.InitAg();
+
+                if (bbPars != null)
+                {
+                    bb.Init(ag, bbPars.GetParametersArray());
+                }
+
                 ag.Load(asSrc);
-                Assets.Code.ReasoningCycle.Reasoner r = new Assets.Code.ReasoningCycle.Reasoner(ag, null, agArch);
-                ag.reasoner = r;
                 return ag;
             }
             catch (Exception e)
             {
-                throw new Exception("Error creating the agent: " + e.Message);
+                throw new JasonException(e);
             }
         }
 
-        public void SetReasoner(Reasoner r)
-        {
-            reasoner = r;
-        }
-
-        /**
-         * Initializes the belief base, the plan library, the initial goals and the initial beliefs of the agent 
-         */
-        public void InitAgente()
+        public void InitAg()
         {
             if (bb == null)
-                bb = new DefaultBeliefBase();
-            if (planLibrary == null)
-                planLibrary = new PlanLibrary();
+            {
+                new DefaultBeliefBase();
+            }
+
+            if (pl == null)
+            {
+                pl = new PlanLibrary();
+            }
+
             if (initialGoals == null)
+            {
                 initialGoals = new List<Literal>();
+            }
+
             if (initialBeliefs == null)
+            {
                 initialBeliefs = new List<Literal>();
+            }
+
+            if (internalActions == null)
+            {
+                internalActions = new Dictionary<string, InternalAction>();
+            }
+
+            //if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
         }
 
-        /**
-         *  Parse and load the source code of the agent
-         */
-        public void Load(String asSrc)
+        public void InitAg(string asSrc)
+        {
+            InitAg();
+            Load(asSrc);
+        }
+
+        public void Load(string asSrc)
         {
             try
             {
-                if (!String.IsNullOrEmpty(asSrc)) //If the source isn't null or empty
+                bool parsingOk = true;
+                if(asSrc != null && !string.IsNullOrEmpty(asSrc))
                 {
-                    asSrc = asSrc.Replace("\\", "/");
+                    asSrc = asSrc.Replace("\\\\", "/");
 
-                    //AddInitialBeliefsFromProjectInBB();
-                   // AddInitialBeliefsInBB();
-                   // AddInitialGoalsFromProjetInBB();
+                    if (asSrc.StartsWith(SourcePath.CRPrefix)) //I don't know yet what the hell is SourcePath.CRPrefix
+                    {
+                        //parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc); I don't know what this is
+                    } else
+                    {
+                        try
+                        {
+                            parsingOk = ParseAs(new URL(asSrc)); //I need to find a replace for url but i don't understand why this is used
+                        } catch (Exception e)
+                        {
 
+                        }
+                     }
 
-                    aslSource = asSrc;
                 }
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
-                throw new Exception("Error loading the file: " + e.Message);
+
             }
-        }
-
-        public void StopAgent()
-        {
-            //This maybe needs to be synchronized
-            //bb.Stop();
-        }
-
-        //This is not implemented yet but might be needed in the future
-        public void Clone()
-        {
-            throw new NotImplementedException();
-        }
-
-        public PlanLibrary GetPlanLibrary()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Message SelectMessage(object p)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal object SelectEvent(IEnumerable<Event> enumerable)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal bool HasCustomSelectOption()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal bool HasCustomSelectOption(object v)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal object SelectIntention(object v)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal List<Literal>[] brf(object p, Literal b2, Intention curInt)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal List<Literal>[] brf(Literal body, object p, Intention curInt, bool v)
-        {
-            throw new NotImplementedException();
         }
     }
 }
