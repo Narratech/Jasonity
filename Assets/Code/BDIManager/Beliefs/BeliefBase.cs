@@ -3,13 +3,13 @@
 // Allows the user to modify the Belief Base and check for relevant data
 using Assets.Code.Agent;
 using Assets.Code.Logic;
+using Assets.Code.Logic.AsSyntax;
 using System.Collections.Generic;
 
 namespace BDIManager.Beliefs
 {
     interface BeliefBase
     {
-
         // Removes all beliefs from BB
         void Clear();
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Assets.Code.Logic;
+using Assets.Code.Logic.AsSyntax;
 
 namespace BDIManager.Beliefs
 {
@@ -14,6 +15,8 @@ namespace BDIManager.Beliefs
 
         public HashSet<Literal> percepts = new HashSet<Literal>();
         private object TPercept;
+        static public Term ASelf = new Atom("self");
+        static public Term TSelf = Pred.CreateSource(ASelf);
 
         // Constructor
         public DefaultBeliefBase()

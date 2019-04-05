@@ -48,5 +48,10 @@ namespace Assets.Code.Logic.AsSyntax
 
         //Make a shallow copy of the list (terms are not cloned, only the structure)
         ListTerm CloneLTShallow();
+        void Add(Pred pred);
+        void Add(LogicalFormula logicalFormula);
+        Term Get(int v);
+        void Add(Trigger trigger);
+        void Add(PlanBody planBody);
     }
 }

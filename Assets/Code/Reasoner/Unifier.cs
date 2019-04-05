@@ -214,6 +214,11 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
+        internal bool UnifiesNoUndo(Trigger tevent, Trigger te)
+        {
+            throw new NotImplementedException();
+        }
+
         private void Bind(VarTerm vt1, VarTerm vt2)
         {
             vt1 = GetVarForUnifier(vt1);

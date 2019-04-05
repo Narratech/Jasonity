@@ -1,64 +1,298 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.Logic
 {
-    public class Plan : Term
+    public class Plan : Structure
     {
-        private Belief condition;
-        private Objective planObjective;
-        private string actionFocus;
+        private Term TAtomic = AsSyntax.CreateAtom("atomic");   // ???
+        private Term TBreakPoint = AsSyntax.CreateAtom("breakpoint"); // ???
+        private Term TAllUnifs = AsSyntax.CreateAtom("all_unifs"); // ???
 
-        public Plan(Objective objective, Belief belief, string name, string aFocus) : base(name)
+        private Pred label = null;
+        private Trigger tevent = null;
+        private LogicalFormula context;
+        private PlanBody body;
+
+        private bool isAtomic = false;
+        private bool isAllUnifs = false;
+        private bool hasBreakpoint = false;
+
+        private bool isTerm = false;    // True when the plan body is used as a term instead of an element of a plan
+
+        private string source = ""; // Source of this plan (file, url, etc.)
+
+        public Plan()
         {
-            this.condition = belief;
-            this.planObjective = objective;
-            this.actionFocus = aFocus;
+            // super("plan", 0);
         }
 
-        internal PlanBody getBody()
+        public Plan(Pred label, Trigger te, LogicalFormula ct, PlanBody bd)
+        {
+            // super("plan", 0);
+            tevent = te;
+            tevent.SetAsTriggerTerm(false);
+            SetLabel(label);
+            SetContext(ct);
+            if (bd == null)
+            {
+                body = new PlanBodyImpl();
+            }
+            else
+            {
+                body = bd;
+                body.SetAsBodyTerm(false);
+            }
+        }
+
+        public int GetArity() => 4;
+
+        public void SetSource(string f)
+        {
+            if (f != null)
+            {
+                source = f;
+            }
+        }
+
+        public string GetSource() => source;
+
+        private Term noLabelAtom = new Atom("nolabel");
+
+        public Term GetTerm(int i)
+        {
+            switch (i)
+            {
+                case 0:
+                    return (label == null) ? noLabelAtom : label;
+                case 1:
+                    return tevent;
+                case 2:
+                    return (context == null) ? Literal.LTrue : context;
+                case 3:
+                    if (body.GetBodyNext() == null && body.GetBodyTerm().IsVar())
+                    {
+                        return body.GetBodyTerm();
+                    }
+                    return body;
+                default:
+                    return null;
+            }
+        }
+
+        public void SetTerm(int i, Term t)
+        {
+            switch (i)
+            {
+                case 0:
+                    label = (Pred)t;
+                    break;
+                case 1:
+                    tevent = (Trigger)t;
+                    break;
+                case 2:
+                    context = (LogicalFormula)t;
+                    break;
+                case 3:
+                    body = (PlanBody)t;
+                    break;
+            }
+        }
+
+        public void SetLabel(Pred p)
+        {
+            label = p;
+            isAtomic = false;
+            hasBreakpoint = false;
+            isAllUnifs = false;
+            if (p != null && p.HasAnnot())
+            {
+                foreach (Term t in label.GetAnnots())
+                {
+                    if (t.Equals(TAtomic))
+                    {
+                        isAtomic = true;
+                    }
+                    if (t.Equals(TBreakPoint))
+                    {
+                        hasBreakpoint = true;
+                    }
+                    if (t.Equals(TAllUnifs))
+                    {
+                        isAllUnifs = true;
+                    }
+                }
+            }
+        }
+
+        public Pred GetLabel() => label;
+
+        public void DelLabel() => SetLabel(null);
+
+        private void SetContext(LogicalFormula le)
+        {
+            context = le;
+            if (Literal.LTrue.Equals(le))
+            {
+                context = null;
+            }
+        }
+
+        public void SetAsPlanTerm(bool b) => isTerm = b;
+
+        public bool IsPlanTerm() => isTerm;
+
+        public ListTerm GetAsListOfTerms()
+        {
+            ListTerm l = new ListTermImpl();
+            l.Add(GetLabel());
+            l.Add(GetTrigger());
+            l.Add(GetContext());
+            l.Add(GetBody());
+            return l;
+        }
+
+        internal object GetSrcInfo()
         {
             throw new NotImplementedException();
         }
 
-        public override bool IsPlan()
+        // Creates a plan from a list with four elements: [Literal, Trigger, Context, Body]
+        public Plan NewFromListOfTerms(ListTerm lt)
         {
-            return true;
+            Term c = lt.Get(2);
+            if (c.IsPlanBody())
+            {
+                c = ((PlanBody)c).GetBodyTerm();
+            }
+            return new Plan(new Pred((Literal)(lt.Get(0))), (Trigger)lt.Get(1), (LogicalFormula)c, (PlanBody)lt.Get(3));
         }
 
-        public Belief Condition { get => this.condition; }
-
-        internal object GetTrigger()
+        public static Plan Parse(string sPlan)
         {
-            throw new NotImplementedException();
+            as2j parser = new as2j(new StringReader(sPlan));
+            try
+            {
+                return parser.Plan();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public Objective PlanObjective { get => this.planObjective; }
+        public Trigger GetTrigger() => tevent;
 
-        public string AFocus { get => this.actionFocus; }
+        public LogicalFormula GetContext() => context;
 
-        internal bool IsAtomic()
+        private PlanBody GetBody() => body;
+
+        internal bool IsAtomic() => isAtomic;
+
+        public bool HasBreakpoint() => hasBreakpoint;
+
+        public bool IsAllUnifs() => isAllUnifs;
+
+        // Returns an unifier if this plan is relevant for event "te", null otherwise
+        internal Unifier IsRelevant(Trigger te)
         {
-            throw new NotImplementedException();
+            // Annots in plan's TE must be a subset of the ones in the event!
+            Unifier u = new Unifier();
+            if (u.UnifiesNoUndo(tevent, te))
+            {
+                return u;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        internal Unifier IsRelevant(Trigger trigger)
+        // bool Equals(object o);
+
+        public Plan Capply(Unifier u)
         {
-            throw new NotImplementedException();
+            Plan p = new Plan();
+            if (label != null)
+            {
+                p.label = (Pred)label.Capply(u);
+                p.isAtomic = isAtomic;
+                p.hasBreakpoint = hasBreakpoint;
+                p.isAllUnifs = isAllUnifs;
+            }
+
+            p.tevent = tevent.Capply(u);
+            if (context != null)
+            {
+                p.context = (LogicalFormula)context.Capply(u);
+            }
+            p.body = (PlanBody)body.Capply(u);
+            p.SetSrcInfo(srcInfo); // ???
+            p.isTerm = isTerm;
+            return p;
         }
 
-        internal LogicalFormula GetContext()
+        public Term Clone()
         {
-            throw new NotImplementedException();
+            Plan p = new Plan();
+            if (label != null)
+            {
+                p.SetLabel((Pred)label.Clone());
+            }
+            p.tevent = tevent.Clone();
+            if (context != null)
+            {
+                p.context = (LogicalFormula)context.Clone();
+            }
+            p.body = body.ClonePB();
+            p.SetSrcInfo(srcInfo); // ???
+            p.isTerm = isTerm;
+
+            return p;
         }
 
-        internal bool IsAllUnifs()
+        public Plan CloneNS(Atom ns) => (Plan)Clone();
+
+        public Plan CloneOnlyBody()
         {
-            throw new NotImplementedException();
+            Plan p = new Plan();
+            if (label != null)
+            {
+                p.label = label;
+                p.isAtomic = isAtomic;
+                p.hasBreakpoint = hasBreakpoint;
+                p.isAllUnifs = isAllUnifs;
+            }
+
+            p.tevent = tevent.Clone();
+            p.context = context;
+            p.body = body.ClonePB();
+
+            p.SetSrcInfo(srcInfo); // ???
+            p.isTerm = isTerm;
+
+            return p;
+        }
+
+        public string ToString() => ToASSTring();
+
+        private string ToASSTring()
+        {
+            string b, e;
+            if (isTerm)
+            {
+                b = "{ ";
+                e = " }";
+            }
+            else
+            {
+                b = "";
+                e = ".";
+            }
+            return b + ((label == null) ? "" : "@" + label + " ") + tevent + ((context == null) ? "" : " : " + context)
+                + (body.IsEmptyBody() ? "" : " <- " + body) + e;
         }
     }
 }

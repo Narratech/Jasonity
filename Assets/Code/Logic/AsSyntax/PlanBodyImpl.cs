@@ -8,6 +8,10 @@ public class PlanBodyImpl : MonoBehaviour
     private object p;
     private Term term;
 
+    public PlanBodyImpl()
+    {
+    }
+
     public PlanBodyImpl(object p, Term term)
     {
         this.p = p;
