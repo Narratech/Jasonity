@@ -1,21 +1,31 @@
 ﻿using Assets.Code.Logic;
-using System;
+using Assets.Code.Logic.AsSyntax;
 using System.Collections.Generic;
 
 namespace BDIManager.Intentions
 {
     class PlanLibrary
     {
+        // A dictionary from TE to a list of relevant plans
+        private Dictionary<PredicateIndicator, List<Plan>> relPlans = new Dictionary<PredicateIndicator, List<Plan>>();
+
+        // All defined plans
+        private List<Plan> plans = new List<Plan>();
+
+        // Plans that have var as TE
+        private List<Plan> varPlans = new List<Plan>();
+
+        // A dictionary from labels to plans
+        private Dictionary<string, Plan> planLabels = new Dictionary<string, Plan>();
+
         private bool hasMetaEventPlans = false;
 
         public static Trigger TE_JAG_SLEEPING = new Trigger();
         public static Trigger TE_JAG_AWAKING = new Trigger();
 
-        // A dictionary from TE to a list of relevant plans
-        private Dictionary<PredicateIndicator, List<Plan>> relPlans = new Dictionary<PredicateIndicator, List<Plan>>();
+        
 
-        // Plans that have var as TE
-        private List<Plan> varPlans = new List<Plan>();
+       
 
         public bool HasMetaEventPlans()
         {
