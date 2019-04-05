@@ -121,7 +121,7 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        protected int CalcHashCode()
+        public int? CalcHashCode()
         {
             int result = GetFunctor().GetHashCode();
             return result;

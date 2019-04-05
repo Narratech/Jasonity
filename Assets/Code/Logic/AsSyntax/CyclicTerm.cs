@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,7 +76,7 @@ namespace Assets.Code.Logic.AsSyntax
             return new CyclicTerm(this, cyclicVar.Clone() as VarTerm);
         }
 
-        protected int CalcHashCode()
+        protected int? CalcHashCode()
         {
             return base.CalcHashCode() + cyclicVar.CalcHashCode();
         }

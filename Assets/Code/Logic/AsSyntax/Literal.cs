@@ -588,7 +588,7 @@ namespace Assets.Code.Logic
             throw new NotImplementedException();
         }
 
-        protected override int? CalcHashCode()
+        public override int? CalcHashCode()
         {
             throw new NotImplementedException();
         }

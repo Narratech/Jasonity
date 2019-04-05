@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +60,7 @@ namespace Assets.Code.Logic
             return this; //since this object is inmutable
         }
 
-        public override Term Capply(Unifier u)
+        public Term Capply(Unifier u)
         {
             if (ns.IsVar())
             {
@@ -125,8 +126,8 @@ namespace Assets.Code.Logic
                 Literal tAsList = t as Literal;
                 if (GetNS().Equals(tAsList.GetNS()))
                 {
-                    const int ma = GetArity();
-                    const int oa = tAsList.GetArity();
+                    int ma = GetArity();
+                    int oa = tAsList.GetArity();
                     if (ma < oa)
                     {
                         return -1;
@@ -148,7 +149,7 @@ namespace Assets.Code.Logic
             return base.CompareTo(t);
         }
 
-        protected override int? CalcHashCode()
+        public override int? CalcHashCode()
         {
             return GetFunctor().GetHashCode() + GetNS().GetHashCode();
         }

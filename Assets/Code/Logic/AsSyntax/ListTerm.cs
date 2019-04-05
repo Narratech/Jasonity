@@ -12,7 +12,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Logic.AsSyntax
 {
-    public interface ListTerm:Term
+    public interface ListTerm: Term
     {
         void SetTerm(Term t);
         Term GetTerm();
@@ -48,10 +48,5 @@ namespace Assets.Code.Logic.AsSyntax
 
         //Make a shallow copy of the list (terms are not cloned, only the structure)
         ListTerm CloneLTShallow();
-        void Add(Pred pred);
-        void Add(LogicalFormula logicalFormula);
-        Term Get(int v);
-        void Add(Trigger trigger);
-        void Add(PlanBody planBody);
     }
 }

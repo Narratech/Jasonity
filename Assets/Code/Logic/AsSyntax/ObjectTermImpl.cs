@@ -23,7 +23,7 @@ namespace Assets.Code.Logic.AsSyntax
             return o;
         }
 
-        protected override int? CalcHashCode()
+        public override int? CalcHashCode()
         {
             return 0.GetHashCode();
         }

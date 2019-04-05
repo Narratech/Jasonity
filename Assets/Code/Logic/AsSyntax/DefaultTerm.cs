@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Assets.Code.Logic
     {
         private static readonly long serialVersionUID = 1L;
 
-        protected int hashCodeCache = null;
+        protected int? hashCodeCache = null;
         protected SourceInfo srcInfo = null;
 
         public virtual Term Capply(Unifier u)
@@ -20,7 +21,7 @@ namespace Assets.Code.Logic
         }
 
         abstract public Term Clone();
-        abstract protected int? CalcHashCode();
+        abstract public int? CalcHashCode();
 
         public virtual Term CloneNS(Atom newNamespace)
         {
