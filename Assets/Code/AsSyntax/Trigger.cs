@@ -6,63 +6,70 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic
 {
-    public enum TEType { belief, achieve, test };
-
-    class Trigger
+    class Trigger : Structure
     {
-        private object add;
-        private TEType belief;
-        private Literal lAdd;
+        private TEOperator op = TEOperator.add;
+        private TEType type = TEType.belief;
+        private Literal l;
 
-        public Trigger(object add, TEType belief, Literal lAdd)
+        public Trigger(TEOperator op, TEType t, Literal l) : base("te", 0)
         {
-            this.add = add;
-            this.belief = belief;
-            this.lAdd = lAdd;
+            this.l = l;
+            this.op = op;
+            this.type = t;
+            SetTrigOp(op);
+            SetSrcInfo(l.GetSrcInfo());
         }
+    }
 
-        public Trigger()
+    public class TEType
+    {
+        public readonly static TEType belief;
+        public readonly static TEType achieve;
+        public readonly static TEType test;
+
+        public override string ToString()
         {
+            if (this == belief)
+            {
+                return "";
+            } else if (this == achieve)
+            {
+                return "!";
+            } else if (this == test)
+            {
+                return "?";
+            } else
+            {
+                return null;
+            }
         }
+    }
 
-        public Literal GetLiteral()
-        {
-            throw new NotImplementedException();
-        }
+    public class TEOperator
+    {
+        public readonly static TEOperator add;
+        public readonly static TEOperator del;
+        public readonly static TEOperator goalState;
 
-        public TEType GetType()
+        public override string ToString()
         {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAddition()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsGoal()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal object GetNS()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsMetaEvent()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal PredicateIndicator GetPredicateIndicator()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Trigger Clone()
-        {
-            throw new NotImplementedException();
+            if (this == add)
+            {
+                return "+";
+            }
+            else if (this == del)
+            {
+                return "-";
+            }
+            else if (this == goalState)
+            {
+                return "^";
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -23,10 +23,7 @@ namespace BDIManager.Intentions
 
         private bool hasMetaEventPlans = false;
 
-        public static Trigger TE_JAG_SLEEPING = new Trigger();
-        public static Trigger TE_JAG_AWAKING = new Trigger();
-
-        // TODO: private AtomicInteger lastPlanLabel = new AtomicInteger(0);
+        private int lastPlanLabel = 0;
 
         private bool hasUserKqmlReceived = false;
 
@@ -36,10 +33,10 @@ namespace BDIManager.Intentions
 
         // Adds a new plan written as a string. Source is usually "self" or the agent who sent this plan.
         // New plans are added at the end of the library.
-        public Plan Add(StringTerm stPlan, Term tSource) => Add(stPlan, tSource, false);
+        Plan Add(StringTerm stPlan, Term tSource) => Add(stPlan, tSource, false);
 
         // Same as previous Add. If "before" is true, add at the beginning of the library.
-        public Plan Add(StringTerm stPlan, Term tSource, bool before)
+         Plan Add(StringTerm stPlan, Term tSource, bool before)
         {
             string sPlan = stPlan.GetString();
             // Remove quotes
@@ -57,7 +54,7 @@ namespace BDIManager.Intentions
         }
 
         // Adds a new Plan to the library. If "before" is true, add at the beginning of the library.
-        public Plan Add(Plan p, Term tSource, bool before)
+        Plan Add(Plan p, Term tSource, bool before)
         {
             // synchronized(lockPL)
             int i = plans.IndexOf(p);
@@ -198,28 +195,140 @@ namespace BDIManager.Intentions
 
         public void AddAll(PlanLibrary pl)
         {
-            throw new NotImplementedException();
+            // Synchronized (lockPL)
+            foreach (Plan p in pl)
+            {
+                Add(p, false);
+            }
         }
 
-        private Plan Get(Pred pred)
+        public void AddAll(List<Plan> plans)
         {
-            throw new NotImplementedException();
+            // Synchronized (lockPL)
+            foreach (Plan p in plans)
+            {
+                Add(p, false);
+            }
         }
 
-        private string GetStringForLabel(Pred pred)
+        private string GetStringForLabel(Literal p)
         {
-            throw new NotImplementedException();
-        }
-
-        private Pred GetUniqueLabel()
-        {
-            throw new NotImplementedException();
+            // Use functor + terms
+            StringBuilder l = new StringBuilder();
+            if (p.GetNS() != Literal.DefaultNS)
+            {
+                l.Append(p.GetNS() + "::");
+            }
+            l.Append(p.GetFunctor());
+            if (p.HasTerm())
+            {
+                foreach (Term t in p.GetTerms())
+                {
+                    l.Append(t.ToString());
+                }
+            }
+            return l.ToString();
         }
 
         public bool HasMetaEventPlans() => hasMetaEventPlans;
 
+        public bool HasUserKqmlReceivedPlans() => hasUserKqmlReceived;
+
+        private Pred GetUniqueLabel()
+        {
+            string l;
+            do
+            {
+                lastPlanLabel++;
+                l = "l__" + (lastPlanLabel);
+            } while (planLabels.ContainsKey(l));
+            return new Pred(l);
+        }
+
+        // Returns a plan for a label
+        public Plan Get(string label) => Get(new Atom(label));
+
+        private Plan Get(Literal label) => planLabels[GetStringForLabel(label)];
+
+        public int Size() => plans.Count;
+
+        public List<Plan> GetPlans() => plans;
+
+        // Removes all plans
+        public void Clear()
+        {
+            planLabels.Clear();
+            plans.Clear();
+            varPlans.Clear();
+            relPlans.Clear();
+        }
+
+        // Removes a plan represented by the label "pLabel".
+        // If a plan has many sources, only the plan's source is removed
+        public bool Remove(Literal pLabel, Term source)
+        {
+            // Finds the plan
+            Plan p = Get(pLabel);
+            if (p != null)
+            {
+                bool hasSource = p.GetLabel().DelSource(source);
+                
+                if (hasSource && !p.GetLabel().HasSource())
+                {
+                    Remove(pLabel);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public Plan Remove(Literal pLabel)
+        {
+            // Synchronized (lockPL)
+            Plan p = planLabels.Remove(GetStringForLabel(pLabel));
+
+            // Removes it from plans list
+            plans.Remove(p);
+
+            if (p.GetTrigger().GetLiteral().IsVar())
+            {
+                varPlans.Remove(p);
+                // Removes p from all entries and cleans empty entries
+                /*
+                 * Iterator<PredicateIndicator> ipi = relPlans.keySet().iterator();
+                 * while (ipi.hasNext()) {
+                 *      PredicateIndicator pi = ipi.next();
+                 *      List<Plan> lp = relPlans.get(pi);
+                 *      lp.remove(p);
+                 *      if (lp.isEmpty()) {
+                 *          ipi.remove();
+                 *      }
+                 * }
+                 */
+            }
+            else
+            {
+                List<Plan> codesList = relPlans[p.GetTrigger().GetPredicateIndicator()];
+                codesList.Remove(p);
+                if (codesList.Count == 0)
+                {
+                    // No more plans for this TE
+                    relPlans.Remove(p.GetTrigger().GetPredicateIndicator());
+                }
+            }
+            return p;
+        }
+
+        public bool IsRelevant(Trigger te) => HasCandidatePlan(te);
+
+        public bool HasCandidatePlan(Trigger t)
+        {
+            return t == null ? false : GetCandidatePlans(t) != null;
+        }
+
         public List<Plan> GetCandidatePlans(Trigger trigger)
         {
+            // Synchronized (lockPL)
             List<Plan> l = null;
             if (trigger.GetLiteral().IsVar() || trigger.GetNS().IsVar())
             {
@@ -256,9 +365,77 @@ namespace BDIManager.Intentions
             return l;
         }
 
-        public bool HasCandidatePlan(Trigger t)
+        public static Trigger TE_JAG_SLEEPING = new Trigger(TEOperator.Add, TEType.achieve, new Atom("jag_sleeping"));
+        public static Trigger TE_JAG_AWAKING = new Trigger(TEOperator.Add, TEType.achieve, new Atom("jag_awaking"));
+        
+        public PlanLibrary Clone()
         {
-            return t == null ? false : GetCandidatePlans(t) != null;
+            PlanLibrary pl = new PlanLibrary();
+            try
+            {
+                // Synchronized (lockPL)
+                foreach (Plan p in this) // ???
+                {
+                    pl.Add((Plan)p.Clone(), false);
+                }
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+            }
+            return pl;
+        }
+
+        public string ToString() => plans.ToString();
+
+        public string GetAsTxt(bool includeKQMLPlans)
+        {
+            Dictionary<string, StringBuilder> splans = new Dictionary<string, StringBuilder>();
+            StringBuilder r;
+            foreach (Plan p in plans)
+            {
+                r = splans[p.GetSource()];
+                if (r == null)
+                {
+                    r = new StringBuilder();
+                    if (p.GetSource().Length == 0)
+                    {
+                        r.Append("\n\n// plans without file\n\n");
+                    }
+                    else
+                    {
+                        r.Append("\n\n// plans from " + p.GetSource() + "\n\n");
+                    }
+                    splans.Add(p.GetSource(), r);
+                }
+                r.Append(p.ToString() + "\n");
+            }
+
+            r = new StringBuilder();
+            StringBuilder end = new StringBuilder("\n");
+            foreach (string f in splans.Keys)
+            {
+                if (f.Contains("kqmlPlans"))
+                {
+                    if (includeKQMLPlans)
+                    {
+                        end.Append(splans[f]);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                if (f.Length == 0)
+                {
+                    end.Append(splans[f]);
+                }
+                else
+                {
+                    r.Append(splans[f]);
+                }
+            }
+            return r.ToString() + end.ToString();
         }
     }
 }

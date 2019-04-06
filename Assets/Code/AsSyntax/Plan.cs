@@ -5,7 +5,7 @@ using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.Logic
 {
-    public class Plan : Structure
+    class Plan : Structure
     {
         private Term TAtomic = AsSyntax.CreateAtom("atomic");   // ???
         private Term TBreakPoint = AsSyntax.CreateAtom("breakpoint"); // ???
@@ -183,9 +183,9 @@ namespace Assets.Code.Logic
             }
         }
 
-        public Trigger GetTrigger() => tevent;
+        Trigger GetTrigger() => tevent;
 
-        public LogicalFormula GetContext() => context;
+        LogicalFormula GetContext() => context;
 
         private PlanBody GetBody() => body;
 
