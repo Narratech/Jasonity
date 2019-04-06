@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 
 /*
  *  This class represents an abstract literal (an Atom, Structure, Predicate, etc), it is mainly
@@ -70,7 +71,7 @@ namespace Assets.Code.Logic
         }
 
         /** returns name space :: functor symbol / arity */
-        public PredicateIndicator GetPredicateIndicator()
+        public virtual PredicateIndicator GetPredicateIndicator()
         {
             if (predicateIndicatorCache == null)
             {
@@ -95,7 +96,7 @@ namespace Assets.Code.Logic
 
         public List<Term> GetTerms()
         {
-            return Structure.emptyTermList;
+            return Structure.EmptyTermList;
         }
 
         /** returns all terms of this literal */
@@ -222,7 +223,7 @@ namespace Assets.Code.Logic
         }
 
         /** returns this if this literal can be added in the belief base (Atoms, for instance, can not be) */
-        public bool CanBeAddedInBB()
+        public virtual bool CanBeAddedInBB()
         {
             return false;
         }
@@ -234,7 +235,7 @@ namespace Assets.Code.Logic
         }
 
         /** returns whether this literal is negated or not, use Literal.LNeg and Literal.LPos to compare the returned value */
-        public bool Negated()
+        public virtual bool Negated()
         {
             return false;
         }
@@ -279,7 +280,7 @@ namespace Assets.Code.Logic
             return null;
         }
 
-        public void SetTerm(int i, Term t)
+        public virtual void SetTerm(int i, Term t)
         {
         }
 
@@ -359,7 +360,7 @@ namespace Assets.Code.Logic
             return null;
         }
 
-        public IEnumerator<Unifier> LogicalConsecuence(Agent ag, Unifier un)
+        public virtual IEnumerator<Unifier> LogicalConsecuence(Agent ag, Unifier un)
         {
             IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
             if (il == null)
@@ -370,12 +371,140 @@ namespace Assets.Code.Logic
             AgArch arch = (ag != null && ag.GetTs() != null ? ag.GetTS().GetUserAgArch() : null);
             int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Size() : 0);
 
-            Acabaaaaaaaaaarrrrr
+            return new IEnumerator<Unifier>(arch, nbAnnots, il);
+            
         }
 
-        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        public class IEnumerator<Unifier>
         {
-            throw new NotImplementedException();
+            Unifier current = null;
+            IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
+            Literal cloneAnnon = null; // a copy of the literal with makeVarsAnnon
+            Rule rule; // current rule
+            bool needsUpdate = true;
+
+            IEnumerator<List<Term>> annotsOptions = null;
+            Literal belInBB = null;
+            private AgArch arch;
+            private int nbAnnots;
+            private IEnumerator<Literal> il;
+
+            public IEnumerator(AgArch arch, int nbAnnots, IEnumerator<Literal> il)
+            {
+                this.arch = arch;
+                this.nbAnnots = nbAnnots;
+                this.il = il;
+            }
+
+            public IEnumerator<Unifier>()
+
+            public bool HasNext()
+            {
+                if (needsUpdate)
+                    Get();
+                return current != null;
+            }
+
+            public Unifier Next()
+            {
+                if (needsUpdate)
+                    Get();
+                if (current != null)
+                    needsUpdate = true;
+                return current;
+            }
+
+            private void Get()
+            {
+                needsUpdate = false;
+                current = null;
+                if (arch != null && !arch.IsRunnig()) return;
+
+                if (annotsOptions != null)
+                {
+                    while (annotsOptions.HasNext())
+                    {
+                        Literal belToTry = belInBB.Copy().SetAnnots(null).AddAnnots(annotsOptions.Next());
+                        Unifier u = un.Clone();
+                        if (u.UnifiesNoUndo(this, belToTry))
+                        {
+                            current = u;
+                            return;
+                        }
+                    }
+                    annotsOptions = null;
+                }
+
+                if (ruleIt != null)
+                {
+                    while (ruleIt.HasNext())
+                    {
+                        Unifier ruleUn = ruleIt.Next();
+                        Literal rHead = rule.HeadCApply(ruleUn);
+                        UseDerefVars(rHead, ruleUn);
+                        rHead.MakeVarsAnnon();
+
+                        Unifier unC = un.Clone();
+                        if (unC.UnifiesNoUndo(this, rHead))
+                        {
+                            current = unC;
+                            return;
+                        }
+                    }
+                    ruleIt = null;
+                }
+
+                while (il.HasNext())
+                {
+                    belInBB = il.Next();
+                    if (belInBB.IsRule())
+                    {
+                        rule = (Rule)belInBB;
+                        if (cloneAnnon == null)
+                        {
+                            cloneAnnon = (Literal)this.Capply(un);
+                            cloneAnnon.MakeVarsAnnon();
+                        }
+
+                        Unifier ruleUn = new Unifier();
+                        if (ruleUn.UnifiesNoUndo(cloneAnnon, rule))
+                        {
+                            ruleIt = rule.GetBody().LogicalConsequence(ag, ruleUn);
+                            Get();
+                            if (current != null)
+                                return;
+                        }
+                        else
+                        {
+                            if (nbAnnots > 0)
+                            {
+                                if (belInBB.HasAnnot())
+                                {
+                                    int nbAnnotsB = belInBB.GetAnnots().Size();
+                                    if (nbAnnotsB >= nbAnnots)
+                                    {
+                                        annotsOptions = belInBB.GetAnnots().SubSets(nbAnnots);
+                                        Get();
+                                        if (current != null)
+                                            return;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Unifier u = Un.clone();
+                                if (u.UnifiesNoUndo(this, belInBB))
+                                {
+                                    current = u;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            public void Remove() { }
         }
 
         private void UseDerefVars(Term p, Unifier un)
@@ -447,7 +576,7 @@ namespace Assets.Code.Logic
 
                 if (i.Current != null)
                 {
-                    l.SetTerms((i.Current as ListTerm).CloneLT());
+                    l.SetTerms(((ListTerm)i.Current).CloneLT());
                 }
                 if (i.Current != null)
                 {
@@ -540,7 +669,7 @@ namespace Assets.Code.Logic
 
             }
 
-            protected override int? CalcHashCode()
+            public override int? CalcHashCode()
             {
                 return GetFunctor().GetHashCode();
             }
@@ -589,6 +718,11 @@ namespace Assets.Code.Logic
         }
 
         public override int? CalcHashCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             throw new NotImplementedException();
         }

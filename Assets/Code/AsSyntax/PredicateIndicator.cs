@@ -76,7 +76,7 @@ namespace Assets.Code.Logic.AsSyntax
 
         private int CalcHash()
         {
-            int t = 31 * arity * ns.GetHashCode();
+            int t = (int)(31 * arity * ns.GetHashCode());
             if (functor != null) t = 31 * t + functor.GetHashCode();
             return t;
         }

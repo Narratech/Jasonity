@@ -33,11 +33,6 @@ namespace Assets.Code.Logic.AsSyntax
             return value;
         }
 
-        protected override int? CalcHashCode()
-        {
-            throw new NotImplementedException();
-        }
-
         public override Term Clone()
         {
             return this;
@@ -52,7 +47,7 @@ namespace Assets.Code.Logic.AsSyntax
         {
             if (o == this) return true;
 
-            if (o != null && (o.GetType() == typeof(Term)) && (o.IsNumeric() as Term && o.IsArithExpr() as Term))
+            if (o != null && (o.GetType() == typeof(Term)) && (((Term)o).IsNumeric() && ((Term)o).IsArithExpr()))
             {
                 NumberTerm st = o as NumberTerm;
                 try
@@ -64,9 +59,9 @@ namespace Assets.Code.Logic.AsSyntax
             return false;
         }
 
-        public override int CalcHashCode()
+        public override int? CalcHashCode()
         {
-            return 37 * value as int;
+            return (int?)(37 * value);
         }
 
         public override int CompareTo(Term o)
@@ -87,15 +82,15 @@ namespace Assets.Code.Logic.AsSyntax
 
         public override string ToString()
         {
-            long r = Math.Round(value);
-            if (value == r as double)
+            long r = (long)Math.Round(value);
+            if (value == (double)r)
             {
-                return string.ValueOf(r);
+                return r.ToString();
                 //return r.ToString();
             }
             else
             {
-                return string.ValueOf(value);
+                return value.ToString();
                 //return value.ToString();
             }
         }

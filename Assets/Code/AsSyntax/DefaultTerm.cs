@@ -40,14 +40,17 @@ namespace Assets.Code.Logic
             }
         }
 
-        public void CountVars(Dictionary<VarTerm, int?> c){}
+        public virtual void CountVars(Dictionary<VarTerm, int?> c)
+        {
 
-        public VarTerm GetCyclicVar()
+        }
+
+        public virtual VarTerm GetCyclicVar()
         {
             return null;
         }
 
-        public SourceInfo GetSrcInfo()
+        public virtual SourceInfo GetSrcInfo()
         {
             return srcInfo;
         }
@@ -57,7 +60,7 @@ namespace Assets.Code.Logic
             hashCodeCache = null;
         }
 
-        public override int GetHashCode()
+        public override int? GetHashCode()
         {
             if (hashCodeCache == null)
             {
@@ -78,12 +81,12 @@ namespace Assets.Code.Logic
             }
         }
 
-        public void SetSrcInfo(SourceInfo s)
+        public virtual void SetSrcInfo(SourceInfo s)
         {
             srcInfo = s;
         }
 
-        public string GetErrorMsg()
+        public virtual string GetErrorMsg()
         {
             if (srcInfo == null)
             {
@@ -96,7 +99,7 @@ namespace Assets.Code.Logic
         }
 
         /****** Checks *******/
-        public bool HasVar(VarTerm t, Unifier u)
+        public virtual bool HasVar(VarTerm t, Unifier u)
         {
             return false;
         }

@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,17 +24,18 @@ namespace Assets.Code.Logic
             }
         }
 
-        public VarTerm(Atom @namespace, string functor)
+        public VarTerm(Atom @namespace, string functor):
+            base(@namespace, LPos/*PERO QUÉ HOOOOOSTIAS ES ESTO?!*/, functor)
         {
-            base(@namespace, LPos/*PERO QUÉ HOOOOOSTIAS ES ESTO?!*/, functor);
+            
         }
 
-        public VarTerm(Atom @namespace, Literal v)
+        public VarTerm(Atom @namespace, Literal v): base(@namespace, !v.Negated(), v)
         {
-            base(@namespace, !v.Negated(), v);
+            
         }
 
-        public Term Capply(Unifier u)
+        public override Term Capply(Unifier u)
         {
             if (u != null)
             {
@@ -48,8 +50,8 @@ namespace Assets.Code.Logic
 
                         CyclicTerm ct = new CyclicTerm(tempVl as Literal, this);
                         Unifier renamedVars = new Unifier();
-                        ct.makeVarsAnnon(renamedVars);
-                        renamedVars.remove(this);
+                        ct.MakeVarsAnnon(renamedVars);
+                        renamedVars.Remove(this);
                         u.Compose(renamedVars);
                         vl = ct;
                     }
@@ -64,13 +66,13 @@ namespace Assets.Code.Logic
                         }
                         if (Negated())
                         {
-                            (vl).SetNegated(Literal.LNeg) as Literal;
+                            ((Literal)vl).SetNegated(Literal.LNeg);
                         }
                     }
 
                     if (vl.IsLiteral() && this.HasAnnot())
                     {
-                        vl = (vl).ForceFullLiteralImpl().AddAnnots(this.GetAnnots().Capply(u) as ListTerm) as Literal;
+                        vl = ((Literal)vl).ForceFullLiteralImpl().AddAnnots((ListTerm)this.GetAnnots().Capply(u));
                     }
                     return vl;
                 }
@@ -78,12 +80,12 @@ namespace Assets.Code.Logic
             return Clone();
         }
 
-        public Term Clone()
+        public override Term Clone()
         {
             return new VarTerm(this.GetNS(), this);
         }
 
-        public Literal CloneNS(Atom newNamespace)
+        public override Literal CloneNS(Atom newNamespace)
         {
             return new VarTerm(newNamespace, this);
         }
@@ -93,17 +95,17 @@ namespace Assets.Code.Logic
             return Clone() as ListTerm;
         }
 
-        public bool IsVar()
+        public override bool IsVar()
         {
             return true;
         }
 
-        public bool IsUnnamedVar()
+        public override bool IsUnnamedVar()
         {
             return false;
         }
 
-        public bool IsGround()
+        public override bool IsGround()
         {
             return false;
         }
@@ -121,13 +123,13 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public int? CalcHashCode()
+        public override int? CalcHashCode()
         {
             int result = GetFunctor().GetHashCode();
             return result;
         }
 
-        public int CompareTo(Term t)
+        public override int CompareTo(Term t)
         {
             if (t == null || t.IsUnnamedVar())
             {
@@ -135,7 +137,7 @@ namespace Assets.Code.Logic
             }
             else if (t.IsVar())
             {
-                return GetFunctor().CompareTo(t.GetFunctor() as VarTerm);
+                return GetFunctor().CompareTo(((VarTerm)t).GetFunctor());
             }
             else
             {
@@ -143,12 +145,12 @@ namespace Assets.Code.Logic
             }
         }
 
-        public bool Subsumes(Term t)
+        public override bool Subsumes(Term t)
         {
             return true;
         }
 
-        public IEnumerator<Unifier> LogicalConsequence(Agetn ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             Term t = this.Capply(un);
             if (t.Equals(this))
@@ -157,107 +159,107 @@ namespace Assets.Code.Logic
             }
             else
             {
-                return t.LogicalConsequence(ag, un) as LogicalFormula;
+                return ((LogicalFormula)t).LogicalConsequence(ag, un);
             }
         }
 
-        public Term GetTerm(int i)
+        public override Term GetTerm(int i)
         {
             return null;
         }
 
-        public void AddTerm(Term t)
+        public override void AddTerm(Term t)
         {
 
         }
 
         
-        public int GetArity()
+        public override int GetArity()
         {
             return 0;
         }
 
-        public List<Term> GetTerms()
+        public override List<Term> GetTerms()
         {
             return null;
         }
 
-        public Literal SetTerms(List<Term> l)
+        public override Literal SetTerms(List<Term> l)
         {
             return this;
         }
 
-        public void SetTerm(int i, Term t)
+        public override void SetTerm(int i, Term t)
         {
 
         }
 
-        public Literal AddTerms(List<Term> l)
+        public override Literal AddTerms(List<Term> l)
         {
             return this;
         }
 
-        public bool IsLiteral()
+        public override bool IsLiteral()
         {
             return false;
         }
 
-        public bool IsRule()
+        public override bool IsRule()
         {
             return false;
         }
 
-        public bool IsList()
+        public override bool IsList()
         {
             return false;
         }
 
-        public bool IsString()
+        public override bool IsString()
         {
             return false;
         }
 
-        public bool IsInternalAction()
+        public override bool IsInternalAction()
         {
             return false;
         }
 
-        public bool IsArithExpr()
+        public override bool IsArithExpr()
         {
             return false;
         }
 
-        public bool IsNumeric()
+        public override bool IsNumeric()
         {
             return false;
         }
 
-        public bool IsPred()
+        public override bool IsPred()
         {
             return false;
         }
 
-        public bool IsStructure()
+        public override bool IsStructure()
         {
             return false;
         }
 
-        public bool IsAtom()
+        public override bool IsAtom()
         {
             return false;
         }
 
-        public bool IsPlanBody()
+        public override bool IsPlanBody()
         {
             return false;
         }
 
-        public bool IsCyclicTerm()
+        public override bool IsCyclicTerm()
         {
             return false;
         }
 
-        public bool HasVar(VarTerm t, Unifier u)
+        public override bool HasVar(VarTerm t, Unifier u)
         {
             if (Equals(t))
             {
@@ -282,19 +284,19 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public VarTerm GetCyclicVar()
+        public override VarTerm GetCyclicVar()
         {
             throw new NotImplementedException();
         }
 
-        public void CountVars(Dictionary<VarTerm, int?> c)
+        public override void CountVars(Dictionary<VarTerm, int?> c)
         {
             int? n = c.ContainsKey(this) ? c[this] : 0;
             c.Add(this, n+1);
             base.CountVars(c);
         }
 
-        public bool CanBeAddedInBB()
+        public override bool CanBeAddedInBB()
         {
             return false;
         }
@@ -456,12 +458,12 @@ namespace Assets.Code.Logic
             throw new NotImplementedException();
         }
 
-        public void SetSrcInfo(SourceInfo s)
+        public override void SetSrcInfo(SourceInfo s)
         {
             throw new NotImplementedException();
         }
 
-        public SourceInfo GetSrcInfo()
+        public override SourceInfo GetSrcInfo()
         {
             throw new NotImplementedException();
         }

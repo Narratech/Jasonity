@@ -9,7 +9,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Logic.AsSyntax
 {
-    public interface NumberTerm
+    public interface NumberTerm:Term
     {
         /** returns the numeric value of the term */
         double Solve();

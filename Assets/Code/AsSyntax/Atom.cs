@@ -60,7 +60,7 @@ namespace Assets.Code.Logic
             return this; //since this object is inmutable
         }
 
-        public Term Capply(Unifier u)
+        public virtual Term Capply(Unifier u)
         {
             if (ns.IsVar())
             {

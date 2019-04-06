@@ -8,7 +8,7 @@ using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.Logic
 {
-    class Structure : Atom
+    public class Structure : Atom
     {
         private static List<Term> emptyTermList = new List<Term>(0);
         private static Term[] emptyTermArray = new Term[0];
