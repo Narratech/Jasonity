@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Code.ReasoningCycle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Assets.Code.Logic.AsSyntax
 {
     interface LogicalFormula:Term, ICloneable
     {
-        IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un);
+        IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un);
     }
 }

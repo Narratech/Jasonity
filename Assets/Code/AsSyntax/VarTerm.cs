@@ -25,7 +25,7 @@ namespace Assets.Code.Logic
         }
 
         public VarTerm(Atom @namespace, string functor):
-            base(@namespace, LPos/*PERO QUÉ HOOOOOSTIAS ES ESTO?!*/, functor)
+            base(@namespace, LPos, functor)
         {
             
         }
@@ -150,7 +150,7 @@ namespace Assets.Code.Logic
             return true;
         }
 
-        public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             Term t = this.Capply(un);
             if (t.Equals(this))

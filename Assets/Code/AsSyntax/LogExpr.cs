@@ -1,6 +1,11 @@
-﻿namespace Assets.Code.Logic
+﻿using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
+using System.Collections.Generic;
+
+namespace Assets.Code.Logic
 {
-    internal class LogExpr
+    public class LogExpr 
     {
+        
     }
 }

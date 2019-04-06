@@ -10,7 +10,7 @@ using BDIManager.Intentions;
  */
 namespace Assets.Code.Agent
 {
-    class Agent
+    public class Agent
     {
         private BeliefBase bb = null;
         private PlanLibrary pl = null;

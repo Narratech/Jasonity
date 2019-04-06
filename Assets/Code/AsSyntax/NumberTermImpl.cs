@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Logic.AsSyntax
 {
-    public class NumberTermImpl : DefaultTerm, NumberTerm
+    /** Immutable class that implements a term that represents a number */
+    public sealed class NumberTermImpl : DefaultTerm, NumberTerm
     {
         private static readonly long serialVersionUID = 1L;
 

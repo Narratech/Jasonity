@@ -360,7 +360,7 @@ namespace Assets.Code.Logic
             return null;
         }
 
-        public virtual IEnumerator<Unifier> LogicalConsecuence(Agent ag, Unifier un)
+        public virtual IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
         {
             IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
             if (il == null)
@@ -395,8 +395,6 @@ namespace Assets.Code.Logic
                 this.nbAnnots = nbAnnots;
                 this.il = il;
             }
-
-            public IEnumerator<Unifier>()
 
             public bool HasNext()
             {

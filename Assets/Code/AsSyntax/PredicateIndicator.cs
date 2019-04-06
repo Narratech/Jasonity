@@ -9,7 +9,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Logic.AsSyntax
 {
-    public class PredicateIndicator : IComparable<PredicateIndicator>
+    public sealed class PredicateIndicator : IComparable<PredicateIndicator>
     {
         private readonly string functor;
         private readonly int arity;
