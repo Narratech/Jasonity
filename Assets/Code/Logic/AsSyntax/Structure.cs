@@ -13,10 +13,12 @@ namespace Assets.Code.Logic
         private static List<Term> emptyTermList = new List<Term>(0);
         private static Term[] emptyTermArray = new Term[0];
         private List<Term> terms;
+        private const bool useShortUnnamedVars = Config.Get().GetBoolean(Config.SHORT_UNNAMED_VARS); //I dont really know what this is for
 
-        public Structure(string functor) :base(DefaultNS, functor)
+
+        public Structure(string functor) : base(DefaultNS, functor)
         {
-            
+
         }
 
         public Structure(Literal l) : base(DefaultNS, l)
@@ -30,7 +32,7 @@ namespace Assets.Code.Logic
             if (tss > 0)
             {
                 terms = new List<Term>(tss);
-                for(int i = 0; i < tss; i++)
+                for (int i = 0; i < tss; i++)
                 {
                     terms.Add(l.GetTerm(i).Clone());
                 }
@@ -66,7 +68,7 @@ namespace Assets.Code.Logic
 
         public static Structure Parse(string sTerm)
         {
-            as2j parser = new as2j(new StringReader(sTerm)); 
+            as2j parser = new as2j(new StringReader(sTerm));
             try
             {
                 Term t = parser.Term();
@@ -77,7 +79,7 @@ namespace Assets.Code.Logic
                 {
                     return new Structure((Atom)t);
                 }
-            } catch(Exception e)
+            } catch (Exception e)
             {
                 //logger.log(Level.SEVERE,"Error parsing structure " + sTerm,e);
                 return null;
@@ -111,7 +113,7 @@ namespace Assets.Code.Logic
             if (o.GetType() == typeof(Structure))
             {
                 Structure oAsStructure = (Structure)o;
-                if(oAsStructure.IsVar())
+                if (oAsStructure.IsVar())
                 {
                     return ((VarTerm)o).Equals(this);
                 }
@@ -128,7 +130,7 @@ namespace Assets.Code.Logic
                 {
                     return false;
                 }
-                for(int i = 0; i < ts; i++)
+                for (int i = 0; i < ts; i++)
                 {
                     if (!GetTerm(i).Equals(oAsStructure.GetTerm(i)))
                     {
@@ -151,7 +153,7 @@ namespace Assets.Code.Logic
             {
                 return c;
             }
-            if(t.IsStructure())
+            if (t.IsStructure())
             {
                 Structure s = (Structure)t;
                 int ma = GetArity();
@@ -159,7 +161,7 @@ namespace Assets.Code.Logic
                 for (int i = 0; i < ma && i < oa; i++)
                 {
                     c = GetTerm(i).CompareTo(s.GetTerm(i));
-                    if ( c != 0)
+                    if (c != 0)
                     {
                         return c;
                     }
@@ -175,7 +177,7 @@ namespace Assets.Code.Logic
                 Structure s = (Structure)t;
                 int ma = GetArity();
                 int oa = s.GetArity();
-                for(int i = 0; i < ma && i < oa; i++)
+                for (int i = 0; i < ma && i < oa; i++)
                 {
                     if (!GetTerm(i).Subsumes(s.GetTerm(i)){
                         return false;
@@ -231,6 +233,255 @@ namespace Assets.Code.Logic
             ResetHashCodeCache();
         }
 
+        public override Literal AddTerms(params Term[] ts)
+        {
+            if (terms == null)
+            {
+                terms = new List<Term>(5);
+            }
+            foreach (Term t in ts)
+            {
+                terms.Add(t);
+            }
+            predicateIndicatorCache = null;
+            ResetHashCodeCache();
+            return this;
+        }
 
+        public override Literal AddTerms(List<Term> l)
+        {
+            if (terms == null)
+            {
+                terms = new List<Term>(5);
+            }
+            foreach (Term t in l)
+            {
+                terms.Add(t);
+            }
+            predicateIndicatorCache = null;
+            ResetHashCodeCache();
+            return this;
+        }
+
+        public override Literal SetTerms(List<Term> l)
+        {
+            terms = l;
+            predicateIndicatorCache = null;
+            ResetHashCodeCache();
+            return this;
+        }
+
+        public override void setTerm(int i, Term t)
+        {
+            if (terms == null)
+            {
+                terms = new List<Term>(5);
+            }
+            terms.Insert(i, t);
+            ResetHashCodeCache();
+        }
+
+        public override Term GetTerm(int i)
+        {
+            if (terms == null)
+            {
+                return null;
+            } else
+            {
+                return terms.ElementAt(i);
+            }
+        }
+
+        public override int GetArity()
+        {
+            if (terms == null)
+            {
+                return 0;
+            } else
+            {
+                return terms.Count;
+            }
+        }
+
+        public override List<Term> GetTerms()
+        {
+            return terms;
+        }
+
+        public override bool HasTerm()
+        {
+            return GetArity() > 0;
+        }
+
+        public override bool IsStructure()
+        {
+            return true;
+        }
+
+        public override bool IsAtom()
+        {
+            return !HasTerm();
+        }
+
+        public override bool IsGround()
+        {
+            int size = GetArity();
+            for (int i = 0; i < size; i++)
+            {
+                if (!GetTerm(i).IsGround())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool IsUnary()
+        {
+            return GetArity() == 1;
+        }
+
+        public override Literal MakeVarsAnnon()
+        {
+            return MakeVarsAnnon(new Unifier());
+        }
+
+        public override Literal MakeVarsAnnon(Unifier u)
+        {
+            int size = GetArity();
+            for (int i = 0; i <size; i++)
+            {
+                Term t = GetTerm(i);
+                if (t.IsVar())
+                {
+                    SetTerm(i, VarToReplace(t, u));
+                } else if (t.GetType() == typeof(Structure))
+                {
+                    ((Structure)t).MakeVarsAnnon(u);
+                }
+            }
+            ResetHashCodeCache();
+            return this;
+        }
+
+        public VarTerm VarToReplace(Term t, Unifier u)
+        {
+            VarTerm v = (VarTerm)t;
+            VarTerm deref = u.Deref(v);
+            if (deref.Equals(v))
+            {
+                Atom a = v.GetNS();
+                if (a.IsVar())
+                {
+                    a = VarToReplace(a, u);
+                }
+                UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.create(a, t.toString());
+                if (deref.HasAnnot())
+                {
+                    uv.SetAnnots(deref.GetAnnot().CloneLT());
+                    uv.MakeVarsAnnon(u);
+                }
+                u.Bind(deref, v);
+                return v;
+            } else
+            {
+                Atom a = v.GetNS();
+                if (a.IsVar())
+                {
+                    a = VarToReplace(a, u);
+                }
+                deref = (VarTerm)deref.CloneNS(a);
+                if (v.HasAnnot() && !deref.HasAnnot())
+                {
+                    deref.SetAnnots(v.GetAnnot().CloneLT());
+                    deref.MakeVarsAnnon(u);
+                }
+                return deref;
+            }
+        }
+
+        public override void MakeTermsAnnon()
+        {
+            int size = GetArity();
+            for (int i = 0; i < size; i++)
+            {
+                SetTerm(i, new UnnamedVar());
+            }
+            ResetHashCodeCache();
+        }
+
+        public override bool HasVar(VarTerm t, Unifier u)
+        {
+            int size = GetArity();
+            for (int i = 0; i < size; i++)
+            {
+                if (GetTerm(i).HasVar(t, u))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public List<VarTerm> GetSingletonVars()
+        {
+            Dictionary<VarTerm, int?> all = new Dictionary<VarTerm, int?>();
+            CountVars(all);
+            List<VarTerm> r = new List<VarTerm>();
+            foreach (VarTerm v in all.Keys)
+            {
+                if (all[v] == 1 &&  !v.IsUnnamedVar())
+                {
+                    r.Add(v);
+                }
+            }
+            return r;
+        }
+
+        public void CountVars(Dictionary<VarTerm, int?> c)
+        {
+            int tss = GetArity();
+            for (int i = 0; i < tss; i++)
+            {
+                GetTerm(i).CountVars(c);
+            }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder s = new StringBuilder();
+            if (GetNS() != DefaultNS)
+            {
+                s.Append(GetNS());
+                s.Append("::");
+            }
+            if (Negated())
+            {
+                s.Append("~");
+            }
+            if (GetFunctor() != null)
+            {
+                s.Append(GetFunctor());
+            }
+            if (GetArity() > 0)
+            {
+                s.Append("(");
+                IEnumerator<Term> enumerator = terms.GetEnumerator();
+                while(enumerator.MoveNext())
+                {
+                    s.Append(enumerator.Current);
+                    if(enumerator.MoveNext())
+                    {
+                        s.Append(",");
+                    }
+                }
+                s.Append(")");
+            }
+            if (HasAnnot())
+            {
+                s.Append(GetAnnots().ToString());
+            }
+            return s.ToString();
+        }
     }
 }
