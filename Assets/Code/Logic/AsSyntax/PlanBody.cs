@@ -1,42 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.Logic.AsSyntax;
 
 namespace Assets.Code.Logic
 {
-    public class PlanBody
+
+    public interface PlanBody : Term
     {
-        internal void SetAsBodyTerm(bool v)
-        {
-            throw new NotImplementedException();
-        }
+        BodyType GetBodyType();
+        Term GetBodyTerm();
+        PlanBody GetBodyNext();
+        PlanBody GetHead();
 
-        internal object GetBodyNext()
-        {
-            throw new NotImplementedException();
-        }
+        bool IsEmptyBody();
+        int GetPlanSize();
 
-        internal object GetBodyTerm()
-        {
-            throw new NotImplementedException();
-        }
+        void SetBodyType(BodyType bt);
+        void SetBodyTerm(Term t);
+        void SetBodyNext(PlanBody bl);
+        PlanBody GetLastBody();
 
-        internal PlanBody Capply(Unifier u)
-        {
-            throw new NotImplementedException();
-        }
+        bool IsBodyTerm();
+        void SetAsBodyTerm(bool b);
 
-        internal PlanBody ClonePB()
-        {
-            throw new NotImplementedException();
-        }
+        bool Add(PlanBody bl);
+        bool Add(int index, PlanBody bl);
+        Term RemoveBody(int index);
 
-        internal bool IsEmptyBody()
-        {
-            throw new NotImplementedException();
-        }
+        // Clones the plan body
+        PlanBody ClonePB();
+    }
+
+    public class BodyType
+    {
+        internal static BodyType none;
     }
 }

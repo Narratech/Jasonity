@@ -10,7 +10,7 @@ using Assets.Code.Logic;
  */
 namespace Assets.Code.ReasoningCycle
 {
-    class Unifier
+    public class Unifier
     {
         Dictionary<VarTerm, Term> function = new Dictionary<VarTerm, Term>();
 
