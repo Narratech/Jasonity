@@ -39,7 +39,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private bool UnifiesNoUndo(Term term, Term term2)
+        public bool UnifiesNoUndo(Term term, Term term2)
         {
             if (term == null && term2 == null) return true;
             if (term == null && term2 != null) return false;
@@ -124,7 +124,7 @@ namespace Assets.Code.ReasoningCycle
             return ok;
         }
 
-        internal bool Unifies(Trigger t, Trigger trigger)
+        public bool Unifies(Trigger t, Trigger trigger)
         {
             return t.GetType() == trigger.GetType() && Unifies(t.GetLiteral(), trigger.GetLiteral());
         }
@@ -214,7 +214,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        internal bool UnifiesNoUndo(Trigger tevent, Trigger te)
+        public bool UnifiesNoUndo(Trigger tevent, Trigger te)
         {
             throw new NotImplementedException();
         }
