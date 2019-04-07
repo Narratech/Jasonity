@@ -1,11 +1,9 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSyntax;
-using BDIManager.Beliefs;
+﻿using BDIManager.Beliefs;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BDIManager.Intentions
+namespace Assets.Code.AsSyntax
 {
     class PlanLibrary
     {
@@ -33,10 +31,10 @@ namespace BDIManager.Intentions
 
         // Adds a new plan written as a string. Source is usually "self" or the agent who sent this plan.
         // New plans are added at the end of the library.
-        Plan Add(StringTerm stPlan, Term tSource) => Add(stPlan, tSource, false);
+        Plan Add(StringTerm stPlan, ITerm tSource) => Add(stPlan, tSource, false);
 
         // Same as previous Add. If "before" is true, add at the beginning of the library.
-         Plan Add(StringTerm stPlan, Term tSource, bool before)
+         Plan Add(StringTerm stPlan, ITerm tSource, bool before)
         {
             string sPlan = stPlan.GetString();
             // Remove quotes
@@ -54,7 +52,7 @@ namespace BDIManager.Intentions
         }
 
         // Adds a new Plan to the library. If "before" is true, add at the beginning of the library.
-        Plan Add(Plan p, Term tSource, bool before)
+        Plan Add(Plan p, ITerm tSource, bool before)
         {
             // synchronized(lockPL)
             int i = plans.IndexOf(p);
@@ -222,7 +220,7 @@ namespace BDIManager.Intentions
             l.Append(p.GetFunctor());
             if (p.HasTerm())
             {
-                foreach (Term t in p.GetTerms())
+                foreach (ITerm t in p.GetTerms())
                 {
                     l.Append(t.ToString());
                 }
@@ -265,7 +263,7 @@ namespace BDIManager.Intentions
 
         // Removes a plan represented by the label "pLabel".
         // If a plan has many sources, only the plan's source is removed
-        public bool Remove(Literal pLabel, Term source)
+        public bool Remove(Literal pLabel, ITerm source)
         {
             // Finds the plan
             Plan p = Get(pLabel);

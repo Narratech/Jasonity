@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
-    public class Rule
+    public class Rule:LiteralImpl
     {
         
     }

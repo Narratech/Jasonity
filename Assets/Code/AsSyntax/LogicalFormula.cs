@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    interface LogicalFormula:Term, ICloneable
+    interface ILogicalFormula:ITerm, ICloneable
     {
         IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un);
     }

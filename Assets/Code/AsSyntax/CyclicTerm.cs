@@ -1,12 +1,11 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
     /**
      * A term with recursion (cyclic), created by code like X = f(X).
@@ -60,10 +59,10 @@ namespace Assets.Code.Logic.AsSyntax
             return this;
         }
 
-        public Term Capply(Unifier u)
+        public ITerm Capply(Unifier u)
         {
-            Term v = u.Remove(cyclicVar);
-            Term r = new CyclicTerm(this, cyclicVar.Clone() as VarTerm, u);
+            ITerm v = u.Remove(cyclicVar);
+            ITerm r = new CyclicTerm(this, cyclicVar.Clone() as VarTerm, u);
             if (v != null)
             {
                 u.Bind(cyclicVar, v);
@@ -71,7 +70,7 @@ namespace Assets.Code.Logic.AsSyntax
             return r;
         }
 
-        public Term Clone()
+        public ITerm Clone()
         {
             return new CyclicTerm(this, cyclicVar.Clone() as VarTerm);
         }

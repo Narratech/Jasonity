@@ -1,5 +1,4 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
-    class Pred : Structure
+    public class Pred : Structure
     {
-        private ListTerm annotations;
+        private IListTerm annotations;
 
         public Pred(string functor) : base(functor)
         {
@@ -39,11 +38,11 @@ namespace Assets.Code.Logic
             }
         }
 
-        private Pred(Literal l, Unifier u) : base(l, u)
+        public Pred(Literal l, Unifier u) : base(l, u)
         {
             if (l.HasAnnot())
             {
-                SetAnnots((ListTerm)l.GetAnnots().Capply(u));
+                SetAnnots((IListTerm)l.GetAnnots().Capply(u));
             } else
             {
                 annotations = null;
@@ -76,17 +75,17 @@ namespace Assets.Code.Logic
             }
         }
 
-        private override Literal SetAnnots(ListTerm listTerm)
+        private override Literal SetAnnots(IListTerm listTerm)
         {
             annotations = null;
             if (listTerm == null)
             {
                 return this;
             }
-            IEnumerator<ListTerm> en = listTerm.ListTermIterator();
+            IEnumerator<IListTerm> en = listTerm.ListTermIterator();
             while(en.MoveNext())
             {
-                ListTerm lt = en.Current;
+                IListTerm lt = en.Current;
                 if(lt.GetTerm() == null)
                 {
                     return this;
@@ -101,16 +100,16 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override bool AddAnnot(Term t)
+        public override bool AddAnnot(ITerm t)
         {
             if (annotations == null)
             {
                 annotations = new ListTermImpl();
             }
-            IEnumerator<ListTerm> en = annotations.ListTermIterator();
+            IEnumerator<IListTerm> en = annotations.ListTermIterator();
             while (en.MoveNext())
             {
-                ListTerm lt = en.Current;
+                IListTerm lt = en.Current;
                 int c = t.CompareTo(lt.GetTerm());
                 if (c == 0)
                 { 
@@ -125,11 +124,11 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public override Literal AddAnnots(List<Term> l)
+        public override Literal AddAnnots(List<ITerm> l)
         {
             if (l != null)
             {
-                foreach (Term t in l)
+                foreach (ITerm t in l)
                 {
                     AddAnnot(t);
                 }
@@ -137,16 +136,16 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override Literal AddAnnots(params Term[] l)
+        public override Literal AddAnnots(params ITerm[] l)
         {
-            foreach (Term t in l)
+            foreach (ITerm t in l)
             {
                 AddAnnot(t);
             }
             return this;
         }
         
-        public override bool DelAnnot(Term t)
+        public override bool DelAnnot(ITerm t)
         {
             if (annotations == null)
             {
@@ -163,21 +162,21 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override ListTerm GetAnnots()
+        public override IListTerm GetAnnots()
         {
             return annotations;
         }
 
-        public override bool HasAnnot(Term t)
+        public override bool HasAnnot(ITerm t)
         {
             if (annotations == null)
             {
                 return false;
             }
-            IEnumerator<ListTerm> en = annotations.ListTermIterator();
+            IEnumerator<IListTerm> en = annotations.ListTermIterator();
             while (en.MoveNext())
             {
-                ListTerm lt = en.Current;
+                IListTerm lt = en.Current;
                 int c = t.CompareTo(lt.GetTerm());
                 if (c == 0)
                 { 
@@ -197,7 +196,7 @@ namespace Assets.Code.Logic
             {
                 return null;
             }
-            foreach (Term t in annotations) //okay (?)
+            foreach (ITerm t in annotations) //okay (?)
             {
                 if (t.IsLiteral())
                 {
@@ -229,7 +228,7 @@ namespace Assets.Code.Logic
             }
             if (annotations != null)
             {
-                foreach (Term v in annotations)
+                foreach (ITerm v in annotations)
                 {
                     if (v.HasVar(t, u))
                     {
@@ -245,7 +244,7 @@ namespace Assets.Code.Logic
             base.CountVars(c);
             if (annotations != null)
             {
-                foreach (Term t in annotations)
+                foreach (ITerm t in annotations)
                 {
                     t.CountVars(c);
                 }
@@ -257,10 +256,10 @@ namespace Assets.Code.Logic
             bool imported = false;
             if (p.HasAnnot())
             {
-                IEnumerator<Term> en = p.GetAnnots().ListTermIterator();
+                IEnumerator<ITerm> en = p.GetAnnots().ListTermIterator();
                 while (en.MoveNext())
                 {
-                    Term t = en.Current;
+                    ITerm t = en.Current;
                     if (AddAnnot(t.Clone()))
                     {
                         imported = true;
@@ -274,12 +273,12 @@ namespace Assets.Code.Logic
             return imported;
         }
 
-        public override bool DelAnnots(List<Term> l)
+        public override bool DelAnnots(List<ITerm> l)
         {
             bool removed = false;
             if (l != null && HasAnnot())
             {
-                foreach (Term t in l)
+                foreach (ITerm t in l)
                 {
                     bool r = DelAnnot(t);
                     removed = removed || r;
@@ -288,13 +287,13 @@ namespace Assets.Code.Logic
             return removed;
         }
 
-        public override ListTerm GetAnnots(string functor)
+        public override IListTerm GetAnnots(string functor)
         {
-            ListTerm ls = new ListTermImpl();
+            IListTerm ls = new ListTermImpl();
             if (annotations != null)
             {
-                ListTerm tail = ls;
-                foreach (Term ta in annotations)
+                IListTerm tail = ls;
+                foreach (ITerm ta in annotations)
                 {
                     if (ta.IsLiteral())
                     {
@@ -318,9 +317,9 @@ namespace Assets.Code.Logic
             {
                 return false;
             }
-            IEnumerator<Term> en = p.GetAnnots().ListTermIterator();
+            IEnumerator<ITerm> en = p.GetAnnots().ListTermIterator();
             int c = -1;
-            foreach (Term myAnnot in annotations)
+            foreach (ITerm myAnnot in annotations)
             { 
                 if (!en.MoveNext())
                 {
@@ -328,7 +327,7 @@ namespace Assets.Code.Logic
                 }
                 while (en.MoveNext())
                 {
-                    Term t = en.Current;
+                    ITerm t = en.Current;
                     c = myAnnot.CompareTo(t);
                     if (c <= 0)
                     {
@@ -353,19 +352,19 @@ namespace Assets.Code.Logic
             {
                 return false;
             }
-            Term thisTail = null;
-            ListTerm pAnnots = p.GetAnnots().CloneLTShallow();
+            ITerm thisTail = null;
+            IListTerm pAnnots = p.GetAnnots().CloneLTShallow();
             VarTerm pTail = pAnnots.GetTail();
-            Term pAnnot = null;
-            ListTerm pAnnotsTail = null;
-            IEnumerator<Term> en = pAnnots.ListTermIterator();
+            ITerm pAnnot = null;
+            IListTerm pAnnotsTail = null;
+            IEnumerator<ITerm> en = pAnnots.ListTermIterator();
             bool enReset = false;
 
-            IEnumerator<ListTerm> en2 = annotations.ListTermIterator(); // use this iterator to get the tail of the list
+            IEnumerator<IListTerm> en2 = annotations.ListTermIterator(); // use this iterator to get the tail of the list
             while (en2.MoveNext())
             {
-                ListTerm lt = en2.Current;
-                Term annot = lt.GetTerm();
+                IListTerm lt = en2.Current;
+                ITerm annot = lt.GetTerm();
                 if (annot == null)
                 {
                     break;
@@ -407,12 +406,12 @@ namespace Assets.Code.Logic
                 {
                     if (pAnnotsTail == null)
                     {
-                        pAnnotsTail = (ListTerm)u.Get(pTail);
+                        pAnnotsTail = (IListTerm)u.Get(pTail);
                         if (pAnnotsTail == null)
                         {
                             pAnnotsTail = new ListTermImpl();
                             u.Unifies(pTail, pAnnotsTail);
-                            pAnnotsTail = (ListTerm)u.Get(pTail);
+                            pAnnotsTail = (IListTerm)u.Get(pTail);
                         }
                     }
                     pAnnotsTail.Add(annot.Clone());
@@ -430,7 +429,7 @@ namespace Assets.Code.Logic
             return true;
         }
 
-        public override Literal AddSource(Term agName)
+        public override Literal AddSource(ITerm agName)
         {
             if (agName != null)
             {
@@ -439,7 +438,7 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override bool DelSource(Term agName)
+        public override bool DelSource(ITerm agName)
         {
             if (annotations != null)
             {
@@ -451,7 +450,7 @@ namespace Assets.Code.Logic
             }
         }
 
-        public static Pred CreateSource(Term source)
+        public static Pred CreateSource(ITerm source)
         {
             Pred s;
             if (source.IsGround())
@@ -466,13 +465,13 @@ namespace Assets.Code.Logic
             return s;
         }
 
-        public override ListTerm GetSources()
+        public override IListTerm GetSources()
         {
-            ListTerm ls = new ListTermImpl();
+            IListTerm ls = new ListTermImpl();
             if (annotations != null)
             {
-                ListTerm tail = ls;
-                foreach (Term ta in annotations)
+                IListTerm tail = ls;
+                foreach (ITerm ta in annotations)
                 {
                     if (ta.IsStructure())
                     {
@@ -491,10 +490,10 @@ namespace Assets.Code.Logic
         {
             if (annotations != null)
             {
-                IEnumerator<Term> en = annotations.ListTermIterator();
+                IEnumerator<ITerm> en = annotations.ListTermIterator();
                 while (en.MoveNext())
                 {
-                    Term t = en.Current;
+                    ITerm t = en.Current;
                     if (t.IsStructure())
                     {
                         if (((Structure)t).GetFunctor().Equals("source"))
@@ -510,7 +509,7 @@ namespace Assets.Code.Logic
         {
             if (annotations != null)
             {
-                foreach (Term ta in annotations)
+                foreach (ITerm ta in annotations)
                 {
                     if (ta.IsStructure())
                     {
@@ -524,7 +523,7 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public override bool HasSource(Term agName)
+        public override bool HasSource(ITerm agName)
         {
             if (annotations != null)
             {
@@ -537,10 +536,10 @@ namespace Assets.Code.Logic
         {
             if (annotations != null)
             {
-                ListTerm lt = annotations;
+                IListTerm lt = annotations;
                 while (!lt.IsEmpty())
                 {
-                    Term ta = lt.GetTerm();
+                    ITerm ta = lt.GetTerm();
                     if (ta.IsVar())
                     {
                         lt.SetTerm(VarToReplace(ta, un));
@@ -582,10 +581,10 @@ namespace Assets.Code.Logic
 
         public override bool EqualsAsStructure(Object p)
         { 
-            return base.Equals((Term)p);
+            return base.Equals((ITerm)p);
         }
 
-        public override int CompareTo(Term t)
+        public override int CompareTo(ITerm t)
         {
             int c = base.CompareTo(t);
             if (c != 0)
@@ -607,8 +606,8 @@ namespace Assets.Code.Logic
                 {
                     return 1;
                 } 
-                IEnumerator<Term> pai = tAsPred.GetAnnots().ListTermIterator();
-                foreach (Term a in GetAnnots())
+                IEnumerator<ITerm> pai = tAsPred.GetAnnots().ListTermIterator();
+                foreach (ITerm a in GetAnnots())
                 {
                     c = a.CompareTo(pai.Current);
                     if (c != 0)
@@ -630,12 +629,12 @@ namespace Assets.Code.Logic
             return 0;
         } 
     
-        public override Term Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             return new Pred(this, u);
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             return new Pred(this);
         }
@@ -657,12 +656,12 @@ namespace Assets.Code.Logic
         {
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             return this;
         }
         
-        public override Term Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             return this;
         }

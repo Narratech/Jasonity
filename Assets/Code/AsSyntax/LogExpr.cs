@@ -1,8 +1,7 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System.Collections.Generic;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
     public class LogExpr 
     {

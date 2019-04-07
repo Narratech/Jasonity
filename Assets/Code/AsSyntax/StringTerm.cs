@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public interface StringTerm:Term
+    public interface StringTerm:ITerm
     {
         /** gets the Java string represented by this term, it
         normally does not return the same string as toString

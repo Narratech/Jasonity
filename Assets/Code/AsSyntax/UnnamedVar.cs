@@ -1,11 +1,9 @@
-﻿using Assets.Code.Logic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using Assets.Code.Logic.AsSyntax;
 
 namespace Assets.Code.AsSyntax
 {
@@ -101,7 +99,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public new int CompareTo(Term t)
+        public new int CompareTo(ITerm t)
         {
             if (t.GetType() == typeof(UnnamedVar))
             {

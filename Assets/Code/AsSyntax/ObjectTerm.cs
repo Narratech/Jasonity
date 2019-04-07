@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public interface ObjectTerm:Term
+    public interface IObjectTerm:ITerm
     {
         object GetObject();
     }

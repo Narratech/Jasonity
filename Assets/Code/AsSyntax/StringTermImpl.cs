@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
     public class StringTermImpl : DefaultTerm, StringTerm
     {
@@ -39,7 +39,7 @@ namespace Assets.Code.Logic.AsSyntax
             return this;
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             throw new NotImplementedException();
         }
@@ -93,13 +93,13 @@ namespace Assets.Code.Logic.AsSyntax
                 return value.GetHashCode();
         }
 
-        public override int CompareTo(Term o)
+        public override int CompareTo(ITerm o)
         {
             if (o.GetType() == typeof(VarTerm))
             {
                 return o.CompareTo(this) * -1;
             }
-            if(o.GetType() == typeof(NumberTerm))
+            if(o.GetType() == typeof(INumberTerm))
             {
                 return 1;
             }

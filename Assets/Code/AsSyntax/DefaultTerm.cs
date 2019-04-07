@@ -1,34 +1,33 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
-    public abstract class DefaultTerm: Term
+    public abstract class DefaultTerm: ITerm
     {
         private static readonly long serialVersionUID = 1L;
 
         protected int? hashCodeCache = null;
         protected SourceInfo srcInfo = null;
 
-        public virtual Term Capply(Unifier u)
+        public virtual ITerm Capply(Unifier u)
         {
             return Clone();
         }
 
-        abstract public Term Clone();
+        abstract public ITerm Clone();
         abstract public int? CalcHashCode();
 
-        public virtual Term CloneNS(Atom newNamespace)
+        public virtual ITerm CloneNS(Atom newNamespace)
         {
             return Clone();
         }
 
-        public virtual int CompareTo(Term t)
+        public virtual int CompareTo(ITerm t)
         {
             if (t == null)
             {
@@ -69,7 +68,7 @@ namespace Assets.Code.Logic
             return hashCodeCache;
         }
 
-        public bool Subsumes(Term l)
+        public bool Subsumes(ITerm l)
         {
             if (l.IsVar())
             {

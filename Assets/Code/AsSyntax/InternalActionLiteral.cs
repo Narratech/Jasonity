@@ -1,6 +1,4 @@
 ﻿using Assets.Code.Agent;
-using Assets.Code.Logic;
-using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -15,7 +13,7 @@ namespace Assets.Code.AsSyntax
     /*A particular type of Literal used to represent internal actions 
      * (which has a "." in the functor)
      */
-    public class InternalActionLiteral:Structure, LogicalFormula
+    public class InternalActionLiteral:Structure, ILogicalFormula
     {
         private static readonly long serialVersionUID = 1L;
         private InternalAction ia = null;
@@ -132,7 +130,7 @@ namespace Assets.Code.AsSyntax
             return "Error in internal action '" + this + "'" + src;
         }
 
-        public override Term Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             return new InternalActionLiteral(this, u);
         }

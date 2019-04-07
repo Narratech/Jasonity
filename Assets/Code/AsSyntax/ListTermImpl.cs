@@ -6,28 +6,28 @@ using System.Text;
 using Assets.Code.ReasoningCycle;
 using UnityEngine;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public class ListTermImpl : Structure, ListTerm
+    public class ListTermImpl : Structure, IListTerm
     {
         private static readonly long serialVersionUID = 1L;
 
         public static readonly string LIST_FUNCTOR = ".";
-        private Term term;
-        private Term next;
+        private ITerm term;
+        private ITerm next;
 
         public ListTermImpl() : base(LIST_FUNCTOR, 0)
         {
 
         }
 
-        public ListTermImpl(Term t, Term n) : base(LIST_FUNCTOR, 0)
+        public ListTermImpl(ITerm t, ITerm n) : base(LIST_FUNCTOR, 0)
         {
             term = t;
             next = n;
         }
 
-        public static ListTerm ParseList(string sList)
+        public static IListTerm ParseList(string sList)
         {
             parser as2j p = new as2j(new StringReader(sList));
             try
@@ -41,7 +41,7 @@ namespace Assets.Code.Logic.AsSyntax
             }
         }
 
-        public ListTerm Append(Term t)
+        public IListTerm Append(ITerm t)
         {
             if (IsEmpty())
             {
@@ -60,7 +60,7 @@ namespace Assets.Code.Logic.AsSyntax
             }
         }
 
-        public Term Capply(Unifier u)
+        public ITerm Capply(Unifier u)
         {
             ListTermImpl t = new ListTermImpl();
             if (term != null) t.term = this.term.Capply(u);
@@ -68,7 +68,7 @@ namespace Assets.Code.Logic.AsSyntax
             return t;
         }
 
-        public ListTerm Clone()
+        public IListTerm Clone()
         {
             ListTermImpl t = new ListTermImpl();
             if (term != null) t.term = this.term.Clone();
@@ -77,12 +77,12 @@ namespace Assets.Code.Logic.AsSyntax
             return t;
         }
 
-        public ListTerm CloneLT()
+        public IListTerm CloneLT()
         {
             return Clone();
         }
 
-        public ListTerm CloneLTShallow()
+        public IListTerm CloneLTShallow()
         {
             ListTermImpl t = new ListTermImpl();
             if (term != null) t.term = this.term;
@@ -95,9 +95,9 @@ namespace Assets.Code.Logic.AsSyntax
             if (t == null) return false;
             if (t == this) return true;
 
-            if (t.GetType() == typeof(Term) && ((Term)t).IsVar() ) return false; // unground var is not equals a list
-            if (t.GetType() == typeof(ListTerm)) {
-                ListTerm tAsList = (ListTerm)t;
+            if (t.GetType() == typeof(ITerm) && ((ITerm)t).IsVar() ) return false; // unground var is not equals a list
+            if (t.GetType() == typeof(IListTerm)) {
+                IListTerm tAsList = (IListTerm)t;
                 if (term == null && tAsList.GetTerm() != null) return false;
                 if (term != null && !term.Equals(tAsList.GetTerm())) return false;
                 if (next == null && tAsList.GetNext() != null) return false;
@@ -115,7 +115,7 @@ namespace Assets.Code.Logic.AsSyntax
             return code;
         }
 
-        public Term CloneNS(Atom Newnamespace)
+        public ITerm CloneNS(Atom Newnamespace)
         {
             throw new NotImplementedException();
         }
@@ -124,7 +124,7 @@ namespace Assets.Code.Logic.AsSyntax
         {
             if (o.GetType() == typeof(VarTerm))
                 return o.CompareTo(this) * -1;
-            if ((o.GetType() == typeof(NumberTerm))
+            if ((o.GetType() == typeof(INumberTerm))
                 return 1;
             if (o.GetType() == typeof(StringTerm))
                 return 1;
@@ -139,19 +139,19 @@ namespace Assets.Code.Logic.AsSyntax
                 return 2;
         }
 
-        public ListTerm Concat(ListTerm lt)
+        public IListTerm Concat(IListTerm lt)
         {
             if (IsEmpty())
             {
                 SetValuesFrom(lt);
             }
-            else if (((ListTerm)next).IsEmpty())
+            else if (((IListTerm)next).IsEmpty())
             {
                 next = lt;
             }
             else
             {
-                ((ListTerm)next).Concat(lt);
+                ((IListTerm)next).Concat(lt);
             }
             return lt.GetLast();
         }
@@ -161,18 +161,18 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        public ListTerm Difference(ListTerm lt)
+        public IListTerm Difference(IListTerm lt)
         {
-            ISet<Term> set = new SortedSet<Term>();
+            ISet<ITerm> set = new SortedSet<ITerm>();
             set.Add(this);
             set.Remove(lt);
             return SetToList(set);
         }
 
-        public List<Term> GetAsList()
+        public List<ITerm> GetAsList()
         {
-            List<Term> l = new List<Term>();
-            foreach (Term t in this)
+            List<ITerm> l = new List<ITerm>();
+            foreach (ITerm t in this)
                 l.Add(t);
             return l;
         }
@@ -182,23 +182,23 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        public ListTerm GetLast()
+        public IListTerm GetLast()
         {
-            ListTerm r = this;
+            IListTerm r = this;
             while (!r.IsEnd() && r.GetNext() != null)
                 r = r.GetNext();
             return r;
         }
 
-        public ListTerm GetNext()
+        public IListTerm GetNext()
         {
-            if (next.GetType() == typeof(ListTerm))
-                return next as ListTerm;
+            if (next.GetType() == typeof(IListTerm))
+                return next as IListTerm;
             else
                 return null;
         }
 
-        public ListTerm GetPenultimate()
+        public IListTerm GetPenultimate()
         {
             if (GetNext() == null)
                 return null;
@@ -230,28 +230,28 @@ namespace Assets.Code.Logic.AsSyntax
             }
         }
 
-        public Term GetTerm()
+        public ITerm GetTerm()
         {
             return term;
         }
 
-        public Term GetTerm(int i)
+        public ITerm GetTerm(int i)
         {
             if (i == 0) return term;
             if (i == 1) return next;
             return null;
         }
 
-        public List<Term> GetTerms()
+        public List<ITerm> GetTerms()
         {
             Debug.Log("Do not use GetTerms in lists!");
-            List<Term> l = new List<Term>(2);
+            List<ITerm> l = new List<ITerm>(2);
             if (term != null) l.Add(term);
             if (next != null) l.Add(next);
             return l;
         }
 
-        public void AddTerm(Term t)
+        public void AddTerm(ITerm t)
         {
             Debug.Log("Do not use AddTerm in lists! Use add(Term)");
         }
@@ -271,9 +271,9 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        public ListTerm Insert(Term t)
+        public IListTerm Insert(ITerm t)
         {
-            ListTerm n = new ListTermImpl(term, next);
+            IListTerm n = new ListTermImpl(term, next);
             this.term = t;
             this.next = n;
             return n;
@@ -381,17 +381,17 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        public IEnumerator<ListTerm> ListTermIterator()
+        public IEnumerator<IListTerm> ListTermIterator()
         {
             
         }
 
-        public Term RemoveLast()
+        public ITerm RemoveLast()
         {
-            ListTerm p = GetPenultimate();
+            IListTerm p = GetPenultimate();
             if (p != null)
             {
-                Term b = p.GetTerm();
+                ITerm b = p.GetTerm();
                 p.SetTerm(null);
                 p.SetNext(null);
                 return b;
@@ -402,12 +402,12 @@ namespace Assets.Code.Logic.AsSyntax
             }
         }
 
-        public ListTerm Reverse()
+        public IListTerm Reverse()
         {
             return Reverse_Internal(new ListTermImpl());
         }
 
-        public ListTerm Reverse_Internal(ListTerm r)
+        public IListTerm Reverse_Internal(IListTerm r)
         {
             if (IsEmpty())
             {
@@ -425,7 +425,7 @@ namespace Assets.Code.Logic.AsSyntax
             }
         }
 
-        public void SetNext(Term l)
+        public void SetNext(ITerm l)
         {
             next = l;
         }
@@ -443,55 +443,55 @@ namespace Assets.Code.Logic.AsSyntax
                 GetNext().SetTail(v);
         }
 
-        public void SetTerm(Term t)
+        public void SetTerm(ITerm t)
         {
             term = t;
         }
 
-        public void SetTerm(int i, Term t)
+        public void SetTerm(int i, ITerm t)
         {
             if (i == 0) term = t;
             if (i == 1) next = t;
         }
 
-        public IEnumerator<List<Term>> SubSets(int k)
+        public IEnumerator<List<ITerm>> SubSets(int k)
         {
             
         }
 
-        public bool Subsumes(Term l)
+        public bool Subsumes(ITerm l)
         {
             throw new NotImplementedException();
         }
 
-        public ListTerm Union(ListTerm lt)
+        public IListTerm Union(IListTerm lt)
         {
-            ISet<Term> set = new SortedSet<Term>();
+            ISet<ITerm> set = new SortedSet<ITerm>();
             set.Add(lt);
             set.Add(this);
             return SetToList(set);
         }
 
-        public ListTerm Intersection(ListTerm lt)
+        public IListTerm Intersection(IListTerm lt)
         {
-            ISet<Term> set = new SortedSet<Term>();
+            ISet<ITerm> set = new SortedSet<ITerm>();
             set.Add(lt);
             set.RetainAll();
             return SetToList(set);
         }
 
-        private ListTerm SetToList(ISet<Term> set)
+        private IListTerm SetToList(ISet<ITerm> set)
         {
-            ListTerm result = new ListTermImpl();
-            ListTerm tail = result;
-            foreach (Term t in set)
+            IListTerm result = new ListTermImpl();
+            IListTerm tail = result;
+            foreach (ITerm t in set)
             {
                 tail = tail.Append(t.Clone());
             }
             return result;
         }
 
-        public IEnumerator<Term> Iterator()
+        public IEnumerator<ITerm> Iterator()
         {
 
         }
@@ -522,7 +522,7 @@ namespace Assets.Code.Logic.AsSyntax
         public override string ToString()
         {
             StringBuilder s = new StringBuilder("[");
-            ListTerm l = this;
+            IListTerm l = this;
             while (!l.IsEmpty())
             {
                 s.Append(l.GetTerm());
@@ -542,7 +542,7 @@ namespace Assets.Code.Logic.AsSyntax
             return s.ToString();
         }
 
-        public void Add(int index, Term o)
+        public void Add(int index, ITerm o)
         {
             if (index == 0)
                 Insert(o);
@@ -550,7 +550,7 @@ namespace Assets.Code.Logic.AsSyntax
                 GetNext().Add(index - 1, o);
         }
 
-        public bool Add(Term o)
+        public bool Add(ITerm o)
         {
             return GetLast().Append(o) != null;
         }
@@ -558,8 +558,8 @@ namespace Assets.Code.Logic.AsSyntax
         public bool AddAll(IList c)
         {
             if (c == null) return false;
-            ListTerm lt = this;
-            IEnumerator<Term> i = c.GetEnumerator();
+            IListTerm lt = this;
+            IEnumerator<ITerm> i = c.GetEnumerator();
             Acabar
         }
 
@@ -592,7 +592,7 @@ namespace Assets.Code.Logic.AsSyntax
 
         }
 
-        public Term Get(int index)
+        public ITerm Get(int index)
         {
             if (index == 0)
             {
@@ -627,27 +627,27 @@ namespace Assets.Code.Logic.AsSyntax
             return GetAsList().LastIndexOf(arg0);
         }
 
-        public ListIterator<Term> listIterator()
+        public ListIterator<ITerm> listIterator()
         {
             return lsitIterator(0);
         }
 
-        public ListTermIterator<Term> listIterator(int startIndex)
+        public ListTermIterator<ITerm> listIterator(int startIndex)
         {
 
         }
 
-        protected void SetValuesFrom(ListTerm lt)
+        protected void SetValuesFrom(IListTerm lt)
         {
             term = lt.GetTerm();
             next = lt.GetNext();
         }
 
-        public Term Remove(int index)
+        public ITerm Remove(int index)
         {
             if(index == 0)
             {
-                Term bt = this.term;
+                ITerm bt = this.term;
                 if (GetNext() != null)
                 {
                     SetValuesFrom(GetNext());
@@ -695,11 +695,11 @@ namespace Assets.Code.Logic.AsSyntax
 
         }
 
-        public Term Set(int index, Term t)
+        public ITerm Set(int index, ITerm t)
         {
             if (index == 0)
             {
-                this.term = (Term)t;
+                this.term = (ITerm)t;
                 return t;
             }
             else if (GetNext() != null)
@@ -709,7 +709,7 @@ namespace Assets.Code.Logic.AsSyntax
             return null;
         }
 
-        public List<Term> SubList(int arg0, int arg1)
+        public List<ITerm> SubList(int arg0, int arg1)
         {
             return GetAsList().SubList(arg0, arg1);
         }
@@ -726,7 +726,7 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        Term Term.Clone()
+        ITerm ITerm.Clone()
         {
             throw new NotImplementedException();
         }
@@ -736,7 +736,7 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        public void Add(LogicalFormula logicalFormula)
+        public void Add(ILogicalFormula logicalFormula)
         {
             throw new NotImplementedException();
         }
@@ -746,7 +746,7 @@ namespace Assets.Code.Logic.AsSyntax
             throw new NotImplementedException();
         }
 
-        public void Add(PlanBody planBody)
+        public void Add(IPlanBody planBody)
         {
             throw new NotImplementedException();
         }

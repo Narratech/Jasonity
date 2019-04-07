@@ -1,20 +1,19 @@
 ﻿using System;
 using System.IO;
-using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
     class Plan : Structure
     {
-        private Term TAtomic = AsSyntax.CreateAtom("atomic");   // ???
-        private Term TBreakPoint = AsSyntax.CreateAtom("breakpoint"); // ???
-        private Term TAllUnifs = AsSyntax.CreateAtom("all_unifs"); // ???
+        private ITerm TAtomic = AsSyntax.CreateAtom("atomic");   // ???
+        private ITerm TBreakPoint = AsSyntax.CreateAtom("breakpoint"); // ???
+        private ITerm TAllUnifs = AsSyntax.CreateAtom("all_unifs"); // ???
 
         private Pred label = null;
         private Trigger tevent = null;
-        private LogicalFormula context;
-        private PlanBody body;
+        private ILogicalFormula context;
+        private IPlanBody body;
 
         private bool isAtomic = false;
         private bool isAllUnifs = false;
@@ -29,7 +28,7 @@ namespace Assets.Code.Logic
             // super("plan", 0);
         }
 
-        public Plan(Pred label, Trigger te, LogicalFormula ct, PlanBody bd)
+        public Plan(Pred label, Trigger te, ILogicalFormula ct, IPlanBody bd)
         {
             // super("plan", 0);
             tevent = te;
@@ -59,9 +58,9 @@ namespace Assets.Code.Logic
 
         public string GetSource() => source;
 
-        private Term noLabelAtom = new Atom("nolabel");
+        private ITerm noLabelAtom = new Atom("nolabel");
 
-        public Term GetTerm(int i)
+        public ITerm GetTerm(int i)
         {
             switch (i)
             {
@@ -82,7 +81,7 @@ namespace Assets.Code.Logic
             }
         }
 
-        public void SetTerm(int i, Term t)
+        public void SetTerm(int i, ITerm t)
         {
             switch (i)
             {
@@ -93,10 +92,10 @@ namespace Assets.Code.Logic
                     tevent = (Trigger)t;
                     break;
                 case 2:
-                    context = (LogicalFormula)t;
+                    context = (ILogicalFormula)t;
                     break;
                 case 3:
-                    body = (PlanBody)t;
+                    body = (IPlanBody)t;
                     break;
             }
         }
@@ -109,7 +108,7 @@ namespace Assets.Code.Logic
             isAllUnifs = false;
             if (p != null && p.HasAnnot())
             {
-                foreach (Term t in label.GetAnnots())
+                foreach (ITerm t in label.GetAnnots())
                 {
                     if (t.Equals(TAtomic))
                     {
@@ -131,7 +130,7 @@ namespace Assets.Code.Logic
 
         public void DelLabel() => SetLabel(null);
 
-        private void SetContext(LogicalFormula le)
+        private void SetContext(ILogicalFormula le)
         {
             context = le;
             if (Literal.LTrue.Equals(le))
@@ -144,9 +143,9 @@ namespace Assets.Code.Logic
 
         public bool IsPlanTerm() => isTerm;
 
-        public ListTerm GetAsListOfTerms()
+        public IListTerm GetAsListOfTerms()
         {
-            ListTerm l = new ListTermImpl();
+            IListTerm l = new ListTermImpl();
             l.Add(GetLabel());
             l.Add(GetTrigger());
             l.Add(GetContext());
@@ -160,14 +159,14 @@ namespace Assets.Code.Logic
         }
 
         // Creates a plan from a list with four elements: [Literal, Trigger, Context, Body]
-        public Plan NewFromListOfTerms(ListTerm lt)
+        public Plan NewFromListOfTerms(IListTerm lt)
         {
-            Term c = lt.Get(2);
+            ITerm c = lt.Get(2);
             if (c.IsPlanBody())
             {
-                c = ((PlanBody)c).GetBodyTerm();
+                c = ((IPlanBody)c).GetBodyTerm();
             }
-            return new Plan(new Pred((Literal)(lt.Get(0))), (Trigger)lt.Get(1), (LogicalFormula)c, (PlanBody)lt.Get(3));
+            return new Plan(new Pred((Literal)(lt.Get(0))), (Trigger)lt.Get(1), (ILogicalFormula)c, (IPlanBody)lt.Get(3));
         }
 
         public static Plan Parse(string sPlan)
@@ -185,9 +184,9 @@ namespace Assets.Code.Logic
 
         Trigger GetTrigger() => tevent;
 
-        LogicalFormula GetContext() => context;
+        ILogicalFormula GetContext() => context;
 
-        private PlanBody GetBody() => body;
+        private IPlanBody GetBody() => body;
 
         internal bool IsAtomic() => isAtomic;
 
@@ -226,15 +225,15 @@ namespace Assets.Code.Logic
             p.tevent = tevent.Capply(u);
             if (context != null)
             {
-                p.context = (LogicalFormula)context.Capply(u);
+                p.context = (ILogicalFormula)context.Capply(u);
             }
-            p.body = (PlanBody)body.Capply(u);
+            p.body = (IPlanBody)body.Capply(u);
             p.SetSrcInfo(srcInfo); // ???
             p.isTerm = isTerm;
             return p;
         }
 
-        public Term Clone()
+        public ITerm Clone()
         {
             Plan p = new Plan();
             if (label != null)
@@ -244,7 +243,7 @@ namespace Assets.Code.Logic
             p.tevent = tevent.Clone();
             if (context != null)
             {
-                p.context = (LogicalFormula)context.Clone();
+                p.context = (ILogicalFormula)context.Clone();
             }
             p.body = body.ClonePB();
             p.SetSrcInfo(srcInfo); // ???

@@ -1,12 +1,10 @@
-﻿using Assets.Code.Logic.AsSyntax;
-
-namespace Assets.Code.Logic
+﻿namespace Assets.Code.AsSyntax
 {
     /*Represent a binary/unary logical/relational operator*/
     public abstract class BinaryStructure:Structure
     {
         /*Constructor for binary operator*/
-        public BinaryStructure(Term t1, string id, Term t2):base(id,2)
+        public BinaryStructure(ITerm t1, string id, ITerm t2):base(id,2)
         {
             AddTerm(t1);
             AddTerm(t2);
@@ -17,20 +15,20 @@ namespace Assets.Code.Logic
         }
 
         /*Constructor for unary operator*/
-        public BinaryStructure(string id, Term arg):base(id, 1)
+        public BinaryStructure(string id, ITerm arg):base(id, 1)
         {
             AddTerm(arg);
             srcInfo = arg.GetSrcInfo();
         }
 
         /*Gets the LHS of this operation*/
-        public Term GetLHS()
+        public ITerm GetLHS()
         {
             return GetTerm(0);
         }
 
         /*Gets the RHS of this operation*/
-        public Term GetRHS()
+        public ITerm GetRHS()
         {
             return GetTerm(1);
         }

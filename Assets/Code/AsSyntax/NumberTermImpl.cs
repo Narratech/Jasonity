@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
     /** Immutable class that implements a term that represents a number */
-    public sealed class NumberTermImpl : DefaultTerm, NumberTerm
+    public sealed class NumberTermImpl : DefaultTerm, INumberTerm
     {
         private static readonly long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ namespace Assets.Code.Logic.AsSyntax
             return value;
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             return this;
         }
@@ -48,9 +48,9 @@ namespace Assets.Code.Logic.AsSyntax
         {
             if (o == this) return true;
 
-            if (o != null && (o.GetType() == typeof(Term)) && (((Term)o).IsNumeric() && ((Term)o).IsArithExpr()))
+            if (o != null && (o.GetType() == typeof(ITerm)) && (((ITerm)o).IsNumeric() && ((ITerm)o).IsArithExpr()))
             {
-                NumberTerm st = o as NumberTerm;
+                INumberTerm st = o as INumberTerm;
                 try
                 {
                     return Solve() == st.Solve();
@@ -65,7 +65,7 @@ namespace Assets.Code.Logic.AsSyntax
             return (int?)(37 * value);
         }
 
-        public override int CompareTo(Term o)
+        public override int CompareTo(ITerm o)
         {
             if (o.GetType() == typeof(VarTerm))
             {

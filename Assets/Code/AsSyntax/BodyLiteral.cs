@@ -4,37 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
     public class BodyLiteral:PlanBodyImpl
     {
-        public BodyLiteral(BodyType t, Term b)
+        public BodyLiteral(BodyType t, ITerm b): base(OldToNew(t), b)
         {
-            base(OldToNew(t), b);
+            
         }
 
-        private static PlanBody.BodyType OldToNew(BodyType old)
+        private static IPlanBody.BodyType OldToNew(BodyType old)
         {
             switch (old)
             {
                 case action:
-                    return PlanBody.BodyType.action;
+                    return IPlanBody.BodyType.action;
                 case internalAction:
-                    return PlanBody.BodyType.internalAction;
+                    return IPlanBody.BodyType.internalAction;
                 case achieve:
-                    return PlanBody.BodyType.achieve;
+                    return IPlanBody.BodyType.achieve;
                 case test:
-                    return PlanBody.BodyType.test;
+                    return IPlanBody.BodyType.test;
                 case addBel:
-                    return PlanBody.BodyType.addBel;
+                    return IPlanBody.BodyType.addBel;
                 case delBel:
-                    return PlanBody.BodyType.delBel;
+                    return IPlanBody.BodyType.delBel;
                 case delAddBel:
-                    return PlanBody.BodyType.delAddBel;
+                    return IPlanBody.BodyType.delAddBel;
                 case achieveNF:
-                    return PlanBody.BodyType.achieveNF;
+                    return IPlanBody.BodyType.achieveNF;
                 case constraint:
-                    return PlanBody.BodyType.constraint;
+                    return IPlanBody.BodyType.constraint;
                 default:
                     break;
             }

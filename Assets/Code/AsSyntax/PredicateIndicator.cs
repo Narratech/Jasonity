@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 /**
  * Represents the "type" of a predicate based on the functor and the arity, e.g.: ask/4
  */
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
     public sealed class PredicateIndicator : IComparable<PredicateIndicator>
     {

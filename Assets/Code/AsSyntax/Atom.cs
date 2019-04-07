@@ -1,5 +1,4 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 /*
  * Represents an atom (a positive literal with no argument and no annotation, e.g. "tell", "a").
  */
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
     public class Atom: Literal
     {
@@ -60,7 +59,7 @@ namespace Assets.Code.Logic
             return this; //since this object is inmutable
         }
 
-        public virtual Term Capply(Unifier u)
+        public virtual ITerm Capply(Unifier u)
         {
             if (ns.IsVar())
             {
@@ -94,7 +93,7 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public override int CompareTo(Term t)
+        public override int CompareTo(ITerm t)
         {
             if (t == null) return -1; // null should be first (required for addAnnot)
             if (t.IsNumeric()) return 1;
@@ -108,8 +107,8 @@ namespace Assets.Code.Logic
             // both are lists, check size
             if(IsList() && t.IsList())
             {
-                ListTerm l1 = this as ListTerm;
-                ListTerm l2 = t as ListTerm;
+                IListTerm l1 = this as IListTerm;
+                IListTerm l2 = t as IListTerm;
                 const int l1s = l1.Size();
                 const int l2s = l2.Size();
 

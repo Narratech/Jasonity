@@ -1,17 +1,16 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
     /*
     * Represents a variable Term: like X (starts with upper case)
     */
-    public class VarTerm: LiteralImpl, NumberTerm, ListTerm
+    public class VarTerm: LiteralImpl, INumberTerm, IListTerm
     {
         private static readonly long serialVersionUID = 1L;
         
@@ -35,17 +34,17 @@ namespace Assets.Code.Logic
             
         }
 
-        public override Term Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             if (u != null)
             {
-                Term vl = u.Get(this);
+                ITerm vl = u.Get(this);
                 if (vl != null)
                 {
                     if (!vl.IsCyclicTerm() && vl.HasVar(this, u))
                     {
                         u.Remove(this);
-                        Term tempVl = vl.Capply(u);
+                        ITerm tempVl = vl.Capply(u);
                         u.Bind(this, vl);
 
                         CyclicTerm ct = new CyclicTerm(tempVl as Literal, this);
@@ -72,7 +71,7 @@ namespace Assets.Code.Logic
 
                     if (vl.IsLiteral() && this.HasAnnot())
                     {
-                        vl = ((Literal)vl).ForceFullLiteralImpl().AddAnnots((ListTerm)this.GetAnnots().Capply(u));
+                        vl = ((Literal)vl).ForceFullLiteralImpl().AddAnnots((IListTerm)this.GetAnnots().Capply(u));
                     }
                     return vl;
                 }
@@ -80,7 +79,7 @@ namespace Assets.Code.Logic
             return Clone();
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             return new VarTerm(this.GetNS(), this);
         }
@@ -90,9 +89,9 @@ namespace Assets.Code.Logic
             return new VarTerm(newNamespace, this);
         }
 
-        public ListTerm CloneLT()
+        public IListTerm CloneLT()
         {
-            return Clone() as ListTerm;
+            return Clone() as IListTerm;
         }
 
         public override bool IsVar()
@@ -129,7 +128,7 @@ namespace Assets.Code.Logic
             return result;
         }
 
-        public override int CompareTo(Term t)
+        public override int CompareTo(ITerm t)
         {
             if (t == null || t.IsUnnamedVar())
             {
@@ -145,30 +144,30 @@ namespace Assets.Code.Logic
             }
         }
 
-        public override bool Subsumes(Term t)
+        public override bool Subsumes(ITerm t)
         {
             return true;
         }
 
         public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
-            Term t = this.Capply(un);
+            ITerm t = this.Capply(un);
             if (t.Equals(this))
             {
                 return base.LogicalConsequence(ag, un);
             }
             else
             {
-                return ((LogicalFormula)t).LogicalConsequence(ag, un);
+                return ((ILogicalFormula)t).LogicalConsequence(ag, un);
             }
         }
 
-        public override Term GetTerm(int i)
+        public override ITerm GetTerm(int i)
         {
             return null;
         }
 
-        public override void AddTerm(Term t)
+        public override void AddTerm(ITerm t)
         {
 
         }
@@ -179,22 +178,22 @@ namespace Assets.Code.Logic
             return 0;
         }
 
-        public override List<Term> GetTerms()
+        public override List<ITerm> GetTerms()
         {
             return null;
         }
 
-        public override Literal SetTerms(List<Term> l)
+        public override Literal SetTerms(List<ITerm> l)
         {
             return this;
         }
 
-        public override void SetTerm(int i, Term t)
+        public override void SetTerm(int i, ITerm t)
         {
 
         }
 
-        public override Literal AddTerms(List<Term> l)
+        public override Literal AddTerms(List<ITerm> l)
         {
             return this;
         }
@@ -267,7 +266,7 @@ namespace Assets.Code.Logic
             }
             if (u != null)
             {
-                Term vl = u.Get(this);
+                ITerm vl = u.Get(this);
                 if (vl != null)
                 {
                     try
@@ -306,9 +305,9 @@ namespace Assets.Code.Logic
             throw new Exception();
         }
 
-        public void Add(int index, Term o) { }
+        public void Add(int index, ITerm o) { }
 
-        public bool Add(Term o)
+        public bool Add(ITerm o)
         {
             return false;
         }
@@ -335,7 +334,7 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public Term Get(int index)
+        public ITerm Get(int index)
         {
             return null;
         }
@@ -350,7 +349,7 @@ namespace Assets.Code.Logic
             return -1;
         }
 
-        public IEnumerator<Term> Iterator()
+        public IEnumerator<ITerm> Iterator()
         {
             return null;
         }
@@ -367,7 +366,7 @@ namespace Assets.Code.Logic
         }
         */
 
-        public Term Remove(int index)
+        public ITerm Remove(int index)
         {
             return null;
         }
@@ -387,17 +386,17 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public Term Set(int index, Term o)
+        public ITerm Set(int index, ITerm o)
         {
             return null;
         }
 
-        public List<Term> SubList(int arg0, int arg1)
+        public List<ITerm> SubList(int arg0, int arg1)
         {
             return null;
         }
 
-        public IEnumerator<List<Term>> SubSets(int k)
+        public IEnumerator<List<ITerm>> SubSets(int k)
         {
             return null;
         }
@@ -407,35 +406,35 @@ namespace Assets.Code.Logic
             return null;
         }
 
-        public void SetTerm(Term t) { }
+        public void SetTerm(ITerm t) { }
 
-        public void SetNext(Term t) { }
+        public void SetNext(ITerm t) { }
 
-        public ListTerm Append(Term t) { return null; }
+        public IListTerm Append(ITerm t) { return null; }
 
-        public ListTerm Insert(Term t) { return null; }
+        public IListTerm Insert(ITerm t) { return null; }
 
-        public ListTerm Concat(ListTerm lt) { return null; }
+        public IListTerm Concat(IListTerm lt) { return null; }
 
-        public ListTerm Reverse() { return null; }
+        public IListTerm Reverse() { return null; }
 
-        public ListTerm Union(ListTerm lt) { return null; }
+        public IListTerm Union(IListTerm lt) { return null; }
 
-        public ListTerm Intersection(ListTerm lt) { return null; }
+        public IListTerm Intersection(IListTerm lt) { return null; }
 
-        public ListTerm Difference(ListTerm lt) { return null; }
+        public IListTerm Difference(IListTerm lt) { return null; }
 
-        public List<Term> GetAsList() { return null; }
+        public List<ITerm> GetAsList() { return null; }
 
-        public ListTerm GetLast() { return null; }
+        public IListTerm GetLast() { return null; }
 
-        public ListTerm GetPenultimate() { return null; }
+        public IListTerm GetPenultimate() { return null; }
 
-        public Term RemoveLast() { return null; }
+        public ITerm RemoveLast() { return null; }
 
-        public ListTerm GetNext() { return null; }
+        public IListTerm GetNext() { return null; }
 
-        public Term GetTerm() { return null; }
+        public ITerm GetTerm() { return null; }
 
         public bool IsEmpty() { return false; }
 
@@ -447,13 +446,13 @@ namespace Assets.Code.Logic
 
         public VarTerm GetTail() { return null; }
 
-        public IEnumerator<ListTerm> ListTermIterator() { return null; }
+        public IEnumerator<IListTerm> ListTermIterator() { return null; }
 
         public int Size() { return -1; }
 
-        public ListTerm CloneLTShallow() { return null; }
+        public IListTerm CloneLTShallow() { return null; }
 
-        Term Term.CloneNS(Atom Newnamespace)
+        ITerm ITerm.CloneNS(Atom Newnamespace)
         {
             throw new NotImplementedException();
         }

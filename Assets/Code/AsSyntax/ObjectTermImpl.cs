@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public class ObjectTermImpl : DefaultTerm, ObjectTerm
+    public class ObjectTermImpl : DefaultTerm, IObjectTerm
     {
         private static readonly long serialVersionUID = 1L;
         private readonly object o;
@@ -40,7 +40,7 @@ namespace Assets.Code.Logic.AsSyntax
             return false;
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             try
             {

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
     public class Structure : Atom
     {
-        private static List<Term> emptyTermList = new List<Term>(0);
-        private static Term[] emptyTermArray = new Term[0];
-        private List<Term> terms;
+        private static List<ITerm> emptyTermList = new List<ITerm>(0);
+        private static ITerm[] emptyTermArray = new ITerm[0];
+        private List<ITerm> terms;
         private const bool useShortUnnamedVars = Config.Get().GetBoolean(Config.SHORT_UNNAMED_VARS); //I dont really know what this is for
 
 
@@ -31,7 +31,7 @@ namespace Assets.Code.Logic
             int tss = l.GetArity();
             if (tss > 0)
             {
-                terms = new List<Term>(tss);
+                terms = new List<ITerm>(tss);
                 for (int i = 0; i < tss; i++)
                 {
                     terms.Add(l.GetTerm(i).Clone());
@@ -49,7 +49,7 @@ namespace Assets.Code.Logic
             int tss = l.GetArity();
             if (tss > 0)
             {
-                terms = new List<Term>(tss);
+                terms = new List<ITerm>(tss);
                 for (int i = 0; i < tss; i++)
                 {
                     terms.Add(l.GetTerm(i).Clone());
@@ -62,7 +62,7 @@ namespace Assets.Code.Logic
         {
             if (termSize > 0)
             {
-                terms = new List<Term>(termSize);
+                terms = new List<ITerm>(termSize);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Assets.Code.Logic
             as2j parser = new as2j(new StringReader(sTerm));
             try
             {
-                Term t = parser.Term();
+                ITerm t = parser.Term();
                 if (t.GetType() == typeof(Structure))
                 {
                     return (Structure)t;
@@ -146,7 +146,7 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public override int CompareTo(Term t)
+        public override int CompareTo(ITerm t)
         {
             int c = base.CompareTo(t);
             if (c != 0)
@@ -170,7 +170,7 @@ namespace Assets.Code.Logic
             return c;
         }
 
-        public override bool Subsumes(Term t)
+        public override bool Subsumes(ITerm t)
         {
             if (t.IsStructure())
             {
@@ -190,12 +190,12 @@ namespace Assets.Code.Logic
             }
         }
 
-        public override Term Capply(Unifier u) //I dont understand why theres an error here yay 
+        public override ITerm Capply(Unifier u) //I dont understand why theres an error here yay 
         {
             return new Structure(this, u);
         }
 
-        public Term Clone() //i dont know if this is override or not yay again
+        public ITerm Clone() //i dont know if this is override or not yay again
         {
             Structure s = new Structure(this);
             s.hashCodeCache = this.hashCodeCache;
@@ -207,7 +207,7 @@ namespace Assets.Code.Logic
             return new Structure(newNamespace, this);
         }
 
-        public override void AddTerm(Term t)
+        public override void AddTerm(ITerm t)
         {
             if (t == null)
             {
@@ -215,7 +215,7 @@ namespace Assets.Code.Logic
             }
             if (terms == null)
             {
-                terms = new List<Term>(5); //Why??
+                terms = new List<ITerm>(5); //Why??
             }
             terms.Add(t);
             predicateIndicatorCache = null;
@@ -233,13 +233,13 @@ namespace Assets.Code.Logic
             ResetHashCodeCache();
         }
 
-        public override Literal AddTerms(params Term[] ts)
+        public override Literal AddTerms(params ITerm[] ts)
         {
             if (terms == null)
             {
-                terms = new List<Term>(5);
+                terms = new List<ITerm>(5);
             }
-            foreach (Term t in ts)
+            foreach (ITerm t in ts)
             {
                 terms.Add(t);
             }
@@ -248,13 +248,13 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override Literal AddTerms(List<Term> l)
+        public override Literal AddTerms(List<ITerm> l)
         {
             if (terms == null)
             {
-                terms = new List<Term>(5);
+                terms = new List<ITerm>(5);
             }
-            foreach (Term t in l)
+            foreach (ITerm t in l)
             {
                 terms.Add(t);
             }
@@ -263,7 +263,7 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override Literal SetTerms(List<Term> l)
+        public override Literal SetTerms(List<ITerm> l)
         {
             terms = l;
             predicateIndicatorCache = null;
@@ -271,17 +271,17 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public override void setTerm(int i, Term t)
+        public override void setTerm(int i, ITerm t)
         {
             if (terms == null)
             {
-                terms = new List<Term>(5);
+                terms = new List<ITerm>(5);
             }
             terms.Insert(i, t);
             ResetHashCodeCache();
         }
 
-        public override Term GetTerm(int i)
+        public override ITerm GetTerm(int i)
         {
             if (terms == null)
             {
@@ -303,7 +303,7 @@ namespace Assets.Code.Logic
             }
         }
 
-        public override List<Term> GetTerms()
+        public override List<ITerm> GetTerms()
         {
             return terms;
         }
@@ -351,7 +351,7 @@ namespace Assets.Code.Logic
             int size = GetArity();
             for (int i = 0; i <size; i++)
             {
-                Term t = GetTerm(i);
+                ITerm t = GetTerm(i);
                 if (t.IsVar())
                 {
                     SetTerm(i, VarToReplace(t, u));
@@ -364,7 +364,7 @@ namespace Assets.Code.Logic
             return this;
         }
 
-        public VarTerm VarToReplace(Term t, Unifier u)
+        public VarTerm VarToReplace(ITerm t, Unifier u)
         {
             VarTerm v = (VarTerm)t;
             VarTerm deref = u.Deref(v);
@@ -466,7 +466,7 @@ namespace Assets.Code.Logic
             if (GetArity() > 0)
             {
                 s.Append("(");
-                IEnumerator<Term> enumerator = terms.GetEnumerator();
+                IEnumerator<ITerm> enumerator = terms.GetEnumerator();
                 while(enumerator.MoveNext())
                 {
                     s.Append(enumerator.Current);

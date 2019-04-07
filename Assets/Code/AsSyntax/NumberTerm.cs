@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 /*
  * The interface for numeric terms of AgentSpeak language
  */
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public interface NumberTerm:Term
+    public interface INumberTerm:ITerm
     {
         /** returns the numeric value of the term */
         double Solve();

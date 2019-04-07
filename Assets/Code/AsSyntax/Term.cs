@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public interface Term:ICloneable, IComparable
+    public interface ITerm:ICloneable, IComparable
     {
         bool IsVar();
         bool IsUnnamedVar();
@@ -30,17 +30,17 @@ namespace Assets.Code.Logic.AsSyntax
 
         void CountVars(Dictionary<VarTerm, int?> c);
 
-        new Term Clone();
+        new ITerm Clone();
 
         bool Equals(object o);
 
-        bool Subsumes(Term l);
+        bool Subsumes(ITerm l);
 
         /** clone and applies together (and faster than clone and then apply) */
-        Term Capply(Unifier u);
+        ITerm Capply(Unifier u);
 
         /** clone in another namespace */
-        Term CloneNS(Atom Newnamespace);
+        ITerm CloneNS(Atom Newnamespace);
 
         void SetSrcInfo(SourceInfo s);
         SourceInfo GetSrcInfo();

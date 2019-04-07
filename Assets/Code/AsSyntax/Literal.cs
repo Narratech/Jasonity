@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
-using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
 /*
@@ -21,10 +20,10 @@ using Assets.Code.ReasoningCycle;
  The latter class supports all the operations of
  the Literal interface.
  */
-namespace Assets.Code.Logic
+namespace Assets.Code.AsSyntax
 {
 
-    public abstract class Literal : DefaultTerm, LogicalFormula
+    public abstract class Literal : DefaultTerm, ILogicalFormula
     {
         private static readonly long serialVersionUID = 1L;
 
@@ -94,13 +93,13 @@ namespace Assets.Code.Logic
             return false;
         }
 
-        public List<Term> GetTerms()
+        public List<ITerm> GetTerms()
         {
             return Structure.EmptyTermList;
         }
 
         /** returns all terms of this literal */
-        public Term[] GetTermsArray()
+        public ITerm[] GetTermsArray()
         {
             if (HasTerm())
             {
@@ -138,12 +137,12 @@ namespace Assets.Code.Logic
         }
 
         /** returns all annotations of the literal */
-        public ListTerm GetAnnots()
+        public IListTerm GetAnnots()
         {
             return null;
         }
         /** returns true if there is some annotation <i>t</i> in the literal */
-        public bool HasAnnot(Term t)
+        public bool HasAnnot(ITerm t)
         {
             return false;
         }
@@ -190,7 +189,7 @@ namespace Assets.Code.Logic
          *
          * in case that there is no such an annot, it returns an empty list.
          */
-        public ListTerm GetAnnots(string functor)
+        public IListTerm GetAnnots(string functor)
         {
             return new ListTermImpl();
         }
@@ -205,7 +204,7 @@ namespace Assets.Code.Logic
          * returns the sources of this literal as a new list. e.g.: from annots
          * [source(a), source(b)], it returns [a,b]
          */
-        public ListTerm GetSources()
+        public IListTerm GetSources()
         {
             return new ListTermImpl();
         }
@@ -217,7 +216,7 @@ namespace Assets.Code.Logic
         }
 
         /** returns true if this literal has a "source(<i>agName</i>)" */
-        public bool HasSource(Term agName)
+        public bool HasSource(ITerm agName)
         {
             return false;
         }
@@ -248,7 +247,7 @@ namespace Assets.Code.Logic
         /* Not implemented methods */
 
         // structure
-        public void AddTerm(Term t)
+        public void AddTerm(ITerm t)
         {
         }
 
@@ -257,57 +256,57 @@ namespace Assets.Code.Logic
         }
 
         /** adds some terms and return this */
-        public Literal AddTerms(params Term[] ts)
+        public Literal AddTerms(params ITerm[] ts)
         {
             return null;
         }
 
         /** adds some terms and return this */
-        public Literal AddTerms(List<Term> l)
+        public Literal AddTerms(List<ITerm> l)
         {
             return null;
         }
 
         /** returns the i-th term (first term is 0) */
-        public Term GetTerm(int i)
+        public ITerm GetTerm(int i)
         {
             return null;
         }
 
         /** set all terms of the literal and return this */
-        public Literal SetTerms(List<Term> l)
+        public Literal SetTerms(List<ITerm> l)
         {
             return null;
         }
 
-        public virtual void SetTerm(int i, Term t)
+        public virtual void SetTerm(int i, ITerm t)
         {
         }
 
         // pred
-        public Literal SetAnnots(ListTerm l)
+        public Literal SetAnnots(IListTerm l)
         {
             return null;
         }
 
-        public bool AddAnnot(Term t)
+        public bool AddAnnot(ITerm t)
         {
             return false;
         }
 
         /** adds some annots and return this */
-        public Literal AddAnnots(params Term[] ts)
+        public Literal AddAnnots(params ITerm[] ts)
         {
             return null;
         }
 
         /** adds some annots and return this */
-        public Literal AddAnnots(List<Term> l)
+        public Literal AddAnnots(List<ITerm> l)
         {
             return null;
         }
 
-        public bool DelAnnot(Term t)
+        public bool DelAnnot(ITerm t)
         {
             return false;
         }
@@ -316,7 +315,7 @@ namespace Assets.Code.Logic
          * removes all annots in this pred that are in the list <i>l</i>.
          * @return true if some annot was removed.
          */
-        public bool DelAnnots(List<Term> l)
+        public bool DelAnnots(List<ITerm> l)
         {
             return false;
         }
@@ -338,12 +337,12 @@ namespace Assets.Code.Logic
         }
 
         /** adds the annotation source(<i>agName</i>) */
-        public void AddSource(Term agName)
+        public void AddSource(ITerm agName)
         {
         }
 
         /** deletes one source(<i>agName</i>) annotation, return true if deleted */
-        public bool DelSource(Term agName)
+        public bool DelSource(ITerm agName)
         {
             return false;
         }
@@ -383,7 +382,7 @@ namespace Assets.Code.Logic
             Rule rule; // current rule
             bool needsUpdate = true;
 
-            IEnumerator<List<Term>> annotsOptions = null;
+            IEnumerator<List<ITerm>> annotsOptions = null;
             Literal belInBB = null;
             private AgArch arch;
             private int nbAnnots;
@@ -505,14 +504,14 @@ namespace Assets.Code.Logic
             public void Remove() { }
         }
 
-        private void UseDerefVars(Term p, Unifier un)
+        private void UseDerefVars(ITerm p, Unifier un)
         {
             if (p.GetType() == typeof(Literal))
             {
                 Literal l = p as Literal;
                 for (int i = 0; i < l.GetArity(); i++)
                 {
-                    Term t = l.GetTerm(i);
+                    ITerm t = l.GetTerm(i);
                     if (t.IsVar())
                     {
                         l.SetTerm(i, un.Deref(t as VarTerm));
@@ -526,12 +525,12 @@ namespace Assets.Code.Logic
         }
 
         /** returns this literal as a list with three elements: [functor, list of terms, list of annots] */
-        private ListTerm GetAsListOfTerms()
+        private IListTerm GetAsListOfTerms()
         {
-            ListTerm l = new ListTermImpl();
+            IListTerm l = new ListTermImpl();
             l.Add(GetNS());
             l.Add(new LiteralImpl(!Negated(), GetFunctor()));
-            ListTerm lt = new ListTermImpl();
+            IListTerm lt = new ListTermImpl();
             l.Add(lt);
             if (HasAnnot())
             {
@@ -547,18 +546,18 @@ namespace Assets.Code.Logic
         /** creates a literal from a list with four elements: [namespace, functor, list of terms, list of annots]
          *  (namespace is optional)
          */
-        public static Literal NewFromListOfTerms(ListTerm lt)
+        public static Literal NewFromListOfTerms(IListTerm lt)
         {
             try
             {
-                IEnumerator<Term> i = lt.Iterator();
+                IEnumerator<ITerm> i = lt.Iterator();
 
                 Atom ns = DefaultNS;
                 if (lt.Size() == 4)
                 {
                     ns = i.Current as Atom;
                 }
-                Term tFunctor = i.Current;
+                ITerm tFunctor = i.Current;
 
                 bool pos = Literal.LPos;
                 if (tFunctor.IsLiteral() && (tFunctor as Literal).Negated())
@@ -574,11 +573,11 @@ namespace Assets.Code.Logic
 
                 if (i.Current != null)
                 {
-                    l.SetTerms(((ListTerm)i.Current).CloneLT());
+                    l.SetTerms(((IListTerm)i.Current).CloneLT());
                 }
                 if (i.Current != null)
                 {
-                    l.SetAnnots((i.Current as ListTerm).CloneLT());
+                    l.SetAnnots((i.Current as IListTerm).CloneLT());
                 }
                 return l;
             }
@@ -616,12 +615,12 @@ namespace Assets.Code.Logic
                 return this;
             }
 
-            public override Term Capply(Unifier u)
+            public override ITerm Capply(Unifier u)
             {
                 return this;
             }
 
-            public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+            public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
             {
                 return LogExpr.CreateUnifIterator(un);
             }
@@ -644,12 +643,12 @@ namespace Assets.Code.Logic
                 return this;
             }
 
-            public override Term Capply(Unifier u)
+            public override ITerm Capply(Unifier u)
             {
                 return this;
             }
 
-            public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+            public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
             {
                 return LogExpr.EMPTY_UNIFY_LIST.iterator();
             }
@@ -660,7 +659,7 @@ namespace Assets.Code.Logic
             }
         }
 
-        internal sealed class DefaultNameSpace : Atom
+        sealed class DefaultNameSpace : Atom
         {
             public DefaultNameSpace() : base(null, "default")
             {
@@ -672,7 +671,7 @@ namespace Assets.Code.Logic
                 return GetFunctor().GetHashCode();
             }
 
-            public override Term Capply(Unifier u)
+            public override ITerm Capply(Unifier u)
             {
                 return this;
             }
@@ -710,7 +709,7 @@ namespace Assets.Code.Logic
             }
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             throw new NotImplementedException();
         }

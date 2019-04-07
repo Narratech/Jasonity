@@ -10,43 +10,43 @@ using System.Threading.Tasks;
  * @opt nodefillcolor lightgoldenrodyellow
  *
  */
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
-    public interface ListTerm: Term
+    public interface IListTerm: ITerm
     {
-        void SetTerm(Term t);
-        Term GetTerm();
-        void SetNext(Term l);
-        ListTerm GetNext();
+        void SetTerm(ITerm t);
+        ITerm GetTerm();
+        void SetNext(ITerm l);
+        IListTerm GetNext();
 
         bool IsEnd();
 
         bool IsTail();
         VarTerm GetTail();
         void SetTail(VarTerm v);
-        ListTerm GetLast();
-        ListTerm GetPenultimate();
-        Term RemoveLast();
-        ListTerm Append(Term t);
-        ListTerm Insert(Term t);
+        IListTerm GetLast();
+        IListTerm GetPenultimate();
+        ITerm RemoveLast();
+        IListTerm Append(ITerm t);
+        IListTerm Insert(ITerm t);
 
-        ListTerm Concat(ListTerm lt);
-        ListTerm Reverse();
+        IListTerm Concat(IListTerm lt);
+        IListTerm Reverse();
 
-        ListTerm Union(ListTerm lt);
-        ListTerm Intersection(ListTerm lt);
-        ListTerm Difference(ListTerm lt);
+        IListTerm Union(IListTerm lt);
+        IListTerm Intersection(IListTerm lt);
+        IListTerm Difference(IListTerm lt);
 
         //Return all subsets that take k elements of this list
-        IEnumerator<List<Term>> SubSets(int k);
+        IEnumerator<List<ITerm>> SubSets(int k);
 
-        IEnumerator<ListTerm> ListTermIterator();
-        List<Term> GetAsList();
+        IEnumerator<IListTerm> ListTermIterator();
+        List<ITerm> GetAsList();
 
         //Clone the list term
-        ListTerm CloneLT();
+        IListTerm CloneLT();
 
         //Make a shallow copy of the list (terms are not cloned, only the structure)
-        ListTerm CloneLTShallow();
+        IListTerm CloneLTShallow();
     }
 }

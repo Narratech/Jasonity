@@ -1,32 +1,30 @@
-﻿using Assets.Code.Logic.AsSyntax;
-
-namespace Assets.Code.Logic
+﻿namespace Assets.Code.AsSyntax
 {
 
-    public interface PlanBody : Term
+    public interface IPlanBody : ITerm
     {
         BodyType GetBodyType();
-        Term GetBodyTerm();
-        PlanBody GetBodyNext();
-        PlanBody GetHead();
+        ITerm GetBodyTerm();
+        IPlanBody GetBodyNext();
+        IPlanBody GetHead();
 
         bool IsEmptyBody();
         int GetPlanSize();
 
         void SetBodyType(BodyType bt);
-        void SetBodyTerm(Term t);
-        void SetBodyNext(PlanBody bl);
-        PlanBody GetLastBody();
+        void SetBodyTerm(ITerm t);
+        void SetBodyNext(IPlanBody bl);
+        IPlanBody GetLastBody();
 
         bool IsBodyTerm();
         void SetAsBodyTerm(bool b);
 
-        bool Add(PlanBody bl);
-        bool Add(int index, PlanBody bl);
-        Term RemoveBody(int index);
+        bool Add(IPlanBody bl);
+        bool Add(int index, IPlanBody bl);
+        ITerm RemoveBody(int index);
 
         // Clones the plan body
-        PlanBody ClonePB();
+        IPlanBody ClonePB();
     }
 
     public class BodyType

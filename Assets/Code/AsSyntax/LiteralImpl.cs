@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Logic.AsSyntax
+namespace Assets.Code.AsSyntax
 {
     public class LiteralImpl : Pred
     {
@@ -94,7 +94,7 @@ namespace Assets.Code.Logic.AsSyntax
             return "Error in '" + this + "'" + src;
         }
 
-        public override int CompareTo(Term t)
+        public override int CompareTo(ITerm t)
         {
             if (t == null)
                 return -1;
@@ -109,14 +109,14 @@ namespace Assets.Code.Logic.AsSyntax
             return base.CompareTo(t);
         }
 
-        public override Term Clone()
+        public override ITerm Clone()
         {
             Literal l = new LiteralImpl(this);
             l.hashCodeCache = hashCodeCache;
             return l;
         }
 
-        public override Term Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             return new LiteralImpl(this, u);
         }
