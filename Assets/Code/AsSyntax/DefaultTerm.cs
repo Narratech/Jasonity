@@ -68,7 +68,7 @@ namespace Assets.Code.AsSyntax
             return hashCodeCache;
         }
 
-        public bool Subsumes(ITerm l)
+        public virtual bool Subsumes(ITerm l)
         {
             if (l.IsVar())
             {

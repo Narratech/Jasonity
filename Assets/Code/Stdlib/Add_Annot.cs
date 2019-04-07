@@ -1,6 +1,6 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,21 +34,21 @@ namespace Assets.Code.Stdlib
             return 3;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            Term result = AddAnnotToList(un, args[0], args[1]);
-            return un.unifies(result, args[2]);
+            ITerm result = AddAnnotToList(un, args[0], args[1]);
+            return un.Unifies(result, args[2]);
         }
 
-        protected Term AddAnnotToList(Unifier unif, Term l, Term annot)
+        protected ITerm AddAnnotToList(Unifier unif, ITerm l, ITerm annot)
         {
             if (l.IsList())
             {
-                ListTerm result = new ListTermImpl();
-                foreach (Term lTerm in (ListTerm)l)
+                IListTerm result = new ListTermImpl();
+                foreach (ITerm lTerm in (IListTerm)l)
                 {
-                    Term t = AddAnnotToList(unif, lTerm, annot);
+                    ITerm t = AddAnnotToList(unif, lTerm, annot);
                     if (t != null)
                     {
                         result.Add(t);

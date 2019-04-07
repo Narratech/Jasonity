@@ -82,18 +82,18 @@ namespace Assets.Code.AsSyntax
         /* default implementation of some methods */
 
         /** returns the number of terms of this literal */
-        public int GetArity()
+        public virtual int GetArity()
         {
             return 0;
         }
 
         /** returns true if this literal has some term */
-        public bool HasTerm()
+        public virtual bool HasTerm()
         {
             return false;
         }
 
-        public List<ITerm> GetTerms()
+        public virtual List<ITerm> GetTerms()
         {
             return Structure.EmptyTermList;
         }
@@ -119,9 +119,9 @@ namespace Assets.Code.AsSyntax
         }
 
         /** replaces all terms by unnamed variables (_). */
-        public void MakeTermsAnnon() { }
+        public virtual void MakeTermsAnnon() { }
         /** replaces all variables by unnamed variables (_). */
-        public Literal MakeVarsAnnon()
+        public virtual Literal MakeVarsAnnon()
         {
             return this;
         }
@@ -131,7 +131,7 @@ namespace Assets.Code.AsSyntax
          *
          * @param un is the unifier that contains the map of replacements
          */
-        public Literal MakeVarsAnnon(Unifier un)
+        public virtual Literal MakeVarsAnnon(Unifier un)
         {
             return this;
         }
@@ -247,34 +247,34 @@ namespace Assets.Code.AsSyntax
         /* Not implemented methods */
 
         // structure
-        public void AddTerm(ITerm t)
+        public virtual void AddTerm(ITerm t)
         {
         }
 
-        public void DelTerm(int index)
+        public virtual void DelTerm(int index)
         {
         }
 
         /** adds some terms and return this */
-        public Literal AddTerms(params ITerm[] ts)
+        public virtual Literal AddTerms(params ITerm[] ts)
         {
             return null;
         }
 
         /** adds some terms and return this */
-        public Literal AddTerms(List<ITerm> l)
+        public virtual Literal AddTerms(List<ITerm> l)
         {
             return null;
         }
 
         /** returns the i-th term (first term is 0) */
-        public ITerm GetTerm(int i)
+        public virtual ITerm GetTerm(int i)
         {
             return null;
         }
 
         /** set all terms of the literal and return this */
-        public Literal SetTerms(List<ITerm> l)
+        public virtual Literal SetTerms(List<ITerm> l)
         {
             return null;
         }

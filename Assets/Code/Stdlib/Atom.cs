@@ -1,6 +1,6 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +34,7 @@ namespace Assets.Code.Stdlib
             return 1;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             return args[0].IsAtom();

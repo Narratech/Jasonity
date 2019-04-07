@@ -1,6 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace Assets.Code.Stdlib
             return 1;
         }
 
-        protected override void CheckArguments(Term[] args) : base.CheckArguments(args)
+        protected override void CheckArguments(ITerm[] args) : base.CheckArguments(args)
         {            
             if (!args[0].IsLiteral() && !args[0].IsVar())
             {
@@ -33,7 +32,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ts.GetAg().Abolish((Literal)args[0], un);

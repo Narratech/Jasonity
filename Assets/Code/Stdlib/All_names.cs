@@ -1,6 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
 using System;
 using System.Collections.Generic;
@@ -26,12 +25,12 @@ namespace Assets.Code.stdlib
             return 1;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             RuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
-            ListTerm ln = new ListTermImpl();
-            ListTerm tail = ln;
+            IListTerm ln = new ListTermImpl();
+            IListTerm tail = ln;
             foreach (string a in rs.GetAgentsNames())
             {
                 tail = tail.Append(new Atom(a));

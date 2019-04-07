@@ -1,6 +1,6 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace Assets.Code.Stdlib
             return 3;
         }
 
-        public object execute(TransitionSystem ts, Unifier un, DefaultTerm[] args)
+        public object Execute(Reasoner ts, Unifier un, DefaultTerm[] args)
         {
             CheckArguments(args);
             try
@@ -48,14 +48,14 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        public static Term AddAnnotToList(DefaultTerm l, DefaultTerm source)
+        public static ITerm AddAnnotToList(DefaultTerm l, DefaultTerm source)
         {
             if (l.IsList())
             {
-                ListTerm result = new ListTermImpl();
-                foreach (Term lTerm in (ListTerm)l)
+                IListTerm result = new ListTermImpl();
+                foreach (ITerm lTerm in (IListTerm)l)
                 {
-                    Term t = AddAnnotToList(lTerm, source);
+                    ITerm t = AddAnnotToList(lTerm, source);
                     if (t != null)
                     {
                         result.Add(t);
@@ -65,7 +65,7 @@ namespace Assets.Code.Stdlib
             }
             else if (l.IsLiteral())
             {
-                Literal result = ((Literal)l).ForceFullLiteralImpl().copy();
+                Literal result = ((Literal)l).ForceFullLiteralImpl().Copy();
 
                 //Create the source annots
                 Literal ts = Pred.CreateSource(source).AddAnnots(result.GetAnnots("source"));

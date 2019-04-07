@@ -1,5 +1,6 @@
-﻿using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public override void CheckArguments(Term[] args): base.CheckArguments(args)
+        public override void CheckArguments(ITerm[] args): base.CheckArguments(args)
         {
             if (!args[0].IsAtom())
             {
@@ -36,12 +37,12 @@ namespace Assets.Code.Stdlib
             return false;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
 
-            Term ilf = args[0];
-            Term pcnt = args[0];
+            ITerm ilf = args[0];
+            ITerm pcnt = args[0];
 
             Message m = new Message(ilf.ToString(), ts.GetUserAgArch().GetAgName(), null, pcnt);
             ts.GetUserAgArch().Broadcast(m);

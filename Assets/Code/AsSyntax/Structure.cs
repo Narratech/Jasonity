@@ -179,7 +179,8 @@ namespace Assets.Code.AsSyntax
                 int oa = s.GetArity();
                 for (int i = 0; i < ma && i < oa; i++)
                 {
-                    if (!GetTerm(i).Subsumes(s.GetTerm(i)){
+                    if (!GetTerm(i).Subsumes(s.GetTerm(i)))
+                    {
                         return false;
                     }
                 }
@@ -271,7 +272,7 @@ namespace Assets.Code.AsSyntax
             return this;
         }
 
-        public override void setTerm(int i, ITerm t)
+        public override void SetTerm(int i, ITerm t)
         {
             if (terms == null)
             {
@@ -375,7 +376,7 @@ namespace Assets.Code.AsSyntax
                 {
                     a = VarToReplace(a, u);
                 }
-                UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.create(a, t.toString());
+                UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.Create(a, t.toString());
                 if (deref.HasAnnot())
                 {
                     uv.SetAnnots(deref.GetAnnot().CloneLT());

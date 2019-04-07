@@ -1,5 +1,6 @@
-﻿using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
+using BDIManager.Beliefs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +24,11 @@ namespace Assets.Code.Stdlib
             return 3;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
 
-            Term source = BeliefBase.ASelf;
+            ITerm source = BeliefBase.ASelf;
             if (args.Length > 1)
             {
                 source = args[1];
@@ -41,7 +42,7 @@ namespace Assets.Code.Stdlib
 
             if (args[0].IsList())
             {
-                foreach (Term t in (ListTerm)args[0])
+                foreach (ITerm t in (IListTerm)args[0])
                 {
                     ts.GetAg().GetPL().Add(Transform2Plan(t), source, before);
                 }

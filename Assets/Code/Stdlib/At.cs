@@ -1,5 +1,6 @@
-﻿using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
+using BDIManager.Intentions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -23,9 +24,9 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
-            StringTerm time = (StringTerm)args[0];
+            IStringTerm time = (IStringTerm)args[0];
             string stime = time.GetString();
 
             //Parse time
@@ -76,7 +77,7 @@ namespace Assets.Code.Stdlib
 
             Trigger te = Trigger.TryToGetGetTrigger(args[1]);
 
-            Agent.GetScheduler().Schedule(new CheckDeadLine(te, ts), deadline, TimeUnit.MILLISECONDS);
+            Agent.Agent.GetScheduler().Schedule(new CheckDeadLine(te, ts), deadline, TimeUnit.MILLISECONDS);
             return true;
         }
 
