@@ -80,7 +80,7 @@ namespace Assets.Code.AsSyntax
                 {
                     try
                     {
-                        value = new NumberTermImpl(function.Evaluate((agent == null ? null : agent.GetTS()), ((Literal)v).GetTermsArray()));
+                        value = new NumberTermImpl(function.Evaluate((agent == null ? null : agent.GetReasoner()), ((Literal)v).GetTermsArray()));
                         return value;
                     }
                     catch (Exception e)
@@ -109,7 +109,7 @@ namespace Assets.Code.AsSyntax
         public override IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
         {
             Debug.Log("Arithmetic term cannot be used for logical consequence");
-            return LogExpr.EMPTYT_UNIF_LIST.Iterator();
+            return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
         public override bool Equals(object o)

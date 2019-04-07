@@ -9,8 +9,6 @@ namespace Assets.Code.AsSyntax
     /** Immutable class that implements a term that represents a number */
     public sealed class NumberTermImpl : DefaultTerm, INumberTerm
     {
-        private static readonly long serialVersionUID = 1L;
-
         private readonly double value;
 
         public NumberTermImpl(): base()
@@ -60,9 +58,9 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
-            return (int?)(37 * value);
+            return (int)(37 * value);
         }
 
         public override int CompareTo(ITerm o)

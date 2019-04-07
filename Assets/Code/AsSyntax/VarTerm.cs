@@ -1,5 +1,6 @@
 ﻿using Assets.Code.ReasoningCycle;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,12 @@ namespace Assets.Code.AsSyntax
     */
     public class VarTerm: LiteralImpl, INumberTerm, IListTerm
     {
-        private static readonly long serialVersionUID = 1L;
-        
+        public int Count => throw new NotImplementedException();
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public ITerm this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public VarTerm(string s):base(s)
         {
             if (s != null && Char.IsLower(s, 0))
@@ -122,7 +127,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
             int result = GetFunctor().GetHashCode();
             return result;
@@ -149,7 +154,7 @@ namespace Assets.Code.AsSyntax
             return true;
         }
 
-        public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             ITerm t = this.Capply(un);
             if (t.Equals(this))
@@ -472,7 +477,52 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public int CompareTo(object obj)
+        public new int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection<ITerm>.Add(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(ITerm[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<ITerm> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

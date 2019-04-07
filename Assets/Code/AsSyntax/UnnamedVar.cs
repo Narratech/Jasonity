@@ -15,15 +15,15 @@ namespace Assets.Code.AsSyntax
     {
         private static readonly long serialVersionUID = 1L;
 
-        private readonly AtomicInteger varCont = new AtomicInteger(0);
+        private int varCont = 0;
         public int myId;
 
-        public UnnamedVar():base(Literal.DefaultNS, varCont.IncrementAndGet())
+        public UnnamedVar():base(Literal.DefaultNS, Interlocked.Increment(ref varCont))
         {
 
         }
 
-        public UnnamedVar(Atom ns):base(ns, varCont.incrementandget())
+        public UnnamedVar(Atom ns):base(ns, Interlocked.Increment(ref varCont))
         {
 
         }
@@ -61,7 +61,7 @@ namespace Assets.Code.AsSyntax
             }
             else
             {
-                int id = varCont.incrementAndGet();
+                int id = Interlocked.Increment(ref varCont);
                 UnnamedVar v = new UnnamedVar(ns, "_" + id + name);
                 v.myId = id;
                 return v;

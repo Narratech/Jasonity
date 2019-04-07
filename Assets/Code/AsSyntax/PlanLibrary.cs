@@ -47,7 +47,7 @@ namespace Assets.Code.AsSyntax
                 }
             }
             sPlan = sTemp.ToString();
-            Plan p = ASSyntax.ParsePlan(sPlan); // ???
+            Plan p = AsSyntax.ParsePlan(sPlan); // ???
             return Add(p, tSource, before);
         }
 
@@ -90,7 +90,7 @@ namespace Assets.Code.AsSyntax
                 Plan planInPL = Get(p.GetLabel());
                 if (p.Equals(planInPL))
                 {
-                    planInPL.GetLabel().AddSource(p.GetLabel().GetSources().Get(0));
+                    planInPL.GetLabel().AddSource(p.GetLabel().GetSources()[0]);
                     return;
                 }
                 else
@@ -128,7 +128,7 @@ namespace Assets.Code.AsSyntax
             {
                 if (before)
                 {
-                    varPlans.Add(0, p);
+                    varPlans.Insert(0, p);
                 }
                 else
                 {
@@ -141,7 +141,7 @@ namespace Assets.Code.AsSyntax
                     {
                         if (before)
                         {
-                            lp.Add(0, p);
+                            lp.Insert(0, p);
                         }
                         else
                         {
@@ -168,7 +168,7 @@ namespace Assets.Code.AsSyntax
                 }
                 if (before)
                 {
-                    codesList.Add(0, p);
+                    codesList.Insert(0, p);
                 }
                 else
                 {
@@ -176,14 +176,14 @@ namespace Assets.Code.AsSyntax
                 }
             }
 
-            if (pte.GetOperator() == TEOperator.GoalState)
+            if (pte.GetOperator() == TEOperator.goalState)
             {
                 hasMetaEventPlans = true;
             }
 
             if (before)
             {
-                plans.Add(0, p);
+                plans.Insert(0, p);
             }
             else
             {
@@ -283,7 +283,8 @@ namespace Assets.Code.AsSyntax
         public Plan Remove(Literal pLabel)
         {
             // Synchronized (lockPL)
-            Plan p = planLabels.Remove(GetStringForLabel(pLabel));
+            Plan p = planLabels[GetStringForLabel(pLabel)];
+            planLabels.Remove(GetStringForLabel(pLabel));
 
             // Removes it from plans list
             plans.Remove(p);
@@ -363,8 +364,8 @@ namespace Assets.Code.AsSyntax
             return l;
         }
 
-        public static Trigger TE_JAG_SLEEPING = new Trigger(TEOperator.Add, TEType.achieve, new Atom("jag_sleeping"));
-        public static Trigger TE_JAG_AWAKING = new Trigger(TEOperator.Add, TEType.achieve, new Atom("jag_awaking"));
+        public static Trigger TE_JAG_SLEEPING = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_sleeping"));
+        public static Trigger TE_JAG_AWAKING = new Trigger(TEOperator.add, TEType.achieve, new Atom("jag_awaking"));
         
         public PlanLibrary Clone()
         {
@@ -384,7 +385,7 @@ namespace Assets.Code.AsSyntax
             return pl;
         }
 
-        public string ToString() => plans.ToString();
+        public override string ToString() => plans.ToString();
 
         public string GetAsTxt(bool includeKQMLPlans)
         {

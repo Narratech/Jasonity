@@ -10,7 +10,6 @@ namespace Assets.Code.AsSyntax
 {
     public class StringTermImpl : DefaultTerm, IStringTerm
     {
-        private static readonly long serialVersionUID = 1L;
         private readonly string value; 
 
         public StringTermImpl():base()
@@ -44,20 +43,6 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public static IStringTerm ParseString(string sTerm)
-        {
-            as2j parser = new as2j(new StringReader(sTerm));
-            try
-            {
-                return (IStringTerm)parser.Term();
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Error parsing term"+ sTerm);
-                return null;
-            }
-        }
-
         public override bool IsString()
         {
             return true;
@@ -85,7 +70,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
             if (value == null)
                 return 0;

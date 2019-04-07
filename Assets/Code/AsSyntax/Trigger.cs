@@ -80,7 +80,7 @@ namespace Assets.Code.AsSyntax
         {
             if (o != null && o.GetType() == typeof(Trigger)) {
                 Trigger t = (Trigger)o;
-                return (op == t.op && type == t.type && literal.Equals(t.getLiteral()));
+                return (op == t.op && type == t.type && literal.Equals(t.GetLiteral()));
             }
             return false;
         }
@@ -105,7 +105,7 @@ namespace Assets.Code.AsSyntax
             return op;
         }
 
-        public TEType GetType()
+        public TEType GetTEType()
         {
             return type;
         }
@@ -115,7 +115,7 @@ namespace Assets.Code.AsSyntax
             return op == TEOperator.add;
         }
 
-        public override Trigger Clone()
+        public new Trigger Clone()
         {
             Trigger c = new Trigger(op, type, literal.Copy());
             c.predicateIndicatorCache = predicateIndicatorCache;
@@ -123,7 +123,7 @@ namespace Assets.Code.AsSyntax
             return c;
         }
 
-        public override Trigger Capply(Unifier u)
+        public new Trigger Capply(Unifier u)
         {
             Trigger c = new Trigger(op, type, (Literal)literal.Capply(u));
             c.predicateIndicatorCache = predicateIndicatorCache;
@@ -180,7 +180,7 @@ namespace Assets.Code.AsSyntax
             }
             if (t.IsPlanBody())
             {
-                PlanBody p = (PlanBody)t;
+                IPlanBody p = (IPlanBody)t;
                 if (p.GetPlanSize() == 1)
                 {
                     TEOperator op = null;
@@ -203,7 +203,7 @@ namespace Assets.Code.AsSyntax
             }   
             if (t.IsString())
             {
-                return ASSyntax.ParseTrigger(((IStringTerm) t).GetString());
+                return AsSyntax.ParseTrigger(((IStringTerm) t).GetString());
             }
             return null;
         }

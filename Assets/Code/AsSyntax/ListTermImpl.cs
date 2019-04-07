@@ -27,20 +27,6 @@ namespace Assets.Code.AsSyntax
             next = n;
         }
 
-        public static IListTerm ParseList(string sList)
-        {
-            parser as2j p = new as2j(new StringReader(sList));
-            try
-            {
-                return p.list();
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e + ": Error parsing list " + sList);
-                return null;
-            }
-        }
-
         public IListTerm Append(ITerm t)
         {
             if (IsEmpty())
@@ -60,7 +46,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public ITerm Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             ListTermImpl t = new ListTermImpl();
             if (term != null) t.term = this.term.Capply(u);
@@ -68,7 +54,7 @@ namespace Assets.Code.AsSyntax
             return t;
         }
 
-        public IListTerm Clone()
+        public new IListTerm Clone()
         {
             ListTermImpl t = new ListTermImpl();
             if (term != null) t.term = this.term.Clone();
@@ -107,7 +93,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
         
-        public int? CalcHasHCode()
+        public override int CalcHasHCode()
         {
             int code = 37;
             if (term != null) code += term.GetHashCode();
@@ -120,18 +106,18 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public int CompareTo(object o)
+        public override int CompareTo(ITerm o)
         {
             if (o.GetType() == typeof(VarTerm))
                 return o.CompareTo(this) * -1;
-            if ((o.GetType() == typeof(INumberTerm))
+            if ((o.GetType() == typeof(INumberTerm)))
                 return 1;
             if (o.GetType() == typeof(IStringTerm))
                 return 1;
             return base.CompareTo(o);
         }
 
-        public int GetArity()
+        public override int GetArity()
         {
             if (IsEmpty())
                 return 0;
@@ -235,14 +221,14 @@ namespace Assets.Code.AsSyntax
             return term;
         }
 
-        public ITerm GetTerm(int i)
+        public override ITerm GetTerm(int i)
         {
             if (i == 0) return term;
             if (i == 1) return next;
             return null;
         }
 
-        public List<ITerm> GetTerms()
+        public new List<ITerm> GetTerms()
         {
             Debug.Log("Do not use GetTerms in lists!");
             List<ITerm> l = new List<ITerm>(2);
@@ -251,7 +237,7 @@ namespace Assets.Code.AsSyntax
             return l;
         }
 
-        public void AddTerm(ITerm t)
+        public new void AddTerm(ITerm t)
         {
             Debug.Log("Do not use AddTerm in lists! Use add(Term)");
         }
@@ -263,7 +249,7 @@ namespace Assets.Code.AsSyntax
             else if (IsTail())
                 return 1;
             else
-                return GetNext().Size() + 1;
+                return GetNext().Count + 1;
         }
 
         public bool HasVar(VarTerm t, Unifier u)
@@ -284,7 +270,7 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public bool IsAtom()
+        public override bool IsAtom()
         {
             return false;
         }
@@ -299,7 +285,7 @@ namespace Assets.Code.AsSyntax
             return IsEmpty() || IsTail();
         }
 
-        public bool IsGround()
+        public new bool IsGround()
         {
             if (IsEmpty())
                 return true;
@@ -310,10 +296,10 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             Debug.Log("ListTermImpl cannot be used for logical consequence!");
-            return LogExpr.Empty_Unif_List.Iterator();
+            return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
         public bool IsInternalAction()
@@ -321,12 +307,12 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public bool IsList()
+        public override bool IsList()
         {
             return true;
         }
 
-        public bool IsLiteral()
+        public override bool IsLiteral()
         {
             return false;
         }
@@ -381,11 +367,6 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public IEnumerator<IListTerm> ListTermIterator()
-        {
-            
-        }
-
         public ITerm RemoveLast()
         {
             IListTerm p = GetPenultimate();
@@ -404,10 +385,10 @@ namespace Assets.Code.AsSyntax
 
         public IListTerm Reverse()
         {
-            return Reverse_Internal(new ListTermImpl());
+            return ReverseInternal(new ListTermImpl());
         }
 
-        public IListTerm Reverse_Internal(IListTerm r)
+        public IListTerm ReverseInternal(IListTerm r)
         {
             if (IsEmpty())
             {
@@ -421,7 +402,7 @@ namespace Assets.Code.AsSyntax
             }
             else
             {
-                return ((ListTermImpl)next).Reverse_Internal(new ListTermImpl(term.Clone(), r));
+                return ((ListTermImpl)next).ReverseInternal(new ListTermImpl(term.Clone(), r));
             }
         }
 
@@ -437,7 +418,7 @@ namespace Assets.Code.AsSyntax
 
         public void SetTail(VarTerm v)
         {
-            if (GetNext().IsEmpty())
+            if (GetNext().Count == 0)
                 next = v;
             else
                 GetNext().SetTail(v);
@@ -448,7 +429,7 @@ namespace Assets.Code.AsSyntax
             term = t;
         }
 
-        public void SetTerm(int i, ITerm t)
+        public override void SetTerm(int i, ITerm t)
         {
             if (i == 0) term = t;
             if (i == 1) next = t;
@@ -456,7 +437,7 @@ namespace Assets.Code.AsSyntax
 
         public IEnumerator<List<ITerm>> SubSets(int k)
         {
-            
+            Acabaaaar
         }
 
         public bool Subsumes(ITerm l)
@@ -476,7 +457,7 @@ namespace Assets.Code.AsSyntax
         {
             ISet<ITerm> set = new SortedSet<ITerm>();
             set.Add(lt);
-            set.RetainAll();
+            set.RetainAll(this);
             return SetToList(set);
         }
 
@@ -498,10 +479,6 @@ namespace Assets.Code.AsSyntax
 
         private abstract class ListTermIterator<T> : IEnumerator<T>
         {
-            Esto está mal
-            public T Current => throw new NotImplementedException();
-
-            object IEnumerator.Current => throw new NotImplementedException();
 
             public void Dispose()
             {
@@ -523,7 +500,7 @@ namespace Assets.Code.AsSyntax
         {
             StringBuilder s = new StringBuilder("[");
             IListTerm l = this;
-            while (!l.IsEmpty())
+            while (!(l.Count == 0))
             {
                 s.Append(l.GetTerm());
                 if (l.IsTail())
@@ -535,7 +512,7 @@ namespace Assets.Code.AsSyntax
                 l = l.GetNext();
                 if (l == null)
                     break;
-                if (!l.IsEmpty())
+                if (!(l.Count == 0))
                     s.Append('s');
             }
             s.Append(']');
@@ -547,7 +524,7 @@ namespace Assets.Code.AsSyntax
             if (index == 0)
                 Insert(o);
             else if (index > 0 && GetNext() != null)
-                GetNext().Add(index - 1, o);
+                GetNext().Insert(index - 1, o);
         }
 
         public bool Add(ITerm o)
@@ -563,7 +540,7 @@ namespace Assets.Code.AsSyntax
             Acabar
         }
 
-        public bool AddAll(int index, )
+        public bool AddAll(int index, IList c)
         {
 
         }
@@ -582,12 +559,12 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                return GetNext().Contains();
+                return GetNext().Contains(o);
             }
             return false;
         }
 
-        public bool ContainsAll(Collection )
+        public bool ContainsAll(IList c)
         {
 
         }
@@ -600,7 +577,7 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                return GetNext().Get(index - 1);
+                return GetNext()[index - 1];
             }
             return null;
         }
@@ -627,14 +604,14 @@ namespace Assets.Code.AsSyntax
             return GetAsList().LastIndexOf(arg0);
         }
 
-        public ListIterator<ITerm> listIterator()
+        public IEnumerator<ITerm> listIterator()
         {
-            return lsitIterator(0);
+            return listIterator(0);
         }
 
-        public ListTermIterator<ITerm> listIterator(int startIndex)
+        public IEnumerator<ITerm> listIterator(int startIndex)
         {
-
+            Acabar
         }
 
         protected void SetValuesFrom(IListTerm lt)
@@ -659,7 +636,9 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                return GetNext().Remove(index - 1);
+                ITerm aux = GetNext()[index-1];
+                GetNext().RemoveAt(index - 1);
+                return aux;
             }
             return null;
         }
@@ -680,17 +659,17 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                return GetNext().Remove(o);
+                return GetNext().Remove((ITerm)o);
             }
             return false;
         }
 
-        public bool RemoveAll(Collection c)
+        public bool RemoveAll(IList c)
         {
 
         }
 
-        public bool RetainAll(Collection c)
+        public bool RetainAll(IList c)
         {
 
         }
@@ -704,7 +683,9 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                return GetNext().Set(index - 1, t);
+                ITerm aux = GetNext()[index - 1];
+                GetNext().Insert(index -1, t);
+                return aux;
             }
             return null;
         }
@@ -719,7 +700,10 @@ namespace Assets.Code.AsSyntax
             return ToArray(new object[0]);
         }
 
-        public <T>
+        public <T> T[] ToArray(T[] a)
+        {
+            
+        }
 
         object ICloneable.Clone()
         {

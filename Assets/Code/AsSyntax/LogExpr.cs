@@ -15,11 +15,11 @@ namespace Assets.Code.AsSyntax
 
         public LogExpr(LogicalOp oper, ILogicalFormula f) : base(oper.ToString(), f) => op = oper;
 
-        public ILogicalFormula GetLHS() => (ILogicalFormula)GetTerm(0);
+        public new ILogicalFormula GetLHS() => (ILogicalFormula)GetTerm(0);
 
-        public ILogicalFormula GetRHS() => (ILogicalFormula)GetTerm(1);
+        public new ILogicalFormula GetRHS() => (ILogicalFormula)GetTerm(1);
 
-        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             /* try
             {

@@ -70,9 +70,9 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
-            return base.CalcHashCode() + body.HashCode();
+            return base.CalcHashCode() + body.GetHashCode();
         }
 
         public ILogicalFormula GetBody()
@@ -99,7 +99,7 @@ namespace Assets.Code.AsSyntax
             return new Rule(this, u);
         }
 
-        public override Rule Clone()
+        public new Rule Clone()
         {
             Rule r = new Rule((Literal)base.Clone(), (ILogicalFormula)body.Clone());
             r.predicateIndicatorCache = null;
@@ -139,7 +139,7 @@ namespace Assets.Code.AsSyntax
             return body.HasVar(t, u);
         }
 
-        public void CountVars(Dictionary<VarTerm, int?> c)
+        public override void CountVars(Dictionary<VarTerm, int?> c)
         {
             base.CountVars(c);
             body.CountVars(c);

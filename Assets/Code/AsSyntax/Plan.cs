@@ -23,14 +23,12 @@ namespace Assets.Code.AsSyntax
 
         private string source = ""; // Source of this plan (file, url, etc.)
 
-        public Plan()
+        public Plan():base("plan", 0)
         {
-            // super("plan", 0);
         }
 
-        public Plan(Pred label, Trigger te, ILogicalFormula ct, IPlanBody bd)
+        public Plan(Pred label, Trigger te, ILogicalFormula ct, IPlanBody bd):base("plan", 0)
         {
-            // super("plan", 0);
             tevent = te;
             tevent.SetAsTriggerTerm(false);
             SetLabel(label);
@@ -46,7 +44,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public int GetArity() => 4;
+        public override int GetArity() => 4;
 
         public void SetSource(string f)
         {
@@ -60,7 +58,7 @@ namespace Assets.Code.AsSyntax
 
         private ITerm noLabelAtom = new Atom("nolabel");
 
-        public ITerm GetTerm(int i)
+        public override ITerm GetTerm(int i)
         {
             switch (i)
             {
@@ -81,7 +79,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public void SetTerm(int i, ITerm t)
+        public override void SetTerm(int i, ITerm t)
         {
             switch (i)
             {
@@ -159,30 +157,17 @@ namespace Assets.Code.AsSyntax
         }
 
         // Creates a plan from a list with four elements: [Literal, Trigger, Context, Body]
-        public Plan NewFromListOfTerms(IListTerm lt)
+        public new Plan NewFromListOfTerms(IListTerm lt)
         {
-            ITerm c = lt.Get(2);
+            ITerm c = lt[2];
             if (c.IsPlanBody())
             {
                 c = ((IPlanBody)c).GetBodyTerm();
             }
-            return new Plan(new Pred((Literal)(lt.Get(0))), (Trigger)lt.Get(1), (ILogicalFormula)c, (IPlanBody)lt.Get(3));
+            return new Plan(new Pred((Literal)(lt[0])), (Trigger)lt[1], (ILogicalFormula)c, (IPlanBody)lt[3]);
         }
 
-        public static Plan Parse(string sPlan)
-        {
-            as2j parser = new as2j(new StringReader(sPlan));
-            try
-            {
-                return parser.Plan();
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        Trigger GetTrigger() => tevent;
+        public Trigger GetTrigger() => tevent;
 
         ILogicalFormula GetContext() => context;
 
@@ -211,7 +196,7 @@ namespace Assets.Code.AsSyntax
 
         // bool Equals(object o);
 
-        public Plan Capply(Unifier u)
+        public override Plan Capply(Unifier u)
         {
             Plan p = new Plan();
             if (label != null)
@@ -233,7 +218,7 @@ namespace Assets.Code.AsSyntax
             return p;
         }
 
-        public ITerm Clone()
+        public override ITerm Clone()
         {
             Plan p = new Plan();
             if (label != null)
@@ -252,7 +237,7 @@ namespace Assets.Code.AsSyntax
             return p;
         }
 
-        public Plan CloneNS(Atom ns) => (Plan)Clone();
+        public new Plan CloneNS(Atom ns) => (Plan)Clone();
 
         public Plan CloneOnlyBody()
         {
@@ -269,13 +254,13 @@ namespace Assets.Code.AsSyntax
             p.context = context;
             p.body = body.ClonePB();
 
-            p.SetSrcInfo(srcInfo); // ???
+            p.SetSrcInfo(srcInfo); 
             p.isTerm = isTerm;
 
             return p;
         }
 
-        public string ToString() => ToASSTring();
+        public override string ToString() => ToASSTring();
 
         private string ToASSTring()
         {

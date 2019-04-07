@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,14 +10,19 @@ public class RelExpr : BinaryStructure, ILogicalFormula
     private RelationalOp op = RelationalOp.none;
     public RelExpr(ITerm t1, RelationalOp oper, ITerm t2) : base(t1, oper.ToString(), t2) => op = oper;
 
-    public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+    public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
     {
         ITerm xp = GetTerm(0).Capply(un);
         ITerm yp = GetTerm(1).Capply(un);
 
-        switch (op)
+        if (op.GetType() == RelationalOp.none.GetType())
         {
-            case RelationalOp.none:
+
+        }
+
+        switch (op.GetType())
+        {
+            case RelationalOp.none.GetType():
                 break;
 
             case RelationalOp.gt:
@@ -50,7 +56,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
                     if (!p.IsVar() && !l.IsVar())
                     {
                         IListTerm palt = p.GetAsListOfTerms();
-                        if (l.Size() == 3) // list without name space
+                        if (l.Count == 3) // list without name space
                             palt = palt.GetNext();
                         if (un.Unifies(palt, l))
                             return LogExpr.CreateUnifEnumerator(un);
@@ -61,7 +67,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
                         if (p.IsVar() && l.IsList())
                         {
                             ITerm t = null;
-                            if (l.Size() == 4 && l.Get(3).IsPlanBody()) // The list is for a plan
+                            if (l.Count == 4 && l[3].IsPlanBody()) // The list is for a plan
                                 t = Plan.NewFromListOfTerms(l);
                             else t = Literal.NewFromListOfTerms(l);
                             if (un.Unifies(p, t)) return LogExpr.CreateUnifEnumerator(un);
@@ -88,7 +94,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
     public override ITerm Capply(Unifier u) => new RelExpr(GetTerm(0).Capply(u), op, GetTerm(1).Capply(u));
 
     // Make a hard copy of the terms
-    public ILogicalFormula Clone() => new RelExpr(GetTerm(0).Clone(), op, GetTerm(1).Clone());
+    public new ILogicalFormula Clone() => new RelExpr(GetTerm(0).Clone(), op, GetTerm(1).Clone());
 
     public override Literal CloneNS(Atom newnamespace) => new RelExpr(GetTerm(0).CloneNS(newnamespace), op, GetTerm(1).CloneNS(newnamespace));
 

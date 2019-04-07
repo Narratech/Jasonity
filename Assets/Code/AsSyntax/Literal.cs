@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using Assets.Code.ReasoningCycle;
+using Assets.Code.Agent;
+using System.Collections;
 
 /*
  *  This class represents an abstract literal (an Atom, Structure, Predicate, etc), it is mainly
@@ -25,7 +27,6 @@ namespace Assets.Code.AsSyntax
 
     public abstract class Literal : DefaultTerm, ILogicalFormula
     {
-        private static readonly long serialVersionUID = 1L;
 
         public static readonly bool LPos = true;
         public static readonly bool LNeg = false;
@@ -36,21 +37,6 @@ namespace Assets.Code.AsSyntax
 
         // to not compute it all the time (it is used many many times)
         protected PredicateIndicator predicateIndicatorCache = null;
-
-        //Creates a new literal by parsing a string
-        public static Literal ParseLiteral(string sLiteral)
-        {
-            try
-            {
-                as2j parser = new as2j(new StringReader(sLiteral));
-                return parser.Literal();
-            }
-            catch (Exception e)
-            {
-
-                return null;
-            }
-        }
 
         public Literal Copy()
         {
@@ -137,24 +123,24 @@ namespace Assets.Code.AsSyntax
         }
 
         /** returns all annotations of the literal */
-        public IListTerm GetAnnots()
+        public virtual IListTerm GetAnnots()
         {
             return null;
         }
         /** returns true if there is some annotation <i>t</i> in the literal */
-        public bool HasAnnot(ITerm t)
+        public virtual bool HasAnnot(ITerm t)
         {
             return false;
         }
 
         /** returns true if the pred has at least one annot */
-        public bool HasAnnot()
+        public virtual bool HasAnnot()
         {
             return false;
         }
 
         /** returns true if all this predicate annots are in p's annots */
-        public bool HasSubsetAnnot(Literal p)
+        public virtual bool HasSubsetAnnot(Literal p)
         {
             return true;
         }
@@ -173,13 +159,13 @@ namespace Assets.Code.AsSyntax
          *   this[b|T] = p[x,y,b]
          * unifies and T is [x,y] (this will be a subset if T is [x,y].
          */
-        public bool HasSubsetAnnot(Literal p, Unifier u)
+        public virtual bool HasSubsetAnnot(Literal p, Unifier u)
         {
             return true;
         }
 
         /** removes all annotations */
-        public void ClearAnnots() { }
+        public virtual void ClearAnnots() { }
 
         /**
          * returns all annots with the specified functor e.g.: from annots
@@ -189,13 +175,13 @@ namespace Assets.Code.AsSyntax
          *
          * in case that there is no such an annot, it returns an empty list.
          */
-        public IListTerm GetAnnots(string functor)
+        public virtual IListTerm GetAnnots(string functor)
         {
             return new ListTermImpl();
         }
 
         /** returns the first annotation (literal) that has the <i>functor</i> */
-        public Literal GetAnnot(string functor)
+        public virtual Literal GetAnnot(string functor)
         {
             return null;
         }
@@ -204,19 +190,19 @@ namespace Assets.Code.AsSyntax
          * returns the sources of this literal as a new list. e.g.: from annots
          * [source(a), source(b)], it returns [a,b]
          */
-        public IListTerm GetSources()
+        public virtual IListTerm GetSources()
         {
             return new ListTermImpl();
         }
 
         /** returns true if this literal has some source annotation */
-        public bool HasSource()
+        public virtual bool HasSource()
         {
             return false;
         }
 
         /** returns true if this literal has a "source(<i>agName</i>)" */
-        public bool HasSource(ITerm agName)
+        public virtual bool HasSource(ITerm agName)
         {
             return false;
         }
@@ -239,7 +225,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public bool EqualsAsStructure(object p)
+        public virtual bool EqualsAsStructure(object p)
         {
             return false;
         }
@@ -284,29 +270,29 @@ namespace Assets.Code.AsSyntax
         }
 
         // pred
-        public Literal SetAnnots(IListTerm l)
+        public virtual Literal SetAnnots(IListTerm l)
         {
             return null;
         }
 
-        public bool AddAnnot(ITerm t)
+        public virtual bool AddAnnot(ITerm t)
         {
             return false;
         }
 
         /** adds some annots and return this */
-        public Literal AddAnnots(params ITerm[] ts)
+        public virtual Literal AddAnnots(params ITerm[] ts)
         {
             return null;
         }
 
         /** adds some annots and return this */
-        public Literal AddAnnots(List<ITerm> l)
+        public virtual Literal AddAnnots(List<ITerm> l)
         {
             return null;
         }
 
-        public bool DelAnnot(ITerm t)
+        public virtual bool DelAnnot(ITerm t)
         {
             return false;
         }
@@ -315,7 +301,7 @@ namespace Assets.Code.AsSyntax
          * removes all annots in this pred that are in the list <i>l</i>.
          * @return true if some annot was removed.
          */
-        public bool DelAnnots(List<ITerm> l)
+        public virtual bool DelAnnots(List<ITerm> l)
         {
             return false;
         }
@@ -331,18 +317,18 @@ namespace Assets.Code.AsSyntax
          *
          * @return true if some annot was imported.
          */
-        public bool ImportAnnots(Literal p)
+        public virtual bool ImportAnnots(Literal p)
         {
             return false;
         }
 
         /** adds the annotation source(<i>agName</i>) */
-        public void AddSource(ITerm agName)
+        public virtual void AddSource(ITerm agName)
         {
         }
 
         /** deletes one source(<i>agName</i>) annotation, return true if deleted */
-        public bool DelSource(ITerm agName)
+        public virtual bool DelSource(ITerm agName)
         {
             return false;
         }
@@ -359,40 +345,47 @@ namespace Assets.Code.AsSyntax
             return null;
         }
 
-        public virtual IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
+        public virtual IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
             if (il == null)
             {
-                return LogExpr.EMPTY_UNIF_LIST.iterator();
+                return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
             }
 
-            AgArch arch = (ag != null && ag.GetTs() != null ? ag.GetTS().GetUserAgArch() : null);
-            int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Size() : 0);
+            AgentArchitecture arch = (ag != null && ag.GetREasoner() != null ? ag.GetReasoner().GetUserAgArch() : null);
+            int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Count : 0);
 
-            return new IEnumerator<Unifier>(arch, nbAnnots, il);
+            return new Iterator<Unifier>(arch, nbAnnots, il, ag, un);
             
         }
 
-        public class IEnumerator<Unifier>
+        private class Iterator<Unifier>: IEnumerator<Unifier>
         {
             Unifier current = null;
             IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
             Literal cloneAnnon = null; // a copy of the literal with makeVarsAnnon
             Rule rule; // current rule
             bool needsUpdate = true;
-
+            Agent.Agent ag;
+            Unifier un;
             IEnumerator<List<ITerm>> annotsOptions = null;
             Literal belInBB = null;
-            private AgArch arch;
+            private AgentArchitecture arch;
             private int nbAnnots;
             private IEnumerator<Literal> il;
 
-            public IEnumerator(AgArch arch, int nbAnnots, IEnumerator<Literal> il)
+            public Unifier Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public Iterator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
             {
                 this.arch = arch;
                 this.nbAnnots = nbAnnots;
                 this.il = il;
+                this.ag = ag;
+                this.un = un;
             }
 
             public bool HasNext()
@@ -419,9 +412,9 @@ namespace Assets.Code.AsSyntax
 
                 if (annotsOptions != null)
                 {
-                    while (annotsOptions.HasNext())
+                    while (annotsOptions.MoveNext())
                     {
-                        Literal belToTry = belInBB.Copy().SetAnnots(null).AddAnnots(annotsOptions.Next());
+                        Literal belToTry = belInBB.Copy().SetAnnots(null).AddAnnots(annotsOptions.Current);
                         Unifier u = un.Clone();
                         if (u.UnifiesNoUndo(this, belToTry))
                         {
@@ -434,9 +427,9 @@ namespace Assets.Code.AsSyntax
 
                 if (ruleIt != null)
                 {
-                    while (ruleIt.HasNext())
+                    while (ruleIt.MoveNext())
                     {
-                        Unifier ruleUn = ruleIt.Next();
+                        Unifier ruleUn = ruleIt.Current;
                         Literal rHead = rule.HeadCApply(ruleUn);
                         UseDerefVars(rHead, ruleUn);
                         rHead.MakeVarsAnnon();
@@ -451,9 +444,9 @@ namespace Assets.Code.AsSyntax
                     ruleIt = null;
                 }
 
-                while (il.HasNext())
+                while (il.MoveNext())
                 {
-                    belInBB = il.Next();
+                    belInBB = il.Current;
                     if (belInBB.IsRule())
                     {
                         rule = (Rule)belInBB;
@@ -477,7 +470,7 @@ namespace Assets.Code.AsSyntax
                             {
                                 if (belInBB.HasAnnot())
                                 {
-                                    int nbAnnotsB = belInBB.GetAnnots().Size();
+                                    int nbAnnotsB = belInBB.GetAnnots().Count;
                                     if (nbAnnotsB >= nbAnnots)
                                     {
                                         annotsOptions = belInBB.GetAnnots().SubSets(nbAnnots);
@@ -489,7 +482,7 @@ namespace Assets.Code.AsSyntax
                             }
                             else
                             {
-                                Unifier u = Un.clone();
+                                Unifier u = un.Clone();
                                 if (u.UnifiesNoUndo(this, belInBB))
                                 {
                                     current = u;
@@ -502,6 +495,21 @@ namespace Assets.Code.AsSyntax
             }
 
             public void Remove() { }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         private void UseDerefVars(ITerm p, Unifier un)
@@ -550,10 +558,10 @@ namespace Assets.Code.AsSyntax
         {
             try
             {
-                IEnumerator<ITerm> i = lt.Iterator();
+                IEnumerator<ITerm> i = lt.GetEnumerator();
 
                 Atom ns = DefaultNS;
-                if (lt.Size() == 4)
+                if (lt.Count == 4)
                 {
                     ns = i.Current as Atom;
                 }
@@ -573,7 +581,7 @@ namespace Assets.Code.AsSyntax
 
                 if (i.Current != null)
                 {
-                    l.SetTerms(((IListTerm)i.Current).CloneLT());
+                    l.SetTerms((i.Current as IListTerm).CloneLT());
                 }
                 if (i.Current != null)
                 {
@@ -620,9 +628,9 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+            public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
             {
-                return LogExpr.CreateUnifIterator(un);
+                return LogExpr.CreateUnifEnumerator(un);
             }
 
             protected object ReadResolve()
@@ -650,7 +658,7 @@ namespace Assets.Code.AsSyntax
 
             public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
             {
-                return LogExpr.EMPTY_UNIFY_LIST.iterator();
+                return LogExpr.EMPTY_UNIFY_LIST.GetEnumerator();
             }
 
             protected object ReadResolve()
@@ -714,12 +722,7 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public override int? CalcHashCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        public override int CalcHashCode()
         {
             throw new NotImplementedException();
         }

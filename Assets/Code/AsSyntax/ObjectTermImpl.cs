@@ -23,7 +23,7 @@ namespace Assets.Code.AsSyntax
             return o;
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
             return 0.GetHashCode();
         }

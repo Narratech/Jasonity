@@ -22,7 +22,7 @@ namespace Assets.Code.AsSyntax
 
         }
 
-        public Pred(Atom namespce, String functor) : base(namespce, functor)
+        public Pred(Atom namespce, string functor) : base(namespce, functor)
         {
 
         }
@@ -75,7 +75,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        private override Literal SetAnnots(IListTerm listTerm)
+        public override Literal SetAnnots(IListTerm listTerm)
         {
             annotations = null;
             if (listTerm == null)
@@ -152,11 +152,11 @@ namespace Assets.Code.AsSyntax
                 return false;
             } else
             {
-                return annotations.Remove(t); //I dont undestand this
+                return annotations.Remove(t); 
             }
         }
 
-        public override Literal ClearAnnots()
+        public new Literal ClearAnnots()
         {
             annotations = null;
             return this;
@@ -217,7 +217,7 @@ namespace Assets.Code.AsSyntax
         
         public override bool HasAnnot()
         {
-            return annotations != null && !annotations.IsEmpty(); //??
+            return annotations != null && !(annotations.Count == 0); 
         }
 
         public override bool HasVar(VarTerm t, Unifier u)
@@ -266,7 +266,7 @@ namespace Assets.Code.AsSyntax
                     }
                     else
                     {
-                        en.Remove(); //I dont know this
+                        en.Dispose();
                     }
                 }
             }
@@ -385,7 +385,7 @@ namespace Assets.Code.AsSyntax
                     if (pAnnot != null && u.UnifiesNoUndo(annotations, pAnnot))
                     {
                         ok = true;
-                        en.Remove();
+                        en.Dispose();
                         pAnnot = en.Current;
                         break;
                     }
@@ -429,7 +429,7 @@ namespace Assets.Code.AsSyntax
             return true;
         }
 
-        public override Literal AddSource(ITerm agName)
+        public new Literal AddSource(ITerm agName)
         {
             if (agName != null)
             {
@@ -486,7 +486,7 @@ namespace Assets.Code.AsSyntax
             return ls;
         }
 
-        public void DelSources()
+        public new void DelSources()
         {
             if (annotations != null)
             {
@@ -498,7 +498,7 @@ namespace Assets.Code.AsSyntax
                     {
                         if (((Structure)t).GetFunctor().Equals("source"))
                         {
-                            en.Remove();
+                            en.Dispose();
                         }
                     }
                 }
@@ -537,7 +537,7 @@ namespace Assets.Code.AsSyntax
             if (annotations != null)
             {
                 IListTerm lt = annotations;
-                while (!lt.IsEmpty())
+                while (!(lt.Count == 0))
                 {
                     ITerm ta = lt.GetTerm();
                     if (ta.IsVar())
@@ -574,7 +574,7 @@ namespace Assets.Code.AsSyntax
                 return base.Equals(o) && this.HasSubsetAnnot(p) && p.HasSubsetAnnot(this);
             } else if (o.GetType() == typeof(Atom) && !HasAnnot()) 
             {
-                return base.equals(o);
+                return base.Equals(o);
             }
             return false;
         }
@@ -615,8 +615,8 @@ namespace Assets.Code.AsSyntax
                         return c;
                     }
                 }
-                int ats = GetAnnots().Size();
-                int ots = tAsPred.GetAnnots().Size();
+                int ats = GetAnnots().Count;
+                int ots = tAsPred.GetAnnots().Count;
                 if (ats < ots)
                 {
                     return -1;

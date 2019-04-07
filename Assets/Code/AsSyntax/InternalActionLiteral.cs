@@ -15,7 +15,6 @@ namespace Assets.Code.AsSyntax
      */
     public class InternalActionLiteral:Structure, ILogicalFormula
     {
-        private static readonly long serialVersionUID = 1L;
         private InternalAction ia = null;
 
         public InternalActionLiteral(string functor):base(functor)
@@ -75,7 +74,7 @@ namespace Assets.Code.AsSyntax
 
         public new IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
         {
-            if (ag == null || ag.GetTs().GetUserAgArch().IsRunning())
+            if (ag == null || ag.GetReasoner().GetUserAgArch().IsRunning())
             {
                 try
                 {
@@ -83,10 +82,10 @@ namespace Assets.Code.AsSyntax
                     if (!ia.CanBeUsedInContext())
                     {
                         Debug.Log(GetErrorMsg()+ ": internal action" + GetFunctor() + " cannot be used in context or rules");
-                        return LogExpr.EMPTY_UNIF_LIST.iterator();
+                        return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
                     }
                     //calls IA's execute method
-                    object oresult = ia.Execute(ag.GetTS(), un, ia.PrepareArguments(this, un));
+                    object oresult = ia.Execute(ag.GetReasoner(), un, ia.PrepareArguments(this, un));
                     if (oresult.GetType() == typeof(bool) && (bool)oresult)
                     {
                         return LogExpr.CreateUnifIterator(un);
@@ -109,7 +108,7 @@ namespace Assets.Code.AsSyntax
                     }
                 }
             }
-            return LogExpr.EMPTY_UNIF_LIST.iterator();
+            return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
         public void SetIA(InternalAction ia)

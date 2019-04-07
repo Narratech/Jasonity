@@ -126,9 +126,9 @@ namespace Assets.Code.AsSyntax
             return new LiteralImpl(newNamespace, !Negated(), this);
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
-            int? result = base.CalcHashCode();
+            int result = base.CalcHashCode();
             if (Negated())
                 result += 32371;
             return result;

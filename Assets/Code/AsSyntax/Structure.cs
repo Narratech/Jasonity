@@ -66,29 +66,9 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public static Structure Parse(string sTerm)
+        public override int CalcHashCode()
         {
-            as2j parser = new as2j(new StringReader(sTerm));
-            try
-            {
-                ITerm t = parser.Term();
-                if (t.GetType() == typeof(Structure))
-                {
-                    return (Structure)t;
-                } else
-                {
-                    return new Structure((Atom)t);
-                }
-            } catch (Exception e)
-            {
-                //logger.log(Level.SEVERE,"Error parsing structure " + sTerm,e);
-                return null;
-            }
-        }
-
-        protected override int? CalcHashCode()
-        {
-            int? result = base.CalcHashCode();
+            int result = base.CalcHashCode();
             int ts = GetArity();
             for (int i = 0; i < ts; i++)
             {
@@ -196,14 +176,14 @@ namespace Assets.Code.AsSyntax
             return new Structure(this, u);
         }
 
-        public virtual ITerm Clone() //i dont know if this is override or not yay again
+        public override ITerm Clone() //i dont know if this is override or not yay again
         {
             Structure s = new Structure(this);
             s.hashCodeCache = this.hashCodeCache;
             return s;
         }
 
-        public override Literal CloneNS(Atom newNamespace)
+        public new Literal CloneNS(Atom newNamespace)
         {
             return new Structure(newNamespace, this);
         }
@@ -376,7 +356,7 @@ namespace Assets.Code.AsSyntax
                 {
                     a = VarToReplace(a, u);
                 }
-                UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.Create(a, t.toString());
+                UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.Create(a, t.ToString());
                 if (deref.HasAnnot())
                 {
                     uv.SetAnnots(deref.GetAnnot().CloneLT());
@@ -424,7 +404,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public List<VarTerm> GetSingletonVars()
+        public new List<VarTerm> GetSingletonVars()
         {
             Dictionary<VarTerm, int?> all = new Dictionary<VarTerm, int?>();
             CountVars(all);
@@ -439,7 +419,7 @@ namespace Assets.Code.AsSyntax
             return r;
         }
 
-        public void CountVars(Dictionary<VarTerm, int?> c)
+        public override void CountVars(Dictionary<VarTerm, int?> c)
         {
             int tss = GetArity();
             for (int i = 0; i < tss; i++)

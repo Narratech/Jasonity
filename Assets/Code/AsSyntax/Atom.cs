@@ -59,7 +59,7 @@ namespace Assets.Code.AsSyntax
             return this; //since this object is inmutable
         }
 
-        public virtual ITerm Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             if (ns.IsVar())
             {
@@ -71,7 +71,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public override Literal CloneNS(Atom newNamespace)
+        public new Literal CloneNS(Atom newNamespace)
         {
             return new Atom(newNamespace, this);
         }
@@ -109,8 +109,8 @@ namespace Assets.Code.AsSyntax
             {
                 IListTerm l1 = this as IListTerm;
                 IListTerm l2 = t as IListTerm;
-                const int l1s = l1.Size();
-                const int l2s = l2.Size();
+                int l1s = l1.Count;
+                int l2s = l2.Count;
 
                 if (l1s > l2s) return 1;
                 if (l2s > l1s) return -1;
@@ -148,7 +148,7 @@ namespace Assets.Code.AsSyntax
             return base.CompareTo(t);
         }
 
-        public override int? CalcHashCode()
+        public override int CalcHashCode()
         {
             return GetFunctor().GetHashCode() + GetNS().GetHashCode();
         }
@@ -164,16 +164,5 @@ namespace Assets.Code.AsSyntax
                 return GetNS() + "::" + functor;
             }
         }
-
-        /** get as XML */
-        /*
-        public Element getAsDOM(Document document)
-        {
-            Element u = (Element)document.createElement("structure");
-            u.setAttribute("functor", getFunctor());
-            u.setAttribute("name-space", getNS().getFunctor());
-            return u;
-        }
-        */
     }
 }

@@ -9,9 +9,7 @@ namespace Assets.Code.AsSyntax
 {
     public abstract class DefaultTerm: ITerm
     {
-        private static readonly long serialVersionUID = 1L;
-
-        protected int? hashCodeCache = null;
+        public int hashCodeCache = -1;
         protected SourceInfo srcInfo = null;
 
         public virtual ITerm Capply(Unifier u)
@@ -20,7 +18,7 @@ namespace Assets.Code.AsSyntax
         }
 
         abstract public ITerm Clone();
-        abstract public int? CalcHashCode();
+        abstract public int CalcHashCode();
 
         public virtual ITerm CloneNS(Atom newNamespace)
         {
@@ -56,12 +54,12 @@ namespace Assets.Code.AsSyntax
 
         public void ResetHashCodeCache()
         {
-            hashCodeCache = null;
+            hashCodeCache = -1;
         }
 
-        public override int? GetHashCode()
+        public override int GetHashCode()
         {
-            if (hashCodeCache == null)
+            if (hashCodeCache == -1)
             {
                 hashCodeCache = CalcHashCode();
             }

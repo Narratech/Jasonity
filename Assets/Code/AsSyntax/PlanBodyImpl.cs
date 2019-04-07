@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Assets.Code.Logic;
@@ -6,7 +7,7 @@ using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.AsSyntax
 {
-    public class PlanBodyImpl : IPlanBody
+    public class PlanBodyImpl : Structure, IPlanBody, IEnumerable<IPlanBody>
     {
         private ITerm term = null;
         private IPlanBody next = null;
@@ -17,33 +18,28 @@ namespace Assets.Code.AsSyntax
         // Constructor for empty plan body
         public PlanBodyImpl(): this(BodyType.none)
         {
-            // ???
         }
 
-        public PlanBodyImpl(BodyType t):base(t.Name(), 0)
+        public PlanBodyImpl(BodyType t):base(t.ToString(), 0)
         {
-            // super(t.name(), 0);
             formType = t;
         }
 
         public PlanBodyImpl(BodyType t, bool planTerm):this(t)
         {
-            //this(t); // ???
             SetAsBodyTerm(planTerm);
         }
 
         public PlanBodyImpl(BodyType t, ITerm b):this(t, b, false)
         {
-            //this(t, b, false); // ???
         }
 
         public PlanBodyImpl(BodyType t, ITerm b, bool planTerm):this(t, planTerm)
         {
-            //this(t, planTerm); // ???
             formType = t;
             if (b != null)
             {
-                // srcInfo = b.getSrcInfo();
+                srcInfo = b.GetSrcInfo();
             }
             term = b;
         }
@@ -136,12 +132,12 @@ namespace Assets.Code.AsSyntax
             if (o.GetType() == typeof(IPlanBody))
             {
                 IPlanBody b = (IPlanBody)o;
-                return formType = b.GetBodyType() && base.Equals(o); // ???
+                return formType == b.GetBodyType() && base.Equals(o);
             }
             return false;
         }
 
-        public int CalcHashCode()
+        public override int CalcHashCode()
         {
             return formType.GetHashCode() + base.CalcHashCode(); // ???
         }
@@ -239,7 +235,7 @@ namespace Assets.Code.AsSyntax
             bl.SetBodyTerm(l);
         }
 
-        public ITerm Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             PlanBodyImpl c;
             if (term == null)
@@ -266,7 +262,7 @@ namespace Assets.Code.AsSyntax
             return c;
         }
 
-        public IPlanBody Clone()
+        public new IPlanBody Clone()
         {
             PlanBodyImpl c = term == null ? new PlanBodyImpl() : new PlanBodyImpl(formType, term.Clone(), isTerm);
             c.isTerm = isTerm;
@@ -279,7 +275,7 @@ namespace Assets.Code.AsSyntax
 
         public IPlanBody ClonePB() => Clone();
 
-        public ITerm CloneNS(Atom Newnamespace)
+        public new ITerm CloneNS(Atom Newnamespace)
         {
             throw new NotImplementedException();
         }
@@ -427,6 +423,16 @@ namespace Assets.Code.AsSyntax
         }
 
         ITerm ITerm.Clone()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<IPlanBody> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

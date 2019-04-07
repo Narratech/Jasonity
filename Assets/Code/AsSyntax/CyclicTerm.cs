@@ -26,11 +26,11 @@ namespace Assets.Code.AsSyntax
             cyclicVar = v;
         }
 
-        public VarTerm GetCyclicVar()
+        public new VarTerm GetCyclicVar()
         {
             return cyclicVar;
         }
-        public bool IsCyclicTerm()
+        public override bool IsCyclicTerm()
         {
             return true;
         }
@@ -48,7 +48,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public Literal MakeVarsAnnon(Unifier u)
+        public override Literal MakeVarsAnnon(Unifier u)
         {
             base.MakeVarsAnnon(u);
             VarTerm v = u.Deref(cyclicVar);
@@ -59,7 +59,7 @@ namespace Assets.Code.AsSyntax
             return this;
         }
 
-        public ITerm Capply(Unifier u)
+        public override ITerm Capply(Unifier u)
         {
             ITerm v = u.Remove(cyclicVar);
             ITerm r = new CyclicTerm(this, cyclicVar.Clone() as VarTerm, u);
@@ -70,12 +70,12 @@ namespace Assets.Code.AsSyntax
             return r;
         }
 
-        public ITerm Clone()
+        public new ITerm Clone()
         {
             return new CyclicTerm(this, cyclicVar.Clone() as VarTerm);
         }
 
-        protected int? CalcHashCode()
+        public override int CalcHashCode()
         {
             return base.CalcHashCode() + cyclicVar.CalcHashCode();
         }

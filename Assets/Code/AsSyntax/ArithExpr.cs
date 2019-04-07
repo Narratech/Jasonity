@@ -132,29 +132,6 @@ namespace Assets.Code.AsSyntax
             op = ae.op;
         }
 
-        /** returns some Term that can be evaluated as Number */
-        public static INumberTerm ParseExpr(string sExpr)
-        {
-            return ParseExpr(null, sExpr);
-        }
-
-        /** returns some Term that can be evaluated as Number */
-        public static INumberTerm ParseExpr(Agent.Agent ag, string sExpr)
-        {
-            as2j parser = new as2j(new StringReader(sExpr));
-            if (ag != null)
-                parser.SetAg(ag);
-            try
-            {
-                return (INumberTerm)parser.Arith_Expr();
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Error parsing expression "+ sExpr);
-                return null;
-            }
-        }
-
         public override ITerm Capply(Unifier u)
         {
             try
