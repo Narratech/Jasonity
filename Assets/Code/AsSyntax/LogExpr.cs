@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Assets.Code.AsSyntax
 {
-    public class LogExpr : ILogicalFormula
+    public class LogExpr : BinaryStructure, ILogicalFormula
     {
         public static List<Unifier> EMPTY_UNIF_LIST = new List<Unifier>();
         private LogicalOp op = LogicalOp.none;
@@ -73,121 +73,6 @@ namespace Assets.Code.AsSyntax
         }
 
         public LogicalOp GetOp() => op;
-
-        public int CompareTo(object obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CountVars(Dictionary<VarTerm, int?> c)
-        {
-            throw new NotImplementedException();
-        }
-
-        public VarTerm GetCyclicVar()
-        {
-            throw new NotImplementedException();
-        }
-
-        public SourceInfo GetSrcInfo()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool HasVar(VarTerm t, Unifier u)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsArithExpr()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsAtom()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsCyclicTerm()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsGround()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsInternalAction()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsList()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsLiteral()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsNumeric()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsPlanBody()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsPred()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsRule()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsString()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsStructure()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsUnnamedVar()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsVar()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SetSrcInfo(SourceInfo s)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Subsumes(ITerm l)
-        {
-            throw new NotImplementedException();
-        }
 
         object ICloneable.Clone()
         {
