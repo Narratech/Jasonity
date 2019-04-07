@@ -196,7 +196,7 @@ namespace Assets.Code.AsSyntax
             return new Structure(this, u);
         }
 
-        public ITerm Clone() //i dont know if this is override or not yay again
+        public virtual ITerm Clone() //i dont know if this is override or not yay again
         {
             Structure s = new Structure(this);
             s.hashCodeCache = this.hashCodeCache;
