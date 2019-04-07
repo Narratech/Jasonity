@@ -126,7 +126,7 @@ namespace Assets.Code.AsSyntax
                 return o.CompareTo(this) * -1;
             if ((o.GetType() == typeof(INumberTerm))
                 return 1;
-            if (o.GetType() == typeof(StringTerm))
+            if (o.GetType() == typeof(IStringTerm))
                 return 1;
             return base.CompareTo(o);
         }

@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.Code.AsSyntax
 {
-    public class StringTermImpl : DefaultTerm, StringTerm
+    public class StringTermImpl : DefaultTerm, IStringTerm
     {
         private static readonly long serialVersionUID = 1L;
         private readonly string value; 
@@ -34,7 +34,7 @@ namespace Assets.Code.AsSyntax
             return value;
         }
 
-        public new StringTerm Clone()
+        public new IStringTerm Clone()
         {
             return this;
         }
@@ -44,12 +44,12 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public static StringTerm ParseString(string sTerm)
+        public static IStringTerm ParseString(string sTerm)
         {
             as2j parser = new as2j(new StringReader(sTerm));
             try
             {
-                return (StringTerm)parser.Term();
+                return (IStringTerm)parser.Term();
             }
             catch (Exception e)
             {
@@ -75,8 +75,8 @@ namespace Assets.Code.AsSyntax
         {
             if (t == this) return true;
 
-            if (t != null && (t.GetType() == typeof(StringTerm))) {
-                StringTerm st = (StringTerm)t;
+            if (t != null && (t.GetType() == typeof(IStringTerm))) {
+                IStringTerm st = (IStringTerm)t;
                 if (value == null)
                     return st.GetString() == null;
                 else

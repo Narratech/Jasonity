@@ -31,10 +31,10 @@ namespace Assets.Code.AsSyntax
 
         // Adds a new plan written as a string. Source is usually "self" or the agent who sent this plan.
         // New plans are added at the end of the library.
-        Plan Add(StringTerm stPlan, ITerm tSource) => Add(stPlan, tSource, false);
+        Plan Add(IStringTerm stPlan, ITerm tSource) => Add(stPlan, tSource, false);
 
         // Same as previous Add. If "before" is true, add at the beginning of the library.
-         Plan Add(StringTerm stPlan, ITerm tSource, bool before)
+         Plan Add(IStringTerm stPlan, ITerm tSource, bool before)
         {
             string sPlan = stPlan.GetString();
             // Remove quotes

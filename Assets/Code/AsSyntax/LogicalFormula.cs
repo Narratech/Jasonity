@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
-    public interface LogicalFormula : ITerm, ICloneable
+    public interface ILogicalFormula : ITerm, ICloneable
     {
         IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un);
     }

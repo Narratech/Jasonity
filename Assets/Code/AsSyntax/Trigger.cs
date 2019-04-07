@@ -30,7 +30,7 @@ namespace Assets.Code.AsSyntax
             return 2;
         }
          
-        public override Term GetTerm(int i)
+        public override ITerm GetTerm(int i)
         {
             switch (i)
             {
@@ -49,7 +49,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public override void SetTerm(int i, Term t)
+        public override void SetTerm(int i, ITerm t)
         {
             switch (i)
             {
@@ -173,7 +173,7 @@ namespace Assets.Code.AsSyntax
             return b + op + type + literal + e;
         }
 
-        public static Trigger TryToGetTrigger(Term t)
+        public static Trigger TryToGetTrigger(ITerm t)
         {
             if (t.GetType() == typeof(Trigger)) 
             {
@@ -204,7 +204,7 @@ namespace Assets.Code.AsSyntax
             }   
             if (t.IsString())
             {
-                return ASSyntax.ParseTrigger(((StringTerm) t).GetString());
+                return ASSyntax.ParseTrigger(((IStringTerm) t).GetString());
             }
             return null;
         }

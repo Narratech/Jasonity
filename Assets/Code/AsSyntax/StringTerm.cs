@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
-    public interface StringTerm:ITerm
+    public interface IStringTerm:ITerm
     {
         /** gets the Java string represented by this term, it
         normally does not return the same string as toString

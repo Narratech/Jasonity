@@ -10,10 +10,10 @@ namespace Assets.Code.AsSyntax
 {
     public class Rule : LiteralImpl
     {
-        private LogicalFormula body = null;
+        private ILogicalFormula body = null;
         private bool isTerm = false;
 
-        public Rule(Literal head, LogicalFormula body) : base(head)
+        public Rule(Literal head, ILogicalFormula body) : base(head)
         {
             if (head.IsRule())
             {
@@ -32,7 +32,7 @@ namespace Assets.Code.AsSyntax
         public Rule(Rule r, Unifier u) : base(r, u)
         {
             isTerm = r.isTerm;
-            body = (LogicalFormula)r.body.Capply(u);
+            body = (ILogicalFormula)r.body.Capply(u);
             predicateIndicatorCache = null;
         }
 
@@ -75,7 +75,7 @@ namespace Assets.Code.AsSyntax
             return base.CalcHashCode() + body.HashCode();
         }
 
-        public LogicalFormula GetBody()
+        public ILogicalFormula GetBody()
         {
             return body;
         }
@@ -101,7 +101,7 @@ namespace Assets.Code.AsSyntax
 
         public override Rule Clone()
         {
-            Rule r = new Rule((Literal)base.Clone(), (LogicalFormula)body.Clone());
+            Rule r = new Rule((Literal)base.Clone(), (ILogicalFormula)body.Clone());
             r.predicateIndicatorCache = null;
             r.ResetHashCodeCache();
             r.isTerm = isTerm;
