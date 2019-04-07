@@ -15,79 +15,90 @@ public class RelExpr : BinaryStructure, ILogicalFormula
         ITerm xp = GetTerm(0).Capply(un);
         ITerm yp = GetTerm(1).Capply(un);
 
-        if (op.GetType() == RelationalOp.none.GetType())
-        {
+        if (op.GetType() == RelationalOp.none.GetType()) { }
 
+        else if (op.GetType() == RelationalOp.gt.GetType())
+        {
+            if (xp.CompareTo(yp) > 0) return LogExpr.CreateUnifEnumerator(un);
         }
 
-        switch (op.GetType())
+        else if (op.GetType() == RelationalOp.gte.GetType())
         {
-            case RelationalOp.none.GetType():
-                break;
+            if (xp.CompareTo(yp) >= 0) return LogExpr.CreateUnifEnumerator(un);
+        }
+            
+        else if (op.GetType() == RelationalOp.lt.GetType())
+        {
+            if (xp.CompareTo(yp) < 0) return LogExpr.CreateUnifEnumerator(un);
+        }
 
-            case RelationalOp.gt:
-                if (xp.CompareTo(yp) > 0) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.gte:
-                if (xp.CompareTo(yp) >= 0) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.lt:
-                if (xp.CompareTo(yp) < 0) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.lte:
-                if (xp.CompareTo(yp) <= 0) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.eq:
-                if (xp.Equals(yp)) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.dif:
-                if (!xp.Equals(yp)) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.unify:
-                if (un.Unifies(xp, yp)) return LogExpr.CreateUnifEnumerator(un);
-                break;
-            case RelationalOp.literalBuilder:
-                try
-                {
-                    Literal p = (Literal)xp; // LHS clone
-                    IListTerm l = (IListTerm)yp; // RHS clone
-
-                    // Both are variables, using normal unification
-                    if (!p.IsVar() && !l.IsVar())
-                    {
-                        IListTerm palt = p.GetAsListOfTerms();
-                        if (l.Count == 3) // list without name space
-                            palt = palt.GetNext();
-                        if (un.Unifies(palt, l))
-                            return LogExpr.CreateUnifEnumerator(un);
-                    }
-                    else
-                    {
-                        // First is var, second is list, var is assigned to l transformed into literal
-                        if (p.IsVar() && l.IsList())
-                        {
-                            ITerm t = null;
-                            if (l.Count == 4 && l[3].IsPlanBody()) // The list is for a plan
-                                t = Plan.NewFromListOfTerms(l);
-                            else t = Literal.NewFromListOfTerms(l);
-                            if (un.Unifies(p, t)) return LogExpr.CreateUnifEnumerator(un);
-                            else LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
-                        }
-
-                        // First is literal, second is var, var is assigned to l transformed in list
-                        if (p.IsLiteral() && l.IsVar())
-                        {
-                            if (un.Unifies(p.GetAsListOfTerms(), l)) return LogExpr.CreateUnifEnumerator(un);
-                            else LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
+        else if (op.GetType() == RelationalOp.lte.GetType())
+        {
+            if (xp.CompareTo(yp) <= 0) return LogExpr.CreateUnifEnumerator(un);
+        }
+                   
+        else if (op.GetType() == RelationalOp.eq.GetType())
+        {
+            if (xp.Equals(yp)) return LogExpr.CreateUnifEnumerator(un);
+        }
                     
-                }
-                break;
+        else if (op.GetType() == RelationalOp.dif.GetType())
+        {
+            if (!xp.Equals(yp)) return LogExpr.CreateUnifEnumerator(un);
         }
+        else if (op.GetType() == RelationalOp.unify.GetType())
+        {
+            if (un.Unifies(xp, yp)) return LogExpr.CreateUnifEnumerator(un);
+        }
+
+        else if (op.GetType() == RelationalOp.literalBuilder.GetType())
+        {
+            try
+            {
+                Literal p = (Literal)xp; // LHS clone
+                Literal l = (IListTerm)yp; // RHS clone
+
+                // Both are not vars, using normal unfiication
+                if (!p.IsVar() && !l.IsVar())
+                {
+                    IListTerm palt = p.GetAsListOfTerms();
+                    if (l.Size() == 3) // list without name space
+                        palt = palt.GetNext();
+                    if (un.Unifies(palt, l))
+                        return LogExpr.CreateUnifEnumerator(un);
+                }
+                else
+                {
+                    // First is var, second is list, var is assigned to l transformed in literal
+                    if (p.IsVar() && l.IsList())
+                    {
+                        ITerm t = null;
+                        if (l.Size() == 4 && l.Get(3).IsPlanBody())
+                            t = Plan.NewFromListOfTerms(l);
+                        else
+                            t = Literal.NewFromListOfTerms(l);
+                        if (un.Unifies(p, t))
+                            return LogExpr.CreateUnifEnumerator(un);
+                        else
+                            LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
+                    }
+
+                    // First is literal, second is var, var is assigned to l transformed in list
+                    if (p.IsLiteral() && l.IsVar())
+                    {
+                        if (un.Unifies(p.GetAsListOfTerms(), l))
+                            return LogExpr.CreateUnifEnumerator(un);
+                        else
+                            LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // Mensaje de error
+            }
+        }
+
         return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
     }
 

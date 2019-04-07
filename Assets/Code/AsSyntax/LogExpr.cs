@@ -21,35 +21,43 @@ namespace Assets.Code.AsSyntax
 
         public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
-            /* try
+            try
             {
-                switch (op)
+                if (op.GetType() == LogicalOp.none.GetType()) return null;
+                else if (op.GetType() == LogicalOp.not.GetType())
+                    if (!GetLHS().LogicalConsequence(ag, un).MoveNext()) return CreateUnifEnumerator(un);
+                else if (op.GetType() == LogicalOp.and.GetType())
+                    return new AndIterator<Unifier>(this, ag, un);
+                else if (op.GetType() == LogicalOp.or.GetType())
+                    return new OrIterator<Unifier>(this, ag, un);
+            }
+            catch (Exception e)
+            {
+                string slhs = "is null ";
+                IEnumerator<Unifier> i = GetLHS().LogicalConsequence(ag, un);
+                if (i != null)
                 {
-                    case LogicalOp.none:
-                        break;
-                    case LogicalOp.not:
-                        if (!GetLHS().LogicalConsequence(ag, un).HasNext())
-                        {
-                            return CreateUnifEnumerator(un);
-                        }
-                        break;
-                    case LogicalOp.and:
-                        return new IEnumerator<Unifier>()
-                        {
-                            IEnumerator <Unifier> ileft = GetLHS().LogicalConsequence(ag, un);
-                            IEnumerator<Unifier> iright = null;
-                            Unifier current = null;
-                            bool needsUpdate = true;
-
-                            public bool HasNext()
-                            {
-                                if (needsUpdate) Get();
-                                return current != null;
-                            }
-                        }
+                    slhs = "";
+                    while (i.MoveNext())
+                        slhs += i.MoveNext().ToString() + ", ";
+                }
+                else
+                    slhs = "iterator is null";
+                string srhs = "is null ";
+                if (!IsUnary())
+                {
+                    i = GetRHS().LogicalConsequence(ag, un);
+                    if (i != null)
+                    {
+                        srhs = "";
+                        while (i.MoveNext())
+                            srhs += i.MoveNext().ToString() + ", ";
+                    }
+                    else
+                        srhs = "iterator is null";
                 }
             }
-            */
+            return EMPTY_UNIF_LIST.GetEnumerator();
         }
 
        // public IEnumerator<Unifier> CreateUnifEnumerator(Unifier... unifs) { }
@@ -94,6 +102,137 @@ namespace Assets.Code.AsSyntax
             else if (this == and) return " & ";
             else if (this == or) return " | ";
             else return null;
+        }
+    }
+
+    public class AndIterator<Unifier> : IEnumerator<Unifier>
+    {
+        private LogExpr logExpr;
+        private Agent.Agent ag;
+        private ReasoningCycle.Unifier un;
+        AndIterator<Unifier> ileft;
+        AndIterator<Unifier> iright = null;
+        Unifier current = default;
+        bool needsUpdate = true;
+
+        public AndIterator(LogExpr logExpr, Agent.Agent ag, ReasoningCycle.Unifier un)
+        {
+            this.logExpr = logExpr;
+            this.ag = ag;
+            this.un = un;
+            ileft = logExpr.GetLHS().LogicalConsequence(ag, un);
+        }
+
+        public bool HasNext()
+        {
+            if (needsUpdate) Get();
+            return current != null;
+        }
+
+        public Unifier Next()
+        {
+            if (needsUpdate) Get();
+            if (current != null) needsUpdate = true;
+            return current;
+        }
+
+        private void Get()
+        {
+            needsUpdate = false;
+            current = default;
+            while ((iright == null || iright.MoveNext()) && ileft.MoveNext())
+                iright = logExpr.GetRHS().LogicalConsequence(ag, ileft.Next());
+            if (iright != null && iright.HasNext())
+                current = iright.Next();
+        }
+
+        public void Remove() { }
+
+        public Unifier Current => throw new NotImplementedException();
+
+        object IEnumerator.Current => throw new NotImplementedException();
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool MoveNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class OrIterator<Unifier> : IEnumerator<Unifier>
+    {
+        private LogExpr logExpr;
+        private Agent.Agent ag;
+        private Unifier un;
+        OrIterator<Unifier> ileft;
+        OrIterator<Unifier> iright;
+        Unifier current = default;
+        bool needsUpdate = true;
+
+        public OrIterator(LogExpr logExpr, Agent.Agent ag, Unifier un)
+        {
+            this.logExpr = logExpr;
+            this.ag = ag;
+            this.un = un;
+            ileft = logExpr.GetLHS().LogicalConsequence(ag, un);
+        }
+
+        public bool HasNext()
+        {
+            if (needsUpdate) Get();
+            return current != null;
+        }
+
+        public Unifier Next()
+        {
+            if (needsUpdate) Get();
+            if (current != default) needsUpdate = true;
+            return current;
+        }
+
+        private void Get()
+        {
+            needsUpdate = false;
+            current = default;
+            if (ileft != null && ileft.HasNext())
+                current = ileft.Next();
+            else
+            {
+                if (iright == null)
+                    iright = logExpr.GetRHS().LogicalConsequence(ag, un);
+                if (iright != null && iright.HasNext())
+                    current = iright.Next();
+            }
+        }
+
+        public void Remove() { }
+
+        public Unifier Current => throw new NotImplementedException();
+
+        object IEnumerator.Current => throw new NotImplementedException();
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool MoveNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
         }
     }
 }
