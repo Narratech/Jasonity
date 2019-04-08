@@ -3,6 +3,7 @@ using Assets.Code.Logic.AsSyntax;
 using Assets.Code.Agent;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic.AsSyntax.parser;
+using Assets.Code.AsSyntax;
 
 namespace Assets.Code.Logic.parser {
 
@@ -20,19 +21,13 @@ public partial class as2j : as2jConstants {
      returns true if achieved the end of file
      returns false if achieved a "{ end }" directive
 */
-public bool agent(Agent a) { 
+public bool agent(Agent.Agent a) { 
 	Literal b;
     Literal g;
     Plan    p;
     curAg = a;
     asSource = a.getASLSrc();
     bool endDir = false;
-
-
-
-
-
-                        
 
     while (!hasError) {
       int switch_1 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
