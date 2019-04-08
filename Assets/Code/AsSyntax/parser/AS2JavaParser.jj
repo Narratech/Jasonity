@@ -324,7 +324,6 @@ PlanBody plan_body() :      { Object F; PlanBody R = null; }
     }
 }
 
-//AQUI
 PlanBody plan_body_term() : { Object F; PlanBody R = null; }
 {
 	F = plan_body_factor()
@@ -343,8 +342,8 @@ PlanBody plan_body_term() : { Object F; PlanBody R = null; }
 
              //HACER: clase fork de stdlib
              if (ial.GetIA(curAg).GetType == typeof (Fork)) {
-                for (int i=1; i<ial.getArity(); i++) {
-                   s.addTerm(ial.getTerm(i));
+                for (int i=1; i<ial.GetArity(); i++) {
+                   s.AddTerm(ial.GetTerm(i));
                 }
              } 
           } 
@@ -360,7 +359,7 @@ PlanBody plan_body_term() : { Object F; PlanBody R = null; }
        }
     }
 }
-//AQUI
+
 PlanBody plan_body_factor() : { object F; PlanBody R = null; } // bool hasPV = false; bool isControl = true; }
 {
 
@@ -379,20 +378,20 @@ PlanBody plan_body_factor() : { object F; PlanBody R = null; } // bool hasPV = f
        if (R == null)
           return (PlanBody)F;
        try {
-          Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aAnd, (Term)F);
-          if (R.toString().startsWith(".fork(and,")) {
+          Structure s = ASSyntax.CreateStructure(".fork", jason.stdlib.fork.aAnd, (Term)F);
+          if (R.ToString().StartsWith(".fork(and,")) {
              // if R is another fork and, put they args into this fork
-             InternalActionLiteral ial = (InternalActionLiteral)R.getBodyTerm();
-             if (ial.getIA(curAg) instanceof jason.stdlib.fork) {
-                for (int i=1; i<ial.getArity(); i++) {
-                   s.addTerm(ial.getTerm(i));
+             InternalActionLiteral ial = (InternalActionLiteral)R.GetBodyTerm();
+             if ((ial.GetIA(curAg)).GetType == typeof (jason.stdlib.fork)) {
+                for (int i=1; i<ial.GetArity(); i++) {
+                   s.AddTerm(ial.GetTerm(i));
                 }
              }
           } else {
-             s.addTerm(R);
+             s.AddTerm(R);
           }
           Literal stmtLiteral = new InternalActionLiteral(s, curAg);
-          stmtLiteral.setSrcInfo( ((Term)F).getSrcInfo() );
+          stmtLiteral.SetSrcInfo( ((Term)F).GetSrcInfo() );
           return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
        } catch (Exception e) {
           e.printStackTrace();
@@ -408,7 +407,7 @@ PlanBody stmtIF() :    { PlanBody B; }
    { return B; }
 }
 
-PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLiteral = null; }
+PlanBody stmtIFCommon() :    { object B; Term T1; Term T2 = null; Literal stmtLiteral = null; }
 {
    "("
    B = log_expr()
@@ -421,20 +420,20 @@ PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLi
      )
    ]
        { try {
-            if (T1.isRule()) {
+            if (T1.IsRule()) {
             	/*CAMBIAR: No se puede usar throw en c#
                 throw new ParseException(getSourceRef(T1)+" if requires a plan body.");*/
             }
             if (T2 == null) { 
-                stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
+                stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".if_then_else", (Term)B, T1), curAg);
             } else if (T2 != null) { // else case
-                if (T2.isRule()) {
+                if (T2.IsRule()) {
                   /*CAMBIAR: No se puede usar throw en c#
                   throw new ParseException(getSourceRef(T2)+" if (else) requires a plan body.");*/
                 }
-                stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1, T2), curAg);
+                stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".if_then_else", (Term)B, T1, T2), curAg);
             }
-            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
+            stmtLiteral.SetSrcInfo( ((Term)B).GetSrcInfo() );
             return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
          } catch (Exception e) {
             e.printStackTrace();
@@ -442,7 +441,7 @@ PlanBody stmtIFCommon() :    { Object B; Term T1; Term T2 = null; Literal stmtLi
        }
 }
 
-PlanBody stmtFOR() :   { Object B; Term T1; Literal stmtLiteral; }
+PlanBody stmtFOR() :   { object B; Term T1; Literal stmtLiteral; }
 {
    <TK_FOR>
    "("
@@ -451,12 +450,12 @@ PlanBody stmtFOR() :   { Object B; Term T1; Literal stmtLiteral; }
    T1 = rule_plan_term()
     { 
     	try {
-            if (T1.isRule()) {
+            if (T1.IsRule()) {
             	/*CAMBIAR: No se puede usar throw en c#
-               throw new ParseException(getSourceRef(T1)+"for requires a plan body.");*/
+               throw new ParseException(GetSourceRef(T1)+"for requires a plan body.");*/
             }
-            stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".foreach", (Term)B, T1), curAg);
-            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
+            stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".foreach", (Term)B, T1), curAg);
+            stmtLiteral.SetSrcInfo( ((Term)B).GetSrcInfo() );
             return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
     	} catch (Exception e) {
             e.printStackTrace();
@@ -464,7 +463,7 @@ PlanBody stmtFOR() :   { Object B; Term T1; Literal stmtLiteral; }
     }
 }
 
-PlanBody stmtWHILE() : { Object B; Term T1; Literal stmtLiteral; }
+PlanBody stmtWHILE() : { object B; Term T1; Literal stmtLiteral; }
 {
    <TK_WHILE>
    "("
@@ -473,12 +472,12 @@ PlanBody stmtWHILE() : { Object B; Term T1; Literal stmtLiteral; }
    T1 = rule_plan_term()
    { 
    		try {
-            if (T1.isRule()) {
+            if (T1.IsRule()) {
             	/*CAMBIAR: No se puede usar throw en c#
                throw new ParseException(getSourceRef(T1)+"while requires a plan body.");*/
             }
-            stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".loop", (Term)B, T1), curAg);
-            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
+            stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".loop", (Term)B, T1), curAg);
+            stmtLiteral.SetSrcInfo( ((Term)B).GetSrcInfo() );
             return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
     	} catch (Exception e) {
             e.printStackTrace();
@@ -514,20 +513,20 @@ Object body_formula() :
       B = log_expr()
    )
    { 
-   		if (formType == BodyType.action && B instanceof RelExpr) {
+   		if (formType == BodyType.action && (B.GetType() ==  typeof(RelExpr)) {
         return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint
         }
                          
-        if (B instanceof Plan) {
+        if (B.GetType() == typeof (Plan)) {
            	try {
 	            InternalActionLiteral ia = null;
 	            String ias = "";
 	            if (formType == BodyType.delBel) {
-	                ia = new InternalActionLiteral(ASSyntax.createStructure(".remove_plan", (Term)B), curAg);
+	                ia = new InternalActionLiteral(ASSyntax.CreateStructure(".remove_plan", (Term)B), curAg);
 	            } else if (formType == BodyType.addBel) {
-	                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("begin")), curAg);
+	                ia = new InternalActionLiteral(ASSyntax.CreateStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("begin")), curAg);
 	            } else if (formType == BodyType.addBelEnd) {
-	                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("end")), curAg);
+	                ia = new InternalActionLiteral(ASSyntax.CreateStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("end")), curAg);
 	            } else {
 	            	/*CAMBIAR: No se puede usar throw en c#
 	            	throw new ParseException(getSourceRef(B)+" Wrong combination of operator "+formType+" and plan.");
@@ -539,14 +538,14 @@ Object body_formula() :
 	        }
         }
 
-	    if (B instanceof Literal) {
-	        if ( ((Literal)B).isInternalAction() )
+	    if (B.GetType() == typeof (Literal)) {
+	        if ( ((Literal)B).IsInternalAction() )
 	           formType = BodyType.internalAction;
 
 	        return new PlanBodyImpl(formType, (Literal)B);
 	    } else {
             if (formType == BodyType.test) {
-               if (B instanceof LogicalFormula)
+               if (B.GetType() == typeof(LogicalFormula))
                   return new PlanBodyImpl(BodyType.test, (Term)B);  // used in ?(a & b)
                else
                		/*CAMBIAR: No se puede usar throw en c#
@@ -560,7 +559,7 @@ Object body_formula() :
 
 Term rule_plan_term():       
 { 
-	Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
+	Trigger T = null; object C = null; PlanBody B = null, B1 = null; Plan P = null;
     bool pb = true; // pb = "only plan body"
     Pred L = null;
     Literal h = null; Object t = null;
@@ -570,10 +569,10 @@ Term rule_plan_term():
   "{"
   [ LOOKAHEAD(4)
     [<TK_LABEL_AT> (L=pred() | L=var(Literal.DefaultNS)) { pb = false; } ]
-    T = trigger()           { if (T.getType() != TEType.belief) pb = false; }
+    T = trigger()           { if (T.GetType() != TEType.belief) pb = false; }
     [ ":" C = log_expr()    { pb = false; } ]
     [( "<-"                 { pb = false; }
-     | ";"                  { if (!pb) throw new ParseException(getSourceRef(T)+" Wrong place for ';'"); }
+     | ";"                  { /*CAMBIAR: No poder usar throw if (!pb) throw new ParseException(getSourceRef(T)+" Wrong place for ';'");*/ }
      )
     ]
   ]
@@ -588,7 +587,7 @@ Term rule_plan_term():
     {   
    		if (h != null) {
             Rule r = new Rule(h,(LogicalFormula)t);
-            r.setAsTerm(true);
+            r.SetAsTerm(true);
             return r;
         }
                              
@@ -598,25 +597,25 @@ Term rule_plan_term():
 	        // handle the case of "+a1; +a2", parsed as "TE; Body"
 	        
 	        if (pb && L == null) {
-	          	if (T.isAddition())
-	             	B1 = new PlanBodyImpl(BodyType.addBel, T.getLiteral(), true);
+	          	if (T.IsAddition())
+	             	B1 = new PlanBodyImpl(BodyType.addBel, T.GetLiteral(), true);
 	          	else
-	             	B1 = new PlanBodyImpl(BodyType.delBel, T.getLiteral(), true);
+	             	B1 = new PlanBodyImpl(BodyType.delBel, T.GetLiteral(), true);
 
 	          	if (B != null)
-	             	B1.setBodyNext(B);
+	             	B1.SetBodyNext(B);
 	        	return B1;
 	        }
 
 	        if (C == null && B == null && L == null) {
 	            // handle the case of a single trigger
-	            T.setAsTriggerTerm(true);
+	            T.SetAsTriggerTerm(true);
 	            return T;
 	        } else {
 	            // handle the case of a entire plan
 	            Plan p = new Plan(L,T,(LogicalFormula)C, B);
-	            p.setSrcInfo(T.getSrcInfo());
-	            p.setAsPlanTerm(true);
+	            p.SetSrcInfo(T.getSrcInfo());
+	            p.SetAsPlanTerm(true);
 	            return p;
 	        }
 	    }
@@ -624,7 +623,7 @@ Term rule_plan_term():
 	    // the case of a simple plan body term
 	    if (B == null)
 	        B = new PlanBodyImpl();
-	    B.setAsBodyTerm(true);
+	    B.SetAsBodyTerm(true);
 	    return B;
 	}
 }
@@ -634,7 +633,7 @@ Term rule_plan_term():
 Literal literal() :
 { 
 	Pred F = null; Pred V; Token k; bool type = Literal.LPos;
-    Atom NS = namespace; Token tns = null; boolean explicitAbstractNS = true; 
+    Atom NS = @namespace; Token tns = null; boolean explicitAbstractNS = true; 
 }
 
 {
@@ -644,7 +643,7 @@ Literal literal() :
         [
         (tns = <ATOM>         
         	{ 
-        		if (tns.image.equals("default"))
+        		if (tns.image.Equals("default"))
                     NS = Literal.DefaultNS;
                 else if (tns.image.equals("this_ns"))
                     NS = thisnamespace;
@@ -655,7 +654,7 @@ Literal literal() :
          |
          	NS = var(Literal.DefaultNS)
             { 
-            	if (NS.hasAnnot())
+            	if (NS.HasAnnot())
 	               /*CAMBIAR: No se puede usar throw en c#
 	               throw new ParseException(getSourceRef(NS)+" name space cannot have annotations.");*/
             	explicitAbstractNS = false;
@@ -675,7 +674,7 @@ Literal literal() :
        | V = var(NS)          
        { 
        		VarTerm vt = (VarTerm)V;
-            vt.setNegated(type);
+            vt.SetNegated(type);
             return vt;
        }
     )
@@ -685,26 +684,26 @@ Literal literal() :
 )
 
 	{
-        if (ASSyntax.isKeyword(F))
+        if (ASSyntax.IsKeyword(F))
             NS = Literal.DefaultNS;
-        NS = nsDirective.map(NS);
+        /*HACER: Clase NameSpace
+        NS = nsDirective.Map(NS);*/
 
-        if (F.getFunctor().indexOf(".") >= 0) {
-           if (F.hasAnnot())
+        /*HACER: Clase FunctionRegister*/
+        if (F.GetFunctor().IndexOf(".") >= 0) {
+           if (F.HasAnnot())
            	  /*CAMBIAR: No se puede usar throw en c#
               throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");*/
            if (type == Literal.LNeg)
            	  /*CAMBIAR: No se puede usar throw en c#
               throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");*/
            try {
-              if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
+              if (F.GetFunctor().Equals(".include")) // .include needs a namespace (see its code)
                  return new InternalActionLiteral(NS, F, curAg);
               else
                  return new InternalActionLiteral(F, curAg);
            } catch (Exception e) {
-              if (getArithFunction(F) == null) // it is not a registered function
-                 /*CAMBIAR: Logger
-                 logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);*/
+             
            }
         }
 
@@ -716,7 +715,7 @@ Literal literal() :
 Pred pred() :          
 { 
 	Token K; Pred p; List l; ListTerm lt; Term b;
-    Atom ons = namespace; namespace = Literal.DefaultNS; // do not replace abstract namespace for terms
+    Atom ons = @namespace; @namespace = Literal.DefaultNS; // do not replace abstract namespace for terms
 }
 
 {
@@ -728,17 +727,17 @@ Pred pred() :
    K=<TK_END>
   )
    { p = new Pred(K.image);
-        p.setSrcInfo(new SourceInfo(asSource, K.beginLine));
+        p.SetSrcInfo(new SourceInfo(asSource, K.beginLine));
    }
 
   [
     "(" l = terms()
-    ")"                { p.setTerms(l); }
+    ")"                { p.SetTerms(l); }
   ]
   [
-    lt = list()        { p.setAnnots(lt); }
+    lt = list()        { p.SetAnnots(lt); }
   ]
-                       { namespace = ons;
+                       { @namespace = ons;
                          return p;
                        }
 }
@@ -747,68 +746,68 @@ Pred pred() :
 /* List of terms */
 List terms() :    { ArrayList listTerms = new ArrayList(); Term v; PlanBody o; }
 {
-  v=term()             { listTerms.add(v); }
-  ( "," v=term()       { listTerms.add(v); }
+  v=term()             { listTerms.Add(v); }
+  ( "," v=term()       { listTerms.Add(v); }
   )*
-                       { listTerms.trimToSize();
+                       { listTerms.TrimToSize();
                          return listTerms;
                        }
 }
 
 
-Term term() :          { Object o; }
+Term term() :          { object o; }
 {
   ( o=list()
   | o=rule_plan_term()
   | o=log_expr()       // log_expr includes literals/atoms/structures
   )
-                       { return changeToAtom(o); }
+                       { return ChangeToAtom(o); }
 }
 
 
 ListTermImpl list() :     
 { 
 	ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f;
-    Atom ons = namespace; namespace = Literal.DefaultNS; // do not replace abstract namespace for terms
+    Atom ons = @namespace; @namespace = Literal.DefaultNS; // do not replace abstract namespace for terms
 }
 
 {
   "["
   [
-  f=term_in_list()        { last = lt.append(f); lt.setSrcInfo(f.getSrcInfo()); }
-  ( "," f=term_in_list()  { last = last.append(f); }
+  f=term_in_list()        { last = lt.Append(f); lt.SetSrcInfo(f.GetSrcInfo()); }
+  ( "," f=term_in_list()  { last = last.Append(f); }
   )*
-  [ "|"  ( K=<VAR>        { last.setNext(new VarTerm(K.image)); }
-         | K=<UNNAMEDVAR> { last.setNext(UnnamedVar.create(K.image)); }
-         | f=list()       { last = last.concat((ListTerm)f); }
+  [ "|"  ( K=<VAR>        { last.SetNext(new VarTerm(K.image)); }
+         | K=<UNNAMEDVAR> { last.SetNext(UnnamedVar.Create(K.image)); }
+         | f=list()       { last = last.Concat((ListTerm)f); }
          )
   ]
   ]
-  "]"                     { namespace = ons; return lt; }
+  "]"                     { @namespace = ons; return lt; }
 }
 
 // term_in_list is the same as term, but log_expr/plan_body must be enclosed by "("....")" to avoid problem with |
-Term term_in_list() :     { Object o; }
+Term term_in_list() :     { object o; }
 {
   ( o=list()
   | o=arithm_expr()
   | o=string()
   | o=rule_plan_term()
   )
-                          { return changeToAtom(o); }
+                          { return ChangeToAtom(o); }
 }
 
 
 /* logical expression */
 
-Object log_expr() :         { Object t1, t2; }
+Object log_expr() :         { object t1, t2; }
 {
    t1 = log_expr_trm()
    [  "|" t2 = log_expr()   { return new LogExpr((LogicalFormula)t1,LogicalOp.or,(LogicalFormula)t2); } ]
                             { return t1; }
 }
 
-Object log_expr_trm() :     { Object t1, t2; }
+Object log_expr_trm() :     { object t1, t2; }
 {
    t1 = log_expr_factor()
 [  "&" t2 = log_expr_trm()  { return new LogExpr((LogicalFormula)t1,LogicalOp.and,(LogicalFormula)t2); } ]
@@ -816,7 +815,7 @@ Object log_expr_trm() :     { Object t1, t2; }
 }
 
 Object log_expr_factor():
-                                    { Object t; }
+                                    { object t; }
 {
 (
   <TK_NOT> t = log_expr_factor()    { return new LogExpr(LogicalOp.not,(LogicalFormula)t); }
@@ -834,8 +833,8 @@ Object log_expr_factor():
    | <EXP>      [ <OPREL> <EXP> ]  --> returns the ExprTerm
 */
 Object rel_expr() :
-                                          {  Object op1 = null;
-                                             Object op2 = null;
+                                          {  object op1 = null;
+                                             object op2 = null;
                                              RelationalOp operator = RelationalOp.none;
                                            }
 {
@@ -861,11 +860,11 @@ Object rel_expr() :
        )
 
             { 
-            	if ( ((Term)op1).isInternalAction() && operator != RelationalOp.literalBuilder)
+            	if ( ((Term)op1).IsInternalAction() && operator != RelationalOp.literalBuilder)
                     /*CAMBIAR: No se pueden usar throw en c# 
                     throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");*/
                                              
-                if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
+                if ( ((Term)op2).IsInternalAction() && operator != RelationalOp.literalBuilder)
                     /*CAMBIAR: No se puede usar throw en c#
                     throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");*/
                                              
@@ -877,7 +876,7 @@ Object rel_expr() :
 
 
 /* arithmetic expression */
-Object arithm_expr() :        { Object t1, t2; ArithmeticOp op; }
+Object arithm_expr() :        { object t1, t2; ArithmeticOp op; }
 {
    t1 = arithm_expr_trm()     { op = ArithmeticOp.none; }
    (  ( "+"                      { op = ArithmeticOp.plus;}
@@ -885,12 +884,12 @@ Object arithm_expr() :        { Object t1, t2; ArithmeticOp op; }
       )
       t2 = arithm_expr_trm()     
       { 
-      		if (!(t1 instanceof NumberTerm)) {
+      		if (!(t1.GetType() == typeof(NumberTerm))) {
                 /*CAMBIAR: No se puede usar throw en c#
                 throw new ParseException(getSourceRef(t1)+" ArithExpr: first operand '"+t1+"' is not numeric or variable.");*/
             }
                                    
-            if (!(t2 instanceof NumberTerm)) {
+            if (!(t2.GetType() == typeof(NumberTerm)) {
             	/*CAMBIAR: No se puede usar throw en c#
                 throw new ParseException(getSourceRef(t2)+" ArithExpr: second operand '"+t2+"' is not numeric or variable.");*/
             }
@@ -899,7 +898,7 @@ Object arithm_expr() :        { Object t1, t2; ArithmeticOp op; }
    )*  { return t1; }
 }
 
-Object arithm_expr_trm() :      { Object t1, t2; ArithmeticOp op; }
+Object arithm_expr_trm() :      { object t1, t2; ArithmeticOp op; }
 {
    t1 = arithm_expr_factor()    { op = ArithmeticOp.none; }
 (  ( "*"                        { op = ArithmeticOp.times; }
@@ -909,11 +908,11 @@ Object arithm_expr_trm() :      { Object t1, t2; ArithmeticOp op; }
    )
    t2 = arithm_expr_factor()    
    { 
-   		if (!(t1 instanceof NumberTerm)) {
+   		if (!(t1.GetType() == typeof(NumberTerm)) {
             /*CAMBIAR: No se puede usar throw en c#
             throw new ParseException(getSourceRef(t1)+" ArithTerm: first operand '"+t1+"' is not numeric or variable.");*/
         }
-        if (!(t2 instanceof NumberTerm)) {
+        if (!(t2.GetType() == typeof(NumberTerm)) {
         	/*CAMBIAR: No se puede usar throw en c#
             throw new ParseException(getSourceRef(t2)+" ArithTerm: second operand '"+t2+"' is not numeric or variable.");*/
         }
@@ -923,19 +922,19 @@ Object arithm_expr_trm() :      { Object t1, t2; ArithmeticOp op; }
 }
 
 Object arithm_expr_factor():
-                                { Object t1, t2; ArithmeticOp op;}
+                                { object t1, t2; ArithmeticOp op;}
 {
    t1 = arithm_expr_simple()    { op = ArithmeticOp.none; }
 [  ( "**"                       { op = ArithmeticOp.pow; }
    )
    t2 = arithm_expr_factor()    
    { 
-   		if (!(t1 instanceof NumberTerm)) {
+   		if (!(t1.GetType() == typeof(NumberTerm)) {
             /*CAMBIAR: No se puede usar throw en c#
             throw new ParseException(getSourceRef(t1)+" ArithFactor: first operand '"+t1+"' is not numeric or variable.");*/
         }
                                   
-        if (!(t2 instanceof NumberTerm)) {
+        if (!(t2.GetType() == typeof(NumberTerm)) {
             /*CAMBIAR: No se puede usar throw en c#
             throw new ParseException(getSourceRef(t2)+" ArithFactor: second operand '"+t2+"' is not numeric or variable.");*/
         }
@@ -946,15 +945,15 @@ Object arithm_expr_factor():
 
 
 Object arithm_expr_simple():
-                                { Token K; Object t; VarTerm v; }
+                                { Token K; object t; VarTerm v; }
 {
- ( K = <NUMBER>                 { NumberTerm ni = ASSyntax.parseNumber(K.image);
-                                  ni.setSrcInfo(new SourceInfo(asSource, K.beginLine));
+ ( K = <NUMBER>                 { NumberTerm ni = ASSyntax.ParseNumber(K.image);
+                                  ni.SetSrcInfo(new SourceInfo(asSource, K.beginLine));
                                   return ni;
                                 }
  | "-" t = arithm_expr_simple() 
  { 
- 	if (!(t instanceof NumberTerm)) {
+ 	if (!(t.GetType() == typeof(NumberTerm)) {
         /*CAMBIAR: No se puede usar throw en c#
         throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '-' is not numeric or variable.");*/
     }
@@ -962,7 +961,7 @@ Object arithm_expr_simple():
  }
  | "+" t = arithm_expr_simple() 
  { 
- 	if (!(t instanceof NumberTerm)) {
+ 	if (!(t.GetType() == typeof(NumberTerm)) {
         /*CAMBIAR: No se puede usar throw en c#
         throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '+' is not numeric or variable.");*/
     }
@@ -977,35 +976,35 @@ Object arithm_expr_simple():
 Term function():          { Literal l; }
 {
    l = literal()
-   { ArithFunction af = getArithFunction(l);
+   { ArithFunction af = GetArithFunction(l);
         if (af == null) {
             return l;
         } 
         else {
            ArithFunctionTerm at = new ArithFunctionTerm(af);
-           at.setSrcInfo(l.getSrcInfo());
-           at.setTerms(l.getTerms());
-           at.setAgent(curAg);
+           at.SetSrcInfo(l.GetSrcInfo());
+           at.SetTerms(l.GetTerms());
+           at.SetAgent(curAg);
            return at;
         }
     }
 }
 
-
+//AQUI
 VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 {
- ( K = <VAR>          { v = new VarTerm(ns, K.image); v.setSrcInfo(new SourceInfo(asSource, K.beginLine));}
+ ( K = <VAR>          { v = new VarTerm(ns, K.image); v.SetSrcInfo(new SourceInfo(asSource, K.beginLine));}
  | K = <UNNAMEDVARID> { Matcher matcher = patternUnnamedWithId.matcher(K.image);
                         if (matcher.find()) {
-                            v = UnnamedVar.create(ns, Integer.parseInt(matcher.group(1)), K.image);
+                            v = UnnamedVar.Create(ns, Integer.ParseInt(matcher.group(1)), K.image);
                         } else {
-        	                v = UnnamedVar.create(ns, K.image);
+        	                v = UnnamedVar.Create(ns, K.image);
                         }
                       }
- | K = <UNNAMEDVAR>   { v = UnnamedVar.create(ns, K.image); }
+ | K = <UNNAMEDVAR>   { v = UnnamedVar.Create(ns, K.image); }
  )
  [
-   lt = list()      { v.setAnnots(lt); }
+   lt = list()      { v.SetAnnots(lt); }
  ]
                     { return v;
                     }
@@ -1013,8 +1012,8 @@ VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 
 StringTerm string():{ Token k; StringTermImpl s; }
 {
-  k = <STRING>      { s = new StringTermImpl(k.image.substring(1,k.image.length()-1).replaceAll("\\\\n", "\n").replaceAll("\\\\\"","\"") );
-                      s.setSrcInfo(new SourceInfo(asSource,k.beginLine));
+  k = <STRING>      { s = new StringTermImpl(k.image.substring(1,k.image.length()-1).ReplaceAll("\\\\n", "\n").ReplaceAll("\\\\\"","\"") );
+                      s.SetSrcInfo(new SourceInfo(asSource,k.beginLine));
                       return s;
                     }
 }

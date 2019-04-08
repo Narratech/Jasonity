@@ -1,18 +1,18 @@
 
 public interface ICharStream {
-  void setTabSize(int i);
-  int getTabSize();
+  void SetTabSize(int i);
+  int GetTabSize();
   char BeginToken();
-  char readChar();
-  int getEndColumn();
-  int getEndLine();
-  int getBeginColumn();
-  int getBeginLine();
-  void backup(int amount);
+  char ReadChar();
+  int GetEndColumn();
+  int GetEndLine();
+  int GetBeginColumn();
+  int GetBeginLine();
+  void Backup(int amount);
   string GetImage();
   char[] GetSuffix(int len);
   void Done();
-  void adjustBeginLineColumn(int newLine, int newCol);
+  void AdjustBeginLineColumn(int newLine, int newCol);
 }
 
 /**
@@ -45,8 +45,8 @@ public  partial class SimpleCharStream : ICharStream
   protected int tabSize = 1;
   protected bool trackLineColumn = true;
 
-  public virtual void setTabSize(int i) { tabSize = i; }
-  public virtual int getTabSize() { return tabSize; }
+  public virtual void SetTabSize(int i) { tabSize = i; }
+  public virtual int GetTabSize() { return tabSize; }
 
 
 
@@ -136,7 +136,7 @@ public  partial class SimpleCharStream : ICharStream
     }
     catch(System.IO.IOException e) {
       --bufpos;
-      backup(0);
+      Backup(0);
       if (tokenBegin == -1)
         tokenBegin = bufpos;
       throw e;
@@ -147,7 +147,7 @@ public  partial class SimpleCharStream : ICharStream
   public virtual char BeginToken()
   {
     tokenBegin = -1;
-    char c = readChar();
+    char c = ReadChar();
     tokenBegin = bufpos;
 
     return c;
@@ -194,7 +194,7 @@ public  partial class SimpleCharStream : ICharStream
   }
 
 /** Read a character. */
-  public virtual char readChar()
+  public virtual char ReadChar()
   {
     if (inBuf > 0)
     {
@@ -216,27 +216,27 @@ public  partial class SimpleCharStream : ICharStream
   }
 
   /** Get token end column number. */
-  public virtual int getEndColumn() {
+  public virtual int GetEndColumn() {
     return bufcolumn[bufpos];
   }
 
   /** Get token end line number. */
-  public virtual int getEndLine() {
+  public virtual int GetEndLine() {
      return bufline[bufpos];
   }
 
   /** Get token beginning column number. */
-  public virtual int getBeginColumn() {
+  public virtual int GetBeginColumn() {
     return bufcolumn[tokenBegin];
   }
 
   /** Get token beginning line number. */
-  public virtual int getBeginLine() {
+  public virtual int GetBeginLine() {
     return bufline[tokenBegin];
   }
 
 /** Backup a number of characters. */
-  public virtual void backup(int amount) {
+  public virtual void Backup(int amount) {
 
     inBuf += amount;
     if ((bufpos -= amount) < 0)
@@ -341,7 +341,7 @@ public  partial class SimpleCharStream : ICharStream
   /**
    * Method to adjust line and column numbers for the start of a token.
    */
-  public virtual void adjustBeginLineColumn(int newLine, int newCol)
+  public virtual void AdjustBeginLineColumn(int newLine, int newCol)
   {
     int start = tokenBegin;
     int len;

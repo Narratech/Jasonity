@@ -23,7 +23,7 @@ public partial class ParseException : System.Exception {
   public ParseException(Token currentTokenVal,
                         int[][] expectedTokenSequencesVal,
                         string[] tokenImageVal
-                       ) : base(initialise(currentTokenVal, expectedTokenSequencesVal, tokenImageVal))
+                       ) : base(Initialise(currentTokenVal, expectedTokenSequencesVal, tokenImageVal))
   {
     currentToken = currentTokenVal;
     expectedTokenSequences = expectedTokenSequencesVal;
@@ -76,7 +76,7 @@ public partial class ParseException : System.Exception {
    * from the parser) the correct error message
    * gets displayed.
    */
-  private static string initialise(Token currentToken,
+  private static string Initialise(Token currentToken,
                            int[][] expectedTokenSequences,
                            string[] tokenImage) {
 
@@ -104,7 +104,7 @@ public partial class ParseException : System.Exception {
       }
       retval += " " + tokenImage[tok.kind];
       retval += " \"";
-      retval += add_escapes(tok.image);
+      retval += Add_escapes(tok.image);
       retval += " \"";
       tok = tok.next;
     }
@@ -132,7 +132,7 @@ public partial class ParseException : System.Exception {
    * when these raw version cannot be used as part of an ASCII
    * string literal.
    */
-  static string add_escapes(string str) {
+  static string Add_escapes(string str) {
       string retval = string.Empty;
       char ch;
       for (int i = 0; i < str.Length; i++) {

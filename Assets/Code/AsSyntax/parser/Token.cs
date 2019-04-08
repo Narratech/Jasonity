@@ -52,7 +52,7 @@ public partial class Token {
    * Any subclass of Token that actually wants to return a non-null value can
    * override this method as appropriate.
    */
-  public object getValue() {
+  public object GetValue() {
     return null;
   }
 
@@ -100,7 +100,7 @@ public partial class Token {
    * to the following switch statement. Then you can cast matchedToken
    * variable to the appropriate type and use sit in your lexical actions.
    */
-  public static Token newToken(int ofKind, string image)
+  public static Token NewToken(int ofKind, string image)
   {
     switch(ofKind)
     {
@@ -108,9 +108,9 @@ public partial class Token {
     }
   }
 
-  public static Token newToken(int ofKind)
+  public static Token NewToken(int ofKind)
   {
-    return newToken(ofKind, null);
+    return NewToken(ofKind, null);
   }
 
 }

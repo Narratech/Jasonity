@@ -31,7 +31,7 @@ public class TokenMgrError : System.Exception
    * Replaces unprintable characters by their escaped (or unicode escaped)
    * equivalents in the given string
    */
-  internal static string addEscapes(string str) {
+  internal static string AddEscapes(string str) {
     string retval = string.Empty;
     char ch;
     for (int i = 0; i < str.Length; i++) {
@@ -90,8 +90,8 @@ public class TokenMgrError : System.Exception
     return("Lexical error at line " +
           errorLine + ", column " +
           errorColumn + ".  Encountered: " +
-          (EOFSeen ? "<EOF> " : ("\"" + addEscapes(curChar1.ToString()) + "\"") + " (" + (int)curChar + "), ") +
-          "after : \"" + addEscapes(errorAfter) + "\"");
+          (EOFSeen ? "<EOF> " : ("\"" + AddEscapes(curChar1.ToString()) + "\"") + " (" + (int)curChar + "), ") +
+          "after : \"" + AddEscapes(errorAfter) + "\"");
   }
 
   /** No argructor. */

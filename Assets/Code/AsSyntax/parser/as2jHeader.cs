@@ -41,7 +41,7 @@ namespace Assets.Code.Logic.parser
             return GetSourceRef( t.GetSrcInfo());
         }
 
-        private String GetSourceRef(Object t) {
+        private String GetSourceRef(object t) {
             if (t.GetType() == typeof(DefaultTerm)) {
                 return GetSourceRef((DefaultTerm)t);
             }
@@ -88,7 +88,7 @@ namespace Assets.Code.Logic.parser
             return af;
         }
 
-        private ITerm ChangeToAtom(Object o) {
+        private ITerm ChangeToAtom(object o) {
             ITerm u = (ITerm)o;
             if (u == Literal.LTrue)
                 return u;

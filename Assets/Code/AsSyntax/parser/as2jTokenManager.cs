@@ -105,7 +105,7 @@ public const int DEFAULT = 0;
 };
 public partial class as2jTokenManager : as2jConstants {
 
-protected bool moveToNextChar() {
+protected bool MoveToNextChar() {
   try {
     curChar = input_stream.readChar();
   } catch(System.IO.IOException) {
@@ -164,7 +164,7 @@ private  int jjRunStringLiteralMatch() {
       do {
         if (curChar != stringLiterals[index + curPos]) break;
         if (++curPos == len) break;
-        if (!moveToNextChar()) {
+        if (!MoveToNextChar()) {
           --curPos;
           break;
         }
@@ -173,7 +173,7 @@ private  int jjRunStringLiteralMatch() {
         jjmatchedKind = stringLiterals[index + len];
         jjmatchedPos = curPos;
         startState = stringLiterals[index + len + 1];
-        if (!moveToNextChar()) {
+        if (!MoveToNextChar()) {
           return curPos;
         }
         curPos++;
@@ -182,7 +182,7 @@ private  int jjRunStringLiteralMatch() {
         index += len + 2;
         input_stream.backup(curPos + 1);
         curPos = 0;
-        if (!moveToNextChar()) {
+        if (!MoveToNextChar()) {
           System.Diagnostics.Debug.Assert(false, "Unreachable code!");
         }
       }
@@ -280,7 +280,7 @@ private  int jjMoveNfa(int startState, int curPos) {
       return curPos;
     }
     // Read the next character and try to continue running the NFA.
-    if (!moveToNextChar()) {
+    if (!MoveToNextChar()) {
       // EOF reached!
       return curPos;
     }
@@ -303,19 +303,19 @@ private int lengthOfMatch;
 protected int curChar;
 protected  ICharStream input_stream;
 
-public static bool isToken(int kind) {
+public static bool IsToken(int kind) {
   return (jjtoToken[kind >> 6] & (1L << (kind & 0x3f))) != 0L;
 }
 
-public static bool isSkip(int kind) {
+public static bool IsSkip(int kind) {
   return (jjtoSkip[kind >> 6] & (1L << (kind & 0x3f))) != 0L;
 }
 
-public static bool isSpecial(int kind) {
+public static bool IsSpecial(int kind) {
   return (jjtoSpecial[kind >> 6] & (1L << (kind & 0x3f))) != 0L;
 }
 
-public static bool isMore(int kind) {
+public static bool IsMore(int kind) {
   return (jjtoMore[kind >> 6] & (1L << (kind & 0x3f))) != 0L;
 }
 
@@ -343,7 +343,7 @@ protected  Token jjFillToken() {
     endColumn = input_stream.getEndColumn();
   }
 
-   t = Token.newToken(jjmatchedKind);
+   t = Token.NewToken(jjmatchedKind);
    t.kind = jjmatchedKind;
    t.image = curTokenImage;
 
@@ -356,7 +356,7 @@ protected  Token jjFillToken() {
 }
 
 /** Get the next Token. */
-public  Token getNextToken() {
+public  Token GetNextToken() {
   Token specialToken = null;
   Token matchedToken;
   int lastReadPosition = 0;
@@ -394,7 +394,7 @@ public  Token getNextToken() {
   
         // Put back any characters looked ahead.
         input_stream.backup(lastReadPosition - jjmatchedPos);
-        if (isToken(jjmatchedKind)) {
+        if (IsToken(jjmatchedKind)) {
           // Matched kind is a real TOKEN.
           matchedToken = jjFillToken();
           matchedToken.specialToken = specialToken;
@@ -403,9 +403,9 @@ public  Token getNextToken() {
             curLexState = jjnewLexState[jjmatchedKind];
           }
           return matchedToken;
-        } else if (isSkip(jjmatchedKind)) {
+        } else if (IsSkip(jjmatchedKind)) {
           // Matched kind is a SKIP or SPECIAL_TOKEN.
-          if (isSpecial(jjmatchedKind)) {
+          if (IsSpecial(jjmatchedKind)) {
             matchedToken = jjFillToken();
             if (specialToken == null) {
               specialToken = matchedToken;
@@ -435,12 +435,12 @@ public  Token getNextToken() {
         }
         catch (System.IO.IOException) { }
       }
-      reportError(lastReadPosition);
+      ReportError(lastReadPosition);
     }
   }
 }
 
-protected  void reportError(int lastReadPosition) {
+protected  void ReportError(int lastReadPosition) {
   int error_line = input_stream.getEndLine();
   int error_column = input_stream.getEndColumn();
   string error_after = null;
@@ -880,7 +880,7 @@ void TokenLexicalActions(Token matchedToken) {
   switch(matchedToken.kind) {
     case 26: {
 
-      if ( image . charAt ( 0 ) == '\'' ) matchedToken . image = image . substring ( 1 , lengthOfMatch - 1 ) ; 
+      if ( image . charAt ( 0 ) == '\'' ) matchedToken . image = image . Substring ( 1 , lengthOfMatch - 1 ) ; 
       break;
     }
     default: break;
