@@ -59,7 +59,7 @@ namespace Assets.Code.Logic.parser
                 if (f.GetType() == typeof(InternalActionLiteral)) {
                     InternalActionLiteral ial = (InternalActionLiteral)f;
                     //InternalAction de carpeta Agent sin hacer
-                    if (!ial.GetIA(ag).canBeUsedInContext()) {
+                    if (!ial.GetIA(ag).CanBeUsedInContext()) {
                         return ial;
                     }
                 } 
@@ -80,7 +80,7 @@ namespace Assets.Code.Logic.parser
             ArithFunctionTerm af = null;
             if (curAg != null)
                // try to find the function in agent register
-               af = curAg.getFunction(l.GetFunctor(), l.GetArity());
+               af = curAg.GetFunction(l.GetFunctor(), l.GetArity());
             if (af == null)
                // try global function
                //carpeta directiva de asSyntax

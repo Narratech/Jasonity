@@ -126,14 +126,6 @@ bool agent(Agent.Agent a):
   	{
        p.SetSource(asSource);
        a.GetPL().Add(p);
-       // warning only not parsed files
-       /*ELIMINAR
-       if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
-          List<VarTerm> singletonVars = p.GetSingletonVars();
-          if (singletonVars.size() > 0) {
-             logger.warning(getSourceRef(p.getSrcInfo())+" warning: the plan for event '"+p.getTrigger()+"' has the following singleton variables: "+singletonVars);
-          }
-       }*/
     }
   }
     ( b = belief()            
@@ -141,9 +133,6 @@ bool agent(Agent.Agent a):
     		if (a != null) {
               if (b.IsRule()) {
                   a.AddInitialBel(b);
-                  /*ELIMINAR
-                  if (!parsedFiles.contains(asSource))
-                     logger.warning(getSourceRef(b)+" warning: avoid to mix rules and plans ('"+b+"').");*/
               } else {
               	  /*CAMBIAR: No se puede usar throw en c#
                   throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");*/
@@ -239,17 +228,7 @@ Literal belief() : { Literal h; object t; }
 
     [
       ":-" t = log_expr()    {
-      		//AQUI
-      		/*CAMBIAR: ???? 
-      		h = new Rule(h,(LogicalFormula)t);*/
-           // warning only not parsed files
-           if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
-              List<VarTerm> singletonVars = h.getSingletonVars();
-              if (singletonVars.size() > 0) {
-              	 /*CAMBIAR: Looger
-                 logger.warning(getSourceRef(h)+" warning: the rule with head '"+((Rule)h).headClone()+"' has the following singleton variables: "+singletonVars);*/
-               }
-            }
+      		h = new Rule(h,(LogicalFormula)t);
         }
     ]
     "." { return h; }
@@ -261,7 +240,7 @@ Literal initial_goal() : { Literal g; }
 {
   "!" g=literal() "."    
   { 
-  	if (g.isVar()) {
+  	if (g.IsVar()) {
         /*CAMBIAR: No se puede usar throw en c#
         throw new ParseException(getSourceRef(g)+". a variable cannot be a goal!");*/
     }
@@ -274,9 +253,10 @@ Literal initial_goal() : { Literal g; }
 Plan plan() :         
 { 
 	Token k;
-    Pred L = null; Literal L2;
+    Pred L = null; 
+    Literal L2;
     Trigger T;
-    Object C = null;
+    object C = null;
     PlanBody B = null;
     int start = -1, end;
 }
@@ -291,16 +271,16 @@ Plan plan() :
     { 
     	end = k.beginLine;
         InternalActionLiteral ial = null;
-        try { ial = checkInternalActionsInContext((LogicalFormula)C, curAg); } catch (Exception e) {}
+        try { ial = CheckInternalActionsInContext((LogicalFormula)c, curAg); } catch (Exception e) {}
 
         if (ial != null)
             /*CAMBIAR: No se pueden usar throw en c#
             throw new ParseException(getSourceRef(ial)+" The internal action '"+ial+"' can not be used in plan's context!");*/
 
-        if (B != null && B.getBodyTerm().equals(Literal.LTrue))
-            B = (PlanBody)B.getBodyNext();
+        if (B != null && B.GetBodyTerm().Equals(Literal.LTrue))
+            B = (PlanBody)B.GetBodyNext();
         Plan p = new Plan(L,T,(LogicalFormula)C, B);
-        p.setSrcInfo(new SourceInfo(asSource,start,end));
+        p.SetSrcInfo(new SourceInfo(asSource,start,end));
         return p;
     }
 }
@@ -309,7 +289,7 @@ Plan plan() :
 Trigger trigger() :
 {
 	TEOperator teOp;
-	TEType     teType = TEType.belief;
+	TEType teType = TEType.belief;
  	Literal F;
 }
 
@@ -337,14 +317,14 @@ PlanBody plan_body() :      { Object F; PlanBody R = null; }
 
     { 
     	if (R != null) {
-            ((PlanBody)F).setBodyNext( R );
+            ((PlanBody)F).SetBodyNext( R );
         }
 
         return (PlanBody)F;
     }
-
 }
 
+//AQUI
 PlanBody plan_body_term() : { Object F; PlanBody R = null; }
 {
 	F = plan_body_factor()
@@ -356,30 +336,32 @@ PlanBody plan_body_term() : { Object F; PlanBody R = null; }
            return (PlanBody)F;
         try {
           Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aOr, (Term)F);
-          if (R.toString().startsWith(".fork(or,")) {
+          
+          if (R.ToString().StartsWith(".fork(or,")) {
              // if R is another fork or, put they args into this fork
-             InternalActionLiteral ial = (InternalActionLiteral)R.getBodyTerm();
+             InternalActionLiteral ial = (InternalActionLiteral)R.GetBodyTerm();
 
-             if (ial.getIA(curAg) instanceof jason.stdlib.fork) {
+             //HACER: clase fork de stdlib
+             if (ial.GetIA(curAg).GetType == typeof (Fork)) {
                 for (int i=1; i<ial.getArity(); i++) {
                    s.addTerm(ial.getTerm(i));
                 }
              } 
           } 
           else {
-             s.addTerm(R);
+             s.AddTerm(R);
           }
 
           Literal stmtLiteral = new InternalActionLiteral(s, curAg);
-          stmtLiteral.setSrcInfo( ((Term)F).getSrcInfo() );
+          stmtLiteral.SetSrcInfo(((Term)F).GetSrcInfo());
           return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
        } catch (Exception e) {
             e.printStackTrace();
        }
     }
 }
-
-PlanBody plan_body_factor() : { Object F; PlanBody R = null; } // bool hasPV = false; bool isControl = true; }
+//AQUI
+PlanBody plan_body_factor() : { object F; PlanBody R = null; } // bool hasPV = false; bool isControl = true; }
 {
 
 	( F = stmtIF()
