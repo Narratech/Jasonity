@@ -1,111 +1,15 @@
 /* as2j.cs */
-namespace  {
+using Assets.Code.Logic.AsSyntax;
+using Assets.Code.Agent;
+using Assets.Code.BDIManager;
+using Assets.Code.Logic.AsSyntax.parser;
+
+namespace Assets.Code.Logic.parser {
 
 public partial class as2j : as2jConstants {
 
 
-  using Assets.Code.Logic;
-  using Assets.Code.Logic.AsSemantic;
-  using Assets.Code.Logic.AsSyntax;
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
-  using System.Threading.Tasks;
-
-namespace Assets.Code.Logic.Parser
-{
-  public class as2j 
-  {
-    private String    asSource = "no-asl-source";
-    private Agent     curAg    = null;
-
-    private Atom      namespace     = Literal.DefaultNS;
-    private Atom      thisnamespace = Literal.DefaultNS;
-
-    /*
-    private DirectiveProcessor directiveProcessor = new DirectiveProcessor();
-    private NameSpace nsDirective = (NameSpace)directiveProcessor.getInstance("namespace");
-
-    private static Logger logger = Logger.getLogger("aslparser");
-    private static Set<String> parsedFiles = new HashSet<String>();
-    private static Config config = Config.get(false);
-    private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
-    */
-
-    public void SetAg(Agent ag) { curAg = ag; }
-    public void SetNS(Atom  ns) { namespace = ns; thisnamespace = ns; }
-    public Atom GetNS()         { return namespace; }
-
-    public void SetASLSource(String src) { asSource = src; }
-    
-    private String GetSourceRef(SourceInfo s) {
-        if (s == null)
-            return "[]";
-        else
-            return "["+s.getSrcFile()+":"+s.getBeginSrcLine()+"]";
-    }
-
-    private String GetSourceRef(DefaultTerm t) {
-        return getSourceRef( t.getSrcInfo());
-    }
-
-    private String GetSourceRef(Object t) {
-        if (t instanceof DefaultTerm)
-            return getSourceRef((DefaultTerm)t);
-        else if (t instanceof SourceInfo)
-            return getSourceRef((SourceInfo)t);
-        else
-            return "[]";
-    }
-
-	private InternalActionLiteral CheckInternalActionsInContext(LogicalFormula f, Agent ag) {
-	    if (f != null) {
-	        if (f instanceof InternalActionLiteral) {
-	            InternalActionLiteral ial = (InternalActionLiteral)f;
-	            if (! ial.getIA(ag).canBeUsedInContext())
-	               return ial;
-	        } else if (f instanceof LogExpr) {
-	            LogExpr le = (LogExpr)f;
-	            InternalActionLiteral ial = checkInternalActionsInContext(le.getLHS(), ag);
-	            if (ial != null)
-	                return ial;
-	            if (!le.isUnary())
-	                return checkInternalActionsInContext(le.getRHS(), ag);
-	        }
-        }
-        return null;
-    }
-
-    private ArithFunction GetArithFunction(Literal l) {
-        ArithFunction af = null;
-        if (curAg != null)
-           // try to find the function in agent register
-           af = curAg.getFunction(l.getFunctor(), l.getArity());
-        if (af == null)
-           // try global function
-           af = FunctionRegister.getFunction(l.getFunctor(), l.getArity());
-        return af;
-    }
-
-    private Term ChangeToAtom(Object o) {
-        Term u = (Term)o;
-        if (u == Literal.LTrue)
-            return u;
-        if (u == Literal.LFalse)
-            return u;
-        if (u.isAtom()) {
-           if (((Atom)u).getFunctor().equals("default"))
-              return Literal.DefaultNS;
-           else if (((Atom)u).getFunctor().equals("this_ns"))
-              return thisnamespace;
-           else
-              return new Atom((Literal)u);
-        }
-        return u;
-    }
-  }
-}
+  
   JJTas2jState jjtree = new JJTas2jState();
 
 
@@ -116,18 +20,20 @@ namespace Assets.Code.Logic.Parser
      returns true if achieved the end of file
      returns false if achieved a "{ end }" directive
 */
-public boolean  agent(Agent a), jason.JasonException { Literal b;
-                                Literal g;
-                                Plan    p;
-                                curAg = a;
-                                //if (a != null && a.getASLSrc() != null) asSource = a.getASLSrc();
-                                boolean endDir = false;
+public bool agent(Agent a) { 
+	Literal b;
+    Literal g;
+    Plan    p;
+    curAg = a;
+    asSource = a.getASLSrc();
+    bool endDir = false;
 
 
 
 
-                                                       
-                              
+
+                        
+
     while (!hasError) {
       int switch_1 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
       if (false
@@ -215,17 +121,19 @@ public boolean  agent(Agent a), jason.JasonException { Literal b;
                     goto end_label_6;
                   }
                    p    = plan();
- if (a != null) {
-                                   p.setFile(asSource);
-                                   a.getPL().add(p);
-                                   // warning only not parsed files
-                                   if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
-                                      List<VarTerm> singletonVars = p.getSingletonVars();
-                                      if (singletonVars.size() > 0) {
-                                         logger.warning(getSourceRef(p.getSrcInfo())+" warning: the plan for event '"+p.getTrigger()+"' has the following singleton variables: "+singletonVars);
-                                      }
-                                   }
-                                }
+ 
+  	if (a != null) 
+  	{
+       p.setFile(asSource);
+       a.getPL().add(p);
+       // warning only not parsed files
+       if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
+          List<VarTerm> singletonVars = p.getSingletonVars();
+          if (singletonVars.size() > 0) {
+             logger.warning(getSourceRef(p.getSrcInfo())+" warning: the plan for event '"+p.getTrigger()+"' has the following singleton variables: "+singletonVars);
+          }
+       }
+    }
 
 
 
@@ -235,8 +143,10 @@ public boolean  agent(Agent a), jason.JasonException { Literal b;
 
 
 
-                                 
-                              
+
+
+     
+  
                   while (!hasError) {
                     int switch_7 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
                     if (false
@@ -256,15 +166,16 @@ public boolean  agent(Agent a), jason.JasonException { Literal b;
                         goto end_label_7;
                       }
                        b    = belief();
- if (a != null) {
-                                  if (b.isRule()) {
-                                      a.addInitialBel(b);
-                                      //if (!parsedFiles.contains(asSource))
-                                      //   logger.warning(getSourceRef(b)+" warning: avoid to mix rules and plans ('"+b+"').");
-                                  } else {
-                                      throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");
-                                  }
-                                }
+ 
+    		if (a != null) {
+              if (b.isRule()) {
+                  a.addInitialBel(b);
+                  //if (!parsedFiles.contains(asSource))
+                  //   logger.warning(getSourceRef(b)+" warning: avoid to mix rules and plans ('"+b+"').");
+              } else {
+                  throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");
+              }
+            }
 
 
 
@@ -272,8 +183,9 @@ public boolean  agent(Agent a), jason.JasonException { Literal b;
 
 
 
-                                 
-                              
+
+             
+        
                     }
                     end_label_7: ;
                     while (!hasError) {
@@ -293,11 +205,11 @@ public boolean  agent(Agent a), jason.JasonException { Literal b;
                     end_label_6: ;
                     jj_consume_token(0);
 
-                                if (a != null) parsedFiles.add(a.getASLSrc());
-                                return true;
+        if (a != null) parsedFiles.add(a.getASLSrc());
+        return true;
 
-                                            
-                              
+                    
+      
 }
 
 
@@ -306,44 +218,52 @@ public boolean  agent(Agent a), jason.JasonException { Literal b;
 
    returns true if the directive is "{ end }", false otherwise
 */
-public boolean  directive(Agent outerAg), jason.JasonException {
-                                Pred dir = null;
-                                Agent resultOfDirective = null;
-                                Agent bakAg = curAg;
-                                boolean isEOF = false;
-                                Atom oldNS = null;
+public bool  directive(Agent outerAg) {
+    Pred dir = null;
+    Agent resultOfDirective = null;
+    Agent bakAg = curAg;
+    bool isEOF = false;
+    Atom oldNS = null;
 
 
 
 
-                                                  
-                              
+                      
+
     jj_consume_token(34);
     if (jj_2_1(4)) {
       jj_consume_token(TK_BEGIN);
        dir      = pred();
       jj_consume_token(35);
- Agent innerAg = new Agent(); innerAg.initAg();
-                                dir = new Pred(namespace, dir);
-                                Directive d = directiveProcessor.getInstance(dir);
-                                d.begin(dir,this);
+ 
+    	Agent innerAg = new Agent(); innerAg.initAg();
+        dir = new Pred(namespace, dir);
+        Directive d = directiveProcessor.getInstance(dir);
+        d.begin(dir,this);
 
 
-                                                  
-                              
+
+                          
+    
       
-           	isEOF
-                     = agent(innerAg);
- if (isEOF)
-                                   throw new ParseException(getSourceRef(dir)+" The directive '{ begin "+dir+"}' does not end with '{ end }'.");
+           	
+          isEOF
+      
+                 = agent(innerAg);
+ 
+        	if (isEOF)
+                /* CAMBIAR: No se pueden usar throw en c#
+                throw new ParseException(getSourceRef(dir)+" The directive '{ begin "+dir+"}' does not end with '{ end }'.");*/
 
-                                resultOfDirective = d.process(dir, outerAg, innerAg);
-                                d.end(dir,this);
+            resultOfDirective = d.process(dir, outerAg, innerAg);
+            d.end(dir,this);
 
 
 
-                                                
-                              
+
+
+                            
+        
     } else {
       int switch_9 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
       if (false
@@ -354,38 +274,44 @@ public boolean  directive(Agent outerAg), jason.JasonException {
               dir
                    = pred();
           jj_consume_token(35);
- if (dir.toString().equals("end"))
-                                   return true;
-                                dir = new Pred(namespace, dir);
-                                Directive d = directiveProcessor.getInstance(dir);
-                                d.begin(dir, this); // to declare the namespace as local
-                                resultOfDirective = d.process(dir, outerAg, null);
-                                d.end(dir, this);
+ 
+    	if (dir.toString().equals("end"))
+            return true;
+
+        dir = new Pred(namespace, dir);
+        Directive d = directiveProcessor.getInstance(dir);
+        d.begin(dir, this); // to declare the namespace as local
+        resultOfDirective = d.process(dir, outerAg, null);
+        d.end(dir, this);
 
 
 
 
 
-                                                 
-                              
+
+
+                         
+    
         } else {
           jj_la1[8] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
       }
- if (resultOfDirective != null && outerAg != null) {
-                                  // import bels, plans and initial goals from agent resultOfDirective
-                                  outerAg.importComponents(resultOfDirective);
-                                }
-                                curAg = bakAg;
-                                return false;
+ 
+    	if (resultOfDirective != null && outerAg != null) {
+			// import bels, plans and initial goals from agent resultOfDirective
+			outerAg.importComponents(resultOfDirective);
+        }
+        curAg = bakAg;
+        return false;
 
 
 
 
-                                             
-                              
+
+                     
+    
 }
 
 
@@ -395,33 +321,43 @@ public boolean  directive(Agent outerAg), jason.JasonException {
 public Literal  belief() { Literal h; Object t;                      
     
         h = literal();
- if (h.isVar()) {
-                                  throw new ParseException(getSourceRef(h)+" variables cannot be beliefs!");
-                               }
+ 
+    	if (h.isVar()) {
+            
+            /*CAMBIAR: No se pueden usar throw en c#                      
+            throw new ParseException(getSourceRef(h)+" variables cannot be beliefs!");*/
+        }
 
-                                
-                             
+
+
+
+         
+    
     int switch_10 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_10 == 36) {
         jj_consume_token(36);
          t    = log_expr();
- h = new Rule(h,(LogicalFormula)t);
-                               // warning only not parsed files
-                               if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
-                                  List<VarTerm> singletonVars = h.getSingletonVars();
-                                  if (singletonVars.size() > 0) {
-                                     logger.warning(getSourceRef(h)+" warning: the rule with head '"+((Rule)h).headClone()+"' has the following singleton variables: "+singletonVars);
-                                  }
-                               }
+ 
+      		h = new Rule(h,(LogicalFormula)t);
+           // warning only not parsed files
+           if (config.getBoolean(Config.WARN_SING_VAR) && !parsedFiles.contains(asSource)) {
+              List<VarTerm> singletonVars = h.getSingletonVars();
+              if (singletonVars.size() > 0) {
+              	 /*CAMBIAR: Looger
+                 logger.warning(getSourceRef(h)+" warning: the rule with head '"+((Rule)h).headClone()+"' has the following singleton variables: "+singletonVars);*/
+               }
+            }
 
 
 
 
 
 
-                                
-                             
+
+
+             
+        
       } else {
         jj_la1[9] = jj_gen;
         ;
@@ -438,26 +374,38 @@ public Literal  initial_goal() { Literal g;
     jj_consume_token(38);
      g = literal();
     jj_consume_token(37);
- if (g.isVar()) {
-                                  throw new ParseException(getSourceRef(g)+". a variable cannot be a goal!");
-                           }
-                           return g;
+ 
+  	if (g.isVar()) {
+        /*CAMBIAR: No se puede usar throw en c#
+        throw new ParseException(getSourceRef(g)+". a variable cannot be a goal!");*/
+    }
+    return g;
 
 
-                                    
-                         
+
+
+             
+  
 }
 
 
 
 
 /* Plan */
-public Plan  plan() { Token k;
-                        Pred L = null; Literal L2;
-                        Trigger T;
-                        Object C = null;
-                        PlanBody B = null;
-                        int start = -1, end;
+public Plan  plan() { 
+	Token k;
+    Pred L = null; Literal L2;
+    Trigger T;
+    Object C = null;
+    PlanBody B = null;
+    int start = -1, end;
+
+
+
+
+
+                        
+
     int switch_11 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_11 == TK_LABEL_AT) {
@@ -494,16 +442,20 @@ public Plan  plan() { Token k;
               k
                  = jj_consume_token(37);
  if (start == -1) start = k.beginLine;                                       
- end = k.beginLine;
-                     InternalActionLiteral ial = null;
-                     try { ial = checkInternalActionsInContext((LogicalFormula)C, curAg); } catch (Exception e) {}
-                     if (ial != null)
-                        throw new ParseException(getSourceRef(ial)+" The internal action '"+ial+"' can not be used in plan's context!");
-	                 if (B != null && B.getBodyTerm().equals(Literal.LTrue))
-	                    B = (PlanBody)B.getBodyNext();
-                     Plan p = new Plan(L,T,(LogicalFormula)C, B);
-                     p.setSrcInfo(new SourceInfo(asSource,start,end));
-                     return p;
+ 
+    	end = k.beginLine;
+        InternalActionLiteral ial = null;
+        try { ial = checkInternalActionsInContext((LogicalFormula)C, curAg); } catch (Exception e) {}
+
+        if (ial != null)
+            /*CAMBIAR: No se pueden usar throw en c#
+            throw new ParseException(getSourceRef(ial)+" The internal action '"+ial+"' can not be used in plan's context!");*/
+
+        if (B != null && B.getBodyTerm().equals(Literal.LTrue))
+            B = (PlanBody)B.getBodyNext();
+        Plan p = new Plan(L,T,(LogicalFormula)C, B);
+        p.setSrcInfo(new SourceInfo(asSource,start,end));
+        return p;
 
 
 
@@ -512,21 +464,25 @@ public Plan  plan() { Token k;
 
 
 
-                              
-                   
+
+
+
+
+                 
+    
 }
 
 
 
 /* Trigger */
 public Trigger  trigger() {
-               		TEOperator teOp;
-			    	TEType     teType = TEType.belief;
-				 	Literal F;
+	TEOperator teOp;
+	TEType     teType = TEType.belief;
+ 	Literal F;
 
 
-                                                  
-               
+                  
+
     int switch_14 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_14 == 41) {
@@ -579,8 +535,8 @@ public Trigger  trigger() {
 /* Plan body */
 public PlanBody  plan_body() { Object F; PlanBody R = null;                              
     
-    F
-       = plan_body_term();
+    	F
+               = plan_body_term();
     int switch_17 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_17 == 45) {
@@ -619,22 +575,26 @@ public PlanBody  plan_body() { Object F; PlanBody R = null;
           jj_la1[17] = jj_gen;
           ;
         }
- if (R != null) {
-                                ((PlanBody)F).setBodyNext( R );
-                              }
-                              return (PlanBody)F;
+ 
+    	if (R != null) {
+            ((PlanBody)F).setBodyNext( R );
+        }
+
+        return (PlanBody)F;
 
 
-                                                 
-                            
+
+
+                           
+    
 }
 
 
 
 public PlanBody  plan_body_term() { Object F; PlanBody R = null;                              
     
-    F
-       = plan_body_factor();
+    	F
+               = plan_body_factor();
     int switch_19 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_19 == TK_POR) {
@@ -645,32 +605,30 @@ public PlanBody  plan_body_term() { Object F; PlanBody R = null;
         ;
       }
 
-                               if (R == null)
-                                  return (PlanBody)F;
-                               try {
-                                  Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aOr, (Term)F);
-                                  if (R.toString().startsWith(".fork(or,")) {
-                                     // if R is another fork or, put they args into this fork
-                                     InternalActionLiteral ial = (InternalActionLiteral)R.getBodyTerm();
-                                     if (ial.getIA(curAg) instanceof jason.stdlib.fork) {
-                                        for (int i=1; i<ial.getArity(); i++) {
-                                           s.addTerm(ial.getTerm(i));
-                                        }
-                                     }
-                                  } else {
-                                     s.addTerm(R);
-                                  }
+       if (R == null)
+           return (PlanBody)F;
+        try {
+          Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aOr, (Term)F);
+          if (R.toString().startsWith(".fork(or,")) {
+             // if R is another fork or, put they args into this fork
+             InternalActionLiteral ial = (InternalActionLiteral)R.getBodyTerm();
 
-                                  Literal stmtLiteral = new InternalActionLiteral(s, curAg);
-                                  stmtLiteral.setSrcInfo( ((Term)F).getSrcInfo() );
-                                  return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
-                               } catch (Exception e) {
-                                  e.printStackTrace();
-                               }
+             if (ial.getIA(curAg) instanceof jason.stdlib.fork) {
+                for (int i=1; i<ial.getArity(); i++) {
+                   s.addTerm(ial.getTerm(i));
+                }
+             } 
+          } 
+          else {
+             s.addTerm(R);
+          }
 
-
-
-
+          Literal stmtLiteral = new InternalActionLiteral(s, curAg);
+          stmtLiteral.setSrcInfo( ((Term)F).getSrcInfo() );
+          return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+       } catch (Exception e) {
+            e.printStackTrace();
+       }
 
 
 
@@ -688,8 +646,14 @@ public PlanBody  plan_body_term() { Object F; PlanBody R = null;
 
 
 
-                                
-                            
+
+
+
+
+
+
+        
+    
 }
 
 
@@ -727,9 +691,7 @@ public PlanBody  plan_body_factor() { Object F; PlanBody R = null;
        || switch_20 == 48
        || switch_20 == 51) {
          F    = body_formula();
- //isControl = false;
-                                                        if (!(F instanceof PlanBody)) throw new ParseException(getSourceRef(F)+" "+F+" is not a body literal!");
-                                                                                                                                                                  
+
       } else {
         jj_la1[19] = jj_gen;
         jj_consume_token(-1);
@@ -745,27 +707,27 @@ public PlanBody  plan_body_factor() { Object F; PlanBody R = null;
           ;
         }
 
-                               if (R == null)
-                                  return (PlanBody)F;
-                               try {
-                                  Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aAnd, (Term)F);
-                                  if (R.toString().startsWith(".fork(and,")) {
-                                     // if R is another fork and, put they args into this fork
-                                     InternalActionLiteral ial = (InternalActionLiteral)R.getBodyTerm();
-                                     if (ial.getIA(curAg) instanceof jason.stdlib.fork) {
-                                        for (int i=1; i<ial.getArity(); i++) {
-                                           s.addTerm(ial.getTerm(i));
-                                        }
-                                     }
-                                  } else {
-                                     s.addTerm(R);
-                                  }
-                                  Literal stmtLiteral = new InternalActionLiteral(s, curAg);
-                                  stmtLiteral.setSrcInfo( ((Term)F).getSrcInfo() );
-                                  return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
-                               } catch (Exception e) {
-                                  e.printStackTrace();
-                               }
+       if (R == null)
+          return (PlanBody)F;
+       try {
+          Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aAnd, (Term)F);
+          if (R.toString().startsWith(".fork(and,")) {
+             // if R is another fork and, put they args into this fork
+             InternalActionLiteral ial = (InternalActionLiteral)R.getBodyTerm();
+             if (ial.getIA(curAg) instanceof jason.stdlib.fork) {
+                for (int i=1; i<ial.getArity(); i++) {
+                   s.addTerm(ial.getTerm(i));
+                }
+             }
+          } else {
+             s.addTerm(R);
+          }
+          Literal stmtLiteral = new InternalActionLiteral(s, curAg);
+          stmtLiteral.setSrcInfo( ((Term)F).getSrcInfo() );
+          return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+       } catch (Exception e) {
+          e.printStackTrace();
+       }
 
 
 
@@ -786,8 +748,8 @@ public PlanBody  plan_body_factor() { Object F; PlanBody R = null;
 
 
 
-                                
-                            
+        
+    
 }
 
 
@@ -835,22 +797,24 @@ public PlanBody  stmtIFCommon() { Object B; Term T1; Term T2 = null; Literal stm
           ;
         }
  try {
-                            if (T1.isRule()) {
-                                throw new ParseException(getSourceRef(T1)+" if requires a plan body.");
-                            }
-                            if (T2 == null) { 
-                                stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
-                            } else if (T2 != null) { // else case
-                                if (T2.isRule()) {
-                                  throw new ParseException(getSourceRef(T2)+" if (else) requires a plan body.");
-                                }
-                                stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1, T2), curAg);
-                            }
-	                        stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                            return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
-                         } catch (Exception e) {
-                            e.printStackTrace();
-                         }
+            if (T1.isRule()) {
+            	/*CAMBIAR: No se puede usar throw en c#
+                throw new ParseException(getSourceRef(T1)+" if requires a plan body.");*/
+            }
+            if (T2 == null) { 
+                stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1), curAg);
+            } else if (T2 != null) { // else case
+                if (T2.isRule()) {
+                  /*CAMBIAR: No se puede usar throw en c#
+                  throw new ParseException(getSourceRef(T2)+" if (else) requires a plan body.");*/
+                }
+                stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".if_then_else", (Term)B, T1, T2), curAg);
+            }
+            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
+            return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
 
 
 
@@ -866,8 +830,10 @@ public PlanBody  stmtIFCommon() { Object B; Term T1; Term T2 = null; Literal stm
 
 
 
-                          
-                       
+
+
+          
+       
 }
 
 
@@ -882,16 +848,18 @@ public PlanBody  stmtFOR() { Object B; Term T1; Literal stmtLiteral;
     
        T1
            = rule_plan_term();
- try {
-                            if (T1.isRule()) {
-                               throw new ParseException(getSourceRef(T1)+"for requires a plan body.");
-                            }
-                            stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".foreach", (Term)B, T1), curAg);
-                            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                            return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
-                         } catch (Exception e) {
-                            e.printStackTrace();
-                         }
+ 
+    	try {
+            if (T1.isRule()) {
+            	/*CAMBIAR: No se puede usar throw en c#
+               throw new ParseException(getSourceRef(T1)+"for requires a plan body.");*/
+            }
+            stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".foreach", (Term)B, T1), curAg);
+            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
+            return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+    	} catch (Exception e) {
+            e.printStackTrace();
+    	}
 
 
 
@@ -900,8 +868,10 @@ public PlanBody  stmtFOR() { Object B; Term T1; Literal stmtLiteral;
 
 
 
-                          
-                       
+
+
+         
+    
 }
 
 
@@ -916,16 +886,18 @@ public PlanBody  stmtWHILE() { Object B; Term T1; Literal stmtLiteral;
     
        T1
            = rule_plan_term();
- try {
-                            if (T1.isRule()) {
-                               throw new ParseException(getSourceRef(T1)+"while requires a plan body.");
-                            }
-                            stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".loop", (Term)B, T1), curAg);
-                            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
-                            return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
-                         } catch (Exception e) {
-                            e.printStackTrace();
-                         }
+ 
+   		try {
+            if (T1.isRule()) {
+            	/*CAMBIAR: No se puede usar throw en c#
+               throw new ParseException(getSourceRef(T1)+"while requires a plan body.");*/
+            }
+            stmtLiteral = new InternalActionLiteral(ASSyntax.createStructure(".loop", (Term)B, T1), curAg);
+            stmtLiteral.setSrcInfo( ((Term)B).getSrcInfo() );
+            return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+    	} catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -934,8 +906,10 @@ public PlanBody  stmtWHILE() { Object B; Term T1; Literal stmtLiteral;
 
 
 
-                          
-                       
+
+
+         
+    
 }
 
 
@@ -1059,41 +1033,48 @@ public Object  body_formula() { BodyType formType = BodyType.action;  Object B;
                     jj_consume_token(-1);
                     throw new ParseException();
                   }
- if (formType == BodyType.action && B instanceof RelExpr) {
-                            return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint
-                         }
-                         if (B instanceof Plan) {
-                           try {
-                             InternalActionLiteral ia = null;
-                             String ias = "";
-                             if (formType == BodyType.delBel) {
-                                ia = new InternalActionLiteral(ASSyntax.createStructure(".remove_plan", (Term)B), curAg);
-                             } else if (formType == BodyType.addBel) {
-                                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("begin")), curAg);
-                             } else if (formType == BodyType.addBelEnd) {
-                                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("end")), curAg);
-                             } else {
-                                throw new ParseException(getSourceRef(B)+" Wrong combination of operator "+formType+" and plan.");
-                             }
-                             return new PlanBodyImpl(BodyType.internalAction, ia);
-                           } catch (Exception e) {
-                             e.printStackTrace();
-                           }
-                         }
-                         if (B instanceof Literal) {
-                            if ( ((Literal)B).isInternalAction() )
-                               formType = BodyType.internalAction;
-                            return new PlanBodyImpl(formType, (Literal)B);
-                         } else {
-	                        if (formType == BodyType.test) {
-	                           if (B instanceof LogicalFormula)
-	                              return new PlanBodyImpl(BodyType.test, (Term)B);  // used in ?(a & b)
-	                           else
-	                              throw new ParseException(getSourceRef(B)+" The argument for ? is not a logical formula.");
-	                        } else {
-                               return B;
-	                        }
-                         }
+ 
+   		if (formType == BodyType.action && B instanceof RelExpr) {
+        return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint
+        }
+                         
+        if (B instanceof Plan) {
+           	try {
+	            InternalActionLiteral ia = null;
+	            String ias = "";
+	            if (formType == BodyType.delBel) {
+	                ia = new InternalActionLiteral(ASSyntax.createStructure(".remove_plan", (Term)B), curAg);
+	            } else if (formType == BodyType.addBel) {
+	                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("begin")), curAg);
+	            } else if (formType == BodyType.addBelEnd) {
+	                ia = new InternalActionLiteral(ASSyntax.createStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("end")), curAg);
+	            } else {
+	            	/*CAMBIAR: No se puede usar throw en c#
+	            	throw new ParseException(getSourceRef(B)+" Wrong combination of operator "+formType+" and plan.");
+	            	*/
+	            }
+	             return new PlanBodyImpl(BodyType.internalAction, ia);
+	        } catch (Exception e) {
+	             e.printStackTrace();
+	        }
+        }
+
+	    if (B instanceof Literal) {
+	        if ( ((Literal)B).isInternalAction() )
+	           formType = BodyType.internalAction;
+
+	        return new PlanBodyImpl(formType, (Literal)B);
+	    } else {
+            if (formType == BodyType.test) {
+               if (B instanceof LogicalFormula)
+                  return new PlanBodyImpl(BodyType.test, (Term)B);  // used in ?(a & b)
+               else
+               		/*CAMBIAR: No se puede usar throw en c#
+                  throw new ParseException(getSourceRef(B)+" The argument for ? is not a logical formula.");*/
+            } else {
+               return B;
+            }
+        }
 
 
 
@@ -1127,20 +1108,29 @@ public Object  body_formula() { BodyType formType = BodyType.action;  Object B;
 
 
 
-                          
-                       
+
+
+
+
+
+
+
+         
+    
 }
 
 
 
-public Term  rule_plan_term() { Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
-                               boolean pb = true; // pb = "only plan body"
-                               Pred L = null;
-                               Literal h = null; Object t = null;
+public Term  rule_plan_term() { 
+	Trigger T = null; Object C = null; PlanBody B = null, B1 = null; Plan P = null;
+    bool pb = true; // pb = "only plan body"
+    Pred L = null;
+    Literal h = null; Object t = null;
 
 
-                                                                 
-                             
+
+                                      
+
     jj_consume_token(34);
     if (jj_2_2(4)) {
       int switch_32 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
@@ -1248,49 +1238,47 @@ public Term  rule_plan_term() { Trigger T = null; Object C = null; PlanBody B = 
                   ;
                 }
                 jj_consume_token(35);
-   if (h != null) {
-                                Rule r = new Rule(h,(LogicalFormula)t);
-                                r.setAsTerm(true);
-                                return r;
-                             }
-                             // the plan body case
-                             if (T != null) {
-                                // handle the case of "+a1", parsed as TE, need to be changed to plan's body
-                                // handle the case of "+a1; +a2", parsed as "TE; Body"
-                                if (pb && L == null) {
-                                  if (T.isAddition())
-                                     B1 = new PlanBodyImpl(BodyType.addBel, T.getLiteral(), true);
-                                  else
-                                     B1 = new PlanBodyImpl(BodyType.delBel, T.getLiteral(), true);
-                                  if (B != null)
-                                     B1.setBodyNext(B);
-                                  return B1;
-                                }
-                                if (C == null && B == null && L == null) {
-                                    // handle the case of a single trigger
-                                    T.setAsTriggerTerm(true);
-                                    return T;
-                                } else {
-                                    // handle the case of a entire plan
-                                    Plan p = new Plan(L,T,(LogicalFormula)C, B);
-                                    p.setSrcInfo(T.getSrcInfo());
-                                    p.setAsPlanTerm(true);
-                                    return p;
-                                }
-                             }
+   
+   		if (h != null) {
+            Rule r = new Rule(h,(LogicalFormula)t);
+            r.setAsTerm(true);
+            return r;
+        }
+                             
+	    // the plan body case
+	    if (T != null) {
+	        // handle the case of "+a1", parsed as TE, need to be changed to plan's body
+	        // handle the case of "+a1; +a2", parsed as "TE; Body"
+	        
+	        if (pb && L == null) {
+	          	if (T.isAddition())
+	             	B1 = new PlanBodyImpl(BodyType.addBel, T.getLiteral(), true);
+	          	else
+	             	B1 = new PlanBodyImpl(BodyType.delBel, T.getLiteral(), true);
 
-                             // the case of a simple plan body term
-                             if (B == null)
-                                B = new PlanBodyImpl();
-                             B.setAsBodyTerm(true);
-                             return B;
+	          	if (B != null)
+	             	B1.setBodyNext(B);
+	        	return B1;
+	        }
 
+	        if (C == null && B == null && L == null) {
+	            // handle the case of a single trigger
+	            T.setAsTriggerTerm(true);
+	            return T;
+	        } else {
+	            // handle the case of a entire plan
+	            Plan p = new Plan(L,T,(LogicalFormula)C, B);
+	            p.setSrcInfo(T.getSrcInfo());
+	            p.setAsPlanTerm(true);
+	            return p;
+	        }
+	    }
 
-
-
-
-
-
+	    // the case of a simple plan body term
+	    if (B == null)
+	        B = new PlanBodyImpl();
+	    B.setAsBodyTerm(true);
+	    return B;
 
 
 
@@ -1318,17 +1306,32 @@ public Term  rule_plan_term() { Trigger T = null; Object C = null; PlanBody B = 
 
 
 
-                                      
-                         
+
+
+
+
+
+
+
+
+
+
+
+
+                     
+       	
 }
 
 
 
 
 /* Literal */
-public Literal  literal() { Pred F = null; Pred V; Token k; boolean type = Literal.LPos;
-                                Atom NS = namespace; Token tns = null; boolean explicitAbstractNS = true;
-                                                                                                          
+public Literal  literal() { 
+	Pred F = null; Pred V; Token k; bool type = Literal.LPos;
+    Atom NS = namespace; Token tns = null; boolean explicitAbstractNS = true;
+
+                                                                              
+
     int switch_41 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_41 == VAR
@@ -1350,33 +1353,39 @@ public Literal  literal() { Pred F = null; Pred V; Token k; boolean type = Liter
               if (false
                  || switch_37 == ATOM) {
                   tns     = jj_consume_token(ATOM);
- if (tns.image.equals("default"))
-                                     NS = Literal.DefaultNS;
-                                else if (tns.image.equals("this_ns"))
-                                     NS = thisnamespace;
-                                else
-                                     NS = new Atom(tns.image);
-                                explicitAbstractNS = false;
+ 
+        		if (tns.image.equals("default"))
+                    NS = Literal.DefaultNS;
+                else if (tns.image.equals("this_ns"))
+                    NS = thisnamespace;
+                else
+                    NS = new Atom(tns.image);
+                explicitAbstractNS = false;
 
 
 
 
 
-                                                           
-                              
+
+                                           
+            
                 } else if (false
                  || switch_37 == VAR
                  || switch_37 == UNNAMEDVARID
                  || switch_37 == UNNAMEDVAR) {
                   
-                           NS
-                               = var(Literal.DefaultNS);
- if (NS.hasAnnot())
-                                   throw new ParseException(getSourceRef(NS)+" name space cannot have annotations.");
-                                explicitAbstractNS = false;
+                           	NS
+                                      = var(Literal.DefaultNS);
+ 
+            	if (NS.hasAnnot())
+	               /*CAMBIAR: No se puede usar throw en c#
+	               throw new ParseException(getSourceRef(NS)+" name space cannot have annotations.");*/
+            	explicitAbstractNS = false;
 
-                                                           
-                              
+
+
+                                           
+            
                 } else {
                   jj_la1[36] = jj_gen;
                   jj_consume_token(-1);
@@ -1388,9 +1397,9 @@ public Literal  literal() { Pred F = null; Pred V; Token k; boolean type = Liter
               }
               jj_consume_token(51);
  if (explicitAbstractNS)
-                                     NS = thisnamespace;
-                                                        
-                              
+                NS = thisnamespace;
+                                   
+            
             } else {
               ;
             }
@@ -1414,12 +1423,14 @@ public Literal  literal() { Pred F = null; Pred V; Token k; boolean type = Liter
                  || switch_40 == UNNAMEDVARID
                  || switch_40 == UNNAMEDVAR) {
                    V    = var(NS);
- VarTerm vt = (VarTerm)V;
-                                vt.setNegated(type);
-                                return vt;
+ 
+       		VarTerm vt = (VarTerm)V;
+            vt.setNegated(type);
+            return vt;
 
-                                          
-                              
+
+                      
+       
                 } else {
                   jj_la1[39] = jj_gen;
                   jj_consume_token(-1);
@@ -1439,32 +1450,30 @@ public Literal  literal() { Pred F = null; Pred V; Token k; boolean type = Liter
                 throw new ParseException();
               }
 
-                                if (ASSyntax.isKeyword(F))
-                                    NS = Literal.DefaultNS;
-                                NS = nsDirective.map(NS);
+        if (ASSyntax.isKeyword(F))
+            NS = Literal.DefaultNS;
+        NS = nsDirective.map(NS);
 
-                                if (F.getFunctor().indexOf(".") >= 0) {
-                                   if (F.hasAnnot())
-                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");
-                                   if (type == Literal.LNeg)
-                                      throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");
-                                   try {
-                                      if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
-                                         return new InternalActionLiteral(NS, F, curAg);
-                                      else
-                                         return new InternalActionLiteral(F, curAg);
-                                   } catch (Exception e) {
-                                      if (getArithFunction(F) == null) // it is not a registered function
-                                         logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);
-                                   }
-                                }
+        if (F.getFunctor().indexOf(".") >= 0) {
+           if (F.hasAnnot())
+           	  /*CAMBIAR: No se puede usar throw en c#
+              throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");*/
+           if (type == Literal.LNeg)
+           	  /*CAMBIAR: No se puede usar throw en c#
+              throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");*/
+           try {
+              if (F.getFunctor().equals(".include")) // .include needs a namespace (see its code)
+                 return new InternalActionLiteral(NS, F, curAg);
+              else
+                 return new InternalActionLiteral(F, curAg);
+           } catch (Exception e) {
+              if (getArithFunction(F) == null) // it is not a registered function
+                 /*CAMBIAR: Logger
+                 logger.warning(getSourceRef(F)+" warning: The internal action class for '"+F+"' was not loaded! Error: "+e);*/
+           }
+        }
 
-                                return new LiteralImpl(NS, type, F);
-
-
-
-
-
+        return new LiteralImpl(NS, type, F);
 
 
 
@@ -1480,17 +1489,27 @@ public Literal  literal() { Pred F = null; Pred V; Token k; boolean type = Liter
 
 
 
-                                                                    
-                              
+
+
+
+
+
+
+
+
+                                            
+    
 }
 
 
 
 /* Annotated Formulae */
-public Pred  pred() { Token K; Pred p; List l; ListTerm lt; Term b;
-                         Atom ons = namespace; namespace = Literal.DefaultNS;
-                                                                              // do not replace abstract namespace for terms
-                       
+public Pred  pred() { 
+	Token K; Pred p; List l; ListTerm lt; Term b;
+    Atom ons = namespace; namespace = Literal.DefaultNS;
+
+                                                         // do not replace abstract namespace for terms
+
     int switch_42 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
        || switch_42 == ATOM) {
@@ -1510,9 +1529,9 @@ public Pred  pred() { Token K; Pred p; List l; ListTerm lt; Term b;
         throw new ParseException();
       }
  p = new Pred(K.image);
-                         p.setSrcInfo(new SourceInfo(asSource, K.beginLine));
-                                                                             
-                       
+        p.setSrcInfo(new SourceInfo(asSource, K.beginLine));
+                                                            
+   
       int switch_43 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
       if (false
          || switch_43 == 46) {
@@ -1609,10 +1628,12 @@ public Term  term() { Object o;
 
 
 
-public ListTermImpl  list() { ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f;
-                            Atom ons = namespace; namespace = Literal.DefaultNS;
-                                                                                 // do not replace abstract namespace for terms
-                          
+public ListTermImpl  list() { 
+	ListTermImpl lt = new ListTermImpl(); ListTerm last; Token K; Term f;
+    Atom ons = namespace; namespace = Literal.DefaultNS;
+
+                                                         // do not replace abstract namespace for terms
+
     jj_consume_token(53);
     int switch_50 = ((jj_ntk==-1)?jj_ntk_f():jj_ntk);
     if (false
@@ -1919,16 +1940,26 @@ public Object  rel_expr() {  Object op1 = null;
                 jj_consume_token(-1);
                 throw new ParseException();
               }
- if ( ((Term)op1).isInternalAction() && operator != RelationalOp.literalBuilder)
-                                                throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");
-                                             if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
-                                                throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");
-                                             return new RelExpr((Term)op1, operator, (Term)op2);
+ 
+            	if ( ((Term)op1).isInternalAction() && operator != RelationalOp.literalBuilder)
+                    /*CAMBIAR: No se pueden usar throw en c# 
+                    throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");*/
+                                             
+                if ( ((Term)op2).isInternalAction() && operator != RelationalOp.literalBuilder)
+                    /*CAMBIAR: No se puede usar throw en c#
+                    throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");*/
+                                             
+                return new RelExpr((Term)op1, operator, (Term)op2);
 
 
 
-                                                                                                
-                                           
+
+
+
+
+
+                                                                   
+            
             } else {
               jj_la1[57] = jj_gen;
               ;
@@ -1972,20 +2003,28 @@ public Object  arithm_expr() { Object t1, t2; ArithmeticOp op;
           
                 t2
                     = arithm_expr_trm();
- if (!(t1 instanceof NumberTerm)) {
-                                      throw new ParseException(getSourceRef(t1)+" ArithExpr: first operand '"+t1+"' is not numeric or variable.");
-                                   }
-                                   if (!(t2 instanceof NumberTerm)) {
-                                      throw new ParseException(getSourceRef(t2)+" ArithExpr: second operand '"+t2+"' is not numeric or variable.");
-                                   }
-                                   t1 = new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
+ 
+      		if (!(t1 instanceof NumberTerm)) {
+                /*CAMBIAR: No se puede usar throw en c#
+                throw new ParseException(getSourceRef(t1)+" ArithExpr: first operand '"+t1+"' is not numeric or variable.");*/
+            }
+                                   
+            if (!(t2 instanceof NumberTerm)) {
+            	/*CAMBIAR: No se puede usar throw en c#
+                throw new ParseException(getSourceRef(t2)+" ArithExpr: second operand '"+t2+"' is not numeric or variable.");*/
+            }
+            t1 = new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
 
 
 
 
 
-                                                                                          
-                                
+
+
+
+
+                                                                   
+       
         }
         end_label_11: ;
  return t1;            
@@ -2035,20 +2074,26 @@ public Object  arithm_expr_trm() { Object t1, t2; ArithmeticOp op;
           
              t2
                  = arithm_expr_factor();
- if (!(t1 instanceof NumberTerm)) {
-                                    throw new ParseException(getSourceRef(t1)+" ArithTerm: first operand '"+t1+"' is not numeric or variable.");
-                                  }
-                                  if (!(t2 instanceof NumberTerm)) {
-                                    throw new ParseException(getSourceRef(t2)+" ArithTerm: second operand '"+t2+"' is not numeric or variable.");
-                                  }
-                                  t1 = new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
+ 
+   		if (!(t1 instanceof NumberTerm)) {
+            /*CAMBIAR: No se puede usar throw en c#
+            throw new ParseException(getSourceRef(t1)+" ArithTerm: first operand '"+t1+"' is not numeric or variable.");*/
+        }
+        if (!(t2 instanceof NumberTerm)) {
+        	/*CAMBIAR: No se puede usar throw en c#
+            throw new ParseException(getSourceRef(t2)+" ArithTerm: second operand '"+t2+"' is not numeric or variable.");*/
+        }
+        t1 = new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
 
 
 
 
 
-                                                                                         
-                                
+
+
+
+                                                               
+    
         }
         end_label_12: ;
  return t1;            
@@ -2069,20 +2114,28 @@ public Object  arithm_expr_factor() { Object t1, t2; ArithmeticOp op;
         
            t2
                = arithm_expr_factor();
- if (!(t1 instanceof NumberTerm)) {
-                                    throw new ParseException(getSourceRef(t1)+" ArithFactor: first operand '"+t1+"' is not numeric or variable.");
-                                  }
-                                  if (!(t2 instanceof NumberTerm)) {
-                                    throw new ParseException(getSourceRef(t2)+" ArithFactor: second operand '"+t2+"' is not numeric or variable.");
-                                  }
-                                  return new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
+ 
+   		if (!(t1 instanceof NumberTerm)) {
+            /*CAMBIAR: No se puede usar throw en c#
+            throw new ParseException(getSourceRef(t1)+" ArithFactor: first operand '"+t1+"' is not numeric or variable.");*/
+        }
+                                  
+        if (!(t2 instanceof NumberTerm)) {
+            /*CAMBIAR: No se puede usar throw en c#
+            throw new ParseException(getSourceRef(t2)+" ArithFactor: second operand '"+t2+"' is not numeric or variable.");*/
+        }
+        return new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
 
 
 
 
 
-                                                                                           
-                                
+
+
+
+
+                                                                 
+    
       } else {
         jj_la1[62] = jj_gen;
         ;
@@ -2108,26 +2161,34 @@ public Object  arithm_expr_simple() { Token K; Object t; VarTerm v;
        || switch_64 == 42) {
         jj_consume_token(42);
          t    = arithm_expr_simple();
- if (!(t instanceof NumberTerm)) {
-                                    throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '-' is not numeric or variable.");
-                                  }
-                                  return new ArithExpr(ArithmeticOp.minus, (NumberTerm)t);
+ 
+ 	if (!(t instanceof NumberTerm)) {
+        /*CAMBIAR: No se puede usar throw en c#
+        throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '-' is not numeric or variable.");*/
+    }
+    return new ArithExpr(ArithmeticOp.minus, (NumberTerm)t);
 
 
-                                                                                          
-                                
+
+
+                                                            
+ 
       } else if (false
        || switch_64 == 41) {
         jj_consume_token(41);
          t    = arithm_expr_simple();
- if (!(t instanceof NumberTerm)) {
-                                    throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '+' is not numeric or variable.");
-                                  }
-                                  return new ArithExpr(ArithmeticOp.plus, (NumberTerm)t);
+ 
+ 	if (!(t instanceof NumberTerm)) {
+        /*CAMBIAR: No se puede usar throw en c#
+        throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '+' is not numeric or variable.");*/
+    }
+    return new ArithExpr(ArithmeticOp.plus, (NumberTerm)t);
 
 
-                                                                                         
-                                
+
+
+                                                           
+ 
       } else if (false
        || switch_64 == 46) {
         jj_consume_token(46);
@@ -2161,15 +2222,16 @@ public Term  function() { Literal l;
        l
           = literal();
  ArithFunction af = getArithFunction(l);
-                            if (af == null) {
-                               return l;
-                            } else {
-                               ArithFunctionTerm at = new ArithFunctionTerm(af);
-                               at.setSrcInfo(l.getSrcInfo());
-                               at.setTerms(l.getTerms());
-                               at.setAgent(curAg);
-                               return at;
-                            }
+        if (af == null) {
+            return l;
+        } 
+        else {
+           ArithFunctionTerm at = new ArithFunctionTerm(af);
+           at.setSrcInfo(l.getSrcInfo());
+           at.setTerms(l.getTerms());
+           at.setAgent(curAg);
+           return at;
+        }
 
 
 
@@ -2178,8 +2240,9 @@ public Term  function() { Literal l;
 
 
 
-                             
-                          
+
+         
+    
 }
 
 
@@ -2280,64 +2343,6 @@ jj_save(4, xla);
 return false;
   }
 
-private bool jj_3R_32()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(43)) return true;
-    return false;
-  }
-
-private bool jj_3R_31()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(42)) return true;
-    return false;
-  }
-
-private bool jj_3R_30()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(41)) return true;
-    return false;
-  }
-
-private bool jj_3R_16()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
-    }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_33()) jj_scanpos = xsp;
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
-private bool jj_3R_13()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(26)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(14)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(15)) return true;
-    }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_22()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) jj_scanpos = xsp;
-    return false;
-  }
-
 private bool jj_3R_59()
  {
     if (jj_done) return true;
@@ -2355,66 +2360,10 @@ private bool jj_3R_48()
     return false;
   }
 
-private bool jj_3R_38()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(TK_FALSE)) return true;
-    return false;
-  }
-
-private bool jj_3R_37()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(TK_TRUE)) return true;
-    return false;
-  }
-
-private bool jj_3R_54()
- {
-    if (jj_done) return true;
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
-private bool jj_3R_53()
- {
-    if (jj_done) return true;
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-private bool jj_3R_52()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(TK_NEG)) return true;
-    return false;
-  }
-
-private bool jj_3R_47()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(38)) return true;
-    return false;
-  }
-
-private bool jj_3R_42()
- {
-    if (jj_done) return true;
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
 private bool jj_3R_41()
  {
     if (jj_done) return true;
     if (jj_scan_token(ATOM)) return true;
-    return false;
-  }
-
-private bool jj_3R_46()
- {
-    if (jj_done) return true;
-    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -2471,20 +2420,62 @@ private bool jj_3R_19()
     return false;
   }
 
-private bool jj_3_1()
+private bool jj_3R_80()
  {
     if (jj_done) return true;
-    if (jj_scan_token(TK_BEGIN)) return true;
-    if (jj_3R_13()) return true;
-    if (jj_scan_token(35)) return true;
-    if (jj_3R_14()) return true;
+    if (jj_scan_token(STRING)) return true;
     return false;
   }
 
-private bool jj_3R_45()
+private bool jj_3R_47()
  {
     if (jj_done) return true;
-    if (jj_scan_token(34)) return true;
+    if (jj_scan_token(38)) return true;
+    return false;
+  }
+
+private bool jj_3R_63()
+ {
+    if (jj_done) return true;
+    if (jj_3R_44()) return true;
+    return false;
+  }
+
+private bool jj_3R_62()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(UNNAMEDVAR)) return true;
+    return false;
+  }
+
+private bool jj_3R_61()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(UNNAMEDVARID)) return true;
+    return false;
+  }
+
+private bool jj_3R_60()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(VAR)) return true;
+    return false;
+  }
+
+private bool jj_3R_49()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_60()) {
+    jj_scanpos = xsp;
+    if (jj_3R_61()) {
+    jj_scanpos = xsp;
+    if (jj_3R_62()) return true;
+    }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_63()) jj_scanpos = xsp;
     return false;
   }
 
@@ -2495,10 +2486,40 @@ private bool jj_3R_29()
     return false;
   }
 
+private bool jj_3R_46()
+ {
+    if (jj_done) return true;
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+private bool jj_3R_120()
+ {
+    if (jj_done) return true;
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+private bool jj_3R_117()
+ {
+    if (jj_done) return true;
+    if (jj_3R_120()) return true;
+    return false;
+  }
+
 private bool jj_3R_28()
  {
     if (jj_done) return true;
     if (jj_3R_13()) return true;
+    return false;
+  }
+
+private bool jj_3R_116()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(46)) return true;
+    if (jj_3R_20()) return true;
+    if (jj_scan_token(47)) return true;
     return false;
   }
 
@@ -2525,10 +2546,11 @@ private bool jj_3R_35()
     return false;
   }
 
-private bool jj_3R_80()
+private bool jj_3R_115()
  {
     if (jj_done) return true;
-    if (jj_scan_token(STRING)) return true;
+    if (jj_scan_token(41)) return true;
+    if (jj_3R_106()) return true;
     return false;
   }
 
@@ -2572,13 +2594,6 @@ private bool jj_3R_15()
     return false;
   }
 
-private bool jj_3R_63()
- {
-    if (jj_done) return true;
-    if (jj_3R_44()) return true;
-    return false;
-  }
-
 private bool jj_3_2()
  {
     if (jj_done) return true;
@@ -2593,10 +2608,11 @@ private bool jj_3_2()
     return false;
   }
 
-private bool jj_3R_62()
+private bool jj_3R_114()
  {
     if (jj_done) return true;
-    if (jj_scan_token(UNNAMEDVAR)) return true;
+    if (jj_scan_token(42)) return true;
+    if (jj_3R_106()) return true;
     return false;
   }
 
@@ -2612,142 +2628,6 @@ private bool jj_3R_71()
     xsp = jj_scanpos;
     if (jj_3R_105()) jj_scanpos = xsp;
     if (jj_scan_token(35)) return true;
-    return false;
-  }
-
-private bool jj_3R_61()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(UNNAMEDVARID)) return true;
-    return false;
-  }
-
-private bool jj_3R_60()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(VAR)) return true;
-    return false;
-  }
-
-private bool jj_3R_49()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_60()) {
-    jj_scanpos = xsp;
-    if (jj_3R_61()) {
-    jj_scanpos = xsp;
-    if (jj_3R_62()) return true;
-    }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_63()) jj_scanpos = xsp;
-    return false;
-  }
-
-private bool jj_3R_27()
- {
-    if (jj_done) return true;
-    if (jj_3R_48()) return true;
-    return false;
-  }
-
-private bool jj_3R_26()
- {
-    if (jj_done) return true;
-    if (jj_3R_47()) return true;
-    return false;
-  }
-
-private bool jj_3R_25()
- {
-    if (jj_done) return true;
-    if (jj_3R_46()) return true;
-    return false;
-  }
-
-private bool jj_3R_120()
- {
-    if (jj_done) return true;
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
-private bool jj_3R_24()
- {
-    if (jj_done) return true;
-    if (jj_3R_45()) return true;
-    return false;
-  }
-
-private bool jj_3R_14()
- {
-    if (jj_done) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_24()) { jj_scanpos = xsp; break; }
-    }
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_25()) { jj_scanpos = xsp; break; }
-    }
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_26()) { jj_scanpos = xsp; break; }
-    }
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_27()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(0)) return true;
-    return false;
-  }
-
-private bool jj_3R_117()
- {
-    if (jj_done) return true;
-    if (jj_3R_120()) return true;
-    return false;
-  }
-
-private bool jj_3R_116()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(46)) return true;
-    if (jj_3R_20()) return true;
-    if (jj_scan_token(47)) return true;
-    return false;
-  }
-
-private bool jj_3R_115()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(41)) return true;
-    if (jj_3R_106()) return true;
-    return false;
-  }
-
-private bool jj_3R_114()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(42)) return true;
-    if (jj_3R_106()) return true;
-    return false;
-  }
-
-private bool jj_3R_135()
- {
-    if (jj_done) return true;
-    if (jj_3R_20()) return true;
-    return false;
-  }
-
-private bool jj_3R_134()
- {
-    if (jj_done) return true;
-    if (jj_3R_71()) return true;
     return false;
   }
 
@@ -2779,92 +2659,20 @@ private bool jj_3R_106()
     return false;
   }
 
-private bool jj_3R_150()
+private bool jj_3_1()
  {
     if (jj_done) return true;
-    if (jj_scan_token(42)) return true;
+    if (jj_scan_token(TK_BEGIN)) return true;
+    if (jj_3R_13()) return true;
+    if (jj_scan_token(35)) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
-private bool jj_3R_149()
+private bool jj_3R_45()
  {
     if (jj_done) return true;
-    if (jj_scan_token(41)) return true;
-    return false;
-  }
-
-private bool jj_3R_145()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_149()) {
-    jj_scanpos = xsp;
-    if (jj_3R_150()) return true;
-    }
-    return false;
-  }
-
-private bool jj_3R_148()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(50)) return true;
-    return false;
-  }
-
-private bool jj_3R_147()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(49)) return true;
-    return false;
-  }
-
-private bool jj_3R_141()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(42)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_145()) jj_scanpos = xsp;
-    return false;
-  }
-
-private bool jj_3R_146()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(41)) return true;
-    return false;
-  }
-
-private bool jj_3R_144()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_146()) {
-    jj_scanpos = xsp;
-    if (jj_3R_147()) {
-    jj_scanpos = xsp;
-    if (jj_3R_148()) return true;
-    }
-    }
-    return false;
-  }
-
-private bool jj_3R_140()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(41)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_144()) jj_scanpos = xsp;
-    return false;
-  }
-
-private bool jj_3R_139()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(44)) return true;
+    if (jj_scan_token(34)) return true;
     return false;
   }
 
@@ -2876,13 +2684,6 @@ private bool jj_3R_107()
     return false;
   }
 
-private bool jj_3R_138()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(48)) return true;
-    return false;
-  }
-
 private bool jj_3R_101()
  {
     if (jj_done) return true;
@@ -2890,48 +2691,6 @@ private bool jj_3R_101()
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_107()) jj_scanpos = xsp;
-    return false;
-  }
-
-private bool jj_3R_133()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_137()) {
-    jj_scanpos = xsp;
-    if (jj_3R_138()) {
-    jj_scanpos = xsp;
-    if (jj_3R_139()) {
-    jj_scanpos = xsp;
-    if (jj_3R_140()) {
-    jj_scanpos = xsp;
-    if (jj_3R_141()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-private bool jj_3R_137()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(38)) return true;
-    return false;
-  }
-
-private bool jj_3R_131()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_133()) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_134()) {
-    jj_scanpos = xsp;
-    if (jj_3R_135()) return true;
-    }
     return false;
   }
 
@@ -2994,14 +2753,74 @@ private bool jj_3R_96()
     return false;
   }
 
-private bool jj_3R_130()
+private bool jj_3R_135()
  {
     if (jj_done) return true;
-    if (jj_scan_token(TK_WHILE)) return true;
-    if (jj_scan_token(46)) return true;
     if (jj_3R_20()) return true;
-    if (jj_scan_token(47)) return true;
+    return false;
+  }
+
+private bool jj_3R_134()
+ {
+    if (jj_done) return true;
     if (jj_3R_71()) return true;
+    return false;
+  }
+
+private bool jj_3R_150()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(42)) return true;
+    return false;
+  }
+
+private bool jj_3R_149()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(41)) return true;
+    return false;
+  }
+
+private bool jj_3R_145()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_149()) {
+    jj_scanpos = xsp;
+    if (jj_3R_150()) return true;
+    }
+    return false;
+  }
+
+private bool jj_3R_148()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(50)) return true;
+    return false;
+  }
+
+private bool jj_3R_147()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(49)) return true;
+    return false;
+  }
+
+private bool jj_3R_141()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(42)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_145()) jj_scanpos = xsp;
+    return false;
+  }
+
+private bool jj_3R_146()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(41)) return true;
     return false;
   }
 
@@ -3019,6 +2838,21 @@ private bool jj_3R_103()
     return false;
   }
 
+private bool jj_3R_144()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_146()) {
+    jj_scanpos = xsp;
+    if (jj_3R_147()) {
+    jj_scanpos = xsp;
+    if (jj_3R_148()) return true;
+    }
+    }
+    return false;
+  }
+
 private bool jj_3R_97()
  {
     if (jj_done) return true;
@@ -3029,6 +2863,23 @@ private bool jj_3R_97()
     if (jj_3R_104()) return true;
     }
     if (jj_3R_96()) return true;
+    return false;
+  }
+
+private bool jj_3R_27()
+ {
+    if (jj_done) return true;
+    if (jj_3R_48()) return true;
+    return false;
+  }
+
+private bool jj_3R_140()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(41)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_144()) jj_scanpos = xsp;
     return false;
   }
 
@@ -3044,14 +2895,80 @@ private bool jj_3R_79()
     return false;
   }
 
-private bool jj_3R_129()
+private bool jj_3R_139()
  {
     if (jj_done) return true;
-    if (jj_scan_token(TK_FOR)) return true;
-    if (jj_scan_token(46)) return true;
-    if (jj_3R_20()) return true;
-    if (jj_scan_token(47)) return true;
-    if (jj_3R_71()) return true;
+    if (jj_scan_token(44)) return true;
+    return false;
+  }
+
+private bool jj_3R_138()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(48)) return true;
+    return false;
+  }
+
+private bool jj_3R_133()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_137()) {
+    jj_scanpos = xsp;
+    if (jj_3R_138()) {
+    jj_scanpos = xsp;
+    if (jj_3R_139()) {
+    jj_scanpos = xsp;
+    if (jj_3R_140()) {
+    jj_scanpos = xsp;
+    if (jj_3R_141()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+private bool jj_3R_137()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(38)) return true;
+    return false;
+  }
+
+private bool jj_3R_26()
+ {
+    if (jj_done) return true;
+    if (jj_3R_47()) return true;
+    return false;
+  }
+
+private bool jj_3R_131()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_133()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_134()) {
+    jj_scanpos = xsp;
+    if (jj_3R_135()) return true;
+    }
+    return false;
+  }
+
+private bool jj_3R_25()
+ {
+    if (jj_done) return true;
+    if (jj_3R_46()) return true;
+    return false;
+  }
+
+private bool jj_3R_24()
+ {
+    if (jj_done) return true;
+    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -3059,6 +2976,30 @@ private bool jj_3R_93()
  {
     if (jj_done) return true;
     if (jj_3R_71()) return true;
+    return false;
+  }
+
+private bool jj_3R_14()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_24()) { jj_scanpos = xsp; break; }
+    }
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_25()) { jj_scanpos = xsp; break; }
+    }
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_26()) { jj_scanpos = xsp; break; }
+    }
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_27()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(0)) return true;
     return false;
   }
 
@@ -3139,6 +3080,17 @@ private bool jj_3R_82()
     return false;
   }
 
+private bool jj_3R_130()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_WHILE)) return true;
+    if (jj_scan_token(46)) return true;
+    if (jj_3R_20()) return true;
+    if (jj_scan_token(47)) return true;
+    if (jj_3R_71()) return true;
+    return false;
+  }
+
 private bool jj_3R_78()
  {
     if (jj_done) return true;
@@ -3194,22 +3146,6 @@ private bool jj_3R_76()
     return false;
   }
 
-private bool jj_3R_143()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(TK_ELSE)) return true;
-    if (jj_3R_71()) return true;
-    return false;
-  }
-
-private bool jj_3R_142()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(TK_ELIF)) return true;
-    if (jj_3R_132()) return true;
-    return false;
-  }
-
 private bool jj_3R_70()
  {
     if (jj_done) return true;
@@ -3224,36 +3160,14 @@ private bool jj_3R_70()
     return false;
   }
 
-private bool jj_3R_136()
+private bool jj_3R_129()
  {
     if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_142()) {
-    jj_scanpos = xsp;
-    if (jj_3R_143()) return true;
-    }
-    return false;
-  }
-
-private bool jj_3R_132()
- {
-    if (jj_done) return true;
+    if (jj_scan_token(TK_FOR)) return true;
     if (jj_scan_token(46)) return true;
     if (jj_3R_20()) return true;
     if (jj_scan_token(47)) return true;
     if (jj_3R_71()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_136()) jj_scanpos = xsp;
-    return false;
-  }
-
-private bool jj_3R_128()
- {
-    if (jj_done) return true;
-    if (jj_scan_token(TK_IF)) return true;
-    if (jj_3R_132()) return true;
     return false;
   }
 
@@ -3320,11 +3234,31 @@ private bool jj_3R_20()
     return false;
   }
 
-private bool jj_3R_127()
+private bool jj_3R_143()
  {
     if (jj_done) return true;
-    if (jj_scan_token(TK_PAND)) return true;
-    if (jj_3R_121()) return true;
+    if (jj_scan_token(TK_ELSE)) return true;
+    if (jj_3R_71()) return true;
+    return false;
+  }
+
+private bool jj_3R_142()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_ELIF)) return true;
+    if (jj_3R_132()) return true;
+    return false;
+  }
+
+private bool jj_3R_136()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_142()) {
+    jj_scanpos = xsp;
+    if (jj_3R_143()) return true;
+    }
     return false;
   }
 
@@ -3335,17 +3269,23 @@ private bool jj_3R_75()
     return false;
   }
 
+private bool jj_3R_132()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(46)) return true;
+    if (jj_3R_20()) return true;
+    if (jj_scan_token(47)) return true;
+    if (jj_3R_71()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_136()) jj_scanpos = xsp;
+    return false;
+  }
+
 private bool jj_3R_74()
  {
     if (jj_done) return true;
     if (jj_3R_80()) return true;
-    return false;
-  }
-
-private bool jj_3R_126()
- {
-    if (jj_done) return true;
-    if (jj_3R_131()) return true;
     return false;
   }
 
@@ -3356,31 +3296,10 @@ private bool jj_3R_73()
     return false;
   }
 
-private bool jj_3R_125()
- {
-    if (jj_done) return true;
-    if (jj_3R_130()) return true;
-    return false;
-  }
-
 private bool jj_3R_72()
  {
     if (jj_done) return true;
     if (jj_3R_44()) return true;
-    return false;
-  }
-
-private bool jj_3R_124()
- {
-    if (jj_done) return true;
-    if (jj_3R_129()) return true;
-    return false;
-  }
-
-private bool jj_3R_123()
- {
-    if (jj_done) return true;
-    if (jj_3R_128()) return true;
     return false;
   }
 
@@ -3409,30 +3328,18 @@ private bool jj_3R_100()
     return false;
   }
 
-private bool jj_3R_121()
- {
-    if (jj_done) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_123()) {
-    jj_scanpos = xsp;
-    if (jj_3R_124()) {
-    jj_scanpos = xsp;
-    if (jj_3R_125()) {
-    jj_scanpos = xsp;
-    if (jj_3R_126()) return true;
-    }
-    }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_127()) jj_scanpos = xsp;
-    return false;
-  }
-
 private bool jj_3R_99()
  {
     if (jj_done) return true;
     if (jj_scan_token(UNNAMEDVAR)) return true;
+    return false;
+  }
+
+private bool jj_3R_128()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_IF)) return true;
+    if (jj_3R_132()) return true;
     return false;
   }
 
@@ -3513,6 +3420,13 @@ private bool jj_3R_66()
     return false;
   }
 
+private bool jj_3R_126()
+ {
+    if (jj_done) return true;
+    if (jj_3R_131()) return true;
+    return false;
+  }
+
 private bool jj_3R_57()
  {
     if (jj_done) return true;
@@ -3528,21 +3442,52 @@ private bool jj_3R_57()
     return false;
   }
 
-private bool jj_3R_122()
+private bool jj_3R_125()
  {
     if (jj_done) return true;
-    if (jj_scan_token(TK_POR)) return true;
-    if (jj_3R_118()) return true;
+    if (jj_3R_130()) return true;
     return false;
   }
 
-private bool jj_3R_118()
+private bool jj_3R_127()
  {
     if (jj_done) return true;
+    if (jj_scan_token(TK_PAND)) return true;
     if (jj_3R_121()) return true;
+    return false;
+  }
+
+private bool jj_3R_124()
+ {
+    if (jj_done) return true;
+    if (jj_3R_129()) return true;
+    return false;
+  }
+
+private bool jj_3R_123()
+ {
+    if (jj_done) return true;
+    if (jj_3R_128()) return true;
+    return false;
+  }
+
+private bool jj_3R_121()
+ {
+    if (jj_done) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_122()) jj_scanpos = xsp;
+    if (jj_3R_123()) {
+    jj_scanpos = xsp;
+    if (jj_3R_124()) {
+    jj_scanpos = xsp;
+    if (jj_3R_125()) {
+    jj_scanpos = xsp;
+    if (jj_3R_126()) return true;
+    }
+    }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_127()) jj_scanpos = xsp;
     return false;
   }
 
@@ -3551,13 +3496,6 @@ private bool jj_3R_81()
     if (jj_done) return true;
     if (jj_scan_token(52)) return true;
     if (jj_3R_57()) return true;
-    return false;
-  }
-
-private bool jj_3R_119()
- {
-    if (jj_done) return true;
-    if (jj_3R_112()) return true;
     return false;
   }
 
@@ -3570,18 +3508,6 @@ private bool jj_3R_43()
       xsp = jj_scanpos;
       if (jj_3R_81()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-private bool jj_3R_112()
- {
-    if (jj_done) return true;
-    if (jj_3R_118()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(45)) jj_scanpos = xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_119()) jj_scanpos = xsp;
     return false;
   }
 
@@ -3598,6 +3524,62 @@ private bool jj_3R_22()
     if (jj_scan_token(46)) return true;
     if (jj_3R_43()) return true;
     if (jj_scan_token(47)) return true;
+    return false;
+  }
+
+private bool jj_3R_122()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_POR)) return true;
+    if (jj_3R_118()) return true;
+    return false;
+  }
+
+private bool jj_3R_13()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(26)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(14)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(15)) return true;
+    }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_22()) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_23()) jj_scanpos = xsp;
+    return false;
+  }
+
+private bool jj_3R_118()
+ {
+    if (jj_done) return true;
+    if (jj_3R_121()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_122()) jj_scanpos = xsp;
+    return false;
+  }
+
+private bool jj_3R_119()
+ {
+    if (jj_done) return true;
+    if (jj_3R_112()) return true;
+    return false;
+  }
+
+private bool jj_3R_112()
+ {
+    if (jj_done) return true;
+    if (jj_3R_118()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(45)) jj_scanpos = xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_119()) jj_scanpos = xsp;
     return false;
   }
 
@@ -3624,6 +3606,87 @@ private bool jj_3R_33()
     jj_scanpos = xsp;
     if (jj_3R_51()) return true;
     }
+    return false;
+  }
+
+private bool jj_3R_32()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(43)) return true;
+    return false;
+  }
+
+private bool jj_3R_38()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_FALSE)) return true;
+    return false;
+  }
+
+private bool jj_3R_31()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(42)) return true;
+    return false;
+  }
+
+private bool jj_3R_37()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_TRUE)) return true;
+    return false;
+  }
+
+private bool jj_3R_30()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(41)) return true;
+    return false;
+  }
+
+private bool jj_3R_16()
+ {
+    if (jj_done) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_33()) jj_scanpos = xsp;
+    if (jj_3R_19()) return true;
+    return false;
+  }
+
+private bool jj_3R_54()
+ {
+    if (jj_done) return true;
+    if (jj_3R_49()) return true;
+    return false;
+  }
+
+private bool jj_3R_53()
+ {
+    if (jj_done) return true;
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+private bool jj_3R_52()
+ {
+    if (jj_done) return true;
+    if (jj_scan_token(TK_NEG)) return true;
+    return false;
+  }
+
+private bool jj_3R_42()
+ {
+    if (jj_done) return true;
+    if (jj_3R_49()) return true;
     return false;
   }
 
