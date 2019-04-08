@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
@@ -126,6 +127,26 @@ namespace Assets.Code.Agent
             {
 
             }
+        }
+
+        public string GetASLSrc()
+        {
+            return aslSource;
+        }
+
+        public void AddInitialBel(Literal b)
+        {
+            initialBeliefs.Add(b);
+        }
+
+        public void addInitialGoal(Literal g)
+        {
+            initialGoals.Add(g);
+        }
+
+        public PlanLibrary GetPL()
+        {
+            return pl;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Assets.Code.Logic.parser
     public partial class as2j : as2jConstants {
 
         private String asSource = "no-asl-source";
-        private Agent.Agent curAg    = null;
+        private Agent.Agent curAg = null;
 
         private Atom @namespace = Literal.DefaultNS;
         private Atom thisnamespace = Literal.DefaultNS;
@@ -18,8 +18,6 @@ namespace Assets.Code.Logic.parser
         private DirectiveProcessor directiveProcessor = new DirectiveProcessor();
         private NameSpace nsDirective = (NameSpace)directiveProcessor.getInstance("namespace");
 
-        //Parece que los habeis eliminado
-        private static Logger logger = Logger.getLogger("aslparser");
         private static HashSet<string> parsedFiles = new HashSet<String>();
         //carpeta util jason
         private static Config config = Config.get(false);
