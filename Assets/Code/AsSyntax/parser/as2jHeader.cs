@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Assets.Code.Logic.AsSyntax.parser;
 using Assets.Code.AsSyntax;
+using Assets.Code.Logic.AsSyntax.directives;
 
 namespace Assets.Code.Logic.parser
 { 

@@ -994,7 +994,7 @@ Term function():          { Literal l; }
 VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 {
  ( K = <VAR>          { v = new VarTerm(ns, K.image); v.SetSrcInfo(new SourceInfo(asSource, K.beginLine));}
- | K = <UNNAMEDVARID> { Matcher matcher = patternUnnamedWithId.matcher(K.image);
+ | K = <UNNAMEDVARID> { Matcher matcher = patternUnnamedWithId.matcher(K.image); //CAMBIAR: Clase Matcher
                         if (matcher.find()) {
                             v = UnnamedVar.Create(ns, Integer.ParseInt(matcher.group(1)), K.image);
                         } else {
