@@ -48,7 +48,7 @@ namespace Assets.Code.AsSyntax
             return true;
         }
 
-        public int Lenght()
+        public int Length()
         {
             if (value == null)
                 return 0;

@@ -37,6 +37,8 @@ namespace Assets.Code.AsSyntax
         IListTerm Intersection(IListTerm lt);
         IListTerm Difference(IListTerm lt);
 
+        int Size();
+
         //Return all subsets that take k elements of this list
         IEnumerator<List<ITerm>> SubSets(int k);
 

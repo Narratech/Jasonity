@@ -12,6 +12,6 @@ namespace Assets.Code.AsSyntax
         normally does not return the same string as toString
         (which enclose the string by quotes)  */
         string GetString();
-        int Lenght();
+        int Length();
     }
 }
