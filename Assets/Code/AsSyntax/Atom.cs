@@ -71,7 +71,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public new Literal CloneNS(Atom newNamespace)
+        public override Literal CloneNS(Atom newNamespace)
         {
             return new Atom(newNamespace, this);
         }

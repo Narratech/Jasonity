@@ -81,7 +81,7 @@ namespace Assets.Code.AsSyntax
             if (t == null) return false;
             if (t == this) return true;
 
-            if (t.GetType() == typeof(ITerm) && ((ITerm)t).IsVar() ) return false; // unground var is not equals a list
+            if (t.GetType() == typeof(ITerm) && ((ITerm)t).IsVar()) return false; // unground var is not equals a list
             if (t.GetType() == typeof(IListTerm)) {
                 IListTerm tAsList = (IListTerm)t;
                 if (term == null && tAsList.GetTerm() != null) return false;
@@ -92,18 +92,13 @@ namespace Assets.Code.AsSyntax
             }
             return false;
         }
-        
+
         public override int CalcHasHCode()
         {
             int code = 37;
             if (term != null) code += term.GetHashCode();
             if (next != null) code += next.GetHashCode();
             return code;
-        }
-
-        public ITerm CloneNS(Atom Newnamespace)
-        {
-            throw new NotImplementedException();
         }
 
         public override int CompareTo(ITerm o)
@@ -142,11 +137,6 @@ namespace Assets.Code.AsSyntax
             return lt.GetLast();
         }
 
-        public void CountVars(Dictionary<VarTerm, int?> c)
-        {
-            throw new NotImplementedException();
-        }
-
         public IListTerm Difference(IListTerm lt)
         {
             ISet<ITerm> set = new SortedSet<ITerm>();
@@ -161,11 +151,6 @@ namespace Assets.Code.AsSyntax
             foreach (ITerm t in this)
                 l.Add(t);
             return l;
-        }
-
-        public VarTerm GetCyclicVar()
-        {
-            throw new NotImplementedException();
         }
 
         public IListTerm GetLast()
@@ -193,11 +178,6 @@ namespace Assets.Code.AsSyntax
             if (GetNext().IsEnd() && !GetNext().IsTail())
                 return this;
             return GetNext().GetPenultimate();
-        }
-
-        public SourceInfo GetSrcInfo()
-        {
-            throw new NotImplementedException();
         }
 
         public VarTerm GetTail()
@@ -252,11 +232,6 @@ namespace Assets.Code.AsSyntax
                 return GetNext().Count + 1;
         }
 
-        public bool HasVar(VarTerm t, Unifier u)
-        {
-            throw new NotImplementedException();
-        }
-
         public IListTerm Insert(ITerm t)
         {
             IListTerm n = new ListTermImpl(term, next);
@@ -265,19 +240,9 @@ namespace Assets.Code.AsSyntax
             return n;
         }
 
-        public bool IsArithExpr()
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool IsAtom()
         {
             return false;
-        }
-
-        public bool IsCyclicTerm()
-        {
-            throw new NotImplementedException();
         }
 
         public bool IsEnd()
@@ -296,16 +261,12 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             Debug.Log("ListTermImpl cannot be used for logical consequence!");
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
-        public bool IsInternalAction()
-        {
-            throw new NotImplementedException();
-        }
 
         public override bool IsList()
         {
@@ -322,50 +283,14 @@ namespace Assets.Code.AsSyntax
             return term == null;
         }
 
-        public bool IsNumeric()
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool IsPlanBody()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsPred()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsRule()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsString()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsStructure()
-        {
-            throw new NotImplementedException();
-        }
 
         public bool IsTail()
         {
             return next != null && next.IsVar();
         }
 
-        public bool IsUnnamedVar()
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool IsVar()
-        {
-            throw new NotImplementedException();
-        }
 
         public ITerm RemoveLast()
         {
@@ -411,10 +336,7 @@ namespace Assets.Code.AsSyntax
             next = l;
         }
 
-        public void SetSrcInfo(SourceInfo s)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public void SetTail(VarTerm v)
         {
@@ -440,10 +362,13 @@ namespace Assets.Code.AsSyntax
             Acabaaaar
         }
 
-        public bool Subsumes(ITerm l)
-        {
-            throw new NotImplementedException();
-        }
+
+        /*PIFOSTIO EL QUE SE VIENE*/
+
+
+
+
+        /**************************/
 
         public IListTerm Union(IListTerm lt)
         {
@@ -471,6 +396,28 @@ namespace Assets.Code.AsSyntax
             }
             return result;
         }
+
+
+
+        public IEnumerator<IListTerm> ListTermIterator()
+        {
+            return new ListTermIterator<IListTerm>(this);
+        }
+
+        public class ListTermIterator<IListTerm>
+        {
+            public ListTermIterator()
+            {
+
+            }
+
+            public IListTerm Next()
+            {
+                MoveNext();
+                return current;
+            }
+        }
+
 
         public IEnumerator<ITerm> Iterator()
         {
@@ -537,12 +484,23 @@ namespace Assets.Code.AsSyntax
             if (c == null) return false;
             IListTerm lt = this;
             IEnumerator<ITerm> i = c.GetEnumerator();
-            Acabar
+            while (i.MoveNext())
+            {
+                lt = lt.Append(i.Next());
+            }
+            return true;
         }
 
         public bool AddAll(int index, IList c)
         {
-
+            IEnumerator<ITerm> i = c.GetEnumerator();
+            int p = index;
+            while (i.MoveNext())
+            {
+                Add(p, i.Next());
+                p++;
+            }
+            return true;
         }
 
         public void Clear()
@@ -566,7 +524,13 @@ namespace Assets.Code.AsSyntax
 
         public bool ContainsAll(IList c)
         {
-
+            bool r = true;
+            IEnumerator<ITerm> i = c.GetEnumerator();
+            while (i.MoveNext() && r)
+            {
+                r = r && Contains(i.Next());
+            }
+            return r;
         }
 
         public ITerm Get(int index)
@@ -611,7 +575,7 @@ namespace Assets.Code.AsSyntax
 
         public IEnumerator<ITerm> listIterator(int startIndex)
         {
-            Acabar
+            ListTermImpl list = this;
         }
 
         protected void SetValuesFrom(IListTerm lt)
@@ -666,7 +630,13 @@ namespace Assets.Code.AsSyntax
 
         public bool RemoveAll(IList c)
         {
-
+            bool r = true;
+            IEnumerator i = c.GetEnumerator();
+            while (i.MoveNext() && r)
+            {
+                r = r && Remove(i.Current);
+            }
+            return r;
         }
 
         public bool RetainAll(IList c)
@@ -731,6 +701,96 @@ namespace Assets.Code.AsSyntax
         }
 
         public void Add(IPlanBody planBody)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITerm CloneNS(Atom Newnamespace)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VarTerm GetCyclicVar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CountVars(Dictionary<VarTerm, int?> c)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsUnnamedVar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsVar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsNumeric()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsPlanBody()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsPred()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsRule()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsString()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsStructure()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Subsumes(ITerm l)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SourceInfo GetSrcInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInternalAction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasVar(VarTerm t, Unifier u)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsArithExpr()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSrcInfo(SourceInfo s)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsCyclicTerm()
         {
             throw new NotImplementedException();
         }
