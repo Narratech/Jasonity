@@ -6,37 +6,33 @@ namespace Assets.Code.Logic.AsSyntax.directives
 {
     public class DirectiveProcessor {
 
-        private static Dictionary<string, Class> directives = new Dictionary<string, Class>();
+        private static Dictionary<string, Type> directives = new Dictionary<string, Type>();
         private static Dictionary<string, IDirective> instances = new Dictionary<string, IDirective>();
         private static Dictionary<string, IDirective> singletons = new Dictionary<string, IDirective>();
 
-        public static void RegisterDirective(string id, Class d)
+        public static void RegisterDirective(string id, Type d)
         {
-            //CAMBIAR: Funcion put para diccionarios
-            directives.Put(id, d);
+            directives[id] = d;
         }
 
         public static IDirective GetDirective(string id)
         {
-            //CAMBIAR: Función get para diccionarios
-            IDirective d = singletons.Get(id);
+            IDirective d = singletons[id];
 
             if (d != null)
             {
                 return d;
             }
 
-            //CAmbiar: Funcion get para diccionarios
-            Class c = directives.Get(id);
+            Type c = directives[id];
             try
             {
-                //CAMBIAR: NewInstance para Object
-                d = (IDirective)c.NewInstance();
+                //d = (Directive)c.newInstance();
+                d = (IDirective)Activator.CreateInstance(typeof(Type));
 
                 if (d.IsSingleton())
                 {
-                    //CAMBIAR: Funcion put para diccionarios
-                    singletons.Put(id, d);
+                    singletons[id] = d;
                 }
                 return d;
             }
@@ -48,11 +44,10 @@ namespace Assets.Code.Logic.AsSyntax.directives
             return null;
         }
 
-        //CAMBIAR: Usar object para class ????
         static DirectiveProcessor() {
-            RegisterDirective("include", Include);
-            RegisterDirective("register_function", FunctionRegister);
-            RegisterDirective("namespace", NameSpace);
+            RegisterDirective("include", typeof(Include));
+            RegisterDirective("register_function", typeof(FunctionRegister));
+            RegisterDirective("namespace", typeof(NameSpace));
         }
 
 
@@ -63,24 +58,25 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         public IDirective GetInstance(string id)
         {
-            IDirective d = instances.Get(id);
+            IDirective d = instances[id];
             if (d != null)
                 return d;
 
-            d = singletons.Get(id);
+            d = singletons[id];
             if (d != null)
                 return d;
 
             // create the instance
-            object c = directives.Get(id);
+            Type c = directives[id];
 
             try
             {
-                d = (IDirective)c.NewInstance();
+                //d = (Directive)c.newInstance();
+                d = (IDirective)Activator.CreateInstance(typeof(Type));
                 if (d.IsSingleton())
-                    singletons.Put(id, d);
+                    singletons[id] = d;
                 else
-                    instances.Put(id, d);
+                    instances[id] = d;
                 return d;
             }
             catch (Exception e)

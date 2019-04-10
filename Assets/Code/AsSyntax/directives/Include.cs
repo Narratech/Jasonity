@@ -1,6 +1,3 @@
-
-
-
 using Assets.Code.AsSyntax;
 using Assets.Code.Logic.parser;
 using System;

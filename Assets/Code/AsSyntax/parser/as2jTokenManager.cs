@@ -107,7 +107,7 @@ public partial class as2jTokenManager : as2jConstants {
 
 protected bool MoveToNextChar() {
   try {
-    curChar = input_stream.readChar();
+    curChar = input_stream.ReadChar();
   } catch(System.IO.IOException) {
     return false;
   }
@@ -152,7 +152,7 @@ protected bool MoveToNextChar() {
     curLexState = lexState;
   }
 
-private  int jjRunStringLiteralMatch() {
+private  int JjRunStringLiteralMatch() {
   int curPos = 0;
   int key = (int)curLexState << 16 | curChar;
   int startState = jjInitStates[curLexState];
@@ -180,7 +180,7 @@ private  int jjRunStringLiteralMatch() {
         break;
       } else {
         index += len + 2;
-        input_stream.backup(curPos + 1);
+        input_stream.Backup(curPos + 1);
         curPos = 0;
         if (!MoveToNextChar()) {
           System.Diagnostics.Debug.Assert(false, "Unreachable code!");
@@ -189,7 +189,7 @@ private  int jjRunStringLiteralMatch() {
     }
   } else {
   }
-  return jjMoveNfa(startState, curPos);
+  return JjMoveNfa(startState, curPos);
 }
 
 private   int[] stateSet = new int[50];
@@ -197,7 +197,7 @@ private   int[] newStateSet = new int[50];
 private   long[] moved = new long[50];
 private  long moveIndex = 1L;
 
-private  int jjMoveNfa(int startState, int curPos) {
+private  int JjMoveNfa(int startState, int curPos) {
 
   if (startState < 0) {
     return curPos;
@@ -319,7 +319,7 @@ public static bool IsMore(int kind) {
   return (jjtoMore[kind >> 6] & (1L << (kind & 0x3f))) != 0L;
 }
 
-protected  Token jjFillToken() {
+protected  Token JjFillToken() {
   Token t;
   string curTokenImage;
   int beginLine;
@@ -332,15 +332,15 @@ protected  Token jjFillToken() {
     } else {
       curTokenImage = image.ToString();
     }
-    beginLine = endLine = input_stream.getEndLine();
-    beginColumn = endColumn = input_stream.getEndColumn();
+    beginLine = endLine = input_stream.GetEndLine();
+    beginColumn = endColumn = input_stream.GetEndColumn();
   } else {
     string im = tokenImage[jjmatchedKind];
     curTokenImage = (im == null) ? input_stream.GetImage() : im;
-    beginLine = input_stream.getBeginLine();
-    beginColumn = input_stream.getBeginColumn();
-    endLine = input_stream.getEndLine();
-    endColumn = input_stream.getEndColumn();
+    beginLine = input_stream.GetBeginLine();
+    beginColumn = input_stream.GetBeginColumn();
+    endLine = input_stream.GetEndLine();
+    endColumn = input_stream.GetEndColumn();
   }
 
    t = Token.NewToken(jjmatchedKind);
@@ -370,7 +370,7 @@ public  Token GetNextToken() {
       // No input. So return EOF token.
       jjmatchedKind = EOF;
       jjmatchedPos = -1;
-      matchedToken = jjFillToken();
+      matchedToken = JjFillToken();
       matchedToken.specialToken = specialToken;
       return matchedToken;
     }
@@ -384,7 +384,7 @@ public  Token GetNextToken() {
     for (;;) {
       jjmatchedKind = int.MaxValue;
       jjmatchedPos = 0;
-      lastReadPosition = jjRunStringLiteralMatch();
+      lastReadPosition = JjRunStringLiteralMatch();
       if (jjmatchedPos == 0 && jjmatchedKind > canMatchAnyChar[curLexState]) {
         jjmatchedKind = canMatchAnyChar[curLexState];
       }
@@ -393,10 +393,10 @@ public  Token GetNextToken() {
         // We have a match!
   
         // Put back any characters looked ahead.
-        input_stream.backup(lastReadPosition - jjmatchedPos);
+        input_stream.Backup(lastReadPosition - jjmatchedPos);
         if (IsToken(jjmatchedKind)) {
           // Matched kind is a real TOKEN.
-          matchedToken = jjFillToken();
+          matchedToken = JjFillToken();
           matchedToken.specialToken = specialToken;
           TokenLexicalActions(matchedToken);
           if (jjnewLexState[jjmatchedKind] != -1) {
@@ -406,7 +406,7 @@ public  Token GetNextToken() {
         } else if (IsSkip(jjmatchedKind)) {
           // Matched kind is a SKIP or SPECIAL_TOKEN.
           if (IsSpecial(jjmatchedKind)) {
-            matchedToken = jjFillToken();
+            matchedToken = JjFillToken();
             if (specialToken == null) {
               specialToken = matchedToken;
             } else {
@@ -430,7 +430,7 @@ public  Token GetNextToken() {
         lastReadPosition = 0;
         jjmatchedKind = int.MaxValue;
         try {
-          curChar = input_stream.readChar();
+          curChar = input_stream.ReadChar();
           continue;
         }
         catch (System.IO.IOException) { }
@@ -441,13 +441,13 @@ public  Token GetNextToken() {
 }
 
 protected  void ReportError(int lastReadPosition) {
-  int error_line = input_stream.getEndLine();
-  int error_column = input_stream.getEndColumn();
+  int error_line = input_stream.GetEndLine();
+  int error_column = input_stream.GetEndColumn();
   string error_after = null;
   bool EOFSeen = false;
   try {
-    input_stream.readChar();
-    input_stream.backup(1);
+    input_stream.ReadChar();
+    input_stream.Backup(1);
   } catch (System.IO.IOException) {
     EOFSeen = true;
     error_after = lastReadPosition <= 1 ? "" : input_stream.GetImage();
@@ -459,7 +459,7 @@ protected  void ReportError(int lastReadPosition) {
        error_column++;
   }
   if (!EOFSeen) {
-    input_stream.backup(1);
+    input_stream.Backup(1);
     error_after = lastReadPosition <= 1 ? "" : input_stream.GetImage();
   }
   throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column,
@@ -879,8 +879,7 @@ private static readonly int[] jjnewLexState = {
 void TokenLexicalActions(Token matchedToken) {
   switch(matchedToken.kind) {
     case 26: {
-
-      if ( image . charAt ( 0 ) == '\'' ) matchedToken . image = image . Substring ( 1 , lengthOfMatch - 1 ) ; 
+      if ( image [ 0 ] == '\'' ) matchedToken . image = image . Substring ( 1 , lengthOfMatch - 1 ) ;
       break;
     }
     default: break;

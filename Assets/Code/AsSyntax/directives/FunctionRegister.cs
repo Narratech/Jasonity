@@ -10,31 +10,30 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         //Hacer: Carpeta functions
         static FunctionRegister() {
-            AddJasonFunction(Abs);
-            AddJasonFunction(Max);
-            AddJasonFunction(Min);
-            AddJasonFunction(Sum);
-            AddJasonFunction(StdDev);
-            AddJasonFunction(Average);
-            AddJasonFunction(Length);
-            AddJasonFunction(Random);
-            AddJasonFunction(Round);
-            AddJasonFunction(Sqrt);
-            AddJasonFunction(pi);
-            AddJasonFunction(e);
-            AddJasonFunction(floor);
-            AddJasonFunction(ceil);
-            AddJasonFunction(log);
-            AddJasonFunction(time);
+            AddJasonFunction(typeof(Abs));
+            AddJasonFunction(typeof(Max));
+            AddJasonFunction(typeof(Min));
+            AddJasonFunction(typeof(Sum));
+            AddJasonFunction(typeof(StdDev));
+            AddJasonFunction(typeof(Average));
+            AddJasonFunction(typeof(Length));
+            AddJasonFunction(typeof(Random));
+            AddJasonFunction(typeof(Round));
+            AddJasonFunction(typeof(Sqrt));
+            AddJasonFunction(typeof(pi));
+            AddJasonFunction(typeof(e));
+            AddJasonFunction(typeof(floor));
+            AddJasonFunction(typeof(ceil));
+            AddJasonFunction(typeof(log));
+            AddJasonFunction(typeof(time));
         }
 
-        //CAMBIAR: No es con object se usa class
-        private static void AddJasonFunction(Class c)
+        private static void AddJasonFunction(Type c)
         {
             try
             {
                 ArithFunctionTerm af = c.NewInstance();
-                functions.Put(af.GetName(), af);
+                functions[af.GetName()] = af;
             }
             catch (Exception e)
             {
@@ -43,15 +42,14 @@ namespace Assets.Code.Logic.AsSyntax.directives
         }
 
         /** add new global function (shared among all agents in the JVM) */
-        //CAMBIAR: No es con object se usa class
-        public static void AddFunction(object c)
+        public static void AddFunction(Type c)
         {
             try
             {
                 ArithFunctionTerm af = c.NewInstance();
                 string error = FunctionRegister.CheckFunctionName(af.GetName());
                 if (error == null)
-                    functions.Put(af.GetName(), af); 
+                    functions[af.GetName()] = af; 
             }
             catch (Exception)
             {
@@ -61,8 +59,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         public static String CheckFunctionName(string fName)
         {
-            //CAMBIAR: Funcion equivalente get en diccionarios
-            if (functions.Get(fName) != null)
+            if (functions[fName] != null)
                 return "Can not register the function " + fName + "  twice!";
             else if (fName.IndexOf(".") < 0)
                 return "The function " + fName + " was not registered! A function must have a '.' in its name.";
@@ -74,7 +71,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         public static ArithFunctionTerm getFunction(string function, int arity)
         {
-            ArithFunctionTerm af = functions.Get(function);
+            ArithFunctionTerm af = functions[function];
 
             if (af != null && af.CheckArity(arity))
                 return af;
@@ -109,10 +106,5 @@ namespace Assets.Code.Logic.AsSyntax.directives
             }
             return null;
         }
-
-
-
-
-
     }
 }

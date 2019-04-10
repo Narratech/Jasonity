@@ -17,13 +17,11 @@ namespace Assets.Code.Logic.parser
 
         //carpeta directive de asSyntax
         private DirectiveProcessor directiveProcessor = new DirectiveProcessor();
-        private NameSpace nsDirective = (NameSpace)directiveProcessor.getInstance("namespace");
+        private NameSpace nsDirective = (NameSpace)directiveProcessor.GetInstance("namespace");
 
         private static HashSet<string> parsedFiles = new HashSet<String>();
         //carpeta util jason
-        private static Config config = Config.get(false);
-        //No encuentro esta clase
-        private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
+        private static Config config = Config.Get(false);
 
         public void SetAg(Agent.Agent ag) { curAg = ag; }
         public void SetNS(Atom  ns) { @namespace = ns; thisnamespace = ns; }

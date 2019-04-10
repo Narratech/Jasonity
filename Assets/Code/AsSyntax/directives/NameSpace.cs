@@ -1,6 +1,7 @@
 using Assets.Code.AsSyntax;
 using Assets.Code.Logic.parser;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Assets.Code.Logic.AsSyntax.directives
 { 
@@ -58,40 +59,39 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         public void End(Pred directive, as2j parser)
         {
-            if (!oldNS.IsEmpty()) 
+            if (oldNS.Peek() != null) 
                 parser.SetNS(oldNS.Pop());
         }
 
         public bool IsLocalNS(Atom ns)
         {
             //CAMBIAR: Funcion get similar en diccionarios de c#
-            return localNSs.Get(ns) != null;
+            return localNSs[ns] != null;
         }
 
         public Atom Map(Atom ns)
         {
-            Atom n = localNSs.Get(ns);
+            Atom n = localNSs[ns];
             if (n == null)
                 return ns;
             else
                 return n;
         }
 
-        //CAMBIAR: Similar AtomicInteger en c#
-        static private AtomicInteger nsCounter = new AtomicInteger(0);
+        static private int nsCounter = 0;
 
         public static int GetUniqueID()
         {
-            return nsCounter.incrementAndGet();
+            return Interlocked.Increment(ref nsCounter);
         }
 
         private Atom AddLocalNS(Atom ns)
         {
-            Atom newNS = localNSs.Get(ns);
+            Atom newNS = localNSs[ns];
             if (newNS == null)
             {
-                newNS = new Atom(LOCAL_PREFIX + nsCounter.incrementAndGet() + ns);
-                localNSs.Put(ns, newNS);
+                newNS = new Atom(LOCAL_PREFIX + Interlocked.Increment(ref nsCounter) + ns);
+                localNSs[ns] = newNS;
             }
             return newNS;
         }

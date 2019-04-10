@@ -384,6 +384,6 @@ public  partial class SimpleCharStream : ICharStream
     line = bufline[j];
     column = bufcolumn[j];
   }
-  bool getTrackLineColumn() { return trackLineColumn; }
-  void setTrackLineColumn(bool tlc) { trackLineColumn = tlc; }
+  bool GetTrackLineColumn() { return trackLineColumn; }
+  void SetTrackLineColumn(bool tlc) { trackLineColumn = tlc; }
 }
