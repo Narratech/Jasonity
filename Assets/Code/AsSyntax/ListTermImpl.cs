@@ -16,6 +16,12 @@ namespace Assets.Code.AsSyntax
         private ITerm term;
         private ITerm next;
 
+        public int Count => throw new NotImplementedException();
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public ITerm this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public ListTermImpl() : base(LIST_FUNCTOR, 0)
         {
 
@@ -398,15 +404,37 @@ namespace Assets.Code.AsSyntax
             return result;
         }
 
-
-
-        public IEnumerator<IListTerm> ListTermIterator()
+        /**
+         * gives an iterator that includes the final empty list or tail,
+         * for [a,b,c] returns [a,b,c]; [b,c]; [c]; and [].
+         * for [a,b|T] returns [a,b|T]; [b|T]; [b|T]; and T.
+         */
+        public IEnumerator<IListTerm> ListTermIteratorFunc()
         {
             return new MyListTermIterator<IListTerm>();
         }
 
-        private class MyListTermIterator<IListTerm>: ListTermIterator<IListTerm>
+        private class MyListTermIterator<IListTerm>: IEnumerator<IListTerm>
         {
+            public IListTerm Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+
             public IListTerm Next()
             {
                 MoveNext();
@@ -414,7 +442,12 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-
+        /**
+         * returns an iterator where each element is a Term of this list,
+         * the tail of the list is not considered.
+         * for [a,b,c] returns 'a', 'b', and 'c'.
+         * for [a,b|T] returns 'a' and 'b'.
+         */
         public IEnumerator<ITerm> Iterator()
         {
             return new MyIterator<ITerm>();
@@ -425,6 +458,17 @@ namespace Assets.Code.AsSyntax
             public ITerm Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
+
+            public bool HasNext()
+            {
+                return nextLT != null && !nextLT.IsEmpty() && nextLT.IsList();
+            }
+
+            public ITerm Next()
+            {
+                MoveNext();
+                return current.GetTerm();
+            }
 
             public void Dispose()
             {
@@ -444,9 +488,150 @@ namespace Assets.Code.AsSyntax
 
         private abstract class ListTermIterator<T>: IEnumerator<T>
         {
+            IListTerm nextLT;
+            public IListTerm current = null;
+            public ListTermIterator(IListTerm lt)
+            {
+                nextLT = lt;
+            }
 
+            public T Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+
+            public ListTermIterator(IListTerm lt)
+            {
+                nextLT = lt;
+            }
+
+            public bool HasNext()
+            {
+                return nextLT != null;
+            }
+
+            public void MoveNext()
+            {
+                current = nextLT;
+                nextLT = nextLT.GetNext();
+            }
+
+            public void Remove()
+            {
+                if (current != null && nextLT != null)
+                {
+                    current.SetTerm(nextLT.GetTerm());
+                    current.SetNext(nextLT.GetNext());
+                    nextLT = current;
+                }
+            }
         }
+
         
+        // TODO: do not base the implementation of listIterator on get (that is O(n))
+        // conversely, implement all other methods of List based on this iterator
+        // (see AbstractSequentialList)
+        // merge code of ListTermIterator here and use always the same iterator
+        public IEnumerator<ITerm> listIterator(int startIndex)
+        {
+            ListTermImpl list = this;
+            return new MyListIterator<ITerm>(startIndex, list);
+        }
+
+        private class MyListIterator<ITerm>:IEnumerator<ITerm>
+        {
+            ListTermImpl list;
+            int pos, startIndex;
+            int last;
+            int size;
+
+            public MyListIterator(int startIndex, ListTermImpl list)
+            {
+                this.list = list;
+                pos = startIndex;
+                this.startIndex = startIndex;
+                last = -1;
+                size = Size();
+            }
+
+            public ITerm Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Add(ITerm o)
+            {
+                list.Add(last, o);
+            }
+            public bool HasNext()
+            {
+                return pos < size;
+            }
+            public bool HasPrevious()
+            {
+                return pos > startIndex;
+            }
+            public ITerm Next()
+            {
+                last = pos;
+                pos++;
+                return Get(last);
+            }
+            public int NextIndex()
+            {
+                return pos + 1;
+            }
+            public ITerm Previous()
+            {
+                last = pos;
+                pos--;
+                return Get(last);
+            }
+            public int PreviousIndex()
+            {
+                return pos - 1;
+            }
+            public void Remove()
+            {
+                list.Remove(last);
+            }
+            public void Set(ITerm o)
+            {
+                Remove();
+                Add(o);
+            }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
+
 
         public override string ToString()
         {
@@ -578,11 +763,6 @@ namespace Assets.Code.AsSyntax
             return listIterator(0);
         }
 
-        public IEnumerator<ITerm> listIterator(int startIndex)
-        {
-            ListTermImpl list = this;
-        }
-
         protected void SetValuesFrom(IListTerm lt)
         {
             term = lt.GetTerm();
@@ -687,7 +867,21 @@ namespace Assets.Code.AsSyntax
 
         public T[] ToArray<T>(T[] a)
         {
-            
+            int s = Size();
+            if (a.Length < s)
+                a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), s);
+
+            int i = 0;
+            foreach (ITerm t in this)
+            {
+                a[i++] = (T)t;
+            }
+            if (a.Length > s)
+            {
+                a[s] = null;
+            }
+
+            return a;
         }
 
         object ICloneable.Clone()
@@ -806,6 +1000,56 @@ namespace Assets.Code.AsSyntax
         }
 
         public bool IsCyclicTerm()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<IListTerm> IListTerm.ListTermIterator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection<ITerm>.Add(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(ITerm[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<ITerm> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }
