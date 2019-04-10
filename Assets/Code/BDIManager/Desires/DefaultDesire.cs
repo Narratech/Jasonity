@@ -1,11 +1,13 @@
 using System;
+using Assets.Code.AsSyntax;
+using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 
 //Implements the Desire interface
 namespace BDIManager.Desires {
-    class DefaultDesire : Desire
+    class DefaultDesire : IDesire
     {
         Reasoner reasoner;
         
@@ -21,22 +23,22 @@ namespace BDIManager.Desires {
 
         public void DesireFailed(Trigger desire)
         {
-            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.failed, null);
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetTEType(), DesireStates.failed, null);
         }
 
         public void DesireFinished(Trigger desire, FinishStates result)
         {
-            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.finished, result.ToString());
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetTEType(), DesireStates.finished, result.ToString());
         }
 
         public void DesireResumed(Trigger desire)
         {
-            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.resumed, null);
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetTEType(), DesireStates.resumed, null);
         }
         
         public void DesireSuspended(Trigger desire, string reason)
         {
-            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetType(), DesireStates.suspended, reason);
+            GenerateDesireStateEvent(desire.GetLiteral(), desire.GetTEType(), DesireStates.suspended, reason);
         }
 
         private void GenerateDesireStateEvent(Literal desire, TEType type, DesireStates state, String reason)

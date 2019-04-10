@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
@@ -10,7 +11,7 @@ namespace Assets.Code.BDIManager
 {
     class Circumstance
     {
-        private Queue<CircumstanceListener> listeners;
+        private Queue<ICircumstanceListener> listeners;
         private Queue<Event> E;
         private Queue<Intention> I;
         private ExecuteAction A;
@@ -34,16 +35,16 @@ namespace Assets.Code.BDIManager
             return SI;
         }
 
-        public void AddEventListener(CircumstanceListener cl)
+        public void AddEventListener(ICircumstanceListener cl)
         {
             listeners.Enqueue(cl);
         }
 
-        public void RemoveEventListener(CircumstanceListener cl)
+        public void RemoveEventListener(ICircumstanceListener cl)
         {
             if (cl != null)
             {
-                listeners.Dequeue(); // ???
+                listeners.Dequeue();
             }
         }
 

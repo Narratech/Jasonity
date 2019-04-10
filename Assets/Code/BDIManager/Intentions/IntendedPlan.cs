@@ -2,13 +2,14 @@
 // Allows the user to modify and check an agent's plans
 // Previously IntendedMeans, was renamed
 using System;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions {
     class IntendedPlan
     {
-        protected PlanBody planBody;
+        protected IPlanBody planBody;
         protected Plan plan;
         private Trigger trigger;
         private Unifier unif = null;
@@ -18,10 +19,10 @@ namespace BDIManager.Intentions {
         public IntendedPlan(Option opt, Trigger te)
         {
             plan = opt.GetPlan();
-            planBody = plan.getBody();
+            planBody = plan.GetBody();
         }
 
-        public Term RemoveCurrentStep()
+        public ITerm RemoveCurrentStep()
         {
             if (IsFinished())
             {
@@ -29,18 +30,18 @@ namespace BDIManager.Intentions {
             }
             else
             {
-                Term r = planBody.GetBodyTerm();
+                ITerm r = planBody.GetBodyTerm();
                 planBody = planBody.GetBodyNext();
                 return r;
             }
         }
 
-        public PlanBody GetCurrentStep()
+        public IPlanBody GetCurrentStep()
         {
             return planBody;
         }
 
-        public PlanBody InsertAsNextStep(PlanBody pb)
+        public IPlanBody InsertAsNextStep(IPlanBody pb)
         {
             planBody = new PlanBodyImpl(planBody.GetBodyType(), planBody.GetBodyTerm());
             planBody.SetBodyNext(pb);

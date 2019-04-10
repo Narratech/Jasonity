@@ -1,5 +1,6 @@
 // Interface for Events
 // Allows the user to modify the events taking place in the environment
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 
 namespace BDIManager.Intentions {

@@ -1,6 +1,7 @@
 /*
  Interface used to notify changes in the states of the desires
 */
+using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
@@ -10,7 +11,7 @@ namespace BDIManager.Desires {
     public enum DesireStates { started, suspended, resumed, finished, failed };
     public enum FinishStates { achieved, unachieved, dropped };
 
-    interface Desire {
+    interface IDesire {
         // New desire produced by operator
         void DesireStarted(Event desire);
 

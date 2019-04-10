@@ -1,6 +1,7 @@
 // Implements an Intention (which is a stack of IntendedPlans)
 using System;
 using System.Collections.Generic;
+using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
@@ -109,7 +110,7 @@ namespace BDIManager.Intentions
 
         internal Event FindEventForFailure(Trigger trigger, PlanLibrary planLibrary, Circumstance c)
         {
-            Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetType(), trigger.GetLiteral());
+            Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetTEType(), trigger.GetLiteral());
             int posInStack = Size();
             // Synchronized???
             throw new NotImplementedException();

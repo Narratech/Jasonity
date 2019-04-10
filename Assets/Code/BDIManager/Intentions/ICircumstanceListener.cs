@@ -7,7 +7,7 @@ using BDIManager.Intentions;
 
 namespace Assets.Code.BDIManager
 {
-    interface CircumstanceListener 
+    interface ICircumstanceListener 
     {
         void EventAdded(Event e);
 
