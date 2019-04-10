@@ -356,11 +356,11 @@ namespace Assets.Code.AsSyntax
             AgentArchitecture arch = (ag != null && ag.GetREasoner() != null ? ag.GetReasoner().GetUserAgArch() : null);
             int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Count : 0);
 
-            return new IEnumerator<Unifier>(arch, nbAnnots, il, ag, un);
+            return new MyIEnumerator<Unifier>(arch, nbAnnots, il, ag, un);
             
         }
 
-        public class IEnumerator<Unifier>
+        private class MyIEnumerator<Unifier>: IEnumerator<Unifier>
         {
             Unifier current = null;
             System.Collections.Generic.IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
@@ -375,7 +375,11 @@ namespace Assets.Code.AsSyntax
             private int nbAnnots;
             private System.Collections.Generic.IEnumerator<Literal> il;
 
-            public IEnumerator(AgentArchitecture arch, int nbAnnots, System.Collections.Generic.IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
+            public Unifier Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, System.Collections.Generic.IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
             {
                 this.arch = arch;
                 this.nbAnnots = nbAnnots;

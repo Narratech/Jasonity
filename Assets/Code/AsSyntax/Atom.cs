@@ -71,6 +71,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
+        //Cambiar por ITerm, Java permite devolución covariante, c# no
         public override Literal CloneNS(Atom newNamespace)
         {
             return new Atom(newNamespace, this);

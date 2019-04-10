@@ -357,6 +357,7 @@ namespace Assets.Code.AsSyntax
             if (i == 1) next = t;
         }
 
+        //
         public IEnumerator<List<ITerm>> SubSets(int k)
         {
             Acabaaaar
@@ -401,16 +402,11 @@ namespace Assets.Code.AsSyntax
 
         public IEnumerator<IListTerm> ListTermIterator()
         {
-            return new ListTermIterator<IListTerm>(this);
+            return new MyListTermIterator<IListTerm>();
         }
 
-        public class ListTermIterator<IListTerm>
+        private class MyListTermIterator<IListTerm>: ListTermIterator<IListTerm>
         {
-            public ListTermIterator()
-            {
-
-            }
-
             public IListTerm Next()
             {
                 MoveNext();
@@ -421,11 +417,14 @@ namespace Assets.Code.AsSyntax
 
         public IEnumerator<ITerm> Iterator()
         {
-
+            return new MyIterator<ITerm>();
         }
 
-        private abstract class ListTermIterator<T> : IEnumerator<T>
+        private class MyIterator<ITerm> : IEnumerator<ITerm>
         {
+            public ITerm Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
 
             public void Dispose()
             {
@@ -442,6 +441,12 @@ namespace Assets.Code.AsSyntax
                 throw new NotImplementedException();
             }
         }
+
+        private abstract class ListTermIterator<T>: IEnumerator<T>
+        {
+
+        }
+        
 
         public override string ToString()
         {
@@ -641,7 +646,17 @@ namespace Assets.Code.AsSyntax
 
         public bool RetainAll(IList c)
         {
-
+            bool r = true;
+            IEnumerator i = Iterator();
+            while (i.MoveNext())
+            {
+                ITerm t = (ITerm)i.Current;
+                if (!c.Contains(t))
+                {
+                    r = r && Remove(t);
+                }
+            }
+            return r;
         }
 
         public ITerm Set(int index, ITerm t)
@@ -670,7 +685,7 @@ namespace Assets.Code.AsSyntax
             return ToArray(new object[0]);
         }
 
-        public <T> T[] ToArray(T[] a)
+        public T[] ToArray<T>(T[] a)
         {
             
         }
