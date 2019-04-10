@@ -15,15 +15,19 @@ namespace Assets.Code.AsSyntax
     {
         private static readonly long serialVersionUID = 1L;
 
-        private int varCont = 0;
+        private static int varCont = 0;
         public int myId;
 
-        public UnnamedVar():base(Literal.DefaultNS, Interlocked.Increment(ref varCont))
+        /*| private static AtomicInteger c = new AtomicInteger(0) | private static int c = 0 | Declarar como una variable int normal pero obligatorio que sea estática |
+| Complmentario a la entrada anterior: c.incrementAndGet() | Interlocked.Increment(ref c) | Hay que añadir "using System.Threading" y añadir la palabra reservada "ref" delate de la variable cuando vaya a usarse |*/
+
+        //Las variables tienen que ser estáticas
+        public UnnamedVar():this(Literal.DefaultNS, Interlocked.Increment(ref varCont))
         {
 
         }
 
-        public UnnamedVar(Atom ns):base(ns, Interlocked.Increment(ref varCont))
+        public UnnamedVar(Atom ns):this(ns, Interlocked.Increment(ref varCont))
         {
 
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Assets.Code.AsSyntax
 {
@@ -10,7 +11,7 @@ namespace Assets.Code.AsSyntax
     {
         private static readonly long serialVersionUID = 1L;
         private readonly object o;
-        private Method mClone;
+        private MethodInfo mClone;
         private bool hasTestedClone = false;
 
         public ObjectTermImpl(object o)
@@ -47,11 +48,10 @@ namespace Assets.Code.AsSyntax
                 if (!hasTestedClone)
                 {
                     hasTestedClone = true;
-                    mClone = o.GetType().GetMethod("clone", /*(class[])*/null);
+                    mClone = o.GetType().GetMethod("Clone", /*(Type[])*/null);
                 }
                 if (mClone != null)
                 {
-                                                Esto ta' mal:'
                     return new ObjectTermImpl(mClone.Invoke(o, /*(object[])*/null));
                 }
             }

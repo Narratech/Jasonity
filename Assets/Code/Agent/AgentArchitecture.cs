@@ -6,6 +6,7 @@ using Assets.Code.Logic;
 using UnityEngine;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
+using Assets.Code.AsSyntax;
 
 /*
     This is the agent architecture class, defines the agent architecture. 
@@ -17,7 +18,7 @@ using BDIMaAssets.Code.ReasoningCycle;
 
 namespace Assets.Code.Agent
 {
-    class AgentArchitecture
+    public class AgentArchitecture
     {
         private Reasoner reasoner = null;
 

@@ -106,7 +106,7 @@ namespace Assets.Code.AsSyntax
                 return value.Solve();
         }
 
-        public override IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
+        public IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
         {
             Debug.Log("Arithmetic term cannot be used for logical consequence");
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();

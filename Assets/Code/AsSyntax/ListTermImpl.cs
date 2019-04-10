@@ -16,6 +16,12 @@ namespace Assets.Code.AsSyntax
         private ITerm term;
         private ITerm next;
 
+        public int Count => throw new NotImplementedException();
+
+        public bool IsReadOnly => throw new NotImplementedException();
+
+        public ITerm this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         public ListTermImpl() : base(LIST_FUNCTOR, 0)
         {
 
@@ -81,7 +87,7 @@ namespace Assets.Code.AsSyntax
             if (t == null) return false;
             if (t == this) return true;
 
-            if (t.GetType() == typeof(ITerm) && ((ITerm)t).IsVar() ) return false; // unground var is not equals a list
+            if (t.GetType() == typeof(ITerm) && ((ITerm)t).IsVar()) return false; // unground var is not equals a list
             if (t.GetType() == typeof(IListTerm)) {
                 IListTerm tAsList = (IListTerm)t;
                 if (term == null && tAsList.GetTerm() != null) return false;
@@ -92,18 +98,13 @@ namespace Assets.Code.AsSyntax
             }
             return false;
         }
-        
+
         public override int CalcHasHCode()
         {
             int code = 37;
             if (term != null) code += term.GetHashCode();
             if (next != null) code += next.GetHashCode();
             return code;
-        }
-
-        public ITerm CloneNS(Atom Newnamespace)
-        {
-            throw new NotImplementedException();
         }
 
         public override int CompareTo(ITerm o)
@@ -142,11 +143,6 @@ namespace Assets.Code.AsSyntax
             return lt.GetLast();
         }
 
-        public void CountVars(Dictionary<VarTerm, int?> c)
-        {
-            throw new NotImplementedException();
-        }
-
         public IListTerm Difference(IListTerm lt)
         {
             ISet<ITerm> set = new SortedSet<ITerm>();
@@ -161,11 +157,6 @@ namespace Assets.Code.AsSyntax
             foreach (ITerm t in this)
                 l.Add(t);
             return l;
-        }
-
-        public VarTerm GetCyclicVar()
-        {
-            throw new NotImplementedException();
         }
 
         public IListTerm GetLast()
@@ -193,11 +184,6 @@ namespace Assets.Code.AsSyntax
             if (GetNext().IsEnd() && !GetNext().IsTail())
                 return this;
             return GetNext().GetPenultimate();
-        }
-
-        public SourceInfo GetSrcInfo()
-        {
-            throw new NotImplementedException();
         }
 
         public VarTerm GetTail()
@@ -252,11 +238,6 @@ namespace Assets.Code.AsSyntax
                 return GetNext().Count + 1;
         }
 
-        public bool HasVar(VarTerm t, Unifier u)
-        {
-            throw new NotImplementedException();
-        }
-
         public IListTerm Insert(ITerm t)
         {
             IListTerm n = new ListTermImpl(term, next);
@@ -265,19 +246,9 @@ namespace Assets.Code.AsSyntax
             return n;
         }
 
-        public bool IsArithExpr()
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool IsAtom()
         {
             return false;
-        }
-
-        public bool IsCyclicTerm()
-        {
-            throw new NotImplementedException();
         }
 
         public bool IsEnd()
@@ -296,16 +267,12 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             Debug.Log("ListTermImpl cannot be used for logical consequence!");
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
-        public bool IsInternalAction()
-        {
-            throw new NotImplementedException();
-        }
 
         public override bool IsList()
         {
@@ -322,50 +289,14 @@ namespace Assets.Code.AsSyntax
             return term == null;
         }
 
-        public bool IsNumeric()
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool IsPlanBody()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsPred()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsRule()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsString()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsStructure()
-        {
-            throw new NotImplementedException();
-        }
 
         public bool IsTail()
         {
             return next != null && next.IsVar();
         }
 
-        public bool IsUnnamedVar()
-        {
-            throw new NotImplementedException();
-        }
 
-        public bool IsVar()
-        {
-            throw new NotImplementedException();
-        }
 
         public ITerm RemoveLast()
         {
@@ -411,10 +342,7 @@ namespace Assets.Code.AsSyntax
             next = l;
         }
 
-        public void SetSrcInfo(SourceInfo s)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public void SetTail(VarTerm v)
         {
@@ -435,15 +363,19 @@ namespace Assets.Code.AsSyntax
             if (i == 1) next = t;
         }
 
+        //
         public IEnumerator<List<ITerm>> SubSets(int k)
         {
             Acabaaaar
         }
 
-        public bool Subsumes(ITerm l)
-        {
-            throw new NotImplementedException();
-        }
+
+        /*PIFOSTIO EL QUE SE VIENE*/
+
+
+
+
+        /**************************/
 
         public IListTerm Union(IListTerm lt)
         {
@@ -472,13 +404,71 @@ namespace Assets.Code.AsSyntax
             return result;
         }
 
-        public IEnumerator<ITerm> Iterator()
+        /**
+         * gives an iterator that includes the final empty list or tail,
+         * for [a,b,c] returns [a,b,c]; [b,c]; [c]; and [].
+         * for [a,b|T] returns [a,b|T]; [b|T]; [b|T]; and T.
+         */
+        public IEnumerator<IListTerm> ListTermIteratorFunc()
         {
-
+            return new MyListTermIterator<IListTerm>();
         }
 
-        private abstract class ListTermIterator<T> : IEnumerator<T>
+        private class MyListTermIterator<IListTerm>: IEnumerator<IListTerm>
         {
+            public IListTerm Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+
+            public IListTerm Next()
+            {
+                MoveNext();
+                return current;
+            }
+        }
+
+        /**
+         * returns an iterator where each element is a Term of this list,
+         * the tail of the list is not considered.
+         * for [a,b,c] returns 'a', 'b', and 'c'.
+         * for [a,b|T] returns 'a' and 'b'.
+         */
+        public IEnumerator<ITerm> Iterator()
+        {
+            return new MyIterator<ITerm>();
+        }
+
+        private class MyIterator<ITerm> : IEnumerator<ITerm>
+        {
+            public ITerm Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public bool HasNext()
+            {
+                return nextLT != null && !nextLT.IsEmpty() && nextLT.IsList();
+            }
+
+            public ITerm Next()
+            {
+                MoveNext();
+                return current.GetTerm();
+            }
 
             public void Dispose()
             {
@@ -495,6 +485,153 @@ namespace Assets.Code.AsSyntax
                 throw new NotImplementedException();
             }
         }
+
+        private abstract class ListTermIterator<T>: IEnumerator<T>
+        {
+            IListTerm nextLT;
+            public IListTerm current = null;
+            public ListTermIterator(IListTerm lt)
+            {
+                nextLT = lt;
+            }
+
+            public T Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+
+            public ListTermIterator(IListTerm lt)
+            {
+                nextLT = lt;
+            }
+
+            public bool HasNext()
+            {
+                return nextLT != null;
+            }
+
+            public void MoveNext()
+            {
+                current = nextLT;
+                nextLT = nextLT.GetNext();
+            }
+
+            public void Remove()
+            {
+                if (current != null && nextLT != null)
+                {
+                    current.SetTerm(nextLT.GetTerm());
+                    current.SetNext(nextLT.GetNext());
+                    nextLT = current;
+                }
+            }
+        }
+
+        
+        // TODO: do not base the implementation of listIterator on get (that is O(n))
+        // conversely, implement all other methods of List based on this iterator
+        // (see AbstractSequentialList)
+        // merge code of ListTermIterator here and use always the same iterator
+        public IEnumerator<ITerm> listIterator(int startIndex)
+        {
+            ListTermImpl list = this;
+            return new MyListIterator<ITerm>(startIndex, list);
+        }
+
+        private class MyListIterator<ITerm>:IEnumerator<ITerm>
+        {
+            ListTermImpl list;
+            int pos, startIndex;
+            int last;
+            int size;
+
+            public MyListIterator(int startIndex, ListTermImpl list)
+            {
+                this.list = list;
+                pos = startIndex;
+                this.startIndex = startIndex;
+                last = -1;
+                size = Size();
+            }
+
+            public ITerm Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Add(ITerm o)
+            {
+                list.Add(last, o);
+            }
+            public bool HasNext()
+            {
+                return pos < size;
+            }
+            public bool HasPrevious()
+            {
+                return pos > startIndex;
+            }
+            public ITerm Next()
+            {
+                last = pos;
+                pos++;
+                return Get(last);
+            }
+            public int NextIndex()
+            {
+                return pos + 1;
+            }
+            public ITerm Previous()
+            {
+                last = pos;
+                pos--;
+                return Get(last);
+            }
+            public int PreviousIndex()
+            {
+                return pos - 1;
+            }
+            public void Remove()
+            {
+                list.Remove(last);
+            }
+            public void Set(ITerm o)
+            {
+                Remove();
+                Add(o);
+            }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
+
 
         public override string ToString()
         {
@@ -537,12 +674,23 @@ namespace Assets.Code.AsSyntax
             if (c == null) return false;
             IListTerm lt = this;
             IEnumerator<ITerm> i = c.GetEnumerator();
-            Acabar
+            while (i.MoveNext())
+            {
+                lt = lt.Append(i.Next());
+            }
+            return true;
         }
 
         public bool AddAll(int index, IList c)
         {
-
+            IEnumerator<ITerm> i = c.GetEnumerator();
+            int p = index;
+            while (i.MoveNext())
+            {
+                Add(p, i.Next());
+                p++;
+            }
+            return true;
         }
 
         public void Clear()
@@ -566,7 +714,13 @@ namespace Assets.Code.AsSyntax
 
         public bool ContainsAll(IList c)
         {
-
+            bool r = true;
+            IEnumerator<ITerm> i = c.GetEnumerator();
+            while (i.MoveNext() && r)
+            {
+                r = r && Contains(i.Next());
+            }
+            return r;
         }
 
         public ITerm Get(int index)
@@ -607,11 +761,6 @@ namespace Assets.Code.AsSyntax
         public IEnumerator<ITerm> listIterator()
         {
             return listIterator(0);
-        }
-
-        public IEnumerator<ITerm> listIterator(int startIndex)
-        {
-            Acabar
         }
 
         protected void SetValuesFrom(IListTerm lt)
@@ -666,12 +815,28 @@ namespace Assets.Code.AsSyntax
 
         public bool RemoveAll(IList c)
         {
-
+            bool r = true;
+            IEnumerator i = c.GetEnumerator();
+            while (i.MoveNext() && r)
+            {
+                r = r && Remove(i.Current);
+            }
+            return r;
         }
 
         public bool RetainAll(IList c)
         {
-
+            bool r = true;
+            IEnumerator i = Iterator();
+            while (i.MoveNext())
+            {
+                ITerm t = (ITerm)i.Current;
+                if (!c.Contains(t))
+                {
+                    r = r && Remove(t);
+                }
+            }
+            return r;
         }
 
         public ITerm Set(int index, ITerm t)
@@ -700,9 +865,23 @@ namespace Assets.Code.AsSyntax
             return ToArray(new object[0]);
         }
 
-        public <T> T[] ToArray(T[] a)
+        public T[] ToArray<T>(T[] a)
         {
-            
+            int s = Size();
+            if (a.Length < s)
+                a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), s);
+
+            int i = 0;
+            foreach (ITerm t in this)
+            {
+                a[i++] = (T)t;
+            }
+            if (a.Length > s)
+            {
+                a[s] = null;
+            }
+
+            return a;
         }
 
         object ICloneable.Clone()
@@ -731,6 +910,146 @@ namespace Assets.Code.AsSyntax
         }
 
         public void Add(IPlanBody planBody)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITerm CloneNS(Atom Newnamespace)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VarTerm GetCyclicVar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CountVars(Dictionary<VarTerm, int?> c)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsUnnamedVar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsVar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsNumeric()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsPlanBody()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsPred()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsRule()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsString()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsStructure()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Subsumes(ITerm l)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SourceInfo GetSrcInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsInternalAction()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasVar(VarTerm t, Unifier u)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsArithExpr()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetSrcInfo(SourceInfo s)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsCyclicTerm()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator<IListTerm> IListTerm.ListTermIterator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        void ICollection<ITerm>.Add(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(ITerm[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(ITerm item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<ITerm> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

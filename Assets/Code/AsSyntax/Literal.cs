@@ -347,7 +347,7 @@ namespace Assets.Code.AsSyntax
 
         public virtual IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
-            IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
+            System.Collections.Generic.IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
             if (il == null)
             {
                 return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
@@ -356,30 +356,30 @@ namespace Assets.Code.AsSyntax
             AgentArchitecture arch = (ag != null && ag.GetREasoner() != null ? ag.GetReasoner().GetUserAgArch() : null);
             int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Count : 0);
 
-            return new Iterator<Unifier>(arch, nbAnnots, il, ag, un);
+            return new MyIEnumerator<Unifier>(arch, nbAnnots, il, ag, un);
             
         }
 
-        private class Iterator<Unifier>: IEnumerator<Unifier>
+        private class MyIEnumerator<Unifier>: IEnumerator<Unifier>
         {
             Unifier current = null;
-            IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
+            System.Collections.Generic.IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
             Literal cloneAnnon = null; // a copy of the literal with makeVarsAnnon
             Rule rule; // current rule
             bool needsUpdate = true;
             Agent.Agent ag;
             Unifier un;
-            IEnumerator<List<ITerm>> annotsOptions = null;
+            System.Collections.Generic.IEnumerator<List<ITerm>> annotsOptions = null;
             Literal belInBB = null;
             private AgentArchitecture arch;
             private int nbAnnots;
-            private IEnumerator<Literal> il;
+            private System.Collections.Generic.IEnumerator<Literal> il;
 
             public Unifier Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public Iterator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
+            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, System.Collections.Generic.IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
             {
                 this.arch = arch;
                 this.nbAnnots = nbAnnots;
@@ -558,7 +558,7 @@ namespace Assets.Code.AsSyntax
         {
             try
             {
-                IEnumerator<ITerm> i = lt.GetEnumerator();
+                System.Collections.Generic.IEnumerator<ITerm> i = lt.GetEnumerator();
 
                 Atom ns = DefaultNS;
                 if (lt.Count == 4)
@@ -574,7 +574,7 @@ namespace Assets.Code.AsSyntax
                 }
                 if (tFunctor.IsString())
                 {
-                    tFunctor = AsSyntax.ParseTerm((tFunctor as Literal).GetString());
+                    tFunctor = AsSyntax.ParseTerm((tFunctor as IStringTerm).GetString());
                 }
 
                 Literal l = new LiteralImpl(ns, pos, (tFunctor as Atom).GetFunctor());
@@ -633,7 +633,7 @@ namespace Assets.Code.AsSyntax
                 return LogExpr.CreateUnifEnumerator(un);
             }
 
-            protected object ReadResolve()
+            object ReadResolve()
             {
                 return Literal.LTrue;
             }
@@ -656,25 +656,25 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+            public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
             {
                 return LogExpr.EMPTY_UNIFY_LIST.GetEnumerator();
             }
 
-            protected object ReadResolve()
+            object ReadResolve()
             {
                 return Literal.LFalse;
             }
         }
 
-        sealed class DefaultNameSpace : Atom
+        private sealed class DefaultNameSpace : Atom
         {
             public DefaultNameSpace() : base(null, "default")
             {
 
             }
 
-            public override int? CalcHashCode()
+            new int CalcHashCode()
             {
                 return GetFunctor().GetHashCode();
             }
@@ -706,12 +706,12 @@ namespace Assets.Code.AsSyntax
                 return false;
             }
 
-            public override string ToString()
+            public new string ToString()
             {
                 return GetFunctor();
             }
 
-            protected object ReadResolver()
+            object ReadResolver()
             {
                 return Literal.DefaultNS;
             }

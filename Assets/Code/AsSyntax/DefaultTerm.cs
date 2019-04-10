@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
+    [Serializable]
     public abstract class DefaultTerm: ITerm
     {
         public int hashCodeCache = -1;
-        protected SourceInfo srcInfo = null;
+        public SourceInfo srcInfo = null;
 
         public virtual ITerm Capply(Unifier u)
         {
