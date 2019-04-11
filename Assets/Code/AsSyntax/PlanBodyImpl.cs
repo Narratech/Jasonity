@@ -62,7 +62,7 @@ namespace Assets.Code.AsSyntax
 
         public bool IsBodyTerm() => isTerm;
 
-        public bool IsAtom() => false;
+        public override bool IsAtom() => false;
 
         public void SetAsBodyTerm(bool b)
         {
@@ -76,12 +76,12 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public bool IsPlanBody() => true;
+        public override bool IsPlanBody() => true;
 
         // public Iterator<PlanBody> iterator() { }
 
         // Overrides some structure methods to work with unification/equals
-        public int GetArity()
+        public override int GetArity()
         {
             if (term == null)
             {
@@ -93,7 +93,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public ITerm GetTerm(int i)
+        public override ITerm GetTerm(int i)
         {
             if (i == 0)
             {
@@ -106,7 +106,7 @@ namespace Assets.Code.AsSyntax
             return null;
         }
 
-        public void SetTerm(int i, ITerm t)
+        public override void SetTerm(int i, ITerm t)
         {
             if (i == 0) term = t;
             if (i == 1)

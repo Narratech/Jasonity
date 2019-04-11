@@ -533,7 +533,7 @@ namespace Assets.Code.AsSyntax
         }
 
         /** returns this literal as a list with three elements: [functor, list of terms, list of annots] */
-        private IListTerm GetAsListOfTerms()
+        public IListTerm GetAsListOfTerms()
         {
             IListTerm l = new ListTermImpl();
             l.Add(GetNS());

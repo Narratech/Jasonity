@@ -60,21 +60,68 @@ namespace Assets.Code.AsSyntax
             return EMPTY_UNIF_LIST.GetEnumerator();
         }
 
-       // public IEnumerator<Unifier> CreateUnifEnumerator(Unifier... unifs) { }
+        public IEnumerator<Unifier> CreateUnifEnumerator(params Unifier[] unifs)
+        {
+            return new MyUnifEnumerator<Unifier>(unifs);
+        }
 
-        public ITerm Capply(Unifier u)
+        private class MyUnifEnumerator<Unifier> : IEnumerator<Unifier>
+        {
+            public Unifier Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            Unifier[] unifs;
+
+            int i;
+
+            public MyUnifEnumerator(params Unifier[] unifs)
+            {
+                i = 0;
+                this.unifs = unifs;
+            }
+
+            public bool HasNext()
+            {
+                return i < unifs.Length;
+            }
+
+            public Unifier Next()
+            {
+                return unifs[i++];
+            }
+
+            public void Remove() { }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override ITerm Capply(Unifier u)
         {
             if (IsUnary()) return new LogExpr(op, (ILogicalFormula)GetTerm(0).Capply(u));
             else return new LogExpr((ILogicalFormula)GetTerm(0).Capply(u), op, (ILogicalFormula)GetTerm(1).Capply(u));
         }
 
-        public ILogicalFormula Clone()
+        public new ILogicalFormula Clone()
         {
             if (IsUnary()) return new LogExpr(op, (ILogicalFormula)GetTerm(0).Clone());
             else return new LogExpr((ILogicalFormula)GetTerm(0).Clone(), op, (ILogicalFormula)GetTerm(1).Clone());
         }
 
-        public Literal CloneNS(Atom newnamespace)
+        public override Literal CloneNS(Atom newnamespace)
         {
             if (IsUnary()) return new LogExpr(op, (ILogicalFormula)GetTerm(0).CloneNS(newnamespace));
             else return new LogExpr((ILogicalFormula)GetTerm(0).CloneNS(newnamespace), op, (ILogicalFormula)GetTerm(1).CloneNS(newnamespace));

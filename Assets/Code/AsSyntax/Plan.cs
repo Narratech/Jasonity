@@ -196,7 +196,7 @@ namespace Assets.Code.AsSyntax
 
         // bool Equals(object o);
 
-        public override Plan Capply(Unifier u)
+        public new Plan Capply(Unifier u)
         {
             Plan p = new Plan();
             if (label != null)

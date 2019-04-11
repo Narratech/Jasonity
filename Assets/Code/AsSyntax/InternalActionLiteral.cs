@@ -72,7 +72,7 @@ namespace Assets.Code.AsSyntax
             return t;
         }
 
-        public new IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
+        public IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
         {
             if (ag == null || ag.GetReasoner().GetUserAgArch().IsRunning())
             {

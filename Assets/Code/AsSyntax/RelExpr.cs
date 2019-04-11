@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
     private RelationalOp op = RelationalOp.none;
     public RelExpr(ITerm t1, RelationalOp oper, ITerm t2) : base(t1, oper.ToString(), t2) => op = oper;
 
-    public IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+    public new IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
     {
         ITerm xp = GetTerm(0).Capply(un);
         ITerm yp = GetTerm(1).Capply(un);
