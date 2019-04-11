@@ -134,8 +134,7 @@ bool agent(Agent.Agent a):
               if (b.IsRule()) {
                   a.AddInitialBel(b);
               } else {
-              	  /*CAMBIAR: No se puede usar throw en c#
-                  throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");*/
+                  throw new ParseException(getSourceRef(b)+" The belief '"+b+"' is not in the begin of the source code!");
               }
             }
         }
@@ -169,45 +168,40 @@ bool directive(Agent.Agent outerAg):
   ( LOOKAHEAD(4)
     <TK_BEGIN> dir = pred() "}"
     { 
-    	Agent innerAg = new Agent(); 
+    	Agent.Agent innerAg = new Agent(); 
     	innerAg.InitAg();
         dir = new Pred(@namespace, dir);
-        /*HACER: Clase directive
         Directive d = directiveProcessor.GetInstance(dir);
-        d.begin(dir,this);*/
+        d.begin(dir,this);
     }
      	
     isEOF = agent(innerAg)
         { 
         	if (isEOF)
-                /* CAMBIAR: No se pueden usar throw en c#
-                throw new ParseException(getSourceRef(dir)+" The directive '{ begin "+dir+"}' does not end with '{ end }'.");*/
+                throw new ParseException(getSourceRef(dir)+" The directive '{ begin "+dir+"}' does not end with '{ end }'.");
 
-            /*HACER: Clase directive
-            resultOfDirective = d.process(dir, outerAg, innerAg);
-            d.end(dir,this);*/
+            resultOfDirective = d.Process(dir, outerAg, innerAg);
+            d.end(dir,this);
         }
   |
     dir = pred() "}"
     { 
-    	if (dir.toString().equals("end"))
+    	if (dir.ToString().Equals("end"))
             return true;
 
-        dir = new Pred(namespace, dir);
-        /*HACER: Clase directive
-        Directive d = directiveProcessor.getInstance(dir);
-        d.begin(dir, this); // to declare the namespace as local
-        resultOfDirective = d.process(dir, outerAg, null);
-        d.end(dir, this);*/
+        dir = new Pred(@namespace, dir);
+        Directive d = directiveProcessor.GetInstance(dir);
+        d.Begin(dir, this); // to declare the namespace as local
+        resultOfDirective = d.Process(dir, outerAg, null);
+        d.End(dir, this);
     }
   )
 
     { 
-    	/*HACER: Clase directive
     	if (resultOfDirective != null && outerAg != null) {
 			// import bels, plans and initial goals from agent resultOfDirective
-			outerAg.importComponents(resultOfDirective);
-        }*/
+			outerAg.ImportComponents(resultOfDirective);
+        }
         curAg = bakAg;
         return false;
     }
@@ -219,10 +213,8 @@ Literal belief() : { Literal h; object t; }
 {
     h=literal()              
     { 
-    	if (h.IsVar()) {
-            
-            /*CAMBIAR: No se pueden usar throw en c#                      
-            throw new ParseException(getSourceRef(h)+" variables cannot be beliefs!");*/
+    	if (h.IsVar()) {  
+            throw new ParseException(GetSourceRef(h)+" variables cannot be beliefs!");
         }
     }
 
@@ -241,8 +233,7 @@ Literal initial_goal() : { Literal g; }
   "!" g=literal() "."    
   { 
   	if (g.IsVar()) {
-        /*CAMBIAR: No se puede usar throw en c#
-        throw new ParseException(getSourceRef(g)+". a variable cannot be a goal!");*/
+        throw new ParseException(getSourceRef(g)+". a variable cannot be a goal!");
     }
     return g;
   }
@@ -274,8 +265,7 @@ Plan plan() :
         try { ial = CheckInternalActionsInContext((LogicalFormula)c, curAg); } catch (Exception e) {}
 
         if (ial != null)
-            /*CAMBIAR: No se pueden usar throw en c#
-            throw new ParseException(getSourceRef(ial)+" The internal action '"+ial+"' can not be used in plan's context!");*/
+            throw new ParseException(getSourceRef(ial)+" The internal action '"+ial+"' can not be used in plan's context!");
 
         if (B != null && B.GetBodyTerm().Equals(Literal.LTrue))
             B = (PlanBody)B.GetBodyNext();
@@ -304,7 +294,7 @@ Trigger trigger() :
     )
   ]
 
-  F=literal()  { return new Trigger(teOp,teType,F.forceFullLiteralImpl()); }
+  F=literal()  { return new Trigger(teOp,teType,F.ForceFullLiteralImpl()); }
 }
 
 
@@ -334,7 +324,7 @@ PlanBody plan_body_term() : { Object F; PlanBody R = null; }
        if (R == null)
            return (PlanBody)F;
         try {
-          Structure s = ASSyntax.createStructure(".fork", jason.stdlib.fork.aOr, (Term)F);
+          Structure s = ASSyntax.CreateStructure(".fork", jason.stdlib.fork.aOr, (Term)F);
           
           if (R.ToString().StartsWith(".fork(or,")) {
              // if R is another fork or, put they args into this fork
@@ -368,8 +358,7 @@ PlanBody plan_body_factor() : { object F; PlanBody R = null; } // bool hasPV = f
 	| F = stmtWHILE()
 	| F = body_formula()                                  
 	{ //isControl = false;
-        /*CAMBIAR: No se pueden usar throw en c#
-        if (!(F instanceof PlanBody)) throw new ParseException(getSourceRef(F)+" "+F+" is not a body literal!");*/  
+        if (!(F.GetType() == typeof(PlanBody))) throw new ParseException(getSourceRef(F)+" "+F+" is not a body literal!");  
     }
 	)
 
@@ -421,15 +410,13 @@ PlanBody stmtIFCommon() :    { object B; Term T1; Term T2 = null; Literal stmtLi
    ]
        { try {
             if (T1.IsRule()) {
-            	/*CAMBIAR: No se puede usar throw en c#
-                throw new ParseException(getSourceRef(T1)+" if requires a plan body.");*/
+                throw new ParseException(GetSourceRef(T1)+" if requires a plan body.");
             }
             if (T2 == null) { 
                 stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".if_then_else", (Term)B, T1), curAg);
             } else if (T2 != null) { // else case
                 if (T2.IsRule()) {
-                  /*CAMBIAR: No se puede usar throw en c#
-                  throw new ParseException(getSourceRef(T2)+" if (else) requires a plan body.");*/
+                  throw new ParseException(GetSourceRef(T2)+" if (else) requires a plan body.");
                 }
                 stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".if_then_else", (Term)B, T1, T2), curAg);
             }
@@ -451,8 +438,7 @@ PlanBody stmtFOR() :   { object B; Term T1; Literal stmtLiteral; }
     { 
     	try {
             if (T1.IsRule()) {
-            	/*CAMBIAR: No se puede usar throw en c#
-               throw new ParseException(GetSourceRef(T1)+"for requires a plan body.");*/
+               throw new ParseException(GetSourceRef(T1)+"for requires a plan body.");
             }
             stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".foreach", (Term)B, T1), curAg);
             stmtLiteral.SetSrcInfo( ((Term)B).GetSrcInfo() );
@@ -473,8 +459,7 @@ PlanBody stmtWHILE() : { object B; Term T1; Literal stmtLiteral; }
    { 
    		try {
             if (T1.IsRule()) {
-            	/*CAMBIAR: No se puede usar throw en c#
-               throw new ParseException(getSourceRef(T1)+"while requires a plan body.");*/
+               throw new ParseException(GetSourceRef(T1)+"while requires a plan body.");
             }
             stmtLiteral = new InternalActionLiteral(ASSyntax.CreateStructure(".loop", (Term)B, T1), curAg);
             stmtLiteral.SetSrcInfo( ((Term)B).GetSrcInfo() );
@@ -528,9 +513,7 @@ Object body_formula() :
 	            } else if (formType == BodyType.addBelEnd) {
 	                ia = new InternalActionLiteral(ASSyntax.CreateStructure(".add_plan", (Term)B, BeliefBase.ASelf, new Atom("end")), curAg);
 	            } else {
-	            	/*CAMBIAR: No se puede usar throw en c#
-	            	throw new ParseException(getSourceRef(B)+" Wrong combination of operator "+formType+" and plan.");
-	            	*/
+	            	throw new ParseException(GetSourceRef(B)+" Wrong combination of operator "+formType+" and plan.");
 	            }
 	             return new PlanBodyImpl(BodyType.internalAction, ia);
 	        } catch (Exception e) {
@@ -548,8 +531,7 @@ Object body_formula() :
                if (B.GetType() == typeof(LogicalFormula))
                   return new PlanBodyImpl(BodyType.test, (Term)B);  // used in ?(a & b)
                else
-               		/*CAMBIAR: No se puede usar throw en c#
-                  throw new ParseException(getSourceRef(B)+" The argument for ? is not a logical formula.");*/
+                  throw new ParseException(GetSourceRef(B)+" The argument for ? is not a logical formula.");
             } else {
                return B;
             }
@@ -572,7 +554,7 @@ Term rule_plan_term():
     T = trigger()           { if (T.GetType() != TEType.belief) pb = false; }
     [ ":" C = log_expr()    { pb = false; } ]
     [( "<-"                 { pb = false; }
-     | ";"                  { /*CAMBIAR: No poder usar throw if (!pb) throw new ParseException(getSourceRef(T)+" Wrong place for ';'");*/ }
+     | ";"                  { if (!pb) throw new ParseException(GetSourceRef(T)+" Wrong place for ';'"); }
      )
     ]
   ]
@@ -614,7 +596,7 @@ Term rule_plan_term():
 	        } else {
 	            // handle the case of a entire plan
 	            Plan p = new Plan(L,T,(LogicalFormula)C, B);
-	            p.SetSrcInfo(T.getSrcInfo());
+	            p.SetSrcInfo(T.GetSrcInfo());
 	            p.SetAsPlanTerm(true);
 	            return p;
 	        }
@@ -655,8 +637,7 @@ Literal literal() :
          	NS = var(Literal.DefaultNS)
             { 
             	if (NS.HasAnnot())
-	               /*CAMBIAR: No se puede usar throw en c#
-	               throw new ParseException(getSourceRef(NS)+" name space cannot have annotations.");*/
+	               throw new ParseException(getSourceRef(NS)+" name space cannot have annotations.");
             	explicitAbstractNS = false;
             }
         )
@@ -686,17 +667,13 @@ Literal literal() :
 	{
         if (ASSyntax.IsKeyword(F))
             NS = Literal.DefaultNS;
-        /*HACER: Clase NameSpace
-        NS = nsDirective.Map(NS);*/
+        NS = nsDirective.Map(NS);
 
-        /*HACER: Clase FunctionRegister*/
         if (F.GetFunctor().IndexOf(".") >= 0) {
            if (F.HasAnnot())
-           	  /*CAMBIAR: No se puede usar throw en c#
-              throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");*/
+              throw new ParseException(getSourceRef(F)+" Internal actions cannot have annotations.");
            if (type == Literal.LNeg)
-           	  /*CAMBIAR: No se puede usar throw en c#
-              throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");*/
+              throw new ParseException(getSourceRef(F)+" Internal actions cannot be negated.");
            try {
               if (F.GetFunctor().Equals(".include")) // .include needs a namespace (see its code)
                  return new InternalActionLiteral(NS, F, curAg);
@@ -861,12 +838,10 @@ Object rel_expr() :
 
             { 
             	if ( ((Term)op1).IsInternalAction() && operator != RelationalOp.literalBuilder)
-                    /*CAMBIAR: No se pueden usar throw en c# 
-                    throw new ParseException(getSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");*/
+                    throw new ParseException(GetSourceRef(op1)+" RelExpr: operand '"+op1+"' can not be an internal action.");
                                              
                 if ( ((Term)op2).IsInternalAction() && operator != RelationalOp.literalBuilder)
-                    /*CAMBIAR: No se puede usar throw en c#
-                    throw new ParseException(getSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");*/
+                    throw new ParseException(GetSourceRef(op2)+" RelExpr: operand '"+op2+"' can not be an internal action.");
                                              
                 return new RelExpr((Term)op1, operator, (Term)op2);
             }
@@ -885,13 +860,11 @@ Object arithm_expr() :        { object t1, t2; ArithmeticOp op; }
       t2 = arithm_expr_trm()     
       { 
       		if (!(t1.GetType() == typeof(NumberTerm))) {
-                /*CAMBIAR: No se puede usar throw en c#
-                throw new ParseException(getSourceRef(t1)+" ArithExpr: first operand '"+t1+"' is not numeric or variable.");*/
+                throw new ParseException(GetSourceRef(t1)+" ArithExpr: first operand '"+t1+"' is not numeric or variable.");
             }
                                    
             if (!(t2.GetType() == typeof(NumberTerm)) {
-            	/*CAMBIAR: No se puede usar throw en c#
-                throw new ParseException(getSourceRef(t2)+" ArithExpr: second operand '"+t2+"' is not numeric or variable.");*/
+                throw new ParseException(GetSourceRef(t2)+" ArithExpr: second operand '"+t2+"' is not numeric or variable.");
             }
             t1 = new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
        }
@@ -909,12 +882,10 @@ Object arithm_expr_trm() :      { object t1, t2; ArithmeticOp op; }
    t2 = arithm_expr_factor()    
    { 
    		if (!(t1.GetType() == typeof(NumberTerm)) {
-            /*CAMBIAR: No se puede usar throw en c#
-            throw new ParseException(getSourceRef(t1)+" ArithTerm: first operand '"+t1+"' is not numeric or variable.");*/
+            throw new ParseException(GetSourceRef(t1)+" ArithTerm: first operand '"+t1+"' is not numeric or variable.");
         }
         if (!(t2.GetType() == typeof(NumberTerm)) {
-        	/*CAMBIAR: No se puede usar throw en c#
-            throw new ParseException(getSourceRef(t2)+" ArithTerm: second operand '"+t2+"' is not numeric or variable.");*/
+            throw new ParseException(GetSourceRef(t2)+" ArithTerm: second operand '"+t2+"' is not numeric or variable.");
         }
         t1 = new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
     }
@@ -930,13 +901,11 @@ Object arithm_expr_factor():
    t2 = arithm_expr_factor()    
    { 
    		if (!(t1.GetType() == typeof(NumberTerm)) {
-            /*CAMBIAR: No se puede usar throw en c#
-            throw new ParseException(getSourceRef(t1)+" ArithFactor: first operand '"+t1+"' is not numeric or variable.");*/
+            throw new ParseException(GetSourceRef(t1)+" ArithFactor: first operand '"+t1+"' is not numeric or variable.");
         }
                                   
         if (!(t2.GetType() == typeof(NumberTerm)) {
-            /*CAMBIAR: No se puede usar throw en c#
-            throw new ParseException(getSourceRef(t2)+" ArithFactor: second operand '"+t2+"' is not numeric or variable.");*/
+            throw new ParseException(GetSourceRef(t2)+" ArithFactor: second operand '"+t2+"' is not numeric or variable.");
         }
         return new ArithExpr((NumberTerm)t1, op, (NumberTerm)t2);
     }
@@ -954,16 +923,14 @@ Object arithm_expr_simple():
  | "-" t = arithm_expr_simple() 
  { 
  	if (!(t.GetType() == typeof(NumberTerm)) {
-        /*CAMBIAR: No se puede usar throw en c#
-        throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '-' is not numeric or variable.");*/
+        throw new ParseException(GetSourceRef(t)+" The argument '"+t+"' of operator '-' is not numeric or variable.");
     }
     return new ArithExpr(ArithmeticOp.minus, (NumberTerm)t);
  }
  | "+" t = arithm_expr_simple() 
  { 
  	if (!(t.GetType() == typeof(NumberTerm)) {
-        /*CAMBIAR: No se puede usar throw en c#
-        throw new ParseException(getSourceRef(t)+" The argument '"+t+"' of operator '+' is not numeric or variable.");*/
+        throw new ParseException(GetSourceRef(t)+" The argument '"+t+"' of operator '+' is not numeric or variable.");
     }
     return new ArithExpr(ArithmeticOp.plus, (NumberTerm)t);
  }
@@ -990,7 +957,6 @@ Term function():          { Literal l; }
     }
 }
 
-//AQUI
 VarTerm var(Atom ns):      { Token K; VarTerm v; ListTerm lt = null; }
 {
  ( K = <VAR>          { v = new VarTerm(ns, K.image); v.SetSrcInfo(new SourceInfo(asSource, K.beginLine));}

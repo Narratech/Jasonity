@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using Assets.Code.AsSyntax;
+using Assets.Code.functions;
 
 namespace Assets.Code.Logic.AsSyntax.directives
 {
@@ -8,7 +9,6 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         private static Dictionary<string, ArithFunctionTerm> functions = new Dictionary<string, ArithFunctionTerm>();
 
-        //Hacer: Carpeta functions
         static FunctionRegister() {
             AddJasonFunction(typeof(Abs));
             AddJasonFunction(typeof(Max));
@@ -17,7 +17,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
             AddJasonFunction(typeof(StdDev));
             AddJasonFunction(typeof(Average));
             AddJasonFunction(typeof(Length));
-            AddJasonFunction(typeof(Random));
+            AddJasonFunction(typeof(random));
             AddJasonFunction(typeof(Round));
             AddJasonFunction(typeof(Sqrt));
             AddJasonFunction(typeof(pi));

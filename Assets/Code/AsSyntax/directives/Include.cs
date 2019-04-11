@@ -16,7 +16,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                 return null;
 
             // handles file (arg[0])
-            string file = ((IStringTerm)directive.GetTerm(0)).GetString().replaceAll("\\\\", "/");
+            string file = ((IStringTerm)directive.GetTerm(0)).GetString().ReplaceAll("\\\\", "/");
             try
             {
                 //CAMBIAR: similar c# de InputStream

@@ -2,7 +2,7 @@ using Assets.Code.AsSyntax;
 
 namespace Assets.Code.functions
 {
-    public partial class average : DefaultArithFunction
+    public partial class Average : DefaultArithFunction
     {
 
         public string GetName()
