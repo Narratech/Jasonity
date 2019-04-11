@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 
 /**
@@ -12,22 +13,22 @@ namespace Assets.Code.ReasoningCycle
 {
     public class Unifier
     {
-        Dictionary<VarTerm, Term> function = new Dictionary<VarTerm, Term>();
+        Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
 
         public bool Remove(VarTerm v)
         {
             return function.Remove(v);
         }
 
-        public bool Unifies(Term term, Literal topLiteral) // ???
+        public bool Unifies(ITerm term, Literal topLiteral) // ???
         {
             throw new NotImplementedException();
         }
 
         // Undoes the variables' mapping if unification fails
-        public bool Unifies(Term term, Term term2)
+        public bool Unifies(ITerm term, ITerm term2)
         {
-            Dictionary<VarTerm, Term> cFunction = function;
+            Dictionary<VarTerm, ITerm> cFunction = function;
             if (UnifiesNoUndo(term, term2))
             {
                 return true;
@@ -39,7 +40,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        public bool UnifiesNoUndo(Term term, Term term2)
+        public bool UnifiesNoUndo(ITerm term, ITerm term2)
         {
             if (term == null && term2 == null) return true;
             if (term == null && term2 != null) return false;
@@ -72,7 +73,7 @@ namespace Assets.Code.ReasoningCycle
                 Remove(v2);
                 try
                 {
-                    return UnifiesNoUndo(new LiteralImpl((Literal)term), new LiteralImpl((Literal)term2); // ???
+                    return UnifiesNoUndo(new LiteralImpl((Literal)term), new LiteralImpl((Literal)term2));
                 }
                 finally
                 {
@@ -101,7 +102,7 @@ namespace Assets.Code.ReasoningCycle
                 if (term.IsVar() && term.HasAnnot())
                 {
                     term = Deref((VarTerm)term); // ???
-                    Term termvl = function[(VarTerm)term];
+                    ITerm termvl = function[(VarTerm)term];
                     if (termvl != null && termvl.IsPred())
                     {
                         Pred pvl = termvl.Clone();
@@ -112,7 +113,7 @@ namespace Assets.Code.ReasoningCycle
                 if (term2.IsVar() && term2.HasAnnot())
                 {
                     term2 = Deref((VarTerm)term2);
-                    Term term2vl = function[(VarTerm)term2];
+                    ITerm term2vl = function[(VarTerm)term2];
                     if (term2vl != null && term2vl.IsPred())
                     {
                         Pred pvl = term2vl.Clone();
@@ -148,7 +149,7 @@ namespace Assets.Code.ReasoningCycle
 
         private VarTerm Deref(VarTerm term)
         {
-            Term vl = function[term];
+            ITerm vl = function[term];
             VarTerm first = term;
             while (vl != null && term.IsVar())
             {
@@ -162,7 +163,7 @@ namespace Assets.Code.ReasoningCycle
             return term;
         }
 
-        private bool UnifyTerms(Term term, Term term2)
+        private bool UnifyTerms(ITerm term, ITerm term2)
         {
             if (term.IsArithExpr())
             {
@@ -183,8 +184,8 @@ namespace Assets.Code.ReasoningCycle
                 VarTerm term2v = term2IsVar ? (VarTerm)term2 : null;
 
                 // Get their values
-                Term termvl = termIsVar ? Get(termv) : term; // ???
-                Term term2vl = term2IsVar ? Get(term2v) : term2; // ???
+                ITerm termvl = termIsVar ? Get(termv) : term; // ???
+                ITerm term2vl = term2IsVar ? Get(term2v) : term2; // ???
 
                 if (termvl != null && term2vl != null) // Unify the values of the two variables
                 {
@@ -226,11 +227,11 @@ namespace Assets.Code.ReasoningCycle
             int compare = vt1.CompareTo(vt2);
             if (compare < 0)
             {
-                function.Add(vt1, (Term)vt2);
+                function.Add(vt1, (ITerm)vt2);
             }
             else if (compare > 0)
             {
-                function.Add(vt2, (Term)vt1);
+                function.Add(vt2, (ITerm)vt1);
             }
             // Doesn't bind if (compare == 0), because they are the same
         }
@@ -240,7 +241,7 @@ namespace Assets.Code.ReasoningCycle
             throw new NotImplementedException();
         }
 
-        private bool Bind(VarTerm vt, Term term)
+        private bool Bind(VarTerm vt, ITerm term)
         {
             if (vt.Negated()) // Negated variables unify only with negated literals
             {
@@ -262,7 +263,7 @@ namespace Assets.Code.ReasoningCycle
                 }
                 if (lterm.GetNS() != Literal.DefaultNS)
                 {
-                    term = (Term)lterm.CloneNS(Literal.DefaultNS);
+                    term = (ITerm)lterm.CloneNS(Literal.DefaultNS);
                 }
             }
             if (!term.IsCyclicTerm() && term.HasVar(vt, this))
@@ -275,7 +276,7 @@ namespace Assets.Code.ReasoningCycle
 
         private object Get(VarTerm var)
         {
-            Term vl = function[var];
+            ITerm vl = function[var];
             if (vl != null && vl.IsVar())
             {
                 return Get((VarTerm)vl);
@@ -288,7 +289,7 @@ namespace Assets.Code.ReasoningCycle
             throw new NotImplementedException();
         }
 
-        Dictionary<VarTerm,Term> GetFunction()
+        Dictionary<VarTerm,ITerm> GetFunction()
         {
             return function;
         }

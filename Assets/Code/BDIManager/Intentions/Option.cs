@@ -1,4 +1,5 @@
 ﻿// A Plan and the Unifier that makes it relevant and applicable
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
@@ -12,7 +13,7 @@ namespace BDIManager.Intentions
         private Plan p;
         private Unifier current;
 
-        Option(Plan p, Unifier u)
+        public Option(Plan p, Unifier u)
         {
             plan = p;
             unif = u;
@@ -39,7 +40,7 @@ namespace BDIManager.Intentions
             unif = u;
         }
 
-        internal Unifier getUnifier()
+        internal Unifier GetUnifier()
         {
             return unif;
         }

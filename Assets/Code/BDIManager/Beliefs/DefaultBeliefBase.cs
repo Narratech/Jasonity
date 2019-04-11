@@ -1,6 +1,7 @@
 // Implements a default Belief Base
 using System;
 using System.Collections.Generic;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.Logic.AsSyntax;
 
@@ -15,13 +16,13 @@ namespace BDIManager.Beliefs
 
         public HashSet<Literal> percepts = new HashSet<Literal>();
         private object TPercept;
-        static public Term ASelf = new Atom("self");
-        static public Term TSelf = Pred.CreateSource(ASelf);
+        static public ITerm ASelf = new Atom("self");
+        static public ITerm TSelf = Pred.CreateSource(ASelf);
 
         // Constructor
         public DefaultBeliefBase()
         {
-            nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);    // Literal.DefaultNS must be Atom
+            nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);
         }
 
         // Returns the namespaces
@@ -43,7 +44,7 @@ namespace BDIManager.Beliefs
             percepts.Clear();
             belsMapDefaultNS.Clear();
             nameSpaces.Clear();
-            nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);    // Literal.DefaultNS must be Atom
+            nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);    
         }
         
         public IEnumerable<Literal> GetPercepts()
@@ -108,7 +109,7 @@ namespace BDIManager.Beliefs
             Dictionary<PredicateIndicator, BelEntry> belsMap = belsMapDefaultNS;
             if (l.GetNS() != Literal.DefaultNS)
             {
-                belsMap = nameSpaces[l.GetNS()]; // ???
+                belsMap = nameSpaces[l.GetNS()];
                 if (belsMap == null)
                 {
                     belsMap = new Dictionary<PredicateIndicator, BelEntry>();

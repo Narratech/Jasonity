@@ -1,6 +1,7 @@
 // Executes BDI
 // Will use other BDIManager classes to handle BB, plans, desires, events, etc.
 using System;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using BDIManager.Intentions;
 

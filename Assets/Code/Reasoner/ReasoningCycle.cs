@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using Assets.Code.Logic;
 using Assets.Code.Utilities;
@@ -184,7 +185,7 @@ namespace Assets.Code.ReasoningCycle
                 {
                     if (!sleepingEvt)
                     {
-                        if(ag.GetPlanLibrary().GetCandidatePlans(PlanLibrary.TE_JAG_SLEEPING)!=null)
+                        if(ag.GetPL().GetCandidatePlans(PlanLibrary.TE_JAG_SLEEPING)!=null)
                         {
                             circumstance.AddExternalEv(PlanLibrary.TE_JAG_SLEEPING);
                         }
@@ -211,7 +212,7 @@ namespace Assets.Code.ReasoningCycle
                             }
                         }
                     }
-                    if (!sleepingEvt && ag.GetPlanLibrary().GetCandidatePlans(PlanLibrary.TE_JAG_AWAKING) != null)
+                    if (!sleepingEvt && ag.GetPL().GetCandidatePlans(PlanLibrary.TE_JAG_AWAKING) != null)
                     {
                         circumstance.AddExternalEv(PlanLibrary.TE_JAG_AWAKING);
                     }
@@ -427,13 +428,13 @@ namespace Assets.Code.ReasoningCycle
                 {
                     UnnamedVar vt = (UnnamedVar)ip.GetRenamedVars().Function().Get(var);
                     ip.GetUnif().Unifies(var, vt);
-                    Term vl = values.GetFunction().Get(vt);
+                    ITerm vl = values.GetFunction().Get(vt);
                     if(vl != null)
                     {
                         vl = vl.Capply(values);
                         if(vl.IsLiteral())
                         {
-                            ((Literal)vl).makeVarsAnnon();
+                            ((Literal)vl).MakeVarsAnnon();
                         }
                         ip.GetUnif().Bind(vt, vl);
                     }
@@ -464,12 +465,12 @@ namespace Assets.Code.ReasoningCycle
             }
 
             Unifier u = ip.GetUnif();
-            PlanBody h = ip.GetCurrentStep();
-            Term bTerm = h.GetBodyTerm();
+            IPlanBody h = ip.GetCurrentStep();
+            ITerm bTerm = h.GetBodyTerm();
 
             if (bTerm.GetType() == typeof(Var))
             {
-                bTerm = bTerm.Cappply(u);
+                bTerm = bTerm.Capply(u);
                 if (bTerm.IsVar())
                 {
                     string msg = h.GetSrcInfo() + ": " + "Variable '" + bTerm + "' must be ground.";
@@ -495,10 +496,10 @@ namespace Assets.Code.ReasoningCycle
 
             if (bTerm.IsPlanBody())
             {
-                h = (PlanBody)bTerm;
+                h = (IPlanBody)bTerm;
                 if (h.GetPlanSize() > 1)
                 {
-                    h = (PlanBody)bTerm.Clone();
+                    h = (IPlanBody)bTerm.Clone();
                     h.Add(ip.GetCurrentStep().GetBodyNext());
                     ip.InsertAsNextStep(h.GetBodyNext());
                 }
@@ -513,19 +514,19 @@ namespace Assets.Code.ReasoningCycle
 
             switch (h.GetBodyType())
             {
-                case PlanBody.BodyType.none:
+                case BodyType.none:
                     break;
-                case PlanBody.BodyType.action:
+                case IPlanBody.BodyType.action:
                     body = (Literal)body.Capply(u);
                     confP.GetCircumstance().setA(new ExecuteAction(body, curInt));
                     break;
-                case PlanBody.BodyType.internalAction:
+                case IPlanBody.BodyType.internalAction:
                     bool ok = false;
-                    List<Term> errorAnnots = null;
+                    List<ITerm> errorAnnots = null;
                     try
                     {
                         InternalActions ia = ((InternalAction)bTerm).GetIA(ag);
-                        Term[] terms = ia.PrepareArguments(body, u);
+                        ITerm[] terms = ia.PrepareArguments(body, u);
                         Object result = ia.Execute(this, u, terms);
                         if (result != null)
                         {
@@ -785,7 +786,7 @@ namespace Assets.Code.ReasoningCycle
 
         public void UpdateEvents(Event ev)
         {
-            if (ev.IsInternal() || GetCircumstance().HasListener() || ag.GetPlanLibrary().HasCandidatePlan(ev.GetTrigger()))
+            if (ev.IsInternal() || GetCircumstance().HasListener() || ag.GetPL().HasCandidatePlan(ev.GetTrigger()))
             {
                 GetCircumstance().AddEvent(ev);
                 //if (logger.isLoggable(Level.FINE)) logger.fine("Added event " + e+ ", events = "+C.getEvents());
@@ -802,14 +803,14 @@ namespace Assets.Code.ReasoningCycle
                 ipRenamedVars.SetRenamedVars(renamedVars);
                 if (GetSettings().IsTROon())
                 {
-                    Dictionary<VarTerm, Term> adds = null;
+                    Dictionary<VarTerm, ITerm> adds = null;
                     foreach (VarTerm v in renamedVars)
                     {
-                        Term t = u.Function().Get(v);
+                        ITerm t = u.Function().Get(v);
                         if (t != null && t.IsVar())
                         {
                             if (adds == null)
-                                adds = new Dictionary<VarTerm, Term>();
+                                adds = new Dictionary<VarTerm, ITerm>();
                             try
                             {
                                 adds.Add((VarTerm)t, renamedVars.Function().Get(v));
@@ -871,7 +872,7 @@ namespace Assets.Code.ReasoningCycle
 
         }
 
-        public bool GenerateDesireDeletion(Intention i, List<Term> errorAnnots)
+        public bool GenerateDesireDeletion(Intention i, List<ITerm> errorAnnots)
         {
             bool failEventIsRelevant = false;
             IntendedPlan ip = i.Peek();
@@ -884,7 +885,7 @@ namespace Assets.Code.ReasoningCycle
                 failEvent = new Event(ip.GetTrigger().Clone(), i);
             }
 
-            Term bodyPart = ip.GetCurrentStep().GetBodyTerm().Capply(ip.GetUnif());
+            ITerm bodyPart = ip.GetCurrentStep().GetBodyTerm().Capply(ip.GetUnif());
             SetDefaultFailureAnnots(failEvent, bodyPart, errorAnnots);
             if (ip.IsGoalAdd())
             {
@@ -921,7 +922,7 @@ namespace Assets.Code.ReasoningCycle
             return failEventIsRelevant;
         }
 
-        private static void SetDefaultFailureAnnots(Event failEvent, Term body, List<Term> errorAnnots)
+        private static void SetDefaultFailureAnnots(Event failEvent, ITerm body, List<ITerm> errorAnnots)
         {
             if (errorAnnots == null)
             {
@@ -932,8 +933,8 @@ namespace Assets.Code.ReasoningCycle
             eLiteral.AddAnnot(errorAnnots);
 
             Literal bodyTerm = aNOCODE;
-            Term codesrc = aNOCODE;
-            Term codeline = aNOCODE;
+            ITerm codesrc = aNOCODE;
+            ITerm codeline = aNOCODE;
             if (body != null && body.GetType() == typeof(Literal))
             {
                 bodyTerm = (Literal)body;
@@ -1098,7 +1099,7 @@ namespace Assets.Code.ReasoningCycle
                             foreach (Var var in ipBase.GetRenamedVars())
                             {
                                 Var vl = (Var)ipBase.GetRenamedVars().GetFunction().Get(var);
-                                Term t = top.GetUnif().Get(vl);
+                                ITerm t = top.GetUnif().Get(vl);
                                 if (t != null)
                                 {
                                     if (t.GetType() == typeof(Literal))
@@ -1294,7 +1295,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private bool GenerateDesireDeletionFromEvent(List<Term> failAnnots)
+        private bool GenerateDesireDeletionFromEvent(List<ITerm> failAnnots)
         {
             Event e = conf.GetCircumstance().GetSE();
             if (e == null)
@@ -1414,10 +1415,10 @@ namespace Assets.Code.ReasoningCycle
                 }
 
                 //Get the content of the message, it can be any term (literal, list, number, ...;)
-                Term content = null;
-                if (m.GetPropCont().GetType() == typeof(Term))
+                ITerm content = null;
+                if (m.GetPropCont().GetType() == typeof(ITerm))
                 {
-                    content = (Term)m.GetPropCont();
+                    content = (ITerm)m.GetPropCont();
                 } else
                 {
                     try
@@ -1454,7 +1455,7 @@ namespace Assets.Code.ReasoningCycle
                     } else if (send.GetTerm(1).ToString().Equals("askAll") && content.IsList()) //Adds source in each answer if possible
                     {
                         ListTerm tail = new ListTermImpl();
-                        foreach (Term t in ((ListTerm)content))
+                        foreach (ITerm t in ((ListTerm)content))
                         {
                             t = add_nested_source.AddAnnotToList(t, new Atom(m.GetSender()));
                             tail.Append(t);
@@ -1464,7 +1465,7 @@ namespace Assets.Code.ReasoningCycle
 
                     //Test the case of sync ask with many receivers
                     Unifier un = intention.Peek().GetUnif();
-                    Term rec = send.GetTerm(0).Capply(un);
+                    ITerm rec = send.GetTerm(0).Capply(un);
                     if (rec.IsList()) //Send to many receivers
                     {
                         //Put the answers in the unifier
@@ -1533,7 +1534,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private void ResumeSyncAskIntention(String msgId, Term answerVar, Term answerValue)
+        private void ResumeSyncAskIntention(String msgId, ITerm answerVar, ITerm answerValue)
         {
             Intention i = GetCircumstance().RemovePendingIntention(msgId);
             i.Peek().RemoveCurrentStep();
