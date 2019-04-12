@@ -1,5 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ts.GetUserAgArch().GetRuntimeServices().DfSubscribe(ts.GetUserAgArch().GetName(), GetService(args), GetType(args));

@@ -1,6 +1,7 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIManager;
+using Assets.Code.ReasoningCycle;
+using BDIManager.Intentions;
 using System.Collections.Generic;
 
 /*
@@ -22,7 +23,7 @@ namespace Assets.Code.Stdlib
             return 1;
         }
 
-        protected void CheckArguments(Term[] args)
+        protected void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
             if (args.Length > 0 && !args[0].IsLiteral() && !args[0].IsVar())
@@ -39,7 +40,7 @@ namespace Assets.Code.Stdlib
             return resultSuspend;
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             resultSuspend = false;

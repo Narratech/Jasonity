@@ -1,12 +1,11 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using Assets.Code.ReasoningCycle;
 
 /*
  * Description: gets the current date (year, month, and day of the month).
@@ -33,7 +32,7 @@ namespace Assets.Code.Stdlib
             return 3;
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             DateTime dt = new DateTime();

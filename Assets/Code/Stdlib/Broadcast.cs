@@ -24,8 +24,9 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public override void CheckArguments(ITerm[] args): base.CheckArguments(args)
+        public override void CheckArguments(ITerm[] args)
         {
+            base.CheckArguments(args);
             if (!args[0].IsAtom())
             {
                 throw new JasonException.CreateWrongArgument(this, "illocutionary force argument must be an atom");

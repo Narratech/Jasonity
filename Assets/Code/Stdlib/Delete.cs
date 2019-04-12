@@ -1,6 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,51 +31,51 @@ namespace Assets.Code.Stdlib
             return 4;
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
 
             if (args[0].IsNumeric())
             {
                 int nextArg = 1;
-                int start = (args[0] as NumberTerm).Solve() as int;
+                int start = (int)((args[0] as INumberTerm).Solve());
                 int end = start + 1;
                 if (args.Length == 4 && args[1].IsNumeric())
                 {
                     nextArg = 2;
-                    end = (args[0] as NumberTerm).Solve() as int;
+                    end = (int)((args[0] as INumberTerm).Solve());
                 }
                 if (args[nextArg].IsString())
                 {
-                    return un.Unifies(args[nextArg+1], DeleteFromString(start, end, args[nextArg] as StringTerm));
+                    return un.Unifies(args[nextArg+1], DeleteFromString(start, end, args[nextArg] as IStringTerm));
                 }
                 else if (args[nextArg].IsList())
                 {
-                    return un.Unifies(args[nextArg + 1], DeleteFromList(start, end, args[nextArg] as ListTerm));
+                    return un.Unifies(args[nextArg + 1], DeleteFromList(start, end, args[nextArg] as IListTerm));
                 }
             }
             if (args[0].IsString() && args[1].IsString())
             {
-                return un.Unifies(args[2], DeleteFromString(args[0] as StringTerm, args[1] as StringTerm));
+                return un.Unifies(args[2], DeleteFromString(args[0] as IStringTerm, args[1] as IStringTerm));
             }
             if (args[0].IsString())
             {
-                return un.Unifies(args[2], DeleteFromString(args[0] as StringTerm, new StringTermImpl(args[1].ToString())));
+                return un.Unifies(args[2], DeleteFromString(args[0] as IStringTerm, new StringTermImpl(args[1].ToString())));
             }
 
             if (args[0].IsList())
             {
-                return un.Unifies(args[2], DeleteFromList(args[0], args[1] as ListTerm, un.Clone()));
+                return un.Unifies(args[2], DeleteFromList(args[0], args[1] as IListTerm, un.Clone()));
             }
             throw new JasonException("Incorrect use of the internal action '.delete' (see documentation).");
         }
 
-        ListTerm DeleteFromList(Term element, ListTerm l, Unifier un)
+        IListTerm DeleteFromList(ITerm element, IListTerm l, Unifier un)
         {
             Unifier bak = un;
-            ListTerm r = new ListTermImpl();
-            ListTerm last = r;
-            foreach (Term t in l)
+            IListTerm r = new ListTermImpl();
+            IListTerm last = r;
+            foreach (ITerm t in l)
             {
                 if (un.Unifies(element, t))
                 {
@@ -90,12 +89,12 @@ namespace Assets.Code.Stdlib
             return r;
         }
 
-        ListTerm DeleteFromList(int index, int end, ListTerm l)
+        IListTerm DeleteFromList(int index, int end, IListTerm l)
         {
-            ListTerm r = new ListTermImpl();
-            ListTerm last = r;
+            IListTerm r = new ListTermImpl();
+            IListTerm last = r;
             int i = 0;
-            foreach (Term t in l)
+            foreach (ITerm t in l)
             {
                 if (i < index || i>= end)
                 {
@@ -106,7 +105,7 @@ namespace Assets.Code.Stdlib
             return r;
         }
 
-        StringTerm DeleteFromString(int index, int end, StringTerm st)
+        IStringTerm DeleteFromString(int index, int end, IStringTerm st)
         {
             try
             {
@@ -119,13 +118,13 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        StringTerm DeleteFromString(StringTerm st1, StringTerm st2)
+        IStringTerm DeleteFromString(IStringTerm st1, IStringTerm st2)
         {
             try
             {
                 string s1 = st1.GetString();
                 string s2 = st2.GetString();
-                return new StringTermImpl(s2.replaceAll(s1, " "));
+                return new StringTermImpl(s2.ReplaceAll(s1, " "));
             }
             catch (Exception e)
             {

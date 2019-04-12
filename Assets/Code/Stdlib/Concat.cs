@@ -1,6 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +23,7 @@ namespace Assets.Code.Stdlib
             return singleton;
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             if (args[0].IsList())
             {
@@ -32,7 +31,7 @@ namespace Assets.Code.Stdlib
                 {
                     throw new JasonException("Last argument of concat '" + args[args.Length - 1] + "'is not a list nor a variable.");
                 }
-                ListTerm result = args[0].Clone() as ListTerm;
+                IListTerm result = args[0].Clone() as IListTerm;
                 for (int i = 1; i < args.Length - 1; i++)
                 {
                     if (!args[i].IsList())
@@ -51,7 +50,7 @@ namespace Assets.Code.Stdlib
                 string vl = args[0].ToString();
                 if (args[0].IsString())
                 {
-                    vl = args[0].GetString() as StringTerm;
+                    vl = args[0].GetString() as IStringTerm;
                 }
                 StringBuilder sr = new StringBuilder(vl);
                 for (int i = 0; i < args.Length-1; i++)
@@ -59,7 +58,7 @@ namespace Assets.Code.Stdlib
                     vl = args[i].ToString();
                     if (args[i].IsString())
                     {
-                        vl = args[i].GetString as StringTerm;
+                        vl = args[i].GetString as IStringTerm;
                     }
                     sr.Append(vl);
                 }

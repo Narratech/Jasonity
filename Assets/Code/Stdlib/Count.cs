@@ -1,5 +1,5 @@
-﻿using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,18 +24,18 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        protected override void CheckArguments(Term[] args)//: base.CheckArguments(args)
+        protected override void CheckArguments(ITerm[] args)//: base.CheckArguments(args)
         {
-            if (!(args[0].GetType() == typeof(LogicalFormula)))
+            if (!(args[0].GetType() == typeof(ILogicalFormula)))
             {
                 throw JasonException.CreateWrongArgument(this, "first argument must be a formula");
             }
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            LogicalFormula logExpr = args[0] as LogicalFormula;
+            ILogicalFormula logExpr = args[0] as ILogicalFormula;
             int n = 0;
             IEnumerator<Unifier> iu = logExpr.LogicalConsequence(ts.GatAg(), un);
             while (iu.Current != null)

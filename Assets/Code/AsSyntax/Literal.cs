@@ -90,6 +90,7 @@ namespace Assets.Code.AsSyntax
             if (HasTerm())
             {
                 return GetTerms().ToArray(Structure.emptyTermArray);
+                //Structure.emptyTermArray
             }
             else
             {
@@ -229,8 +230,6 @@ namespace Assets.Code.AsSyntax
         {
             return false;
         }
-
-        /* Not implemented methods */
 
         // structure
         public virtual void AddTerm(ITerm t)

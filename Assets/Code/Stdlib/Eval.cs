@@ -1,6 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,24 +23,24 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public Term[] prepareArguments(Literal body, Unifier un)
+        public ITerm[] prepareArguments(Literal body, Unifier un)
         {
             return body.GetTermsArray(); // we do not need clone neither apply for this internal action
         }
 
-        protected void CheckArguments(Term[] args)
+        protected void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
-            if (!(args[1].GetType() == typeof(LogicalFormula)))
+            if (!(args[1].GetType() == typeof(ILogicalFormula)))
             {
                 throw JasonException.createWrongArgument(this, "second argument must be a logical formula");
             }
         }
 
-        protected object Execute(Reasoner ts, Unifier un, Term[] args)
+        protected object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            LogicalFormula logExpr = args[1] as LogicalFormula;
+            ILogicalFormula logExpr = args[1] as ILogicalFormula;
             IEnumerator<Unifier> iu = logExpr.LogicalConsequence(ts.GetAg(), un);
             if (iu.Current != null)
             {

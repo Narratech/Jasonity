@@ -1,6 +1,7 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
+﻿using Assets.Code.AsSemantic;
+using Assets.Code.AsSyntax;
 using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace Assets.Code.Stdlib
             return 3;
         }
 
-        protected void CheckArguments(Term[] args)
+        protected void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);// check number of arguments
             if (!args[0].IsList())
@@ -44,10 +45,10 @@ namespace Assets.Code.Stdlib
                 throw new JasonException.createWrongArgument(this,"last argument '"+args[2]+"'is not a list nor a variable.");
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            return un.Unifies(args[2], ((ListTerm) args[0]).Difference((ListTerm) args[1]) );
+            return un.Unifies(args[2], ((IListTerm) args[0]).Difference((IListTerm) args[1]) );
         }
     }
 }

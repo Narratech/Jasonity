@@ -1,5 +1,5 @@
-﻿using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.Stdlib
 {
@@ -29,18 +29,18 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public object Excute(Reasoner ts, Unifier un, Term[] args)
+        public object Excute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ts.GetUserAgArch().GetRuntimeServices().DfRegister(ts.GetUserAgArch().GetAgName(), GetService(args), GetType(args));
             return true;
         }
 
-        protected string GetService(Term[] args)
+        protected string GetService(ITerm[] args)
         {
             if (args[0].IsString())
             {
-                return (args[0] as StringTerm).GetString();
+                return (args[0] as IStringTerm).GetString();
             }
             else
             {
@@ -48,13 +48,13 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        protected string GetType(Term[] args)
+        protected string GetType(ITerm[] args)
         {
             if (args.Length > 1)
             {
                 if (args[1].IsString())
                 {
-                    return (args[1] as StringTerm).GetString();
+                    return (args[1] as IStringTerm).GetString();
                 }
                 else if (!args[1].IsVar())
                 {

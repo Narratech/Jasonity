@@ -12,14 +12,14 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Add_annot: DefaultInternalAction
+    public class Add_Annot: DefaultInternalAction
     {
         private static InternalAction singleton = null;
         public static InternalAction create()
         {
             if (singleton == null)
             {
-                singleton = new Add_annot();
+                singleton = new Add_Annot();
             }
             return singleton;
         }

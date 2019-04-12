@@ -1,4 +1,5 @@
-﻿using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Assets.Code.Stdlib
 {
     public class Drop_All_Desires:Drop_All_Intentions
     {
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             base.Execute(ts, un, args);
             ts.GetC().ClearEvents();

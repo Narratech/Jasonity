@@ -21,8 +21,9 @@ namespace Assets.Code.Stdlib
 
         }
 
-        protected override void CheckArguments(ITerm[] args): base.CheckArguments(args)
+        protected override void CheckArguments(ITerm[] args)
         {
+            base.CheckArguments(args);
             if (!args[0].isLiteral())
             {
                 if (!args[0].IsGround() && !args[0].IsRule())

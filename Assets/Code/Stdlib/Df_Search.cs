@@ -1,5 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +30,10 @@ namespace Assets.Code.Stdlib
             return 3;
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            ListTerm lt = new ListTermImpl();
+            IListTerm lt = new ListTermImpl();
             foreach (string a in ts.GetUserAgArch().GetRuntimeServices().DfSearch(GetService(args), GetType(args)))
             {
                 lt.Add(new Atom(a));

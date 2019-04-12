@@ -1,6 +1,5 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,18 +31,18 @@ namespace Assets.Code.Stdlib
             return 1;
         }
 
-        public object Execute(Reasoner ts, Unifier un, Term[] args)
+        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            Term l1 = args[0];
+            ITerm l1 = args[0];
             if (l1.IsList())
             {
-                ListTerm lt = l1 as ListTerm;
-                return lt.isEmpty();
+                IListTerm lt = l1 as IListTerm;
+                return lt.IsEmpty();
             }
             else if (l1.IsString())
             {
-                StringTerm st = l1 as StringTerm;
+                IStringTerm st = l1 as IStringTerm;
                 return st.GetString().IsEmpty();
             }
             return false;

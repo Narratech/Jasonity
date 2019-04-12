@@ -1,7 +1,6 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
 using Assets.Code.Mas2J;
+using Assets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        protected override void CheckArguments(Term[] args)//:base.CheckArguments(args)
+        protected override void CheckArguments(ITerm[] args)//:base.CheckArguments(args)
         {
             if (args.Length > 1 && !args[1].IsString())
             {
@@ -39,7 +38,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        public override object Execute(Reasoner ts, Unifier un, Term[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             string name = GetName(args);
@@ -52,7 +51,7 @@ namespace Assets.Code.Stdlib
 
             if (args.Length > 2)
             {
-                foreach (Term t in args[2] as ListTerm)
+                foreach (ITerm t in args[2] as IListTerm)
                 {
                     if (t.IsStructure())
                     {
@@ -82,17 +81,17 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        protected Settings GetName(Term[] args)
+        protected Settings GetName(ITerm[] args)
         {
             return new Settings();
         }
 
-        protected string GetName(Term[] args)
+        protected string GetName(ITerm[] args)
         {
             string name;
             if (args[0].IsString())
             {
-                name = args[0].GetString() as StringTerm;
+                name = args[0].GetString() as IStringTerm;
             }
             else
             {
@@ -106,21 +105,21 @@ namespace Assets.Code.Stdlib
             return name;
         }
 
-        protected string GetSource(Term[] args)
+        protected string GetSource(ITerm[] args)
         {
             string source = null;
             if (args.Length > 1)
             {
-                source = args[1].GetString() as StringTerm;
+                source = args[1].GetString() as IStringTerm;
             }
         }
 
-        protected List<string> GetAgArchClasses(Term[] args)
+        protected List<string> GetAgArchClasses(ITerm[] args)
         {
             List<string> AgArchClasses = new List<string>();
             if (args.Length > 2)
             {
-                foreach (Term t in args[2] as ListTerm)
+                foreach (ITerm t in args[2] as IListTerm)
                 {
                     if (t.IsStructure())
                     {
@@ -135,7 +134,7 @@ namespace Assets.Code.Stdlib
             return AgArchClasses;
         }
 
-        private Structure TestString(Term t)
+        private Structure TestString(ITerm t)
         {
             if (t.IsStructure())
             {
@@ -143,7 +142,7 @@ namespace Assets.Code.Stdlib
             }
             if (t.IsString())
             {
-                return Structure.parse((t as StringTerm).GetString());
+                return Structure.Parse((t as IStringTerm).GetString());
             }
         }
     }

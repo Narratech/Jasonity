@@ -1,6 +1,7 @@
-﻿using Assets.Code.Logic;
-using Assets.Code.Logic.AsSemantic;
-using Assets.Code.Logic.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIManager;
+using Assets.Code.ReasoningCycle;
+using BDIManager.Intentions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Assets.Code.Stdlib
             return 1;
         }
 
-        protected void CheckArguments(Term[] args)
+        protected void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
             if (!args[0].IsLiteral())
