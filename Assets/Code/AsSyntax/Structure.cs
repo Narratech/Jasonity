@@ -10,8 +10,8 @@ namespace Assets.Code.AsSyntax
 {
     public class Structure : Atom
     {
-        private static List<ITerm> emptyTermList = new List<ITerm>(0);
-        private static ITerm[] emptyTermArray = new ITerm[0];
+        public static readonly List<ITerm> emptyTermList = new List<ITerm>(0);
+        public static readonly ITerm[] emptyTermArray = new ITerm[0];
         private List<ITerm> terms;
         private const bool useShortUnnamedVars = Config.Get().GetBoolean(Config.SHORT_UNNAMED_VARS); //I dont really know what this is for
 

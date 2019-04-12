@@ -19,7 +19,7 @@ namespace Assets.Code.AsSyntax
 
         public new ILogicalFormula GetRHS() => (ILogicalFormula)GetTerm(1);
 
-        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public new IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Assets.Code.AsSyntax
             return EMPTY_UNIF_LIST.GetEnumerator();
         }
 
-        public IEnumerator<Unifier> CreateUnifEnumerator(params Unifier[] unifs)
+        public static IEnumerator<Unifier> CreateUnifEnumerator(params Unifier[] unifs)
         {
             return new MyUnifEnumerator<Unifier>(unifs);
         }

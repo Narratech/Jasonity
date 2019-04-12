@@ -81,7 +81,7 @@ namespace Assets.Code.AsSyntax
 
         public virtual List<ITerm> GetTerms()
         {
-            return Structure.EmptyTermList;
+            return Structure.emptyTermList;
         }
 
         /** returns all terms of this literal */
@@ -89,11 +89,11 @@ namespace Assets.Code.AsSyntax
         {
             if (HasTerm())
             {
-                return GetTerms().ToArray(Structure.EmptyTermArray);
+                return GetTerms().ToArray(Structure.emptyTermArray);
             }
             else
             {
-                return Structure.EmptyTermArray;
+                return Structure.emptyTermArray;
             }
         }
 
@@ -658,7 +658,7 @@ namespace Assets.Code.AsSyntax
 
             public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
             {
-                return LogExpr.EMPTY_UNIFY_LIST.GetEnumerator();
+                return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
             }
 
             object ReadResolve()
