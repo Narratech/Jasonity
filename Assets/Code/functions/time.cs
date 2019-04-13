@@ -4,20 +4,20 @@ using System;
 
 namespace Assets.Code.functions
 {
-    public partial class time : DefaultArithFunction
+    public partial class time : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return "math.time";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             return TimeUtils.CurrentTimeMillis();
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 0;
         }

@@ -4,15 +4,15 @@ using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.functions
 {
-    public partial class Average : DefaultArithFunction
+    public partial class Average : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return "math.average";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             if (args[0].IsList())
             {
@@ -32,7 +32,7 @@ namespace Assets.Code.functions
             throw new JasonityException(GetName() + " is not implemented for type '" + args[0] + "'.");
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 1;
         }

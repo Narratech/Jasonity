@@ -11,10 +11,10 @@ namespace Assets.Code.AsSyntax
     public class ArithFunctionTerm:Structure, INumberTerm
     {
         protected INumberTerm value = null;
-        private IArithFunction function = null;
+        private ArithFunction function = null;
         private Agent.Agent agent = null;
 
-        public ArithFunctionTerm(IArithFunction function):base(function.GetName(), 2)
+        public ArithFunctionTerm(ArithFunction function):base(function.GetName(), 2)
         {
             this.function = function; 
         }

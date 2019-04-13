@@ -5,15 +5,15 @@ using System;
 
 namespace Assets.Code.functions
 {
-    public partial class Max : DefaultArithFunction
+    public partial class Max : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return "math.max";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             if (args[0].IsNumeric() && args[1].IsNumeric())
             {
@@ -39,7 +39,7 @@ namespace Assets.Code.functions
             throw new JasonityException("The argument '" + args[0] + "' is not numeric!");
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 1 || a == 2;
         }

@@ -5,15 +5,15 @@ using System;
 
 namespace Assets.Code.functions
 {
-    public partial class Length : DefaultArithFunction
+    public partial class Length : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return ".length";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             if (args[0].IsList())
             {
@@ -29,7 +29,7 @@ namespace Assets.Code.functions
             }
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 1;
         }

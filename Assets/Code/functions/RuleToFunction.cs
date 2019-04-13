@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Assets.Code.functions
 {
-    public partial class RuleToFunction : DefaultArithFunction
+    public partial class RuleToFunction : ArithFunction
     {
         private string literal;
         private int arity;
@@ -17,13 +17,13 @@ namespace Assets.Code.functions
             this.arity = arity;
         }
 
-        public string GetName()
+        public override string GetName()
         {
             //return super.getName()+"_{"+literal+"}";
             return base.GetName()+"_{"+literal+"}";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             // create a literal to perform the query
             Literal r;
@@ -50,12 +50,12 @@ namespace Assets.Code.functions
                 throw new JasonityException("No solution was found for rule " + r);
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == arity;
         }
 
-        public bool allowUngroundTerms()
+        public override bool AllowUngroundTerms()
         {
             return true;
         }

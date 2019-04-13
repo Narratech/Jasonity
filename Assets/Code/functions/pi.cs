@@ -4,20 +4,20 @@ using System;
 
 namespace Assets.Code.functions
 {
-    public partial class pi : DefaultArithFunction
+    public partial class pi : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return "math.pi";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             return Math.PI;
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 0;
         }

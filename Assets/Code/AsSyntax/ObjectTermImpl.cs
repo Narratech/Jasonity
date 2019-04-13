@@ -8,8 +8,7 @@ using System.Reflection;
 namespace Assets.Code.AsSyntax
 {
     public class ObjectTermImpl : DefaultTerm, IObjectTerm
-    {
-        private static readonly long serialVersionUID = 1L;
+    { 
         private readonly object o;
         private MethodInfo mClone;
         private bool hasTestedClone = false;

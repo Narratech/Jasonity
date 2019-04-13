@@ -31,7 +31,7 @@ namespace Assets.Code.Agent
         private List<Literal> initialGoals = null;
         private List<Literal> initialBeliefs = null;
         private Dictionary<string, InternalAction> internalActions = null;
-        private Dictionary<string, IArithFunction> functions = null;
+        private Dictionary<string, ArithFunction> functions = null;
         private bool hasCustomSelOp = true;
         //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
 
@@ -419,23 +419,23 @@ namespace Assets.Code.Agent
         {
             if (functions == null)
             {
-                functions = new Dictionary<string, IArithFunction>();
+                functions = new Dictionary<string, ArithFunction>();
             }
             //addFunction(Count.class, false);
             AddFunction(Count, false);
         }
         //Class<? extends ArithFunction> c ?? wtf is this
-        public void AddFunction(IArithFunction c)
+        public void AddFunction(ArithFunction c)
         {
             AddFunction(c, true);
         }
 
         //Class<? extends ArithFunction> c ?????????????????????????????
-        private void AddFunction(IArithFunction c, bool user)
+        private void AddFunction(ArithFunction c, bool user)
         {
             try
             {
-                IArithFunction af = c.newInstance();
+                ArithFunction af = c.newInstance();
                 string error = null;
                 if (user)
                 {
@@ -476,13 +476,13 @@ namespace Assets.Code.Agent
             }
         }
 
-        public IArithFunction GetFunction(string function, int arity)
+        public ArithFunction GetFunction(string function, int arity)
         {
             if (functions == null)
             {
                 return null;
             }
-            IArithFunction af = functions[function];
+            ArithFunction af = functions[function];
             if (af == null || !af.CheckArity(arity))
             {
                 af = FunctionRegister.GetFunction(function, arity);

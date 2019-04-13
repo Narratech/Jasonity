@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace Assets.Code.functions
 {
-    public partial class Count : DefaultArithFunction
+    public partial class Count : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return ".count";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             if (reasoner == null)
             {
@@ -22,20 +22,21 @@ namespace Assets.Code.functions
             ILogicalFormula logExpr = (ILogicalFormula)args[0];
             int n = 0;
             IEnumerator<Unifier> iu = logExpr.LogicalConsequence(reasoner.GetAgent(), new Unifier());
+            Unifier aux = new Unifier();
             while (iu.MoveNext())
             {
-                iu.Current;
+                aux = iu.Current;
                 n++;
             }
             return n;
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 1;
         }
 
-        public bool AllowUngroundTerms()
+        public override bool AllowUngroundTerms()
         {
             return true;
         }

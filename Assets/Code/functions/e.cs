@@ -4,20 +4,20 @@ using System;
 
 namespace Assets.Code.functions
 {
-    public partial class e : DefaultArithFunction
+    public partial class e : ArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return "math.e";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             return Math.E;
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 0;
         }

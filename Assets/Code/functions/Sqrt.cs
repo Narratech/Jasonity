@@ -8,12 +8,12 @@ namespace Assets.Code.functions
     public partial class Sqrt : DefaultArithFunction
     {
 
-        public string GetName()
+        public override string GetName()
         {
             return "math.sqrt";
         }
 
-        public double Evaluate(Reasoner reasoner, ITerm[] args)
+        public override double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             if (args[0].IsNumeric())
             {
@@ -26,7 +26,7 @@ namespace Assets.Code.functions
             }
         }
 
-        public bool CheckArity(int a)
+        public override bool CheckArity(int a)
         {
             return a == 1;
         }
