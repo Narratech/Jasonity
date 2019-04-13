@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 
@@ -20,11 +21,11 @@ namespace Assets.Code.functions
             }
             else if (args[0].IsString())
             {
-                return ((IStringTerm)args[0]).GetString().Length();
+                return ((IStringTerm)args[0]).GetString().Length;
             }
             else
             {
-                throw new JasonException("The argument '" + args[0] + "' is not numeric!");
+                throw new JasonityException("The argument '" + args[0] + "' is not numeric!");
             }
         }
 

@@ -17,8 +17,8 @@ namespace Assets.Code.Stdlib
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             base.Execute(ts, un, args);
-            ts.GetC().ClearEvents();
-            ts.GetC().ClearPendingEvents();
+            ts.GetCircumstance().ClearEvents();
+            ts.GetCircumstance().ClearPendingEvents();
             return true;
         }
     }

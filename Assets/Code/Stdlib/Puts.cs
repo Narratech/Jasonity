@@ -86,7 +86,7 @@ namespace Assets.Code.Stdlib
                         matcher.appendReplacement(sb, "#{" + sVar + "}");
                     }
                 }
-                matcher.appendTail(sb);
+                matcher.ppendTail(sb);
             }
 
             if (args[args.Length - 1].IsVar())
@@ -96,7 +96,7 @@ namespace Assets.Code.Stdlib
             }
             else
             {
-                r.GetLogger().Info(sb.ToString());
+                //r.GetLogger().Info(sb.ToString());
                 return true;
             }
         }

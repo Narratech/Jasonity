@@ -14,9 +14,9 @@ namespace Assets.Code.Stdlib
 {
     public class Add_nested_source:DefaultInternalAction
     {
-        private static InternalAction singleton = null;
+        private static IInternalAction singleton = null;
 
-        private static InternalAction Create()
+        private static IInternalAction Create()
         {
             if (singleton == null)
             {

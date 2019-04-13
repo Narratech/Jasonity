@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.Mas2J;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
@@ -29,11 +30,11 @@ namespace Assets.Code.Stdlib
         {
             if (args.Length > 1 && !args[1].IsString())
             {
-                throw JasonException.CreateWrongArgument(this, "second argument must be a string");
+                throw JasonityException.CreateWrongArgument(this, "second argument must be a string");
             }
             if (args.Length == 3 && !args[2].IsList())
             {
-                throw JasonException.CreateWrongArgument(this, "third argument must be a list");
+                throw JasonityException.CreateWrongArgument(this, "third argument must be a list");
 
             }
         }
@@ -68,7 +69,7 @@ namespace Assets.Code.Stdlib
                 }
             }
             RuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
-            name = rs.CreateAgent(name, source, agClass, AgArchClasses, bbPars, GetSettings(ts), ts.GetAg());
+            name = rs.CreateAgent(name, source, agClass, AgArchClasses, bbPars, GetSettings(ts), ts.GetAgent());
             rs.StartAgent(name);
 
             if (args[0].IsVar())
@@ -142,7 +143,7 @@ namespace Assets.Code.Stdlib
             }
             if (t.IsString())
             {
-                return Structure.Parse((t as IStringTerm).GetString());
+                return AsSyntax.AsSyntax.ParseStructure((t as IStringTerm).GetString());
             }
         }
     }

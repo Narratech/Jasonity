@@ -195,7 +195,7 @@ namespace Assets.Code.AsSyntax
                     if (op != null)
                     {
                         Literal l = ((Literal)p.GetBodyTerm().Clone()).ForceFullLiteralImpl();
-                        l.DelAnnot(IBeliefBase.TSelf);
+                        l.DelAnnot(BeliefBase.TSelf);
                         return new Trigger(op, TEType.belief, l);
 
                     }                       

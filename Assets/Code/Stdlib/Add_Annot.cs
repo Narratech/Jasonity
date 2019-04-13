@@ -14,8 +14,8 @@ namespace Assets.Code.Stdlib
 {
     public class Add_Annot: DefaultInternalAction
     {
-        private static InternalAction singleton = null;
-        public static InternalAction create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction create()
         {
             if (singleton == null)
             {

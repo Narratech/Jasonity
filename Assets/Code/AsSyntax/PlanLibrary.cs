@@ -108,7 +108,7 @@ namespace Assets.Code.AsSyntax
             // adds self source
             if (!p.GetLabel().HasSource())
             {
-                p.GetLabel().AddAnnot(DefaultBeliefBase.TSelf);
+                p.GetLabel().AddAnnot(BeliefBase.TSelf);
             }
 
             if (p.GetTrigger().GetLiteral().GetFunctor().Equals(kqmlReceivedFunctor))

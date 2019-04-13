@@ -347,13 +347,13 @@ namespace Assets.Code.AsSyntax
 
         public virtual IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
         {
-            System.Collections.Generic.IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
+            IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
             if (il == null)
             {
                 return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
             }
 
-            AgentArchitecture arch = (ag != null && ag.GetREasoner() != null ? ag.GetReasoner().GetUserAgArch() : null);
+            AgentArchitecture arch = (ag != null && ag.GetReasoner() != null ? ag.GetReasoner().GetUserAgArch() : null);
             int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Count : 0);
 
             return new MyIEnumerator<Unifier>(arch, nbAnnots, il, ag, un);

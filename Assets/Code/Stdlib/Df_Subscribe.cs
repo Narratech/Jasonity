@@ -14,8 +14,8 @@ namespace Assets.Code.Stdlib
 {
     public class Df_Subscribe: Df_Register
     {
-        private static InternalAction singleton = null;
-        public static InternalAction create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction Create()
         {
             if (singleton == null)
                 singleton = new Df_Subscribe();

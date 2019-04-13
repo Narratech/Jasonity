@@ -17,7 +17,7 @@ namespace Assets.Code.Stdlib
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            DropEvt(ts.GetC(), args[0] as Literal, un);
+            DropEvt(ts.GetCircumstance(), args[0] as Literal, un);
             return true;
         }
     }

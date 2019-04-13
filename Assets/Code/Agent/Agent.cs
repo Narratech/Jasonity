@@ -23,7 +23,7 @@ namespace Assets.Code.Agent
 {
     public class Agent
     {
-        private IBeliefBase bb = null;
+        private BeliefBase bb = null;
         private PlanLibrary pl = null;
         private Reasoner reasoner = null;
         private string aslSource = null;
@@ -47,10 +47,10 @@ namespace Assets.Code.Agent
                 //Agent ag = (Agent) Class.forName(agClass).newInstance(); //???
                 Agent ag = new Agent();
                 Reasoner r = new Reasoner(ag, null, agArch, stts);
-                IBeliefBase bb = null;
+                BeliefBase bb = null;
                 if (bbPars == null)
                 {
-                    bb = new DefaultBeliefBase();
+                    bb = new BeliefBase();
                 } else
                 {
                     //bb = (BeliefBase) Class.forName(bbPars.getClassName()).newInstance();
@@ -77,7 +77,7 @@ namespace Assets.Code.Agent
         {
             if (bb == null)
             {
-                new DefaultBeliefBase();
+                new BeliefBase();
             }
 
             if (pl == null)
@@ -388,7 +388,7 @@ namespace Assets.Code.Agent
             parser.Agent(this);
         }
 
-        public IInternalAction getIA(string iaName) {
+        public IInternalAction GetIA(string iaName) {
             if (iaName.ElementAt(0) == '.')
             {
                 iaName = "jason.stdlib" + iaName;
@@ -540,7 +540,7 @@ namespace Assets.Code.Agent
             }
             if (!b.HasSource())
             {
-                b.AddAnnot(DefaultBeliefBase.TSelf);
+                b.AddAnnot(BeliefBase.TSelf);
             }
             if (b.IsRule())
             {
@@ -568,7 +568,7 @@ namespace Assets.Code.Agent
             {
                 d.MakeVarsAnnon();
                 if (!d.HasSource())
-                    d.AddAnnot(DefaultBeliefBase.TSelf);
+                    d.AddAnnot(BeliefBase.TSelf);
                 GetReasoner().GetCircumstance().AddAchvGoal(d, Intention.emptyInt);
             }
             initialGoals.Clear();
@@ -587,9 +587,9 @@ namespace Assets.Code.Agent
                         g.MakeVarsAnnon();
                         if (!g.HasSource())
                         {
-                            g.AddAnnot(DefaultBeliefBase.TSelf);
+                            g.AddAnnot(BeliefBase.TSelf);
                         }
-                        GetReasoner().getCircumstance().AddAchvGoal(g, Intention.emptyInt);
+                        GetReasoner().GetCircumstance().AddAchvGoal(g, Intention.emptyInt);
                     }
                 }
                 catch (Exception e)
@@ -711,11 +711,12 @@ namespace Assets.Code.Agent
             return reasoner;
         }
 
-        public void SetBB(DefaultBeliefBase bb)
+        public void SetBB(BeliefBase bb)
         {
             this.bb = bb;
         }
-        public IBeliefBase GetBB()
+
+        public BeliefBase GetBB()
         {
             return bb;
         }
@@ -760,7 +761,7 @@ namespace Assets.Code.Agent
                     if (reasoner.GetCircumstance().HasListener() || pl.HasCandidatePlan(te))
                     {
                         l = AsSyntax.AsSyntax.CreateLiteral(l.GetFunctor(), l.GetTermsArray());
-                        l.AddAnnot(DefaultBeliefBase.TPercept);
+                        l.AddAnnot(BeliefBase.TPercept);
                         te.SetLiteral(l);
                         reasoner.GetCircumstance().AddEvent(new Event(te, Intention.emptyInt));
                     }
@@ -772,7 +773,7 @@ namespace Assets.Code.Agent
                 try
                 {
                     Literal lp = lw.GetLiteral().copy().forceFullLiteralImpl();
-                    lp.AddAnnot(DefaultBeliefBase.TPercept);
+                    lp.AddAnnot(BeliefBase.TPercept);
                     if (GetBB().Add(lp))
                     {
                         adds++;
@@ -920,7 +921,7 @@ namespace Assets.Code.Agent
         {
             if (!bel.HasSource())
             {
-                bel.AddAnnot(DefaultBeliefBase.TSelf);
+                bel.AddAnnot(BeliefBase.TSelf);
             }
             List<Literal>[] result = Brf(bel, null, Intention.emptyInt);
             if (result != null && reasoner != null)
@@ -937,7 +938,7 @@ namespace Assets.Code.Agent
         {
             if (!bel.HasSource())
             {
-                bel.AddAnnot(DefaultBeliefBase.TSelf);
+                bel.AddAnnot(BeliefBase.TSelf);
             }
             List<Literal>[] result = Brf(null, bel, Intention.emptyInt);
             if (result != null && reasoner != null)

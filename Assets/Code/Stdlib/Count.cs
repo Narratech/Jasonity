@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Assets.Code.Stdlib
         {
             if (!(args[0].GetType() == typeof(ILogicalFormula)))
             {
-                throw JasonException.CreateWrongArgument(this, "first argument must be a formula");
+                throw JasonityException.CreateWrongArgument(this, "first argument must be a formula");
             }
         }
 
@@ -37,7 +38,7 @@ namespace Assets.Code.Stdlib
             CheckArguments(args);
             ILogicalFormula logExpr = args[0] as ILogicalFormula;
             int n = 0;
-            IEnumerator<Unifier> iu = logExpr.LogicalConsequence(ts.GatAg(), un);
+            IEnumerator<Unifier> iu = logExpr.LogicalConsequence(ts.GetAgent(), un);
             while (iu.Current != null)
             {
                 iu.MoveNext();

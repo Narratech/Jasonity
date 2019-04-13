@@ -24,7 +24,7 @@ namespace Assets.Code.Stdlib
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            Circumstance C = ts.GetC();
+            Circumstance C = ts.GetCircumstance();
             C.ClearRunnigIntentions();
             C.ClearPendingIntentions();
             C.ClearPendingActions();
@@ -50,7 +50,7 @@ namespace Assets.Code.Stdlib
                 }
             }
 
-            At atia = ts.GetAg().GetIA(At.atAtom) as At;
+            At atia = ts.GetAgent().GetIA(At.atAtom) as At;
             atia.CancelAts();
             return true;
         }

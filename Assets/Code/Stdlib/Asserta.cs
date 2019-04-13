@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
 using System;
@@ -24,11 +25,11 @@ namespace Assets.Code.Stdlib
         protected override void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
-            if (!args[0].isLiteral())
+            if (!args[0].IsLiteral())
             {
                 if (!args[0].IsGround() && !args[0].IsRule())
                 {
-                    throw new JasonException.CreateWrongArgument(this, "first argument must be a ground literal (or rule).");
+                    throw new JasonityException.CreateWrongArgument(this, "first argument must be a ground literal (or rule).");
                 }
             }
         }
@@ -41,7 +42,7 @@ namespace Assets.Code.Stdlib
             {
                 l.AddAnnot(BeliefBase.TSelf);
             }
-            List<Literal>[] result = ts.GetAg().Brf(l, null, null, false);
+            List<Literal>[] result = ts.GetAgent().Brf(l, null, null, false);
             if (result != null)
             {
                 ts.UpdateEvents(result, null);

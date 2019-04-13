@@ -22,8 +22,8 @@ namespace Assets.Code.Stdlib
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            ts.GetC().ClearEvents();
-            ts.GetC().ClearPendingEvents();
+            ts.GetCircumstance().ClearEvents();
+            ts.GetCircumstance().ClearPendingEvents();
             return true;
         }
     }

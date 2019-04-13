@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -43,10 +44,10 @@ namespace Assets.Code.functions
                 if (value.IsNumeric())
                     return ((INumberTerm)value).Solve();
                 else
-                    throw new JasonException("The result of " + r + " (=" + value + ") is not numeric!");
+                    throw new JasonityException("The result of " + r + " (=" + value + ") is not numeric!");
             }
             else
-                throw new JasonException("No solution was found for rule " + r);
+                throw new JasonityException("No solution was found for rule " + r);
         }
 
         public bool CheckArity(int a)

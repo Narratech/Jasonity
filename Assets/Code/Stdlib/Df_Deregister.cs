@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace Assets.Code.Stdlib
 {
     public class Df_Deregister: Df_Register
     {
-        private static InternalAction singleton = null;
-        public static InternalAction Create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction Create()
         {
             if (singleton == null)
             {
@@ -33,7 +34,7 @@ namespace Assets.Code.Stdlib
         public object Excute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            ts.GetUserAgArch().GetRuntimeServices().DfDeRegister(ts.GetUserAgArch().GetAgName(), GetService(args), GetType(args));
+            ts.GetUserAgArch().GetRuntimeServices().DfDeRegister(ts.GetUserAgArch().GetAgentName(), GetService(args), GetType(args));
             return true;
         }
     }

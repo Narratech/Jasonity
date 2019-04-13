@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIManager;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,13 @@ namespace Assets.Code.Stdlib
 
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
-            checkArguments(args);
-            return AllDesires(ts.GetC(), args[0] as Literal, args.Length == 2 ? args[1] : null, un);
+            CheckArguments(args);
+            return AllDesires(ts.GetCircumstance(), args[0] as Literal, args.Length == 2 ? args[1] : null, un);
         }
 
         public static IEnumerator<Unifier> AllDesires(Circumstance C, Literal l, ITerm intAsTerm, Unifier un)
         {
-            const Trigger teFroml = new Trigger(TeOperator.Add, TeType.Achive, l);
+            const Trigger teFroml = new Trigger(TEOperator.add, TEType.achieve, l);
 
             return new IEnumerator<Unifier>()
             {

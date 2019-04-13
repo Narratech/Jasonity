@@ -1,5 +1,6 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
+using BDIManager.Intentions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,12 +30,12 @@ namespace Assets.Code.Stdlib
             CheckArguments(args);
 
             //try to get the intention from the "body"
-            Intention i = ts.GetC().GetSelectedIntention();
+            Intention i = ts.GetCircumstance().GetSelectedIntention();
 
             if (i == null)
             {
                 //try to get the intention from the event
-                Event evt = ts.GetC().GetSelectedEvent();
+                Event evt = ts.GetCircumstance().GetSelectedEvent();
                 if (evt != null)
                 {
                     i = evt.GetIntention();

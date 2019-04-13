@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Assets.Code.Stdlib
             base.CheckArguments(args);
             if (!args[0].IsLiteral())
             {
-                throw JasonException.createWrongArgument(this, "first argument must be a literal");
+                throw JasonityException.createWrongArgument(this, "first argument must be a literal");
             }
         }
 

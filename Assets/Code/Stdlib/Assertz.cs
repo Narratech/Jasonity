@@ -27,7 +27,7 @@ namespace Assets.Code.Stdlib
             {
                 if (!args[0].IsGround() && !args[0].IsRule())
                 {
-                    throw new JasonExecption.CreateWrongArguments(this, "first argument must be a ground literal (or rule).");
+                    throw new JasonityExecption.CreateWrongArguments(this, "first argument must be a ground literal (or rule).");
                 }
             }
         }
@@ -36,7 +36,7 @@ namespace Assets.Code.Stdlib
         {
             CheckArguments(args);
 
-            List<Literal>[] result = ts.GetAg().Brf((Literal)args[0], null, null, true);
+            List<Literal>[] result = ts.GetAgent().Brf((Literal)args[0], null, null, true);
             if (result != null)
             {
                 ts.UpdateEvents(result, null);

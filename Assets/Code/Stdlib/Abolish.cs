@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Abolish:DefaultInternalAction
+    public class Abolish: DefaultInternalAction
     {
         public override int GetMinArgs()
         {
@@ -28,14 +29,14 @@ namespace Assets.Code.Stdlib
         {            
             if (!args[0].IsLiteral() && !args[0].IsVar())
             {
-                throw new JasonException.createWrongArgument(this, "first argument must be a literal or variable.");
+                throw new JasonityException.CreateWrongArgument(this, "first argument must be a literal or variable.");
             }
         }
 
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            ts.GetAg().Abolish((Literal)args[0], un);
+            ts.GetAgent().Abolish((Literal)args[0], un);
             return true;
         }
     }

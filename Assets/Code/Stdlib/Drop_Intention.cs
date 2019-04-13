@@ -1,5 +1,6 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Assets.Code.Stdlib
             base.CheckArguments(args);
             if (args.Length > 0 && !args[0].IsLiteral() && !args[0].IsVar())
             {
-                throw JasonException.createWrongArgument(this, "first argument '" + args[0] + 
+                throw JasonityException.CreateWrongArgument(this, "first argument '" + args[0] + 
                     "' must be a literal or variable");
             }
         }
@@ -50,7 +51,7 @@ namespace Assets.Code.Stdlib
             }
             else
             {
-                resultSuspend = DropInt(ts.GetC(), args[0] as Literal, un);
+                resultSuspend = DropInt(ts.GetCircumstance(), args[0] as Literal, un);
             }
             return true;
         }
@@ -63,7 +64,7 @@ namespace Assets.Code.Stdlib
         public bool DropInt(Circumstance C, Literal goal, Unifier un)
         {
             Unifier bak = un.Clone();
-            Trigger g = new Trigger(TEOperator.Add, TeType.Achive, goal);
+            Trigger g = new Trigger(TEOperator.add, TEType.achieve, goal);
             bool isCurrentInt = false;
             IEnumerator<Intention> iint = C.GetAllIntentions();
             while (iint.Current != null)

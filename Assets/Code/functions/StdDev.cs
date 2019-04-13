@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 
@@ -39,7 +40,7 @@ namespace Assets.Code.functions
                     }
                 return Math.Sqrt(squareSum / (n - 1));
             }
-            throw new JasonException(GetName() + " is not implemented for type '" + args[0] + "'.");
+            throw new JasonityException(GetName() + " is not implemented for type '" + args[0] + "'.");
         }
 
         public bool CheckArity(int a)

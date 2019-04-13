@@ -14,8 +14,8 @@ namespace Assets.Code.Stdlib
 {
     public class Date:DefaultInternalAction
     {
-        private static InternalAction singleton = null;
-        public static InternalAction Create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction Create()
         {
             if (singleton == null)
                 singleton = new Date();

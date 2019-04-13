@@ -10,12 +10,11 @@ namespace Assets.Code.AsSyntax
 {
     public class ArithFunctionTerm:Structure, INumberTerm
     {
-        private static readonly long serialVersionUID = 1L;
         protected INumberTerm value = null;
-        private ArithFunction function = null;
+        private IArithFunction function = null;
         private Agent.Agent agent = null;
 
-        public ArithFunctionTerm(ArithFunction function):base(function.GetName(), 2)
+        public ArithFunctionTerm(IArithFunction function):base(function.GetName(), 2)
         {
             this.function = function; 
         }

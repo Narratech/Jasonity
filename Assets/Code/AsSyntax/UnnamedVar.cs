@@ -13,7 +13,6 @@ namespace Assets.Code.AsSyntax
      */
     public class UnnamedVar:VarTerm
     {
-        private static readonly long serialVersionUID = 1L;
 
         private static int varCont = 0;
         public int myId;

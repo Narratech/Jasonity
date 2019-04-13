@@ -1,5 +1,6 @@
 ﻿using Assets.Code.AsSemantic;
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using System;
@@ -16,20 +17,20 @@ namespace Assets.Code.Stdlib
 {
     public class Difference: DefaultInternalAction
     {
-        private static InternalAction singleton = null;
-        public static InternalAction create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction Create()
         {
             if (singleton == null)
                 singleton = new Difference();
             return singleton;
         }
 
-        public int getMinArgs()
+        public int GetMinArgs()
         {
             return 3;
         }
 
-        public int getMaxArgs()
+        public int GetMaxArgs()
         {
             return 3;
         }
@@ -38,11 +39,11 @@ namespace Assets.Code.Stdlib
         {
             base.CheckArguments(args);// check number of arguments
             if (!args[0].IsList())
-                throw new JasonException.createWrongArgument(this,"first argument '"+args[0]+"'is not a list.");
+                throw new JasonityException.CreateWrongArgument(this,"first argument '"+args[0]+"'is not a list.");
             if (!args[1].IsList())
-                throw new JasonException.createWrongArgument(this,"second argument '"+args[1]+"'is not a list.");
+                throw new JasonityException.CreateWrongArgument(this,"second argument '"+args[1]+"'is not a list.");
             if (!args[2].IsVar() && !args[2].IsList())
-                throw new JasonException.createWrongArgument(this,"last argument '"+args[2]+"'is not a list nor a variable.");
+                throw new JasonityException.CreateWrongArgument(this,"last argument '"+args[2]+"'is not a list nor a variable.");
         }
 
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)

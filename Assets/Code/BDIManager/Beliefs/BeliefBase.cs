@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.Logic.AsSyntax;
+using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Beliefs
 {
-    public class DefaultBeliefBase : IBeliefBase
+    public class BeliefBase
     {
         private Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>> nameSpaces = new Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>>();
         private Dictionary<PredicateIndicator, BelEntry> belsMapDefaultNS = new Dictionary<PredicateIndicator, BelEntry>();
@@ -15,13 +16,14 @@ namespace BDIManager.Beliefs
         private int size = 0;
 
         public HashSet<Literal> percepts = new HashSet<Literal>();
+
         public static readonly ITerm APercept = new Atom("percept");
         public static readonly ITerm TPercept = Pred.CreateSource(APercept);
-        static public ITerm ASelf = new Atom("self");
-        static public ITerm TSelf = Pred.CreateSource(ASelf);
+        public static readonly ITerm ASelf = new Atom("self");
+        public static readonly ITerm TSelf = Pred.CreateSource(ASelf);
 
         // Constructor
-        public DefaultBeliefBase()
+        public BeliefBase()
         {
             nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);
         }
@@ -228,6 +230,11 @@ namespace BDIManager.Beliefs
             {
                 return map[new StructureWrapperForLiteral(l)];
             }
+        }
+
+        internal IEnumerator<Literal> GetCandidateBeliefs(Literal literal, Unifier un)
+        {
+            throw new NotImplementedException();
         }
     }
 }

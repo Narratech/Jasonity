@@ -61,7 +61,8 @@ namespace Assets.Code.AsSyntax
 
         public override ITerm Capply(Unifier u)
         {
-            ITerm v = u.Remove(cyclicVar);
+            ITerm v = u.Get(cyclicVar);
+            u.Remove(cyclicVar);
             ITerm r = new CyclicTerm(this, cyclicVar.Clone() as VarTerm, u);
             if (v != null)
             {

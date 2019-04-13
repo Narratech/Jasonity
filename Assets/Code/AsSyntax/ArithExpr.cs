@@ -15,7 +15,6 @@ namespace Assets.Code.AsSyntax
      */
     public class ArithExpr:ArithFunctionTerm, INumberTerm
     {
-        private static readonly long serialVersionUID = 1L;
         private ArithmeticOp op = ArithmeticOp.none;
 
         public class ArithmeticOp

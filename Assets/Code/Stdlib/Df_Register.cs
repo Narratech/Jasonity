@@ -32,7 +32,7 @@ namespace Assets.Code.Stdlib
         public object Excute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            ts.GetUserAgArch().GetRuntimeServices().DfRegister(ts.GetUserAgArch().GetAgName(), GetService(args), GetType(args));
+            ts.GetUserAgArch().GetRuntimeServices().DfRegister(ts.GetUserAgArch().GetAgentName(), GetService(args), GetType(args));
             return true;
         }
 

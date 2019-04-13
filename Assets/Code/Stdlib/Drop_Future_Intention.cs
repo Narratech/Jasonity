@@ -1,5 +1,6 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
@@ -27,7 +28,7 @@ namespace Assets.Code.Stdlib
             base.CheckArguments(args);
             if (!args[0].IsLiteral())
             {
-                throw JasonException.createWrongArgument(this, "first argument '" + args[0] + "' must be a literal");
+                throw JasonityException.CreateWrongArgument(this, "first argument '" + args[0] + "' must be a literal");
             }
         }
 
@@ -39,10 +40,10 @@ namespace Assets.Code.Stdlib
             while (iint.Current != null)
             {
                 Intention i = iint.Current;
-                PlanBody pb = i.Peek().GetPlan().GetBody();
+                IPlanBody pb = i.Peek().GetPlan().GetBody();
                 while (pb != null)
                 {
-                    if (pb.GetBodyType() == BodyType.Achive || pb.GetBodyType() == BodyType.AchiveNF)
+                    if (pb.GetBodyType() == BodyType.achieve || pb.GetBodyType() == BodyType.achieveNF)
                     {
                         if (un.Unifies(pb.GetBodyTerm(), goal))
                         {

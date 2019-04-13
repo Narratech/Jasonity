@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 
@@ -21,7 +22,7 @@ namespace Assets.Code.functions
             }
             else
             {
-                throw new JasonException("The argument '"+args[0]+"' is not numeric!");
+                throw new JasonityException("The argument '"+args[0]+"' is not numeric!");
             }
         }
 

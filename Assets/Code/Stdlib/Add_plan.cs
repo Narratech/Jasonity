@@ -1,6 +1,7 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
+using BDIManager.Desires;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,17 +45,17 @@ namespace Assets.Code.Stdlib
             {
                 foreach (ITerm t in (IListTerm)args[0])
                 {
-                    ts.GetAg().GetPL().Add(Transform2Plan(t), source, before);
+                    ts.GetAgent().GetPL().Add(Transform2Plan(t), source, before);
                 }
             }
             else
             {
-                ts.GetAg().GetPL().Add(Transform2Plan(args[0]), source, before);
+                ts.GetAgent().GetPL().Add(Transform2Plan(args[0]), source, before);
             }
 
-            if (ts.GetAg().GetPL().hasMetaEventPlans())
+            if (ts.GetAgent().GetPL().HasMetaEventPlans())
             {
-                ts.AddGoalListener(new GoalListenerForMetaEvents(ts));
+                ts.AddDesireListener(new DefaultDesire(ts));
             }
             return true;
         }

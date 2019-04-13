@@ -1,14 +1,13 @@
 ﻿using System;
-using System.IO;
 using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.AsSyntax
 {
     public class Plan : Structure
     {
-        private ITerm TAtomic = AsSyntax.CreateAtom("atomic");   // ???
-        private ITerm TBreakPoint = AsSyntax.CreateAtom("breakpoint"); // ???
-        private ITerm TAllUnifs = AsSyntax.CreateAtom("all_unifs"); // ???
+        private ITerm TAtomic = AsSyntax.CreateAtom("atomic");  
+        private ITerm TBreakPoint = AsSyntax.CreateAtom("breakpoint");
+        private ITerm TAllUnifs = AsSyntax.CreateAtom("all_unifs");
 
         private Pred label = null;
         private Trigger tevent = null;

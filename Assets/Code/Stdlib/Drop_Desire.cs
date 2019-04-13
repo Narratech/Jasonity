@@ -14,13 +14,13 @@ namespace Assets.Code.Stdlib
         public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             base.Execute(ts, un, args);
-            DropEvt(ts.GetC(), args[0] as Literal, un);
+            DropEvt(ts.GetCircumstance(), args[0] as Literal, un);
             return true;
         }
 
         public void DropEvt(Circumstance C, Literal l, Unifier un)
         {
-            Trigger te = new Trigger(TEOperator.Add(), TEType.Achive(), l);
+            Trigger te = new Trigger(TEOperator.add, TEType.achieve, l);
 
             //search in E
             C.RemoveEvents(te, un);

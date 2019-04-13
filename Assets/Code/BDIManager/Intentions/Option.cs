@@ -13,12 +13,6 @@ namespace BDIManager.Intentions
         private Plan p;
         private Unifier current;
 
-        public Option(Plan p, Unifier u)
-        {
-            plan = p;
-            unif = u;
-        }
-
         public Option(Plan p, Unifier current)
         {
             this.p = p;

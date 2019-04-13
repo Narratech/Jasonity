@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
@@ -68,11 +69,11 @@ namespace Assets.Code.Stdlib
             }
             else
             {
-                throw new JasonException("The time parameter ('"+stime+ "') of the internal action 'at' is not implemented!");
+                throw new JasonityException("The time parameter ('"+stime+ "') of the internal action 'at' is not implemented!");
             }
             if (deadline == -1)
             {
-                throw new JasonException("The time parameter ('" + time + "') of the internal action 'at' did not parse correctly!");
+                throw new JasonityException("The time parameter ('" + time + "') of the internal action 'at' did not parse correctly!");
             }
 
             Trigger te = Trigger.TryToGetGetTrigger(args[1]);
@@ -104,7 +105,7 @@ namespace Assets.Code.Stdlib
             public CheckDeadline(Trigger te, Reasoner ts)
             {
                 this.id = idCount + 1;
-                this.@event = new Event(te, Intention.EmptyInt);
+                this.@event = new Event(te, Intention.emptyInt);
                 this.ts = ts;
                 ats.Put(id, this);
             }
@@ -120,7 +121,7 @@ namespace Assets.Code.Stdlib
                 {
                     if (!cancelled)
                     {
-                        ts.GetC().AddEvent(@event);
+                        ts.GetCircumstance().AddEvent(@event);
                         ts.GetUserAgArch().Wake();
                     }
                 }

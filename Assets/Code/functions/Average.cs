@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.functions
@@ -28,7 +29,7 @@ namespace Assets.Code.functions
                 }
                 return sum / n;
             }
-            throw new JasonException(GetName() + " is not implemented for type '" + args[0] + "'.");
+            throw new JasonityException(GetName() + " is not implemented for type '" + args[0] + "'.");
         }
 
         public bool CheckArity(int a)

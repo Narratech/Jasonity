@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -13,8 +14,8 @@ namespace Assets.Code.Stdlib
 {
     public class Empty:DefaultInternalAction
     {
-        private static InternalAction singleton = null;
-        public static InternalAction create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction Create()
         {
             if (singleton == null)
                 singleton = new Empty();

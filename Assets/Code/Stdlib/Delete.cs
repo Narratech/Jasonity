@@ -1,4 +1,6 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -13,8 +15,8 @@ namespace Assets.Code.Stdlib
      */
     public class Delete: DefaultInternalAction
     {
-        private static InternalAction singleton = null;
-        public static InternalAction Create()
+        private static IInternalAction singleton = null;
+        public static IInternalAction Create()
         {
             if (singleton == null)
                 singleton = new Delete();
@@ -67,7 +69,7 @@ namespace Assets.Code.Stdlib
             {
                 return un.Unifies(args[2], DeleteFromList(args[0], args[1] as IListTerm, un.Clone()));
             }
-            throw new JasonException("Incorrect use of the internal action '.delete' (see documentation).");
+            throw new JasonityException("Incorrect use of the internal action '.delete' (see documentation).");
         }
 
         IListTerm DeleteFromList(ITerm element, IListTerm l, Unifier un)
@@ -124,7 +126,7 @@ namespace Assets.Code.Stdlib
             {
                 string s1 = st1.GetString();
                 string s2 = st2.GetString();
-                return new StringTermImpl(s2.ReplaceAll(s1, " "));
+                return new StringTermImpl(s2.Replace(s1, " "));
             }
             catch (Exception e)
             {

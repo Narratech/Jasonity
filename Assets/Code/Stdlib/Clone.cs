@@ -15,7 +15,7 @@ namespace Assets.Code.Stdlib
         {
             string agName = args[0].GetString() as IStringTerm;
             RuntimeServices services = ts.GetUserAgArch().GetRuntimeServices();
-            services.Clone(ts.GetAg(), ts.GetUserAgArch().GetAgArchClassesChain(), agName);
+            services.Clone(ts.GetAgent(), ts.GetUserAgArch().GetAgArchClassesChain(), agName);
 
             return true;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Runtime
 {
-    class SourcePath
+    public class SourcePath
     {
         public static readonly string CRPrefix;
     }

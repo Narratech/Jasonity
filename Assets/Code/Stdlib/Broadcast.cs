@@ -29,7 +29,7 @@ namespace Assets.Code.Stdlib
             base.CheckArguments(args);
             if (!args[0].IsAtom())
             {
-                throw new JasonException.CreateWrongArgument(this, "illocutionary force argument must be an atom");
+                throw new JasonityException.CreateWrongArgument(this, "illocutionary force argument must be an atom");
             }
         }
 
@@ -45,7 +45,7 @@ namespace Assets.Code.Stdlib
             ITerm ilf = args[0];
             ITerm pcnt = args[0];
 
-            Message m = new Message(ilf.ToString(), ts.GetUserAgArch().GetAgName(), null, pcnt);
+            Message m = new Message(ilf.ToString(), ts.GetUserAgArch().GetAgentName(), null, pcnt);
             ts.GetUserAgArch().Broadcast(m);
             return true;
         }
