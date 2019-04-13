@@ -12,8 +12,6 @@ namespace Assets.Code.AsSyntax
 {
     public class Atom: Literal
     {
-        private static readonly long serialVersionUID = 1L;
-
         private readonly string functor; // immutable field
         private readonly Atom   ns; // name space
 

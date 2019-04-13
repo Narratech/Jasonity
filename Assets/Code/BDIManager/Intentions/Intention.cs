@@ -8,7 +8,7 @@ using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions
 {
-    class Intention
+    public class Intention
     {
         public static Intention emptyInt = null;
         private static int id = 0;

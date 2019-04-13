@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace BDIManager.Beliefs
 {
-    interface IBeliefBase
+    public interface IBeliefBase
     {
         // Removes all beliefs from BB
         void Clear();

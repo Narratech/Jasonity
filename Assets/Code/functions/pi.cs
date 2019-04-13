@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
 
 namespace Assets.Code.functions
@@ -11,7 +12,7 @@ namespace Assets.Code.functions
             return "math.pi";
         }
 
-        public double Evaluate(TransitionSystem ts, ITerm[] args)
+        public double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             return Math.PI;
         }

@@ -105,7 +105,7 @@ namespace Assets.Code.ReasoningCycle
                     ITerm termvl = function[(VarTerm)term];
                     if (termvl != null && termvl.IsPred())
                     {
-                        Pred pvl = termvl.Clone();
+                        Pred pvl = (Pred)termvl.Clone();
                         pvl.ClearAnnots();
                         Bind((VarTerm)term, pvl);
                     }
@@ -116,7 +116,7 @@ namespace Assets.Code.ReasoningCycle
                     ITerm term2vl = function[(VarTerm)term2];
                     if (term2vl != null && term2vl.IsPred())
                     {
-                        Pred pvl = term2vl.Clone();
+                        Pred pvl = (Pred)term2vl.Clone();
                         pvl.ClearAnnots();
                         Bind((VarTerm)term2, pvl);
                     }
@@ -130,24 +130,24 @@ namespace Assets.Code.ReasoningCycle
             return t.GetType() == trigger.GetType() && Unifies(t.GetLiteral(), trigger.GetLiteral());
         }
 
-        private bool Bind(VarTerm term, Pred pvl) // This one is weird because I need it but it doesn't exist in the original
+        public bool Bind(VarTerm term, Pred pvl) // This one is weird because I need it but it doesn't exist in the original
         {
             throw new NotImplementedException();
         }
 
-        private VarTerm GetVarForUnifier(VarTerm term)
+        public VarTerm GetVarForUnifier(VarTerm term)
         {
             term = Deref(term).CloneNS(Literal.DefaultNS);
             term.SetNegated(Literal.LPos);
             return term;
         }
 
-        private bool UnifiesNamespace(VarTerm term, Literal lpvl) // This one is weird too, original uses two Literals, I'm confused
+        public bool UnifiesNamespace(VarTerm term, Literal lpvl) // This one is weird too, original uses two Literals, I'm confused
         {
             throw new NotImplementedException();
         }
 
-        private VarTerm Deref(VarTerm term)
+        public VarTerm Deref(VarTerm term)
         {
             ITerm vl = function[term];
             VarTerm first = term;
@@ -163,7 +163,7 @@ namespace Assets.Code.ReasoningCycle
             return term;
         }
 
-        private bool UnifyTerms(ITerm term, ITerm term2)
+        public bool UnifyTerms(ITerm term, ITerm term2)
         {
             if (term.IsArithExpr())
             {
@@ -220,7 +220,7 @@ namespace Assets.Code.ReasoningCycle
             throw new NotImplementedException();
         }
 
-        private void Bind(VarTerm vt1, VarTerm vt2)
+        public void Bind(VarTerm vt1, VarTerm vt2)
         {
             vt1 = GetVarForUnifier(vt1);
             vt2 = GetVarForUnifier(vt2);
@@ -236,12 +236,12 @@ namespace Assets.Code.ReasoningCycle
             // Doesn't bind if (compare == 0), because they are the same
         }
 
-        private bool UnifyTerms(VarTerm varTerm1, VarTerm varTerm2) // Yet again, something that doesn't exist! I hate this!
+        public bool UnifyTerms(VarTerm varTerm1, VarTerm varTerm2) // Yet again, something that doesn't exist! I hate this!
         {
             throw new NotImplementedException();
         }
 
-        private bool Bind(VarTerm vt, ITerm term)
+        public bool Bind(VarTerm vt, ITerm term)
         {
             if (vt.Negated()) // Negated variables unify only with negated literals
             {
@@ -268,13 +268,13 @@ namespace Assets.Code.ReasoningCycle
             }
             if (!term.IsCyclicTerm() && term.HasVar(vt, this))
             {
-                term = new CyclicTerm((Literal)term, vt.Clone());
+                term = new CyclicTerm((Literal)term, (VarTerm)vt.Clone());
             }
             function.Add(GetVarForUnifier(vt), term);
             return true;
         }
 
-        private object Get(VarTerm var)
+        public ITerm Get(VarTerm var)
         {
             ITerm vl = function[var];
             if (vl != null && vl.IsVar())
@@ -289,7 +289,7 @@ namespace Assets.Code.ReasoningCycle
             throw new NotImplementedException();
         }
 
-        Dictionary<VarTerm,ITerm> GetFunction()
+        public Dictionary<VarTerm,ITerm> GetFunction()
         {
             return function;
         }

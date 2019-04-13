@@ -18,27 +18,27 @@ namespace BDIMaAssets.Code.ReasoningCycle
             this.curInt = curInt;
         }
 
-        internal Intention GetIntention()
+        public Intention GetIntention()
         {
             throw new NotImplementedException();
         }
 
-        internal object GetActionTerm()
+        public object GetActionTerm()
         {
             throw new NotImplementedException();
         }
 
-        internal bool GetResult()
+        public bool GetResult()
         {
             throw new NotImplementedException();
         }
 
-        internal string GetFailureMsg()
+        public string GetFailureMsg()
         {
             throw new NotImplementedException();
         }
 
-        internal object GetFailureReason()
+        public object GetFailureReason()
         {
             throw new NotImplementedException();
         }

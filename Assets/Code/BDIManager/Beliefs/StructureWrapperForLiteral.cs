@@ -6,25 +6,13 @@ using UnityEngine;
 
 namespace Assets.Code.Logic
 {
-    class StructureWrapperForLiteral
+    public class StructureWrapperForLiteral
     {
         private Literal l;
 
         public StructureWrapperForLiteral(Literal l)
         {
             this.l = l;
-        }
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
         }
     }
 }

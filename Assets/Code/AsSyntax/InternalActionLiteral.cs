@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Agent;
 using Assets.Code.ReasoningCycle;
+using Assets.Code.Stdlib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Assets.Code.AsSyntax
      */
     public class InternalActionLiteral:Structure, ILogicalFormula
     {
-        private InternalAction ia = null;
+        private IInternalAction ia = null;
 
         public InternalActionLiteral(string functor):base(functor)
         {
@@ -67,7 +68,7 @@ namespace Assets.Code.AsSyntax
             Literal t = base.MakeVarsAnnon(u);
             if (t.GetFunctor().Equals(".puts"))
             {
-                ((puts)puts.Create()).MakeVarsAnnon(t, u);
+                ((Puts)Puts.Create()).MakeVarsAnnon(t, u);
             }
             return t;
         }
@@ -78,7 +79,7 @@ namespace Assets.Code.AsSyntax
             {
                 try
                 {
-                    InternalAction ia = GetIA(ag);
+                    IInternalAction ia = GetIA(ag);
                     if (!ia.CanBeUsedInContext())
                     {
                         Debug.Log(GetErrorMsg()+ ": internal action" + GetFunctor() + " cannot be used in context or rules");
@@ -111,12 +112,12 @@ namespace Assets.Code.AsSyntax
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
-        public void SetIA(InternalAction ia)
+        public void SetIA(IInternalAction ia)
         {
             this.ia = ia;
         }
 
-        public InternalAction GetIA(Agent.Agent ag)
+        public IInternalAction GetIA(Agent.Agent ag)
         {
             if (ia == null && ag != null)
                 ia = ag.GetIA(GetFunctor());

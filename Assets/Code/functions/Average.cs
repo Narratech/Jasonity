@@ -1,4 +1,5 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.functions
 {
@@ -10,7 +11,7 @@ namespace Assets.Code.functions
             return "math.average";
         }
 
-        public double Evaluate(TransitionSystem ts, ITerm[] args)
+        public double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             if (args[0].IsList())
             {

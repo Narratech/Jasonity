@@ -1,5 +1,7 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
 using System;
+using System.Collections.Generic;
 
 namespace Assets.Code.functions
 {
@@ -17,10 +19,10 @@ namespace Assets.Code.functions
         public string GetName()
         {
             //return super.getName()+"_{"+literal+"}";
-            return :base().GetName()+"_{"+literal+"}";
+            return base.GetName()+"_{"+literal+"}";
         }
 
-        public double Evaluate(TransitionSystem ts, ITerm[] args)
+        public double Evaluate(Reasoner reasoner, ITerm[] args)
         {
             // create a literal to perform the query
             Literal r;
@@ -34,10 +36,10 @@ namespace Assets.Code.functions
             r.AddTerm(answer);
 
             // query the BB
-            Iterator<Unifier> i = r.LogicalConsequence((ts == null ? null : ts.GetAg()), new Unifier());
-            if (i.HasNext())
+            IEnumerator<Unifier> i = r.LogicalConsequence((reasoner == null ? null : reasoner.GetAgent()), new Unifier());
+            if (i.MoveNext())
             {
-                ITerm value = i.Next().Get(answer);
+                ITerm value = i.Current.Get(answer);
                 if (value.IsNumeric())
                     return ((INumberTerm)value).Solve();
                 else

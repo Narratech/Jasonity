@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Agent
 {
-    class Message
+    public class Message
     {
         private object propCont = null;
         private string inReplyTo = null;

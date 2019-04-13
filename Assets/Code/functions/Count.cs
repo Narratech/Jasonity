@@ -1,4 +1,6 @@
 using Assets.Code.AsSyntax;
+using Assets.Code.ReasoningCycle;
+using System.Collections.Generic;
 
 namespace Assets.Code.functions
 {
@@ -10,18 +12,18 @@ namespace Assets.Code.functions
             return ".count";
         }
 
-        public double Evaluate(TransitionSystem ts, ITerm[] args)
+        public double Evaluate(Reasoner reasoner, ITerm[] args)
         {
-            if (ts == null)
+            if (reasoner == null)
             {
                 throw new JasonException("The TransitionSystem parameter of the function '.count' cannot be null.");
             }
             ILogicalFormula logExpr = (ILogicalFormula)args[0];
             int n = 0;
-            Iterator<Unifier> iu = logExpr.LogicalConsequence(ts.GetAg(), new Unifier());
-            while (iu.HasNext())
+            IEnumerator<Unifier> iu = logExpr.LogicalConsequence(reasoner.GetAgent(), new Unifier());
+            while (iu.MoveNext())
             {
-                iu.Next();
+                iu.Current;
                 n++;
             }
             return n;

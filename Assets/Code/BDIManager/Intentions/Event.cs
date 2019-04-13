@@ -4,7 +4,7 @@ using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 
 namespace BDIManager.Intentions {
-    class Event
+    public class Event
     {
         private Trigger trigger = null;
         private Intention intention = Intention.emptyInt;

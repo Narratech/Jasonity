@@ -7,7 +7,7 @@ using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Intentions {
-    class IntendedPlan
+    public class IntendedPlan
     {
         protected IPlanBody planBody;
         protected Plan plan;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Utilities
 {
-    interface Runnable
+    public interface IRunnable
     {
         void Run();
     }

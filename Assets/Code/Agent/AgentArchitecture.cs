@@ -7,6 +7,7 @@ using UnityEngine;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.AsSyntax;
+using Assets.Code.Runtime;
 
 /*
     This is the agent architecture class, defines the agent architecture. 
@@ -125,13 +126,13 @@ namespace Assets.Code.Agent
         }
 
         //Gets the agent's perception as a list of Literals
-        public List<Literal> perceive()
+        public List<Literal> Perceive()
         {
             if (successor == null) {
                 return null;
             } else
             {
-                return successor.perceive();
+                return successor.Perceive();
             }
         }
 

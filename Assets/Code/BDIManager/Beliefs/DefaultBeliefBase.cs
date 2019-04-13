@@ -7,7 +7,7 @@ using Assets.Code.Logic.AsSyntax;
 
 namespace BDIManager.Beliefs
 {
-    class DefaultBeliefBase : BeliefBase
+    public class DefaultBeliefBase : IBeliefBase
     {
         private Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>> nameSpaces = new Dictionary<Atom, Dictionary<PredicateIndicator, BelEntry>>();
         private Dictionary<PredicateIndicator, BelEntry> belsMapDefaultNS = new Dictionary<PredicateIndicator, BelEntry>();
@@ -15,7 +15,8 @@ namespace BDIManager.Beliefs
         private int size = 0;
 
         public HashSet<Literal> percepts = new HashSet<Literal>();
-        private object TPercept;
+        public static readonly ITerm APercept = new Atom("percept");
+        public static readonly ITerm TPercept = Pred.CreateSource(APercept);
         static public ITerm ASelf = new Atom("self");
         static public ITerm TSelf = Pred.CreateSource(ASelf);
 

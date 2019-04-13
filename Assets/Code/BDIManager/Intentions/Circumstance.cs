@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Assets.Code.BDIManager
 {
-    class Circumstance
+    public class Circumstance
     {
         private Queue<ICircumstanceListener> listeners;
         private Queue<Event> E;

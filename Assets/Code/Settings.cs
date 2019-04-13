@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code
 {
-    class Settings
+    public class Settings
     {
         public const int DEFAULT_NUMBER_REASONING_CYCLES = 1;
 

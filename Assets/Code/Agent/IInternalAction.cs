@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Agent
 {
-    public interface InternalAction
+    public interface IInternalAction
     {
     }
 }

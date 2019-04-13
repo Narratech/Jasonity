@@ -128,7 +128,7 @@ namespace Assets.Code.AsSyntax
 
         public void DelLabel() => SetLabel(null);
 
-        private void SetContext(ILogicalFormula le)
+        public void SetContext(ILogicalFormula le)
         {
             context = le;
             if (Literal.LTrue.Equals(le))
@@ -151,7 +151,7 @@ namespace Assets.Code.AsSyntax
             return l;
         }
 
-        internal object GetSrcInfo()
+        public object GetSrcInfo()
         {
             throw new NotImplementedException();
         }
@@ -171,7 +171,7 @@ namespace Assets.Code.AsSyntax
 
         ILogicalFormula GetContext() => context;
 
-        private IPlanBody GetBody() => body;
+        public IPlanBody GetBody() => body;
 
         internal bool IsAtomic() => isAtomic;
 

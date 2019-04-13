@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
+using Assets.Code.Mas2J;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
 using BDIManager.Intentions;
@@ -13,15 +14,15 @@ namespace Assets.Code.Agent
 {
     public class Agent
     {
-        private BeliefBase bb = null;
+        private IBeliefBase bb = null;
         private PlanLibrary pl = null;
         private Reasoner reasoner = null;
         private string aslSource = null;
         //The ones in the source code
         private List<Literal> initialGoals = null;
         private List<Literal> initialBeliefs = null;
-        private Dictionary<string, InternalAction> internalActions = null;
-        private Dictionary<string, ArithFunction> functions = null;
+        private Dictionary<string, IInternalAction> internalActions = null;
+        private Dictionary<string, ArithFunctionTerm> functions = null;
         private bool hasCustomSelOp = true;
         //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
 
@@ -37,7 +38,7 @@ namespace Assets.Code.Agent
                 //Agent ag = (Agent) Class.forName(agClass).newInstance(); //???
                 Agent ag = new Agent();
                 Reasoner r = new Reasoner(ag, null, agArch, stts);
-                BeliefBase bb = null;
+                IBeliefBase bb = null;
                 if (bbPars == null)
                 {
                     bb = new DefaultBeliefBase();
@@ -139,7 +140,7 @@ namespace Assets.Code.Agent
             initialBeliefs.Add(b);
         }
 
-        public void addInitialGoal(Literal g)
+        public void AddInitialGoal(Literal g)
         {
             initialGoals.Add(g);
         }

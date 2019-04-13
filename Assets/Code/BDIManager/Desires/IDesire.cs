@@ -11,7 +11,7 @@ namespace BDIManager.Desires {
     public enum DesireStates { started, suspended, resumed, finished, failed };
     public enum FinishStates { achieved, unachieved, dropped };
 
-    interface IDesire {
+    public interface IDesire {
         // New desire produced by operator
         void DesireStarted(Event desire);
 
