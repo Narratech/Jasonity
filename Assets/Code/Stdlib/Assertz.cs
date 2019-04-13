@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace Assets.Code.Stdlib
             {
                 if (!args[0].IsGround() && !args[0].IsRule())
                 {
-                    throw new JasonityExecption.CreateWrongArguments(this, "first argument must be a ground literal (or rule).");
+                    throw new JasonityException.CreateWrongArguments(this, "first argument must be a ground literal (or rule).");
                 }
             }
         }

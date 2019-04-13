@@ -138,7 +138,7 @@ namespace Assets.Code.Agent
                 {
                     if (GetPL().HasMetaEventPlans())
                     {
-                        GetReasoner().AddDesireListener(new DefaultDesire(GetReasoner()));
+                        GetReasoner().AddDesireListener(new Desire(GetReasoner()));
                     }
 
                     AddInitialBelsFromProjectInBB();
@@ -164,7 +164,7 @@ namespace Assets.Code.Agent
                 ParseAs(input, sourceId);
 
                 if (GetPL().HasMetaEventPlans())
-                    GetReasoner().AddDesireListener(new DefaultDesire(GetReasoner()));
+                    GetReasoner().AddDesireListener(new Desire(GetReasoner()));
 
                 AddInitialBelsInBB();
                 AddInitialDesiresInReasoner();
@@ -246,7 +246,7 @@ namespace Assets.Code.Agent
             a.SetReasoner(new Reasoner(a, GetReasoner().GetCircumstance().Clone(), arch, GetReasoner().GetSettings()));
             if (a.GetPL().HasMetaEventPlans())
             {
-                a.GetReasoner().AddDesireListener(new DefaultDesire(a.GetReasoner()));
+                a.GetReasoner().AddDesireListener(new Desire(a.GetReasoner()));
             }
 
             a.InitAg(); //for initDefaultFunctions() and for overridden/custom agent
@@ -636,7 +636,7 @@ namespace Assets.Code.Agent
 
                 if (GetPL().HasMetaEventPlans())
                 {
-                    GetReasoner().AddGoalListener(new DefaultDesire(GetReasoner()));
+                    GetReasoner().AddGoalListener(new Desire(GetReasoner()));
                 }
             }
         }

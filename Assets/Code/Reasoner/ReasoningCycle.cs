@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using static BDIManager.Desires.Desire;
 
 /*
  * Implements the reasoning cycle. There are 10 steps in the cycle: 
@@ -47,7 +48,7 @@ namespace Assets.Code.ReasoningCycle
         private State stepDeliberate = State.SelEv;
         private State stepAct = State.ProcAct;
 
-        private List<IDesire> desireListeners;
+        private List<Desire> desireListeners;
 
         private bool sleepingEvt = false;
 
@@ -62,7 +63,7 @@ namespace Assets.Code.ReasoningCycle
         //private ConcurrentQueue<IRunnable> taskForBeginOfCycle = new ConcurrentQueue(); - I don't know how to use this
         private ConcurrentQueue<IRunnable> taskForBeginOfCycle = new ConcurrentQueue<IRunnable>();
 
-        private Dictionary<IDesire, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
+        private Dictionary<Desire, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
 
         // the semantic rules are referred to in comments in the functions below
         //private const string kqmlReceivedFunctor = Config.get().getKqmlFunctor();
@@ -99,18 +100,18 @@ namespace Assets.Code.ReasoningCycle
         //Desire listeners support methods
 
         //Adds an object that will be notified about events on desires (creation, suspension...)
-        public void AddDesireListener(IDesire desire)
+        public void AddDesireListener(Desire desire)
         {
             if (desireListeners == null)
             {
-                desireListeners = new List<IDesire>();
-                listenersMap = new Dictionary<IDesire, ICircumstanceListener>();
+                desireListeners = new List<Desire>();
+                listenersMap = new Dictionary<Desire, ICircumstanceListener>();
             } else
             {
                 //To not instantiate two DesireListenerForMetaEvents
-                foreach (IDesire d in desireListeners)
+                foreach (Desire d in desireListeners)
                 {
-                    if (d is DefaultDesire)
+                    if (d is Desire)
                     {
                         return;
                     }
@@ -128,12 +129,12 @@ namespace Assets.Code.ReasoningCycle
             return desireListeners != null && !desireListeners.Any();
         }
 
-        public List<IDesire> GetDesiresListeners()
+        public List<Desire> GetDesiresListeners()
         {
             return desireListeners;
         }
 
-        public bool RemoveDesireListener(IDesire desire)
+        public bool RemoveDesireListener(Desire desire)
         {
             ICircumstanceListener cl = listenersMap[desire];
             if (cl != null)
@@ -390,7 +391,7 @@ namespace Assets.Code.ReasoningCycle
                 //}
                 if (!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
                 {
-                    foreach (IDesire desire in desireListeners)
+                    foreach (Desire desire in desireListeners)
                     {
                         desire.DesireFinished(topTrigger, FinishStates.achieved);
                     }
@@ -555,7 +556,7 @@ namespace Assets.Code.ReasoningCycle
                 {
                     string msg = e.Message + " Ungrounded variables = [";
                     string v = "";
-                    foreach (Var var in body.GetSingletonVars())
+                    foreach (VarTerm var in body.GetSingletonVars())
                     {
                         if (u.Get(var) == null)
                         {
@@ -622,7 +623,7 @@ namespace Assets.Code.ReasoningCycle
             } else if (h.GetBodyType() == BodyType.achieveNF)
             {
                 body = PrepareBodyForEvent(body, u, null);
-                evt = conf.GetCircumstance().AddAchieveDesire(body, Intention.emptyInt);
+                Event evt = conf.GetCircumstance().AddAchieveDesire(body, Intention.emptyInt);
                 CheckHardDeadline(evt);
                 UpdateIntention(curInt);
             } else if (h.GetBodyType() == BodyType.test)
@@ -640,14 +641,14 @@ namespace Assets.Code.ReasoningCycle
                         if (body.IsLiteral())
                         {
                             Trigger t = new Trigger(TEOperator.add, TEType.test, body);
-                            evt = new Event(t, curInt);
-                            if (ag.GetPlanLibrary().HasCandidatePlan(t))
+                            Event evt = new Event(t, curInt);
+                            if (ag.GetPL().HasCandidatePlan(t))
                             {
                                 //if (logger.isLoggable(Level.FINE)) 
                                 //{
                                 //   logger.fine("Test Goal '" + bTerm + "' failed as simple query. Generating internal event for it: " + te);
                                 //}
-                                conf.GetCircumstance().addEvent(evt);
+                                conf.GetCircumstance().AddEvent(evt);
                                 confP.stepAct = State.StartRC;
                                 fail = false;
                             }
@@ -876,7 +877,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 if (HasGoalListener())
                 {
-                    foreach (IDesire desire in desireListeners)
+                    foreach (Desire desire in desireListeners)
                     {
                         desire.DesireFailed(ip.GetTrigger());
                         if (!failEventIsRelevant)
@@ -1022,7 +1023,7 @@ namespace Assets.Code.ReasoningCycle
 
                             if (HasGoalListener())
                             {
-                                foreach (IDesire desire in GetDesiresListeners())
+                                foreach (Desire desire in GetDesiresListeners())
                                 {
                                     foreach (IntendedPlan ip in curInt.GetIntendedPlan())
                                     {
@@ -1295,7 +1296,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 if (HasGoalListener())
                 {
-                    foreach (IDesire d in desireListeners)
+                    foreach (Desire d in desireListeners)
                     {
                         d.DesireFailed(t);
                     }
@@ -1440,10 +1441,10 @@ namespace Assets.Code.ReasoningCycle
                     } else if (send.GetTerm(1).ToString().Equals("askAll") && content.IsList()) //Adds source in each answer if possible
                     {
                         IListTerm tail = new ListTermImpl();
-                        foreach (ITerm t in ((IsListTerm)content))
+                        foreach (ITerm t in ((IListTerm)content))
                         {
-                            t = Add_nested_source.AddAnnotToList(t, new Atom(m.GetSender()));
-                            tail.Append(t);
+                            ITerm term = Add_nested_source.AddAnnotToList(t, new Atom(m.GetSender()));
+                            tail.Append(term);
                         }
                         content = tail;
                     }
@@ -1478,7 +1479,7 @@ namespace Assets.Code.ReasoningCycle
                     {
                         //Ignore answer after the timeout
                         String sender = m.GetSender();
-                        if (sender.Equals(GetUserAgArch().GetAgName()))
+                        if (sender.Equals(GetUserAgArch().GetAgentName()))
                         {
                             sender = "self";
                         }
@@ -1509,7 +1510,7 @@ namespace Assets.Code.ReasoningCycle
                                 content,
                                 new Atom(m.GetMessageId()));
 
-                            UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.EmptyInt()));
+                            UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.emptyInt()));
                         }
                     } else
                     {
@@ -1588,7 +1589,7 @@ namespace Assets.Code.ReasoningCycle
 
         public override string ToString()   
         {
-            return "Reasoning cycle of agent " + GetUserAgArch().GetAgName();
+            return "Reasoning cycle of agent " + GetUserAgArch().GetAgentName();
         }
 
         class FailWithDeadline : fail_goal
@@ -1651,9 +1652,9 @@ namespace Assets.Code.ReasoningCycle
 
         private class CLImplementation : ICircumstanceListener
         {
-            private IDesire d;
+            private Desire d;
 
-            public CLImplementation(IDesire desire)
+            public CLImplementation(Desire desire)
             {
                 d = desire;
             }
@@ -1700,16 +1701,16 @@ namespace Assets.Code.ReasoningCycle
         private class RunnableImpl : IRunnable
         {
             Intention i;
-            IDesire d;
+            Desire d;
             int iSize;
             Reasoner r;
             Literal body;
             Event e;
 
-            public RunnableImpl(Intention intention, IDesire des, int size, Reasoner res, Literal b, Event ev)
+            public RunnableImpl(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
             {
                 Intention i = intention;
-                IDesire d = des;
+                Desire d = des;
                 int iSize = size;
                 Reasoner r = res;
                 Literal body = b;
@@ -1725,16 +1726,16 @@ namespace Assets.Code.ReasoningCycle
             private class RunnableImpl2 : IRunnable
             {
                 Intention i;
-                IDesire d;
+                Desire d;
                 int iSize;
                 Reasoner r;
                 Literal body;
                 Event e;
 
-                public RunnableImpl2(Intention intention, IDesire des, int size, Reasoner res, Literal b, Event ev)
+                public RunnableImpl2(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
                 {
                     Intention i = intention;
-                    IDesire d = des;
+                    Desire d = des;
                     int iSize = size;
                     Reasoner r = res;
                     Literal body = b;

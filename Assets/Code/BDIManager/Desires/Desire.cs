@@ -8,11 +8,14 @@ using BDIManager.Intentions;
 
 //Implements the Desire interface
 namespace BDIManager.Desires {
-    public class DefaultDesire : IDesire
+    public class Desire
     {
+        public enum DesireStates { started, suspended, resumed, finished, failed };
+        public enum FinishStates { achieved, unachieved, dropped };
+
         Reasoner reasoner;
 
-        public DefaultDesire(Reasoner r)
+        public Desire(Reasoner r)
         {
             reasoner = r;
         }

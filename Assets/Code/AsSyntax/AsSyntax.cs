@@ -1,4 +1,5 @@
-﻿using Assets.Code.Logic.AsSyntax.parser;
+﻿using Assets.Code.Exceptions;
+using Assets.Code.Logic.AsSyntax.parser;
 using Assets.Code.Logic.parser;
 using System;
 using System.Collections.Generic;

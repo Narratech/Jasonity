@@ -1,4 +1,5 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIManager;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;

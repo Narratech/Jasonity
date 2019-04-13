@@ -1,6 +1,7 @@
 // Implements a default Belief Base
 using System;
 using System.Collections.Generic;
+using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.Logic.AsSyntax;
@@ -71,6 +72,11 @@ namespace BDIManager.Beliefs
         public bool Add(int index, Literal l)
         {
             return Add(l, index != 0);
+        }
+
+        internal void Init(Agent ag, object p)
+        {
+            throw new NotImplementedException();
         }
 
         // Adds a new literal at the end of the belief base

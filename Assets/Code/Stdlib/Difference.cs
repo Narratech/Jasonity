@@ -1,13 +1,7 @@
-﻿using Assets.Code.AsSemantic;
+﻿using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
-using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 /*
  * Description: S3 is the difference between the sets S1 and S2 (represented by lists).
