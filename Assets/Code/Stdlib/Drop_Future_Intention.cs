@@ -13,17 +13,17 @@ namespace Assets.Code.Stdlib
 {
     public class Drop_Future_Intention:Drop_Desire
     {
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 1;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 1;
         }
 
-        protected void CheckArguments(ITerm[] args)
+        protected override void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
             if (!args[0].IsLiteral())
@@ -32,7 +32,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        public bool DropInt(Circumstance C, Literal goal, Unifier un)
+        public override bool DropInt(Circumstance C, Literal goal, Unifier un)
         {
             Unifier bak = un.Clone();
             bool isCurrentInt = false;

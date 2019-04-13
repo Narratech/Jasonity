@@ -13,27 +13,27 @@ namespace Assets.Code.Stdlib
     /*
      * Description: delete elements of strings or lists.
      */
-    public class Delete: DefaultInternalAction
+    public class Delete: InternalAction
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction Create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if (singleton == null)
                 singleton = new Delete();
             return singleton;
         }
 
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 3;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 4;
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
 

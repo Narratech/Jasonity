@@ -13,7 +13,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Broadcast: DefaultInternalAction
+    public class Broadcast: InternalAction
     {
         public override int GetMinArgs()
         {
@@ -25,12 +25,12 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public override void CheckArguments(ITerm[] args)
+        protected override void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
             if (!args[0].IsAtom())
             {
-                throw new JasonityException.CreateWrongArgument(this, "illocutionary force argument must be an atom");
+                throw JasonityException.CreateWrongArgument(this, "illocutionary force argument must be an atom");
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Stdlib
 {
-    public class Asserta: DefaultInternalAction
+    public class Asserta: InternalAction
     {
         public override int GetMinArgs()
         {
@@ -19,7 +20,7 @@ namespace Assets.Code.Stdlib
 
         public override int GetMaxArgs()
         {
-
+            return 1;
         }
 
         protected override void CheckArguments(ITerm[] args)
@@ -29,7 +30,7 @@ namespace Assets.Code.Stdlib
             {
                 if (!args[0].IsGround() && !args[0].IsRule())
                 {
-                    throw new JasonityException.CreateWrongArgument(this, "first argument must be a ground literal (or rule).");
+                    throw JasonityException.CreateWrongArgument(this, "first argument must be a ground literal (or rule).");
                 }
             }
         }

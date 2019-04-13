@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Current_Intention:DefaultInternalAction
+    public class Current_Intention:InternalAction
     {
         public override int GetMinArgs()
         {
@@ -39,15 +40,15 @@ namespace Assets.Code.Stdlib
                 if (evt != null)
                 {
                     i = evt.GetIntention();
-                }
-                if (i != null)
-                {
-                    return un.Unifies(i.GetAsTerm(), args[0]);
-                }
-                else
-                {
-                    return false;
-                }
+                }                
+            }
+            if (i != null)
+            {
+                return un.Unifies(i.GetAsTerm(), args[0]);
+            }
+            else
+            {
+                return false;
             }
         }
     }

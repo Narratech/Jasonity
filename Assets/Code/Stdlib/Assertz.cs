@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Stdlib
 {
-    public class Assertz: DefaultInternalAction
+    public class Assertz: InternalAction
     {
         public override int GetMinArgs()
         {
@@ -28,7 +29,7 @@ namespace Assets.Code.Stdlib
             {
                 if (!args[0].IsGround() && !args[0].IsRule())
                 {
-                    throw new JasonityException.CreateWrongArguments(this, "first argument must be a ground literal (or rule).");
+                    throw JasonityException.CreateWrongArgument(this, "first argument must be a ground literal (or rule).");
                 }
             }
         }

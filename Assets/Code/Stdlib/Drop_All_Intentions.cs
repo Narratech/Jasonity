@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
@@ -10,19 +11,19 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Stdlib
 {
-    public class Drop_All_Intentions:DefaultInternalAction
+    public class Drop_All_Intentions:InternalAction
     {
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 0;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 0;
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             Circumstance C = ts.GetCircumstance();

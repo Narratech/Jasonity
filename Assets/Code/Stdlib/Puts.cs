@@ -12,11 +12,11 @@ using UnityEngine;
 
 namespace Assets.Code.Stdlib
 {
-    public class Puts : IInternalAction
+    public class Puts : InternalAction
     {
-        private static IInternalAction singleton = null;
+        private static InternalAction singleton = null;
 
-        public static IInternalAction Create()
+        public static InternalAction Create()
         {
             if (singleton == null)
             {
@@ -47,7 +47,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        public object Execute(Reasoner r, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner r, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             StringBuilder sb = new StringBuilder();

@@ -1,4 +1,6 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
 using BDIManager.Desires;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Add_plan: DefaultInternalAction
+    public class Add_plan: InternalAction
     {
         public override int GetMinArgs()
         {
@@ -58,6 +60,38 @@ namespace Assets.Code.Stdlib
                 ts.AddDesireListener(new Desire(ts));
             }
             return true;
+        }
+
+        private Plan Transform2Plan(ITerm t)
+        {
+            Plan p = null;
+            if (t.IsString())
+            {
+                string sPlan = ((IStringTerm)t).GetString();
+                // remove quotes \" -> "
+                StringBuilder sTemp = new StringBuilder();
+                for (int c = 0; c < sPlan.Length; c++)
+                {
+                    if (sPlan.ElementAt(c) != '\\')
+                    {
+                        sTemp.Append(sPlan.ElementAt(c));
+                    }
+                }
+                sPlan = sTemp.ToString();
+                p = AsSyntax.AsSyntax.ParsePlan(sPlan);
+            }
+            else if (t.GetType() == typeof(Plan))
+            {
+                p = (Plan)t;
+            } else {
+                throw JasonityException.CreateWrongArgument(this, "The term '" + t + "' (" + t.GetType().Name + ") can not be used as a plan for .add_plan.");
+            }
+            if (p.GetLabel() != null && p.GetLabel().GetFunctor().StartsWith("l__"))
+            {
+                // if the label is automatic label, remove it
+                p.DelLabel();
+            }
+            return p;
         }
     }
 }

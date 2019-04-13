@@ -16,7 +16,7 @@ namespace Assets.Code.AsSyntax
      */
     public class InternalActionLiteral:Structure, ILogicalFormula
     {
-        private IInternalAction ia = null;
+        private InternalAction ia = null;
 
         public InternalActionLiteral(string functor):base(functor)
         {
@@ -79,7 +79,7 @@ namespace Assets.Code.AsSyntax
             {
                 try
                 {
-                    IInternalAction ia = GetIA(ag);
+                    InternalAction ia = GetIA(ag);
                     if (!ia.CanBeUsedInContext())
                     {
                         Debug.Log(GetErrorMsg()+ ": internal action" + GetFunctor() + " cannot be used in context or rules");
@@ -112,12 +112,12 @@ namespace Assets.Code.AsSyntax
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
         }
 
-        public void SetIA(IInternalAction ia)
+        public void SetIA(InternalAction ia)
         {
             this.ia = ia;
         }
 
-        public IInternalAction GetIA(Agent.Agent ag)
+        public InternalAction GetIA(Agent.Agent ag)
         {
             if (ia == null && ag != null)
                 ia = ag.GetIA(GetFunctor());

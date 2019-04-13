@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.Mas2J;
 using Assets.Code.ReasoningCycle;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class CreateAgent:DefaultInternalAction
+    public class CreateAgent:InternalAction
     {
         public override int GetMinArgs()
         {
@@ -69,7 +70,7 @@ namespace Assets.Code.Stdlib
                 }
             }
             RuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
-            name = rs.CreateAgent(name, source, agClass, AgArchClasses, bbPars, GetSettings(ts), ts.GetAgent());
+            name = rs.CreateAgent(name, source, agClass, AgArchClasses, bbPars, GetSettings(), ts.GetAgent());
             rs.StartAgent(name);
 
             if (args[0].IsVar())
@@ -82,7 +83,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        protected Settings GetName(ITerm[] args)
+        protected Settings GetSettings()
         {
             return new Settings();
         }
@@ -92,7 +93,7 @@ namespace Assets.Code.Stdlib
             string name;
             if (args[0].IsString())
             {
-                name = args[0].GetString() as IStringTerm;
+                name = ((IStringTerm)args[0]).GetString();
             }
             else
             {
@@ -111,8 +112,9 @@ namespace Assets.Code.Stdlib
             string source = null;
             if (args.Length > 1)
             {
-                source = args[1].GetString() as IStringTerm;
+                source = ((IStringTerm)args[1]).GetString();
             }
+            return source;
         }
 
         protected List<string> GetAgArchClasses(ITerm[] args)
@@ -145,6 +147,7 @@ namespace Assets.Code.Stdlib
             {
                 return AsSyntax.AsSyntax.ParseStructure((t as IStringTerm).GetString());
             }
+            return null;
         }
     }
 }

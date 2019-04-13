@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Stdlib
 {
-    public class At: DefaultInternalAction
+    public class At: InternalAction
     {
         public static readonly string atAtom = ".at";
         
@@ -20,7 +21,7 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 2;
         }

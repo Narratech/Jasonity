@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
 using System;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.stdlib
 {
-    public class All_names: DefaultInternalAction
+    public class All_names: InternalAction
     {
         public override int GetMinArgs()
         {

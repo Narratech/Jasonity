@@ -12,11 +12,11 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Add_nested_source:DefaultInternalAction
+    public class Add_nested_source:InternalAction
     {
-        private static IInternalAction singleton = null;
+        private static InternalAction singleton = null;
 
-        private static IInternalAction Create()
+        private static InternalAction Create()
         {
             if (singleton == null)
             {
@@ -25,12 +25,12 @@ namespace Assets.Code.Stdlib
             return singleton;
         }
 
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 3;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 3;
         }
@@ -40,7 +40,7 @@ namespace Assets.Code.Stdlib
             CheckArguments(args);
             try
             {
-                return un.Unifies(AddAnnotToList(args[0], args[1], args[2]));
+                return un.Unifies(AddAnnotToList(args[0], args[1], args[2])); //????
             }
             catch (Exception e)
             {
@@ -48,7 +48,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        public static ITerm AddAnnotToList(DefaultTerm l, DefaultTerm source)
+        public static ITerm AddAnnotToList(ITerm l, DefaultTerm source)
         {
             if (l.IsList())
             {

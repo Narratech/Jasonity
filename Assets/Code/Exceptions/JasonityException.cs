@@ -54,7 +54,7 @@ namespace Assets.Code.Exceptions
             return e;
         }
 
-        public static JasonityException CreateWrongArgumentNb(DefaultInternalAction ia)
+        public static JasonityException CreateWrongArgumentNb(InternalAction ia)
         {
             string msg;
             if (ia.GetMinArgs() == ia.GetMaxArgs())
@@ -73,7 +73,7 @@ namespace Assets.Code.Exceptions
             return new JasonityException("The internal action '" + ia.GetMaxArgs() + " arguments are expected.");
         }
 
-        public static JasonityException CreateWrongArgument(IInternalAction ia, string reason)
+        public static JasonityException CreateWrongArgument(InternalAction ia, string reason)
         {
             return new JasonityException("Wrong argument for internal action '" + ia.GetType().Name + "': " + reason, WRONG_ARGS);
         }

@@ -9,7 +9,6 @@ namespace Assets.Code.AsSyntax
 {
     public class LiteralImpl : Pred
     {
-        private static readonly long serialVersionUID = 1L;
         private bool type = LPos;
 
         /** creates a positive literal */

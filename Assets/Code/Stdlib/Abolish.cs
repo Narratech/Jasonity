@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Abolish: DefaultInternalAction
+    public class Abolish : InternalAction
     {
         public override int GetMinArgs()
         {
@@ -25,15 +26,16 @@ namespace Assets.Code.Stdlib
             return 1;
         }
 
-        protected override void CheckArguments(ITerm[] args) : base.CheckArguments(args)
-        {            
+        protected override void CheckArguments(ITerm[] args)
+        {
+            base.CheckArguments(args);
             if (!args[0].IsLiteral() && !args[0].IsVar())
             {
-                throw new JasonityException.CreateWrongArgument(this, "first argument must be a literal or variable.");
+                throw JasonityException.CreateWrongArgument(this, "first argument must be a literal or variable.");
             }
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ts.GetAgent().Abolish((Literal)args[0], un);

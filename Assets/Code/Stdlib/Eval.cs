@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
@@ -12,24 +13,24 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Eval:DefaultInternalAction
+    public class Eval:InternalAction
     {
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 2;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 2;
         }
 
-        public ITerm[] prepareArguments(Literal body, Unifier un)
+        public override ITerm[] PrepareArguments(Literal body, Unifier un)
         {
             return body.GetTermsArray(); // we do not need clone neither apply for this internal action
         }
 
-        protected void CheckArguments(ITerm[] args)
+        protected override void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
             if (!(args[1].GetType() == typeof(ILogicalFormula)))
@@ -38,7 +39,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        protected object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ILogicalFormula logExpr = args[1] as ILogicalFormula;

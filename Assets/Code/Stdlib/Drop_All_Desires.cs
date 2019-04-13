@@ -14,7 +14,7 @@ namespace Assets.Code.Stdlib
 {
     public class Drop_All_Desires:Drop_All_Intentions
     {
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             base.Execute(ts, un, args);
             ts.GetCircumstance().ClearEvents();

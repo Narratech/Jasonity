@@ -477,7 +477,7 @@ namespace Assets.Code.ReasoningCycle
                 if (bTerm.IsVar())
                 {
                     string msg = h.GetSrcInfo() + ": " + "Variable '" + bTerm + "' must be ground.";
-                    if (!GenerateDesireDeletion(curInt, JasonityException.CreateBasicErrorAnnots("body_var_without_value", msg)))
+                    if (!GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("body_var_without_value", msg)))
                     {
                         //logger.log(Level.SEVERE, msg);
                     }
@@ -488,7 +488,7 @@ namespace Assets.Code.ReasoningCycle
                     if (h.GetBodyType() != BodyType.action)
                     {
                         String msg = h.GetSrcInfo() + ": " + "The operator '" + h.GetBodyType() + "' is lost with the variable '" + bTerm + "' unified with a plan body. ";
-                        if (!GenerateDesireDeletion(curInt, JasonityException.CreateBasicErrorAnnots("body_var_with_op", msg)))
+                        if (!GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("body_var_with_op", msg)))
                         {
                             //logger.log(Level.SEVERE, msg);
                         }
@@ -527,7 +527,7 @@ namespace Assets.Code.ReasoningCycle
                 List<ITerm> errorAnnots = null;
                 try
                 {
-                    IInternalAction ia = ((IInternalAction)bTerm).GetIA(ag);
+                    InternalAction ia = ((InternalAction)bTerm).GetIA(ag);
                     ITerm[] terms = ia.PrepareArguments(body, u);
                     Object result = ia.Execute(this, u, terms);
                     if (result != null)
@@ -544,7 +544,7 @@ namespace Assets.Code.ReasoningCycle
                         }
                         if (!ok)
                         {
-                            errorAnnots = JasonityException.CreateBasicErrorAnnots("ia_failed", "");
+                            errorAnnots = (List<ITerm>)JasonityException.CreateBasicErrorAnnots("ia_failed", "");
                         }
                     }
                     if (ok && ia.SuspendedIntention())
@@ -566,7 +566,7 @@ namespace Assets.Code.ReasoningCycle
                     }
                     msg += "].";
                     e = new NoValueException(msg);
-                    errorAnnots = e.GetErrorTerms();
+                    errorAnnots = (List<ITerm>)e.GetErrorTerms();
                     if (!GenerateDesireDeletion(curInt, errorAnnots))
                     {
                         //logger.log(Level.SEVERE, body.getErrorMsg() + ": " + e.getMessage());
@@ -577,7 +577,7 @@ namespace Assets.Code.ReasoningCycle
                 }
                 catch (JasonityException e)
                 {
-                    errorAnnots = e.GetErrorTerms();
+                    errorAnnots = (List<ITerm>)e.GetErrorTerms();
                     if (!GenerateDesireDeletion(curInt, errorAnnots))
                     {
                         //logger.log(Level.SEVERE, body.getErrorMsg() + ": " + e.getMessage());
@@ -602,7 +602,7 @@ namespace Assets.Code.ReasoningCycle
             } else if (h.GetBodyType() == BodyType.constraint)
             {
 
-                IEnumerator<Unifier> iu = (((ILogicalFormula)bTerm).LogicalConsecuence(ag, u);
+                IEnumerator<Unifier> iu = (((ILogicalFormula)bTerm).LogicalConsecuence(ag, u));
                 if (iu.MoveNext())
                 {
                     ip.SetUnif(iu.Current);
@@ -610,7 +610,7 @@ namespace Assets.Code.ReasoningCycle
                 } else
                 {
                     string msg = "Constraint " + h + " was not satisfied (" + h.GetSrcInfo() + ") un=" + u;
-                    GenerateDesireDeletion(curInt, JasonityException.CreateBasicErrorAnnots(new Atom("constraint_failed"), msg));
+                    GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots(new Atom("constraint_failed"), msg));
                     //logger.fine(msg);
                 }
             } else if (h.GetBodyType() == BodyType.achieve)
@@ -660,7 +660,7 @@ namespace Assets.Code.ReasoningCycle
                         // {
                         //    logger.fine("Test '" + bTerm + "' failed (" + h.getSrcInfo() + ").");
                         //  }
-                        GenerateDesireDeletion(curInt, JasonityException.CreateBasicErrorAnnots("test_goal_failed", "Failed to test '" + bTerm + "'"));
+                        GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("test_goal_failed", "Failed to test '" + bTerm + "'"));
                     }
                 }
             } else if (h.GetBodyType() == BodyType.delAddBel) {
@@ -675,7 +675,7 @@ namespace Assets.Code.ReasoningCycle
                     }
                 } catch (RevisionFailedException re)
                 {
-                    GenerateDesireDeletion(curInt, JasonityException.CreateBasicErrorAnnots("belief_revision_failed", "BRF failed for '" + body + "'"));
+                    GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("belief_revision_failed", "BRF failed for '" + body + "'"));
                 }
             } else if (h.GetBodyType() == BodyType.addBel || h.GetBodyType() == BodyType.addBelBegin || h.GetBodyType() == BodyType.addBelEnd || h.GetBodyType() == BodyType.addBelNewFocus)
             {
@@ -912,11 +912,11 @@ namespace Assets.Code.ReasoningCycle
         {
             if (errorAnnots == null)
             {
-                errorAnnots = JasonityException.CreateBasicErrorAnnots(JasonityException.UNKNOWN_ERROR, "");
+                errorAnnots = (List<ITerm>)JasonityException.CreateBasicErrorAnnots(JasonityException.UNKNOWN_ERROR, "");
             }
 
             Literal eLiteral = failEvent.GetTrigger().GetLiteral().ForceFullLiteralImpl();
-            eLiteral.AddAnnot(errorAnnots);
+            eLiteral.AddAnnots(errorAnnots);
 
             Literal bodyTerm = aNOCODE;
             ITerm codesrc = aNOCODE;
@@ -1038,12 +1038,12 @@ namespace Assets.Code.ReasoningCycle
                             {
                                 reason = "";
                             }
-                            IListTerm annots = JasonityException.createBasicErrorAnnots("action_failed", reason);
+                            IListTerm annots = JasonityException.CreateBasicErrorAnnots("action_failed", reason);
                             if (a.GetFailureReason() != null)
                             {
                                 annots.Append(a.GetFailureReason());
                             }
-                            GenerateDesireDeletion(curInt, annots);
+                            GenerateDesireDeletion(curInt, (List<ITerm>)annots);
                             GetCircumstance().RemoveAtomicIntention();
                         }
                     } else
@@ -1156,7 +1156,7 @@ namespace Assets.Code.ReasoningCycle
             } else
             {
                 //logger.fine("** selectOption returned null!");
-                GenerateDesireDeletionFromEvent(JasonityException.CreateBasicErrorAnnots("no_option", "selectOption returned null"));
+                GenerateDesireDeletionFromEvent((List<ITerm>)JasonityException.CreateBasicErrorAnnots("no_option", "selectOption returned null"));
                 confP.stepDeliberate = State.ProcAct;
             }
         }
@@ -1254,7 +1254,7 @@ namespace Assets.Code.ReasoningCycle
                         //logger.warning("we are likely in a problem with event " + conf.C.SE.getTrigger() + " the intention stack has already " + conf.C.SE.getIntention().size() + " intended means!");
                     }
                     string msg = "Found a goal for which there is no " + m + " plan:" + conf.GetCircumstance().GetSE().GetTrigger();
-                    if (!GenerateDesireDeletionFromEvent(JasonityException.CreateBasicErrorAnnots("no_" + m, msg)))
+                    if (!GenerateDesireDeletionFromEvent((List<ITerm>)JasonityException.CreateBasicErrorAnnots("no_" + m, msg)))
                     {
                         //logger.warning(msg);
                     }
@@ -1510,7 +1510,7 @@ namespace Assets.Code.ReasoningCycle
                                 content,
                                 new Atom(m.GetMessageId()));
 
-                            UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.emptyInt()));
+                            UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.emptyInt));
                         }
                     } else
                     {
@@ -1529,7 +1529,7 @@ namespace Assets.Code.ReasoningCycle
                 GetCircumstance().ResumeIntention(i);
             } else
             {
-                GenerateDesireDeletion(i, JasonityException.CreateBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')")));
+                GenerateDesireDeletion(i, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')")));
             }
         }
 

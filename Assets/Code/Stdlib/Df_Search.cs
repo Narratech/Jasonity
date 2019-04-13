@@ -11,8 +11,8 @@ namespace Assets.Code.Stdlib
 {
     public class Df_Search:Df_Register
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction Create()
+        private static InternalAction singleton = null;
+        public new static InternalAction Create()
         {
             if (singleton == null)
             {
@@ -21,17 +21,17 @@ namespace Assets.Code.Stdlib
             return singleton;
         }
 
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 2;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 3;
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             IListTerm lt = new ListTermImpl();

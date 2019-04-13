@@ -13,10 +13,10 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Concat: DefaultInternalAction
+    public class Concat: InternalAction
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction Create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if(singleton == null)
             {
@@ -40,8 +40,9 @@ namespace Assets.Code.Stdlib
                     {
                         throw JasonityException.CreateWrongArgument(this, "arg[" + i + "] is not a list");
                     }
-                    return un.Unifies(result, args[args.Length - 1]);
+                    result.Concat((IListTerm)args[i].Clone());   
                 }
+                return un.Unifies(result, args[args.Length - 1]);
             }
             else
             {
@@ -52,7 +53,7 @@ namespace Assets.Code.Stdlib
                 string vl = args[0].ToString();
                 if (args[0].IsString())
                 {
-                    vl = args[0].GetString() as IStringTerm;
+                    vl = ((IStringTerm)args[0]).GetString();
                 }
                 StringBuilder sr = new StringBuilder(vl);
                 for (int i = 0; i < args.Length-1; i++)
@@ -60,7 +61,7 @@ namespace Assets.Code.Stdlib
                     vl = args[i].ToString();
                     if (args[i].IsString())
                     {
-                        vl = args[i].GetString as IStringTerm;
+                        vl = ((IStringTerm)args[i]).GetString();
                     }
                     sr.Append(vl);
                 }

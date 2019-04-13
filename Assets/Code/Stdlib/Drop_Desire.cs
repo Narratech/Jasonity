@@ -11,7 +11,7 @@ namespace Assets.Code.Stdlib
 {
     public class Drop_Desire:Drop_Intention
     {
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             base.Execute(ts, un, args);
             DropEvt(ts.GetCircumstance(), args[0] as Literal, un);

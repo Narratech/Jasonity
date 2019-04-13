@@ -12,39 +12,39 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Empty:DefaultInternalAction
+    public class Empty:InternalAction
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction Create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if (singleton == null)
                 singleton = new Empty();
             return singleton;
         }
 
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 1;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 1;
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ITerm l1 = args[0];
             if (l1.IsList())
             {
                 IListTerm lt = l1 as IListTerm;
-                return lt.IsEmpty();
+                return lt.Count == 0;
             }
             else if (l1.IsString())
             {
                 IStringTerm st = l1 as IStringTerm;
-                return st.GetString().IsEmpty();
+                return st.GetString().Length == 0;
             }
             return false;
         }

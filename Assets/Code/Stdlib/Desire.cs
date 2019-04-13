@@ -2,6 +2,7 @@
 using Assets.Code.BDIManager;
 using Assets.Code.ReasoningCycle;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,13 +22,14 @@ namespace Assets.Code.Stdlib
 
         public static IEnumerator<Unifier> AllDesires(Circumstance C, Literal l, ITerm intAsTerm, Unifier un)
         {
-            const Trigger teFroml = new Trigger(TEOperator.add, TEType.achieve, l);
+            Trigger teFroml = new Trigger(TEOperator.add, TEType.achieve, l);
 
-            return new IEnumerator<Unifier>()
-            {
-
-            }
+            return new EnumeratorImpl();
         }
 
+        private class EnumeratorImpl : IEnumerator<Unifier>
+        {
+            
+        }
     }
 }

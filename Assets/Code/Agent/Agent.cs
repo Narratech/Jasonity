@@ -30,7 +30,7 @@ namespace Assets.Code.Agent
         //The ones in the source code
         private List<Literal> initialGoals = null;
         private List<Literal> initialBeliefs = null;
-        private Dictionary<string, IInternalAction> internalActions = null;
+        private Dictionary<string, InternalAction> internalActions = null;
         private Dictionary<string, IArithFunction> functions = null;
         private bool hasCustomSelOp = true;
         //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
@@ -97,7 +97,7 @@ namespace Assets.Code.Agent
 
             if (internalActions == null)
             {
-                internalActions = new Dictionary<string, IInternalAction>();
+                internalActions = new Dictionary<string, InternalAction>();
             }
 
             //if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
@@ -206,7 +206,7 @@ namespace Assets.Code.Agent
                 bb.stop();
             }*/
             
-            foreach (IInternalAction ia in internalActions.Values)
+            foreach (InternalAction ia in internalActions.Values)
             {
                 try
                 {
@@ -242,7 +242,7 @@ namespace Assets.Code.Agent
                 //e.printStackTrace();
             }
             a.aslSource = aslSource;
-            a.internalActions = new Dictionary<string, IInternalAction>();
+            a.internalActions = new Dictionary<string, InternalAction>();
             a.SetReasoner(new Reasoner(a, GetReasoner().GetCircumstance().Clone(), arch, GetReasoner().GetSettings()));
             if (a.GetPL().HasMetaEventPlans())
             {
@@ -388,29 +388,29 @@ namespace Assets.Code.Agent
             parser.Agent(this);
         }
 
-        public IInternalAction GetIA(string iaName) {
+        public InternalAction GetIA(string iaName) {
             if (iaName.ElementAt(0) == '.')
             {
                 iaName = "jason.stdlib" + iaName;
             }
-            IInternalAction objIA = internalActions.Get(iaName);
+            InternalAction objIA = internalActions[iaName];
             if (objIA == null)
             {
                 Class iaclass = Class.forName(iaName);
                 try
                 {
                    Method create = iaclass.getMethod("create", (Class[])null);
-                   objIA = (IInternalAction) create.invoke(null, (Object[])null);
+                   objIA = (InternalAction) create.invoke(null, (Object[])null);
                 } catch (Exception e)
                 {
-                    objIA = (IInternalAction) iaclass.newInstance();
+                    objIA = (InternalAction) iaclass.newInstance();
                 }
                 internalActions.Add(iaName, objIA);
             }
             return objIA;
         }
 
-        public void SetIA(string iaName, IInternalAction ia)
+        public void SetIA(string iaName, InternalAction ia)
         {
             internalActions.Add(iaName, ia);
         }
@@ -419,7 +419,7 @@ namespace Assets.Code.Agent
         {
             if (functions == null)
             {
-                functions = new Dictionary<string, ArithFunctionTerm>();
+                functions = new Dictionary<string, IArithFunction>();
             }
             //addFunction(Count.class, false);
             AddFunction(Count, false);
@@ -636,7 +636,7 @@ namespace Assets.Code.Agent
 
                 if (GetPL().HasMetaEventPlans())
                 {
-                    GetReasoner().AddGoalListener(new Desire(GetReasoner()));
+                    GetReasoner().AddDesireListener(new Desire(GetReasoner()));
                 }
             }
         }
@@ -672,12 +672,12 @@ namespace Assets.Code.Agent
 
         public Intention SelectIntention(Queue<Intention> intentions)
         {
-            return intentions.^Poll();
+            return intentions.Poll();
         }
 
         public Message SelectMessage(Queue<Message> messages)
         {
-            return messages.poll();
+            return messages.Poll();
         }
 
         public ExecuteAction SelectAction(List<ExecuteAction> actList)

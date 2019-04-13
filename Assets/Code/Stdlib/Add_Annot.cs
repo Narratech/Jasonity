@@ -12,10 +12,10 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Add_Annot: DefaultInternalAction
+    public class Add_Annot: InternalAction
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if (singleton == null)
             {

@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
@@ -12,19 +13,19 @@ using System.Collections.Generic;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Drop_Intention: DefaultInternalAction
+    public class Drop_Intention: InternalAction
     {
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 0;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 1;
         }
 
-        protected void CheckArguments(ITerm[] args)
+        protected override void CheckArguments(ITerm[] args)
         {
             base.CheckArguments(args);
             if (args.Length > 0 && !args[0].IsLiteral() && !args[0].IsVar())
@@ -36,12 +37,12 @@ namespace Assets.Code.Stdlib
 
         private bool resultSuspend = false;
 
-        public bool SuspendIntention()
+        public override bool SuspendIntention()
         {
             return resultSuspend;
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             resultSuspend = false;

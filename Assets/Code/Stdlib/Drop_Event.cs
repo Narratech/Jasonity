@@ -14,7 +14,7 @@ namespace Assets.Code.Stdlib
 {
     public class Drop_Event:Drop_Desire
     {
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             DropEvt(ts.GetCircumstance(), args[0] as Literal, un);

@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using Assets.Code.Agent;
+using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.Stdlib
@@ -7,10 +8,10 @@ namespace Assets.Code.Stdlib
      * Description: register the agent in the Directory Facilitator as a provider of service S of type T (see FIPA specification).
      * An optional second argument can be used to define the type of the service.
      */
-    public class Df_Register: DefaultInternalAction
+    public class Df_Register: InternalAction
     {
-        private static DefaultInternalAction singleton = null;
-        public static DefaultInternalAction Create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if (singleton == null)
             {
@@ -19,17 +20,17 @@ namespace Assets.Code.Stdlib
             return singleton;
         }
 
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 1;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 2;
         }
 
-        public object Excute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             ts.GetUserAgArch().GetRuntimeServices().DfRegister(ts.GetUserAgArch().GetAgentName(), GetService(args), GetType(args));

@@ -12,10 +12,10 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Atom:DefaultInternalAction
+    public class Atom:InternalAction
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction Create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if (singleton == null)
             {

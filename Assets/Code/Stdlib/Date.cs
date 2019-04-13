@@ -13,27 +13,27 @@ using Assets.Code.Agent;
  */
 namespace Assets.Code.Stdlib
 {
-    public class Date:DefaultInternalAction
+    public class Date:InternalAction
     {
-        private static IInternalAction singleton = null;
-        public static IInternalAction Create()
+        private static InternalAction singleton = null;
+        public static InternalAction Create()
         {
             if (singleton == null)
                 singleton = new Date();
             return singleton;
         }
 
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 3;
         }
 
-        public int GetMaxArgs()
+        public override int GetMaxArgs()
         {
             return 3;
         }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             DateTime dt = new DateTime();
