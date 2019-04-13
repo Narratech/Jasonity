@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Code.AsSyntax
 {
-    class PlanLibrary
+    public class PlanLibrary
     {
         // A dictionary from TE to a list of relevant plans
         private Dictionary<PredicateIndicator, List<Plan>> relPlans = new Dictionary<PredicateIndicator, List<Plan>>();

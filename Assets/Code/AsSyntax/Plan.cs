@@ -4,7 +4,7 @@ using Assets.Code.ReasoningCycle;
 
 namespace Assets.Code.AsSyntax
 {
-    class Plan : Structure
+    public class Plan : Structure
     {
         private ITerm TAtomic = AsSyntax.CreateAtom("atomic");   // ???
         private ITerm TBreakPoint = AsSyntax.CreateAtom("breakpoint"); // ???

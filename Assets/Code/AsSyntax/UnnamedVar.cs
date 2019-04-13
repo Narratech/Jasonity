@@ -19,7 +19,7 @@ namespace Assets.Code.AsSyntax
         public int myId;
 
         /*| private static AtomicInteger c = new AtomicInteger(0) | private static int c = 0 | Declarar como una variable int normal pero obligatorio que sea estática |
-| Complmentario a la entrada anterior: c.incrementAndGet() | Interlocked.Increment(ref c) | Hay que añadir "using System.Threading" y añadir la palabra reservada "ref" delate de la variable cuando vaya a usarse |*/
+        | Complmentario a la entrada anterior: c.incrementAndGet() | Interlocked.Increment(ref c) | Hay que añadir "using System.Threading" y añadir la palabra reservada "ref" delate de la variable cuando vaya a usarse |*/
 
         //Las variables tienen que ser estáticas
         public UnnamedVar():this(Literal.DefaultNS, Interlocked.Increment(ref varCont))

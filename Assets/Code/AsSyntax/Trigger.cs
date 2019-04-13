@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
-    class Trigger : Structure
+    public class Trigger : Structure
     {
         private TEOperator op = TEOperator.add;
         private TEType type = TEType.belief;
