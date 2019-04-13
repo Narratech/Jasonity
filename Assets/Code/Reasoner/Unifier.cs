@@ -15,15 +15,37 @@ namespace Assets.Code.ReasoningCycle
     {
         Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
 
-        public bool Remove(VarTerm v)
+        // Gets the value for a variable
+        // If it is unified with another variable, gets that value
+        public ITerm Get(string var) => Get(new VarTerm(var));
+
+        public bool Remove(VarTerm v) => function.Remove(v);
+
+        public IEnumerator<VarTerm> Enumerator() => function.Keys.GetEnumerator();
+
+        public ITerm Get(VarTerm var)
         {
-            return function.Remove(v);
+            ITerm vl = function[var];
+            if (vl != null && vl.IsVar())
+            {
+                return Get((VarTerm)vl);
+            }
+            return vl;
         }
 
-        public bool Unifies(ITerm term, Literal topLiteral) // ???
+        public VarTerm GetVarFromValue(ITerm vl)
         {
-            throw new NotImplementedException();
+            foreach (VarTerm v in function.Keys)
+            {
+                ITerm vvl = function[v];
+                if (vvl.Equals(vl)) return v;
+            }
+            return null;
         }
+
+        public bool Unifies(Trigger te1, Trigger te2) => te1.SameType(te2) && Unifies(te1.GetLiteral(), te2.GetLiteral());
+
+        public bool UnifiesNoUndo(Trigger te1, Trigger te2) => te1.SameType(te2) && UnifiesNoUndo(te1.GetLiteral(), te2.GetLiteral());
 
         // Undoes the variables' mapping if unification fails
         public bool Unifies(ITerm term, ITerm term2)
@@ -38,6 +60,12 @@ namespace Assets.Code.ReasoningCycle
                 function = cFunction;
                 return false;
             }
+        }
+
+        private Dictionary<VarTerm, ITerm> CloneFunction()
+        {
+            // return (Dictionary<VarTerm, ITerm>)((HashMap)function).Clone(); // ???
+            return null;
         }
 
         public bool UnifiesNoUndo(ITerm term, ITerm term2)
@@ -125,44 +153,6 @@ namespace Assets.Code.ReasoningCycle
             return ok;
         }
 
-        public bool Unifies(Trigger t, Trigger trigger)
-        {
-            return t.GetType() == trigger.GetType() && Unifies(t.GetLiteral(), trigger.GetLiteral());
-        }
-
-        public bool Bind(VarTerm term, Pred pvl) // This one is weird because I need it but it doesn't exist in the original
-        {
-            throw new NotImplementedException();
-        }
-
-        public VarTerm GetVarForUnifier(VarTerm term)
-        {
-            term = Deref(term).CloneNS(Literal.DefaultNS);
-            term.SetNegated(Literal.LPos);
-            return term;
-        }
-
-        public bool UnifiesNamespace(VarTerm term, Literal lpvl) // This one is weird too, original uses two Literals, I'm confused
-        {
-            throw new NotImplementedException();
-        }
-
-        public VarTerm Deref(VarTerm term)
-        {
-            ITerm vl = function[term];
-            VarTerm first = term;
-            while (vl != null && term.IsVar())
-            {
-                term = (VarTerm)vl;
-                vl = function[term];
-            }
-            if (first != term)
-            {
-                function.Add(first, vl);
-            }
-            return term;
-        }
-
         public bool UnifyTerms(ITerm term, ITerm term2)
         {
             if (term.IsArithExpr())
@@ -213,32 +203,110 @@ namespace Assets.Code.ReasoningCycle
                     return true;
                 }
             }
-        }
 
-        public bool UnifiesNoUndo(Trigger tevent, Trigger te)
-        {
-            throw new NotImplementedException();
-        }
+            // Both terms are not vars
+            // If any of the terms is not a literal (is a number or string), they must be equal
+            // For unification, lists are literals
+            if (!term.IsLiteral() && !term.IsList() || !term2.IsLiteral() && !term2.IsList()) return term.Equals(term2);
 
-        public void Bind(VarTerm vt1, VarTerm vt2)
-        {
-            vt1 = GetVarForUnifier(vt1);
-            vt2 = GetVarForUnifier(vt2);
-            int compare = vt1.CompareTo(vt2);
-            if (compare < 0)
+            // Case of plan body
+            if (term.IsPlanBody() && term2.IsPlanBody())
             {
-                function.Add(vt1, (ITerm)vt2);
+                IPlanBody pb1 = (IPlanBody)term;
+                IPlanBody pb2 = (IPlanBody)term2;
+
+                if (pb1.GetBodyTerm() == null && pb2.GetBodyTerm() == null) return true;
+                if (pb1.GetBodyTerm() == null && pb2.GetBodyTerm() != null) return false;
+                if (pb1.GetBodyTerm() != null && pb2.GetBodyTerm() == null) return false;
+
+                if (pb1.GetBodyTerm().IsVar() && pb2.GetBodyTerm().IsVar())
+                {
+                    if (UnifiesNoUndo(pb1.GetBodyTerm(), pb2.GetBodyTerm()))
+                    {
+                        return UnifiesNoUndo(pb1.GetBodyNext(), pb2.GetBodyNext());
+                    }
+                    else return false;
+                }
+
+                if (pb1.GetBodyTerm().IsVar())
+                {
+                    if (pb1.GetBodyNext() == null) return UnifiesNoUndo(pb1.GetBodyTerm(), pb2);
+                    else
+                    {
+                        if (pb2.GetBodyTerm() == null) return false;
+                        if (UnifiesNoUndo(pb1.GetBodyTerm(), pb2.GetHead()))
+                        {
+                            if (pb2.GetBodyNext() == null)
+                            {
+                                if (pb1.GetBodyNext() != null && pb1.GetBodyNext().GetBodyTerm().IsVar() && pb1.GetBodyNext().GetBodyNext() == null)
+                                {
+                                    return UnifiesNoUndo(pb1.GetBodyNext().GetBodyTerm(), new PlanBodyImpl());
+                                }
+                                return false;
+                            }
+                            else return UnifiesNoUndo(pb1.GetBodyNext(), pb2.GetBodyNext());
+                        }
+                    }
+                }
+                else if (pb2.GetBodyTerm().IsVar()) return Unifies(pb2, pb1);
             }
-            else if (compare > 0)
+
+            // Both terms are literal
+            Literal t1s = (Literal)term;
+            Literal t2s = (Literal)term2;
+
+            // Different arities
+            int ts = t1s.GetArity();
+            if (ts != t2s.GetArity()) return false;
+
+            // If both are literal, they must have the same negated
+            if (t1s.Negated() != t2s.Negated()) return false;
+
+            // Different functor
+            if (!t1s.GetFunctor().Equals(t2s.GetFunctor())) return false;
+
+            // Different namespace
+            if (!UnifiesNamespace(t1s, t2s)) return false;
+
+            // Unify inner terms
+            for (int i = 0; i < ts; i++)
             {
-                function.Add(vt2, (ITerm)vt1);
+                if (!UnifiesNoUndo(t1s.GetTerm(i), t2s.GetTerm(i))) return false;
             }
-            // Doesn't bind if (compare == 0), because they are the same
+
+            // The first's annotations must be a subset of the second's annotations
+            if (!t1s.HasSubsetAnnot(t2s, this)) return false;
+
+            return true;
         }
 
-        public bool UnifyTerms(VarTerm varTerm1, VarTerm varTerm2) // Yet again, something that doesn't exist! I hate this!
+        private bool UnifiesNamespace(Literal t1s, Literal t2s)
         {
-            throw new NotImplementedException();
+            // If both are the default NS
+            if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS) return true;
+
+            // Compares namespaces of t1s and t2s
+            t1s = t1s.GetNS();
+            t2s = t2s.GetNS();
+            // Faster than UnifiesNoUndo
+            if (t1s.Equals(t2s)) return true;
+            return UnifiesNoUndo(t1s, t2s);
+        }
+
+        public VarTerm Deref(VarTerm term)
+        {
+            ITerm vl = function[term];
+            VarTerm first = term;
+            while (vl != null && term.IsVar())
+            {
+                term = (VarTerm)vl;
+                vl = function[term];
+            }
+            if (first != term)
+            {
+                function.Add(first, vl);
+            }
+            return term;
         }
 
         public bool Bind(VarTerm vt, ITerm term)
@@ -249,7 +317,7 @@ namespace Assets.Code.ReasoningCycle
                 {
                     return false;
                 }
-                term = (Literal)term.Clone(); // I don't understand this cast, but the original code does it, so I don't know
+                term = (Literal)term.Clone();
                 ((Literal)term).SetNegated(Literal.LPos);
             }
 
@@ -274,24 +342,75 @@ namespace Assets.Code.ReasoningCycle
             return true;
         }
 
-        public ITerm Get(VarTerm var)
+        public VarTerm GetVarForUnifier(VarTerm term)
         {
-            ITerm vl = function[var];
-            if (vl != null && vl.IsVar())
+            term = (VarTerm)Deref(term).CloneNS(Literal.DefaultNS);
+            term.SetNegated(Literal.LPos);
+            return term;
+        }
+
+        public void Clear() => function.Clear();
+
+        public override string ToString() => function.ToString();
+
+        public ITerm GetAsTerm()
+        {
+            IListTerm lf = new ListTermImpl();
+            IListTerm tail = lf;
+            foreach (VarTerm k in function.Keys)
             {
-                return Get((VarTerm)vl);
+                ITerm vl = function[k].Clone();
+                if (vl is Literal) ((Literal)vl).MakeVarsAnnon();
+                // Variable must be changed to avoid cyclic references later
+                Structure pair = AsSyntax.AsSyntax.CreateStructure("dictionary", UnnamedVar.Create(k.ToString()), vl);
+                tail = tail.Append(pair);
             }
-            return vl;
+            return lf;
         }
 
-        public bool Unifies(Literal literal, Literal topLiteral) // Why does this exist? Why?!
+        public int Size() => function.Count;
+
+        public void Compose(Unifier u)
         {
-            throw new NotImplementedException();
+            foreach (VarTerm k in u.function.Keys)
+            {
+                ITerm current = Get(k);
+                ITerm kValue = u.function[k];
+                // Current unifier has the new var
+                if (current != null && (current.IsVar() || kValue.IsVar())) Unifies(kValue, current);
+                else function.Add((VarTerm)k.Clone(), kValue.Clone());
+            }
         }
 
-        public Dictionary<VarTerm,ITerm> GetFunction()
+        public Unifier Clone()
         {
-            return function;
+            try
+            {
+                Unifier newUn = new Unifier();
+                newUn.function = CloneFunction();
+                return newUn;
+            }
+            catch
+            {
+                return null;
+            }
         }
+
+        public int HashCode()
+        {
+            int s = 0;
+            foreach (VarTerm v in function.Keys) s += v.GetHashCode();
+            return s * 31;
+        }
+
+        public bool Equals(object o)
+        {
+            if (o == null) return false;
+            if (o == this) return true;
+            if (o is Unifier) return function.Equals(((Unifier)o).function);
+            return false;
+        }
+
+        public void SetDictionary(Dictionary<VarTerm, ITerm> newFunc) => function = newFunc;
     }
 }
