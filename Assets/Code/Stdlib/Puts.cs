@@ -25,6 +25,7 @@ namespace Assets.Code.Stdlib
             return singleton;
         }
 
+        //Revisar expresión regular
         Regex rx = new Regex(@"#\\{[\\p{Alnum}_]+\\}", RegexOptions.Compiled);
 
         public override int GetMinArgs()
@@ -61,7 +62,9 @@ namespace Assets.Code.Stdlib
 
                 foreach (Match item in matcher)
                 {
-                    string sVar = matcher.group();
+                    //matcher.groups
+                    string sVar = item.ToString();
+
                     sVar = sVar.Substring(2, sVar.Length - 1);
                     try
                     {
@@ -75,6 +78,7 @@ namespace Assets.Code.Stdlib
                             t = AsSyntax.AsSyntax.ParseTerm(sVar);
                         }
                         t = t.Capply(un);
+                        //Hacer Regex.Replace(sb, t.IsString() ?....)
                         matcher.appendReplacement(sb, t.IsString() ? ((IStringTerm)t).GetString() : t.ToString());
                     }
                     catch (ParseException pe)

@@ -33,14 +33,14 @@ namespace Assets.Code.AsSyntax
             return value;
         }
 
-        public new IStringTerm Clone()
-        {
-            return this;
-        }
+        //public IStringTerm CloneAux()
+        //{
+        //    return this;
+        //}
 
         public override ITerm Clone()
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override bool IsString()

@@ -57,7 +57,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
             try
             {
                 Literal p = (Literal)xp; // LHS clone
-                Literal l = (IListTerm)yp; // RHS clone
+                IListTerm l = (IListTerm)yp; // RHS clone
 
                 // Both are not vars, using normal unfiication
                 if (!p.IsVar() && !l.IsVar())
@@ -74,7 +74,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
                     if (p.IsVar() && l.IsList())
                     {
                         ITerm t = null;
-                        if (l.Size() == 4 && l.Get(3).IsPlanBody())
+                        if (l.Size() == 4 && l[3].IsPlanBody())
                             t = Plan.NewFromListOfTerms(l);
                         else
                             t = Literal.NewFromListOfTerms(l);

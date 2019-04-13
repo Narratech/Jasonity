@@ -408,7 +408,7 @@ namespace Assets.Code.AsSyntax
             {
                 needsUpdate = false;
                 current = null;
-                if (arch != null && !arch.IsRunnig()) return;
+                if (arch != null && !arch.IsRunning()) return;
 
                 if (annotsOptions != null)
                 {
@@ -581,7 +581,8 @@ namespace Assets.Code.AsSyntax
 
                 if (i.Current != null)
                 {
-                    l.SetTerms((i.Current as IListTerm).CloneLT());
+                    //l.SetTerms((i.Current as IListTerm).CloneLT());
+                    return null;
                 }
                 if (i.Current != null)
                 {

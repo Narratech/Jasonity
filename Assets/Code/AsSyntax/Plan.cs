@@ -157,7 +157,7 @@ namespace Assets.Code.AsSyntax
         }
 
         // Creates a plan from a list with four elements: [Literal, Trigger, Context, Body]
-        public new Plan NewFromListOfTerms(IListTerm lt)
+        public static new Plan NewFromListOfTerms(IListTerm lt)
         {
             ITerm c = lt[2];
             if (c.IsPlanBody())

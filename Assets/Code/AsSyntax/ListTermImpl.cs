@@ -99,7 +99,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override int CalcHasHCode()
+        public override int CalcHashCode()
         {
             int code = 37;
             if (term != null) code += term.GetHashCode();
@@ -132,7 +132,7 @@ namespace Assets.Code.AsSyntax
             {
                 SetValuesFrom(lt);
             }
-            else if (((IListTerm)next).IsEmpty())
+            else if (((IListTerm)next).Count == 0)
             {
                 next = lt;
             }
@@ -389,7 +389,7 @@ namespace Assets.Code.AsSyntax
         {
             ISet<ITerm> set = new SortedSet<ITerm>();
             set.Add(lt);
-            set.RetainAll(this);
+            set.UnionWith(this);
             return SetToList(set);
         }
 
@@ -411,28 +411,14 @@ namespace Assets.Code.AsSyntax
          */
         public IEnumerator<IListTerm> ListTermIteratorFunc()
         {
-            return new MyListTermIterator<IListTerm>();
+            return new MyListTermIterator<IListTerm>(this);
         }
 
-        private class MyListTermIterator<IListTerm>: IEnumerator<IListTerm>
+        private class MyListTermIterator<T>: ListTermIterator<T> where T: IListTerm
         {
-            public IListTerm Current => throw new NotImplementedException();
-
-            object IEnumerator.Current => throw new NotImplementedException();
-
-            public void Dispose()
+            public MyListTermIterator(T l) : base(l)
             {
-                throw new NotImplementedException();
-            }
 
-            public bool MoveNext()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Reset()
-            {
-                throw new NotImplementedException();
             }
 
             public IListTerm Next()
@@ -448,20 +434,22 @@ namespace Assets.Code.AsSyntax
          * for [a,b,c] returns 'a', 'b', and 'c'.
          * for [a,b|T] returns 'a' and 'b'.
          */
+         //Debería llamarse Enumerator
         public IEnumerator<ITerm> Iterator()
         {
-            return new MyIterator<ITerm>();
+            return new MyListTermIterator2<ITerm>(this);
         }
 
-        private class MyIterator<ITerm> : IEnumerator<ITerm>
+        private class MyListTermIterator2<T> : ListTermIterator<T> where T: ITerm
         {
-            public ITerm Current => throw new NotImplementedException();
-
-            object IEnumerator.Current => throw new NotImplementedException();
-
-            public bool HasNext()
+            public MyListTermIterator2(T l) : base(l)
             {
-                return nextLT != null && !nextLT.IsEmpty() && nextLT.IsList();
+
+            }
+
+            public override bool HasNext()
+            {
+                return nextLT != null && !(nextLT.Count == 0) && nextLT.IsList();
             }
 
             public ITerm Next()
@@ -469,57 +457,28 @@ namespace Assets.Code.AsSyntax
                 MoveNext();
                 return current.GetTerm();
             }
-
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool MoveNext()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Reset()
-            {
-                throw new NotImplementedException();
-            }
         }
 
-        private abstract class ListTermIterator<T>: IEnumerator<T>
+        private abstract class ListTermIterator<T>: IEnumerator<T> where T: ITerm
         {
-            IListTerm nextLT;
+            public IListTerm nextLT;
             public IListTerm current = null;
-            public ListTermIterator(IListTerm lt)
+            public ListTermIterator(T lt)
             {
-                nextLT = lt;
+                //Probable que explote, trabajar con ITerm
+                nextLT = (IListTerm)lt;
             }
 
             public T Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool MoveNext()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Reset()
-            {
-                throw new NotImplementedException();
-            }
-
             public ListTermIterator(IListTerm lt)
             {
                 nextLT = lt;
             }
 
-            public bool HasNext()
+            public virtual bool HasNext()
             {
                 return nextLT != null;
             }
@@ -538,6 +497,21 @@ namespace Assets.Code.AsSyntax
                     current.SetNext(nextLT.GetNext());
                     nextLT = current;
                 }
+            }
+
+            bool IEnumerator.MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
             }
         }
 

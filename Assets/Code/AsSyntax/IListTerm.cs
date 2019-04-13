@@ -12,7 +12,7 @@ using System.Threading.Tasks;
  */
 namespace Assets.Code.AsSyntax
 {
-    public interface IListTerm: ITerm, IList<ITerm>
+    public interface IListTerm: IList<ITerm>, ITerm 
     {
         void SetTerm(ITerm t);
         ITerm GetTerm();
