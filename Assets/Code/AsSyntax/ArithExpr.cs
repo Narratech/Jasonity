@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using UnityEngine;
 
@@ -155,12 +156,12 @@ namespace Assets.Code.AsSyntax
                 }
                 return value;
             }
-            catch (InvalidCastException e)
+            catch (InvalidCastException)
             {
                 Debug.Log("The value of "+this+" is not a number! Unifier = "+u+". Code: "+GetSrcInfo());
                 return new NumberTermImpl(double.NaN);
             }
-            catch (ArgumentException e)
+            catch (NoValueException)
             {
                 return Clone();
             }

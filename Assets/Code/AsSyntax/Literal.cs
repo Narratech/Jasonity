@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Agent;
 using System.Collections;
+using Assets.Code.Exceptions;
 
 /*
  *  This class represents an abstract literal (an Atom, Structure, Predicate, etc), it is mainly
@@ -588,9 +589,9 @@ namespace Assets.Code.AsSyntax
                 }
                 return l;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new JasonException("Error creating literal from"+lt);
+                throw new JasonityException("Error creating literal from"+lt);
             }
         }
 

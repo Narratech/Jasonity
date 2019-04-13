@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace Assets.Code.Stdlib
             base.CheckArguments(args);
             if (!args[0].IsString())
             {
-                throw JasonException.CreateWrongArgument(this, "first argument must be a string");
+                throw JasonityException.CreateWrongArgument(this, "first argument must be a string");
             }
         }
 
