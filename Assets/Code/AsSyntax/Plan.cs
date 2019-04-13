@@ -169,7 +169,7 @@ namespace Assets.Code.AsSyntax
 
         public Trigger GetTrigger() => tevent;
 
-        ILogicalFormula GetContext() => context;
+        public ILogicalFormula GetContext() => context;
 
         public IPlanBody GetBody() => body;
 

@@ -1,11 +1,20 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Assets.Code.AsSyntax;
+using Assets.Code.Exceptions;
+using Assets.Code.functions;
 using Assets.Code.Logic;
+using Assets.Code.Logic.AsSyntax.directives;
+using Assets.Code.Logic.parser;
 using Assets.Code.Mas2J;
 using Assets.Code.ReasoningCycle;
+using Assets.Code.Runtime;
+using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
+using BDIManager.Desires;
 using BDIManager.Intentions;
 /**
  * The agent class has the belief base and the library plan
@@ -22,7 +31,7 @@ namespace Assets.Code.Agent
         private List<Literal> initialGoals = null;
         private List<Literal> initialBeliefs = null;
         private Dictionary<string, IInternalAction> internalActions = null;
-        private Dictionary<string, ArithFunctionTerm> functions = null;
+        private Dictionary<string, IArithFunction> functions = null;
         private bool hasCustomSelOp = true;
         //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
 
@@ -60,7 +69,7 @@ namespace Assets.Code.Agent
             }
             catch (Exception e)
             {
-                throw new JasonException(e);
+                throw new JasonityException("as2j: error creating the customised Agent class! - " + agClass, e);
             }
         }
 
@@ -88,7 +97,7 @@ namespace Assets.Code.Agent
 
             if (internalActions == null)
             {
-                internalActions = new Dictionary<string, InternalAction>();
+                internalActions = new Dictionary<string, IInternalAction>();
             }
 
             //if (! "false".equals(Config.get().getProperty(Config.START_WEB_MI))) MindInspectorWeb.get().registerAg(this);
@@ -109,7 +118,7 @@ namespace Assets.Code.Agent
                 {
                     asSrc = asSrc.Replace("\\\\", "/");
 
-                    if (asSrc.StartsWith(SourcePath.CRPrefix)) //I don't know yet what the hell is SourcePath.CRPrefix
+                    if (asSrc.StartsWith(SourcePath.CRPrefix))
                     {
                         //parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc); I don't know what this is
                     } else
@@ -117,38 +126,882 @@ namespace Assets.Code.Agent
                         try
                         {
                             parsingOk = ParseAs(new URL(asSrc)); //I need to find a replace for url but i don't understand why this is used
-                        } catch (Exception e)
+                        } catch (MalformedException e)
                         {
-
+                            parsingOk = ParseAs(new File(asSrc));
                         }
-                     }
+                    }
 
                 }
+
+                if (parsingOk)
+                {
+                    if (GetPL().HasMetaEventPlans())
+                    {
+                        GetReasoner().AddDesireListener(new DefaultDesire(GetReasoner()));
+                    }
+
+                    AddInitialBelsFromProjectInBB();
+                    AddInitialBelsInBB();
+                    AddInitialDesiresFromProjectInBB();
+                    AddInitialDesiresInReasoner();
+                    FixAgInIAandFunctions(this);
+                }
+
+                LoadKQMLPlans();
+                AddInitialBelsInBB();
+                SetASLSrc(asSrc);
             } catch (Exception e)
             {
-
+                //logger.log(Level.SEVERE, "Error loading code from " + asSrc, e);
+                throw new JasonityException("Error loading code from " + asSrc + " ---- " + e);
             }
         }
+
+        public void Load(StreamReader input, string sourceId)
+        {
+            try {
+                ParseAs(input, sourceId);
+
+                if (GetPL().HasMetaEventPlans())
+                    GetReasoner().AddDesireListener(new DefaultDesire(GetReasoner()));
+
+                AddInitialBelsInBB();
+                AddInitialDesiresInReasoner();
+                FixAgInIAandFunctions(this); // used to fix agent reference in functions used inside includes
+            } catch (Exception e) {
+                //e.printStackTrace();
+                throw new JasonityException("Error loading plans from stream " + e);
+            }
+        }
+
+        public void LoadKQMLPlans()
+        {
+            /*
+            Config c = Config.Get();
+            if (c.GetKqmlPlansFile().Equals(Message.kqmlDefaultPlans))
+            {
+                if (c.GetKqmlFunctor().Equals(Message.kqmlReceivedFunctor))
+                {
+                    string file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
+                    if (typeof(JasonityException)..GetResource(file) != null) {
+                        parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
+                    } else {
+                        logger.warning("The kqmlPlans.asl was not found!");
+                    }
+                }
+            } else {
+                // load from specified file
+                try {
+                    parseAS(new File(c.getKqmlPlansFile()));
+                } catch (Exception e) {
+                    logger.warning("Error reading kqml semantic plans. "+e+". from file "+c.getKqmlPlansFile());
+                }
+            }*/
+        }
+
+        public void StopAg()
+        {
+            /*synchronized(bb.getLock()) {
+                bb.stop();
+            }*/
+            
+            foreach (IInternalAction ia in internalActions.Values)
+            {
+                try
+                {
+                    ia.Destroy();
+                }
+                catch (Exception e)
+                {
+                   // e.printStackTrace();
+                }
+            }
+        }
+
+        public Agent Clone(AgentArchitecture arch)
+        {
+            Agent a = new Agent();
+
+            //a.setLogger(arch);
+            if (this.GetReasoner().GetSettings().Verbose() >= 0)
+            {
+                //a.logger.setLevel(this.getTS().getSettings().logLevel());
+            }
+
+            /*synchronized(getBB().getLock()) {
+                a.bb = this.bb.clone();
+            }*/
+            a.pl = pl.Clone();
+            try
+            {
+                FixAgInIAandFunctions(a);
+            }
+            catch (Exception e)
+            {
+                //e.printStackTrace();
+            }
+            a.aslSource = aslSource;
+            a.internalActions = new Dictionary<string, IInternalAction>();
+            a.SetReasoner(new Reasoner(a, GetReasoner().GetCircumstance().Clone(), arch, GetReasoner().GetSettings()));
+            if (a.GetPL().HasMetaEventPlans())
+            {
+                a.GetReasoner().AddDesireListener(new DefaultDesire(a.GetReasoner()));
+            }
+
+            a.InitAg(); //for initDefaultFunctions() and for overridden/custom agent
+            return a;
+        }
+
+        private void FixAgInIAandFunctions(Agent a)
+        {
+           
+            //synchronized (getPL().getLock()) {
+            foreach (Plan p in a.GetPL()) {
+                // search context
+                if (p.GetContext().GetType() == typeof(Literal))
+                {
+                    FixAgInIAandFunctions(a, (Literal) p.GetContext());
+                }
+
+                // search body
+                if (p.GetBody().GetType() == typeof(Literal))
+                {
+                    FixAgInIAandFunctions(a, (Literal) p.GetBody());
+                }
+            }
+            //}
+        }
+
+        private void FixAgInIAandFunctions(Agent a, Literal l)
+        {
+            // if l is internal action/function
+            if (l.GetType() == typeof(InternalActionLiteral))
+            {
+                ((InternalActionLiteral) l).SetIA(null); // reset the IA in the literal, the IA there will be updated next getIA call
+            }
+            if (l.GetType() == typeof(ArithFunctionTerm))
+            {
+                ((ArithFunctionTerm) l).SetAgent(a);
+            }
+            if (l.GetType() == typeof(Rule)) {
+                ILogicalFormula f = ((Rule)l).GetBody();
+                if (f.GetType() == typeof(Literal)) {
+                    FixAgInIAandFunctions(a, (Literal) f);
+                }
+            }
+            for (int i=0; i<l.GetArity(); i++) {
+                if (l.GetTerm(i).GetType() == typeof(Literal))
+                {
+                    FixAgInIAandFunctions(a, (Literal)l.GetTerm(i));
+                }
+            }
+        }
+
+        /*public static synchronized ScheduledExecutorService getScheduler()
+        {
+            if (scheduler == null)
+            {
+                int n;
+                try
+                {
+                    n = new Integer(Config.get().get(Config.NB_TH_SCH).toString());
+                }
+                catch (Exception e)
+                {
+                    n = 2;
+                }
+                scheduler = Executors.newScheduledThreadPool(n);
+            }
+            return scheduler;
+        }*/
 
         public string GetASLSrc()
         {
             return aslSource;
         }
 
+        public void SetASLSrc(string file)
+        {
+            if (file != null && file.StartsWith("./"))
+                file = file.Substring(2);
+            aslSource = file;
+        }
+
+        public bool ParseAs(URL asURL)
+        {
+            try
+            {
+                ParseAs(asURL.openStream(), asURL.toString());
+                //logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
+                return true;
+            }
+            catch (IOException e)
+            {
+                //logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '" + asURL + "' was not found!");
+            }
+            catch (ParseException e)
+            {
+                //logger.log(Level.SEVERE, "as2j: parsing error: " + e.getMessage());
+            }
+            catch (Exception e)
+            {
+                //logger.log(Level.SEVERE, "as2j: parsing error: \"" + asURL + "\"", e);
+            }
+            return false;
+        }
+
+        public bool ParseAs(File asFile)
+        {
+            try
+            {
+                ParseAs(new FileInputStream(asFile), asFile.GetType().Name);
+                //logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
+                return true;
+            }
+            catch (FileNotFoundException e)
+            {
+                //logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '" + asFile + "' was not found!");
+            }
+            catch (ParseException e)
+            {
+                //logger.log(Level.SEVERE, "as2j: parsing error:" + e.getMessage());
+            }
+            catch (Exception e)
+            {
+                //logger.log(Level.SEVERE, "as2j: error parsing \"" + asFile + "\"", e);
+            }
+            return false;
+        }
+
+        public void ParseAs(StreamReader asIn, string sourceId)
+        {
+            as2j parser = new as2j(asIn);
+            parser.SetASLSource(sourceId);
+            parser.Agent(this);
+        }
+
+        public void ParseAs(Reader asIn, string sourceId)
+        {
+            as2j parser = new as2j(asIn);
+            parser.SetASLSource(sourceId);
+            parser.Agent(this);
+        }
+
+        public IInternalAction getIA(string iaName) {
+            if (iaName.ElementAt(0) == '.')
+            {
+                iaName = "jason.stdlib" + iaName;
+            }
+            IInternalAction objIA = internalActions.Get(iaName);
+            if (objIA == null)
+            {
+                Class iaclass = Class.forName(iaName);
+                try
+                {
+                   Method create = iaclass.getMethod("create", (Class[])null);
+                   objIA = (IInternalAction) create.invoke(null, (Object[])null);
+                } catch (Exception e)
+                {
+                    objIA = (IInternalAction) iaclass.newInstance();
+                }
+                internalActions.Add(iaName, objIA);
+            }
+            return objIA;
+        }
+
+        public void SetIA(string iaName, IInternalAction ia)
+        {
+            internalActions.Add(iaName, ia);
+        }
+
+        public void InitDefaultFunctions()
+        {
+            if (functions == null)
+            {
+                functions = new Dictionary<string, ArithFunctionTerm>();
+            }
+            //addFunction(Count.class, false);
+            AddFunction(Count, false);
+        }
+        //Class<? extends ArithFunction> c ?? wtf is this
+        public void AddFunction(IArithFunction c)
+        {
+            AddFunction(c, true);
+        }
+
+        //Class<? extends ArithFunction> c ?????????????????????????????
+        private void AddFunction(IArithFunction c, bool user)
+        {
+            try
+            {
+                IArithFunction af = c.newInstance();
+                string error = null;
+                if (user)
+                {
+                    error = FunctionRegister.CheckFunctionName(af.GetName());
+                }
+                if (error != null)
+                {
+                    //logger.warning(error);
+                }
+                else
+                {
+                    functions.Add(af.GetName(), af);
+                }
+            }
+            catch (Exception e)
+            {
+                //logger.log(Level.SEVERE, "Error registering function " + c.getName(), e);
+            }
+        }
+
+        public void AddFunction(string function, int arity, string literal)
+        {
+            try
+            {
+                string error = FunctionRegister.CheckFunctionName(function);
+                if (error != null)
+                {
+                    //logger.warning(error);
+                }
+                else
+                {
+                    functions.Add(function, new RuleToFunction(literal, arity));
+                }
+            }
+            catch (Exception e)
+            {
+                //logger.log(Level.SEVERE, "Error registering function " + literal, e);
+            }
+        }
+
+        public IArithFunction GetFunction(string function, int arity)
+        {
+            if (functions == null)
+            {
+                return null;
+            }
+            IArithFunction af = functions[function];
+            if (af == null || !af.CheckArity(arity))
+            {
+                af = FunctionRegister.GetFunction(function, arity);
+            }
+            if (af != null && af.CheckArity(arity))
+            {
+                return af;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public void AddInitialBel(Literal b)
         {
             initialBeliefs.Add(b);
         }
+        public List<Literal> GetInitialBels()
+        {
+            return initialBeliefs;
+        }
 
-        public void AddInitialGoal(Literal g)
+        public void AddInitialBelsInBB()
+        {
+            for (int i=initialBeliefs.Count-1; i >=0; i--)
+                AddInitBel(initialBeliefs.ElementAt(i));
+            initialBeliefs.Clear();
+        }
+
+        protected void AddInitialBelsFromProjectInBB()
+        {
+            string sBels = GetReasoner().GetSettings().GetUserParameter(Settings.INIT_BELS);
+            if (sBels != null)
+            {
+                try
+                {
+                    foreach (ITerm t in AsSyntax.AsSyntax.ParseList("[" + sBels + "]"))
+                    {
+                        AddInitBel(((Literal)t).ForceFullLiteralImpl());
+                    }
+                }
+                catch (Exception e)
+                {
+                    //logger.log(Level.WARNING, "Initial beliefs from project '[" + sBels + "]' is not a list of literals.");
+                }
+            }
+        }
+
+        private void AddInitBel(Literal b)
+        {
+            if (!b.IsRule() && !b.IsGround())
+            {
+                b = new Rule(b, Literal.LTrue);
+            }
+            if (!b.HasSource())
+            {
+                b.AddAnnot(DefaultBeliefBase.TSelf);
+            }
+            if (b.IsRule())
+            {
+                GetBB().Add(b);
+            } else
+            {
+                b = (Literal) b.Capply(null); 
+                AddBel(b);
+            }
+        }
+
+        public void AddInitialDesires(Literal g)
         {
             initialGoals.Add(g);
+        }
+
+        public List<Literal> GetInitialDesires()
+        {
+            return initialGoals;
+        }
+
+        public void AddInitialDesiresInReasoner()
+        {
+            foreach (Literal d in initialGoals)
+            {
+                d.MakeVarsAnnon();
+                if (!d.HasSource())
+                    d.AddAnnot(DefaultBeliefBase.TSelf);
+                GetReasoner().GetCircumstance().AddAchvGoal(d, Intention.emptyInt);
+            }
+            initialGoals.Clear();
+        }
+
+        protected void AddInitialDesiresFromProjectInBB()
+        {
+            string sGoals = GetReasoner().GetSettings().GetUserParameter(Settings.INIT_GOALS);
+            if (sGoals != null)
+            {
+                try
+                {
+                    foreach (ITerm t in AsSyntax.AsSyntax.ParseList("[" + sGoals + "]"))
+                    {
+                        Literal g = ((Literal)t).ForceFullLiteralImpl();
+                        g.MakeVarsAnnon();
+                        if (!g.HasSource())
+                        {
+                            g.AddAnnot(DefaultBeliefBase.TSelf);
+                        }
+                        GetReasoner().getCircumstance().AddAchvGoal(g, Intention.emptyInt);
+                    }
+                }
+                catch (Exception e)
+                {
+                    //logger.log(Level.WARNING, "Initial goals from project '[" + sGoals + "]' is not a list of literals.");
+                }
+            }
+        }
+
+        public void ImportComponents(Agent a)
+        {
+            if (a != null)
+            {
+                foreach (Literal b in a.initialBeliefs)
+                {
+                    AddInitialBel(b);
+                    try
+                    {
+                        FixAgInIAandFunctions(this, b);
+                    } catch (Exception e)
+                    {
+                            //e.printStackTrace();
+                    }
+                }
+
+                foreach (Literal d in a.initialGoals)
+                {
+                    AddInitialDesires(d);
+                }
+
+                foreach (Plan p in a.GetPL())
+                {
+                    GetPL().Add(p, false);
+                }
+
+                try
+                {
+                    FixAgInIAandFunctions(this);
+                }
+                catch (Exception e)
+                {
+                    //e.printStackTrace();
+                }
+
+                if (GetPL().HasMetaEventPlans())
+                {
+                    GetReasoner().AddGoalListener(new DefaultDesire(GetReasoner()));
+                }
+            }
+        }
+
+        public bool SocAcc(Message m)
+        {
+            return true;
+        }
+
+        public bool KillAcc(string agName)
+        {
+            return true;
+        }
+
+        public Event SelectEvent(Queue<Event> events)
+        {
+            return events.Poll();
+        }
+
+        public Option SelectOption(List<Option> options)
+        {
+            if (options != null && !(options.Count == 0))
+            {
+                Option o = options.ElementAt(0);
+                options.RemoveAt(0);
+                return o;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Intention SelectIntention(Queue<Intention> intentions)
+        {
+            return intentions.^Poll();
+        }
+
+        public Message SelectMessage(Queue<Message> messages)
+        {
+            return messages.poll();
+        }
+
+        public ExecuteAction SelectAction(List<ExecuteAction> actList)
+        {
+            //synchronized(actList) {
+                IEnumerator<ExecuteAction> i = actList.GetEnumerator();
+                while (i.MoveNext())
+                {
+                    ExecuteAction a = i.Current;
+                    if (!a.GetIntention().IsSuspended())
+                    {
+                        i.Dispose();
+                        return a;
+                    }
+                }
+            //}
+            return null;
+        }
+
+        public void SetReasoner(Reasoner reasoner)
+        {
+            this.reasoner = reasoner;
+            if (reasoner.GetSettings().Verbose() >= 0)
+            {
+                //logger.setLevel(ts.getSettings().logLevel());
+            }
+        }
+
+        public Reasoner GetReasoner()
+        {
+            return reasoner;
+        }
+
+        public void SetBB(DefaultBeliefBase bb)
+        {
+            this.bb = bb;
+        }
+        public IBeliefBase GetBB()
+        {
+            return bb;
+        }
+
+        public void SetPL(PlanLibrary pl)
+        {
+            this.pl = pl;
         }
 
         public PlanLibrary GetPL()
         {
             return pl;
         }
+
+        public int Buf(List<Literal> percepts)
+        {
+            if (percepts == null)
+            {
+                return 0;
+            }
+
+            int adds = 0;
+            int dels = 0;
+
+            HashSet<StructureWrapperForLiteral> perW = new HashSet<StructureWrapperForLiteral>();
+            IEnumerator<Literal> iper = percepts.GetEnumerator();
+            while (iper.MoveNext())
+            {
+                perW.Add(new StructureWrapperForLiteral(iper.Current));
+            }
+
+            IEnumerator<Literal> perceptsInBB = GetBB().GetPercepts();
+            while (perceptsInBB.MoveNext())
+            {
+                Literal l = perceptsInBB.Current;
+                if (l.SubjectToBUF() && !perW.Remove(new StructureWrapperForLiteral(l)))
+                { 
+                    dels++;
+                    perceptsInBB.Dispose(); 
+
+                    Trigger te = new Trigger(TEOperator.del, TEType.belief, l);
+                    if (reasoner.GetCircumstance().HasListener() || pl.HasCandidatePlan(te))
+                    {
+                        l = AsSyntax.AsSyntax.CreateLiteral(l.GetFunctor(), l.GetTermsArray());
+                        l.AddAnnot(DefaultBeliefBase.TPercept);
+                        te.SetLiteral(l);
+                        reasoner.GetCircumstance().AddEvent(new Event(te, Intention.emptyInt));
+                    }
+                }
+            }
+            
+            foreach (StructureWrapperForLiteral lw in perW)
+            {
+                try
+                {
+                    Literal lp = lw.GetLiteral().copy().forceFullLiteralImpl();
+                    lp.AddAnnot(DefaultBeliefBase.TPercept);
+                    if (GetBB().Add(lp))
+                    {
+                        adds++;
+                        reasoner.UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.belief, lp), Intention.emptyInt));
+                    }
+                }
+                catch (Exception e)
+                {
+                    //logger.log(Level.SEVERE, "Error adding percetion " + lw.getLiteral(), e);
+                }
+            }
+
+            return adds + dels;
+        }
+
+        public bool Believes(ILogicalFormula bel, Unifier un)
+        {
+            try
+            {
+                IEnumerator<Unifier> iun = bel.LogicalConsequence(this, un);
+                if (iun != null && iun.MoveNext())
+                {
+                    un.Compose(iun.Current);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                //logger.log(Level.SEVERE, "** Error in method believes(" + bel + "," + un + ").", e);
+            }
+            return false;
+        }
+
+        public Literal FindBel(Literal bel, Unifier un)
+        {
+            //synchronized(bb.getLock()) {
+                IEnumerator<Literal> relB = bb.GetCandidateBeliefs(bel, un);
+                if (relB != null)
+                {
+                    while (relB.MoveNext())
+                    {
+                        Literal b = relB.Current;
+
+                        // recall that order is important because of annotations!
+                        if (!b.IsRule() && un.Unifies(bel, b))
+                        {
+                            return b;
+                        }
+                    }
+                }
+                return null;
+            //}
+        }
+
+        public List<Literal>[] Brf(Literal beliefToAdd, Literal beliefToDel, Intention i)
+        {
+            return Brf(beliefToAdd, beliefToDel, i, false);
+        }
+
+        public List<Literal>[] Brf(Literal beliefToAdd, Literal beliefToDel, Intention i, bool addEnd) 
+        {
+            // This class does not implement belief revision! It
+            // is supposed that a subclass will do it.
+            // It simply add/del the belief.
+
+            int position = 0; 
+            if (addEnd)
+            {
+                position = 1;
+            }
+
+            List<Literal>[] result = null;
+            //synchronized(bb.getLock())
+            //{
+                try
+                {
+                    if (beliefToAdd != null)
+                    {
+                        //if (logger.isLoggable(Level.FINE)) logger.fine("Doing (add) brf for " + beliefToAdd);
+
+                        if (GetBB().Add(position, beliefToAdd))
+                        {
+                            result = new List<Literal>[2];
+                            result[0] = SingletonList(beliefToAdd);
+                            result[1] = EmptyList();
+                            //if (logger.isLoggable(Level.FINE)) logger.fine("brf added " + beliefToAdd);
+                        }
+                    }
+
+                    if (beliefToDel != null)
+                    {
+                        Unifier u = null;
+                        try
+                        {
+                            u = i.Peek().unif; // get from current intention
+                        }
+                        catch (Exception e)
+                        {
+                            u = new Unifier();
+                        }
+
+                        //if (logger.isLoggable(Level.FINE)) logger.fine("Doing (del) brf for " + beliefToDel + " in BB=" + believes(beliefToDel, u));
+
+                        bool removed = GetBB().Remove(beliefToDel);
+                        if (!removed && !beliefToDel.IsGround())
+                        { // then try to unify the parameter with a belief in BB
+                            IEnumerator<Literal> il = GetBB().GetCandidateBeliefs(beliefToDel.GetPredicateIndicator());
+                            if (il != null)
+                            {
+                                while (il.MoveNext())
+                                {
+                                    Literal linBB = il.Current;
+                                    if (u.Unifies(linBB, beliefToDel))
+                                    {
+                                        il.Dispose();
+                                        beliefToDel = (Literal)beliefToDel.Capply(u);
+                                        removed = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (removed)
+                        {
+                            //if (logger.isLoggable(Level.FINE)) logger.fine("Removed:" + beliefToDel);
+                            if (result == null)
+                            {
+                                result = new List<Literal>[2];
+                                result[0] = EmptyList();
+                            }
+                            result[1] = SingletonList(beliefToDel);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    //logger.log(Level.WARNING, "Error at BRF.", e);
+                }
+            //}
+            return result;
+        }
+
+        public bool AddBel(Literal bel)
+        {
+            if (!bel.HasSource())
+            {
+                bel.AddAnnot(DefaultBeliefBase.TSelf);
+            }
+            List<Literal>[] result = Brf(bel, null, Intention.emptyInt);
+            if (result != null && reasoner != null)
+            {
+                reasoner.UpdateEvents(result, Intention.emptyInt);
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public bool DelBel(Literal bel)
+        {
+            if (!bel.HasSource())
+            {
+                bel.AddAnnot(DefaultBeliefBase.TSelf);
+            }
+            List<Literal>[] result = Brf(null, bel, Intention.emptyInt);
+            if (result != null && reasoner != null)
+            {
+                reasoner.UpdateEvents(result, Intention.emptyInt);
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+        public void Abolish(Literal bel, Unifier un)
+        {
+            List<Literal> toDel = new List<Literal>();
+            if (un == null)
+            {
+                un = new Unifier();
+            }
+            //synchronized(bb.getLock())
+            //{
+            IEnumerator<Literal> il = GetBB().GetCandidateBeliefs(bel, un);
+            if (il != null)
+            {
+                while (il.MoveNext())
+                {
+                    Literal inBB = il.Current;
+                    if (!inBB.IsRule())
+                    {
+                        if (un.Clone().UnifiesNoUndo(bel, inBB))
+                        {
+                            toDel.Add(inBB);
+                        }
+                    }
+                }
+            }
+            foreach (Literal l in toDel)
+            {
+                DelBel(l);
+            }
+            //}
+        }
+
+        private void CheckCustomSelectOption()
+        {
+           /* hasCustomSelOp = false;
+            foreach (Method m in this.getClass().getMethods())
+            {
+                if (!m.getDeclaringClass().equals(Agent.class) && m.getName().equals("selectOption")) {
+                hasCustomSelOp = true;
+                }
+            }*/
+        }
+
+        public bool HasCustomSelectOption()
+        {
+            return hasCustomSelOp;
+        }
+
+        public override string ToString()
+        {
+            return "Agent from " + GetASLSrc();
+        }
+
     }
 }
 
