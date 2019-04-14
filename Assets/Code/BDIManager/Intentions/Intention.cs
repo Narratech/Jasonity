@@ -113,12 +113,12 @@ namespace BDIManager.Intentions
         }
 
         // This function is empty in the original code. Should it do something?
-        internal void Fail(Circumstance circumstance)
+        public virtual void Fail(Circumstance circumstance)
         {
             
         }
 
-        internal Event FindEventForFailure(Trigger trigger, PlanLibrary planLibrary, Circumstance c)
+        public virtual Event FindEventForFailure(Trigger trigger, PlanLibrary planLibrary, Circumstance c)
         {
             Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetTEType(), trigger.GetLiteral());
             int posInStack = Size();
