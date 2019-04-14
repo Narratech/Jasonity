@@ -14,6 +14,7 @@ using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
+using Assets.Code.AsSemantics;
 
 
 //This provides an agent architecture where each agent has its ouwn thread. 
@@ -200,7 +201,7 @@ namespace Assets.Code.Infra
             int ca = cyclesAct;
             if (ca != 1)
             { // not the default value, limit the value to the number of intentions
-                ca = Math.Min(cyclesAct, reasoner.GetCircumstance().getNbRunningIntentions());
+                ca = Math.Min(cyclesAct, reasoner.GetCircumstance().GetNbRunningIntentions());
                 if (ca == 0)
                     ca = 1;
             }
@@ -338,7 +339,7 @@ namespace Assets.Code.Infra
         {
             foreach (string agName in masRunner.GetAgs().KeySet())
             {
-                if (!agName.Equals(this.GetAgName()))
+                if (!agName.Equals(GetAgName()))
                 {
                     m.SetReceiver(agName);
                     SendMsg(m);
@@ -350,7 +351,7 @@ namespace Assets.Code.Infra
         public new void CheckMail()
         {
             Circumstance C = GetReasoner().GetCircumstance();
-            Message im = mbox.Poll();
+            Message im = mbox.Dequeue();
             while (im != null)
             {
                 C.AddMsg(im);

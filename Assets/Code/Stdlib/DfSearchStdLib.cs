@@ -37,7 +37,7 @@ namespace Assets.Code.Stdlib
             IListTerm lt = new ListTermImpl();
             foreach (string a in ts.GetUserAgArch().GetRuntimeServices().DfSearch(GetService(args), GetType(args)))
             {
-                lt.Add(new AtomStdLib(a));
+                lt.Add(new Atom(a));
             }
             return un.Unifies(args[args.Length-1], lt);
         }

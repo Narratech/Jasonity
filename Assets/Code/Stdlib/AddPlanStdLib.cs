@@ -57,7 +57,7 @@ namespace Assets.Code.Stdlib
 
             if (ts.GetAgent().GetPL().HasMetaEventPlans())
             {
-                ts.AddDesireListener(new DesireStdLib(ts));
+                ts.AddDesireListener(new Desire(ts));
             }
             return true;
         }

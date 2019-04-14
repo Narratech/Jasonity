@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSyntax;
+﻿using System;
+using Assets.Code.AsSyntax;
 
 namespace Assets.Code.AsSemantics
 {
@@ -121,7 +122,7 @@ namespace Assets.Code.AsSemantics
                 newmsg.receiver = msg.Substring(one + 1, two);
                 one = msg.IndexOf(">", two + 1);
                 string content = msg.Substring(two + 1, one);
-                newmsg.propCont = AsSyntax.ParseTerm(content);
+                newmsg.propCont = AsSyntax.AsSyntax.ParseTerm(content);
             }
             return newmsg;
         }
@@ -130,6 +131,11 @@ namespace Assets.Code.AsSemantics
         {
             string irt = (inReplyTo == null ? "" : "->" + inReplyTo);
             return "<" + msgID + irt + "," + sender + "," + ilForce + "," + receiver + "," + propCont + ">";
+        }
+
+        internal string GetMessageId()
+        {
+            throw new NotImplementedException();
         }
     }
 }

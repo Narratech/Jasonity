@@ -43,9 +43,9 @@ namespace Assets.Code.Stdlib
             }
 
             //drop intentions in PE
-            foreach (string ek in C.GetPendingEvents().KeySet())
+            foreach (string ek in C.GetPendingEvents().Keys)
             {
-                Event e = C.GetPendingEvents().Get(ek);
+                Event e = C.GetPendingEvents()[ek];
                 if (e.IsInternal())
                 {
                     C.RemovePendingEvent(ek);

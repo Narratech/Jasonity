@@ -1,6 +1,7 @@
 using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
+using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {

@@ -2,10 +2,11 @@ using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;
+using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class Sqrt : DefaultArithFunction
+    public partial class Sqrt : ArithFunction
     {
 
         public override string GetName()

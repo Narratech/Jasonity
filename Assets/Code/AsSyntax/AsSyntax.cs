@@ -332,5 +332,10 @@ namespace Assets.Code.AsSyntax
                 return t.ToString();
             }
         }
+
+        internal static string GetHardDeadLineStr()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

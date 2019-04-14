@@ -9,7 +9,8 @@ namespace Assets.Code
     public class Settings
     {
         public const int DEFAULT_NUMBER_REASONING_CYCLES = 1;
-
+        internal static readonly object INIT_BELS;
+        internal static readonly object INIT_GOALS;
         private int nrcbp = DEFAULT_NUMBER_REASONING_CYCLES;
 
 
@@ -49,6 +50,16 @@ namespace Assets.Code
         }
 
         internal bool SameFocus()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal string GetUserParameter(object iNIT_BELS)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool IsSync()
         {
             throw new NotImplementedException();
         }

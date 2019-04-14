@@ -14,7 +14,7 @@ namespace Assets.Code.Stdlib
     {
         enum Step { selEvt, evt, useIntends, end }
 
-        public object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
             return AllDesires(ts.GetCircumstance(), args[0] as Literal, args.Length == 2 ? args[1] : null, un);
@@ -29,7 +29,24 @@ namespace Assets.Code.Stdlib
 
         private class EnumeratorImpl : IEnumerator<Unifier>
         {
-            
+            public Unifier Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

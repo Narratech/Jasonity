@@ -27,8 +27,9 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        protected override void CheckArguments(ITerm[] args)//:base.CheckArguments(args)
+        protected override void CheckArguments(ITerm[] args)
         {
+            base.CheckArguments(args);
             if (args.Length > 1 && !args[1].IsString())
             {
                 throw JasonityException.CreateWrongArgument(this, "second argument must be a string");

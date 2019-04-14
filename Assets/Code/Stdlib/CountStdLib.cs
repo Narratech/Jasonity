@@ -26,8 +26,9 @@ namespace Assets.Code.Stdlib
             return 2;
         }
 
-        protected override void CheckArguments(ITerm[] args)//: base.CheckArguments(args)
+        protected override void CheckArguments(ITerm[] args)
         {
+            base.CheckArguments(args);
             if (!(args[0].GetType() == typeof(ILogicalFormula)))
             {
                 throw JasonityException.CreateWrongArgument(this, "first argument must be a formula");

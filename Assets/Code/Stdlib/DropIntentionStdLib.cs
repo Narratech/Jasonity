@@ -62,7 +62,7 @@ namespace Assets.Code.Stdlib
          * 
          * returns true if the current intention is dropped
          */
-        public bool DropInt(Circumstance C, Literal goal, Unifier un)
+        public virtual bool DropInt(Circumstance C, Literal goal, Unifier un)
         {
             Unifier bak = un.Clone();
             Trigger g = new Trigger(TEOperator.add, TEType.achieve, goal);

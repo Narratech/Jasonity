@@ -83,22 +83,27 @@ namespace BDIManager.Intentions {
             return unif;
         }
 
-        internal object GetRenamedVars()
+        public Unifier GetRenamedVars()
         {
             return renamedVars;
         }
 
-        internal void SetUnif(Unifier current)
+        public void SetUnif(Unifier current)
         {
             this.unif = current;
         }
 
-        internal void SetRenamedVars(Unifier renamedVars)
+        public void SetRenamedVars(Unifier renamedVars)
         {
             this.renamedVars = renamedVars;
         }
 
-        internal void Pop()
+        public void Pop()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal IntendedPlan Peek()
         {
             throw new NotImplementedException();
         }

@@ -11,7 +11,7 @@ using Assets.Code.Logic;
  */
 namespace Assets.Code.ReasoningCycle
 {
-    public class Unifier
+    public class Unifier : IEnumerable<>
     {
         Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
 
@@ -412,5 +412,10 @@ namespace Assets.Code.ReasoningCycle
         }
 
         public void SetDictionary(Dictionary<VarTerm, ITerm> newFunc) => function = newFunc;
+
+        internal object GetFunction()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

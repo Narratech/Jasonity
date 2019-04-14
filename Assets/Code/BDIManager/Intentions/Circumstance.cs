@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Agent;
+using Assets.Code.AsSemantics;
 using Assets.Code.AsSyntax;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
@@ -16,6 +17,72 @@ namespace Assets.Code.BDIManager
         private Queue<Intention> I;
         private ExecuteAction A;
         private Intention SI;
+
+        internal void ClearEvents()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ClearPendingEvents()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveEvents(Trigger te, Unifier un)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemovePendingEvents(Trigger te, Unifier un)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ClearRunnigIntentions()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal IEnumerator<Intention> GetAllIntentions()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ClearPendingActions()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal IEnumerator<Event> GetEventsPlusAtomic()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveEvent(Event e)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DropIntention(Intention i)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetPendingEvents()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void ClearPendingIntentions()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemovePendingEvent(string ek)
+        {
+            throw new NotImplementedException();
+        }
+
         private Event SE;
         private Option SO;
         private Event AE; // Atomic Event
@@ -132,6 +199,11 @@ namespace Assets.Code.BDIManager
                     el.IntentionSuspended(i, "action " + action.GetActionTerm());
                 }
             }
+        }
+
+        internal void InsertMetaEvent(Event @event)
+        {
+            throw new NotImplementedException();
         }
 
         private void SetAtomicIntention(Intention i)
@@ -253,6 +325,11 @@ namespace Assets.Code.BDIManager
             }
         }
 
+        internal byte GetNbRunningIntentions()
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddRunningIntention(Intention i)
         {
             if (i.IsAtomic())
@@ -288,6 +365,11 @@ namespace Assets.Code.BDIManager
                 }
             }
             return e;
+        }
+
+        internal object GetSelectedOption()
+        {
+            throw new NotImplementedException();
         }
 
         public void SetSE(Event ev)
@@ -327,9 +409,64 @@ namespace Assets.Code.BDIManager
             return evt;
         }
 
+        internal Circumstance Clone()
+        {
+            throw new NotImplementedException();
+        }
+
         internal bool HasListener()
         {
             return listeners.Count != 0;
+        }
+
+        internal void AddAchvGoal(Literal d, Intention emptyInt)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void AddMsg(Message im)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetA(ExecuteAction executeAction)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Circumstance GetFirst()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetSI(object p)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object RemoveAtomicIntention()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Queue<Intention> GetRunningIntentions()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetAP(List<Option> list)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetSelectedEvent()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal object GetSelectedIntention()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -69,7 +69,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                 return null;
         }
 
-        public static ArithFunctionTerm getFunction(string function, int arity)
+        public static ArithFunctionTerm GetFunction(string function, int arity)
         {
             ArithFunctionTerm af = functions[function];
 

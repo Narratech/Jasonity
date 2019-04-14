@@ -5,7 +5,7 @@ namespace Assets.Code.AsSemantics
 {
     public class ArithFunction
     {
-        public virtual string GetName() => GetType().Name; // Not sure if this is right
+        public virtual string GetName() => GetType().Name; 
 
         public virtual bool AllowUngroundTerms() => false;
 

@@ -35,7 +35,7 @@ namespace BDIManager.Intentions
 
         public IntendedPlan Pop()
         {
-            // Plan top = plans.Remove(plans.FindLastIndex());
+            //Plan top = plans.Remove(plans.FindLastIndex());
             IntendedPlan top = null;
             if (IsAtomic() && top.IsAtomic())
             {
@@ -59,7 +59,12 @@ namespace BDIManager.Intentions
             return plans.Count;
         }
 
-        public void clearIM()
+        internal Trigger GetAsTerm()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearIM()
         {
             plans.Clear();
         }
@@ -100,6 +105,11 @@ namespace BDIManager.Intentions
         public void SetSuspendedReason(string r)
         {
             suspendedReason = r;
+        }
+
+        internal Intention Clone()
+        {
+            throw new NotImplementedException();
         }
 
         // This function is empty in the original code. Should it do something?
@@ -144,6 +154,11 @@ namespace BDIManager.Intentions
                 }
             }
             return null;
+        }
+
+        internal bool IsSuspended()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -84,5 +84,10 @@ namespace BDIManager.Desires {
                 }
             }
         }
+
+        internal object AllDesires(Circumstance circumstance, Literal body, object p, Unifier unifier)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

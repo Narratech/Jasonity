@@ -362,24 +362,24 @@ namespace Assets.Code.AsSyntax
 
         private class MyIEnumerator<Unifier>: IEnumerator<Unifier>
         {
-            Unifier current = null;
-            System.Collections.Generic.IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
+            Unifier current = default;
+            IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
             Literal cloneAnnon = null; // a copy of the literal with makeVarsAnnon
             Rule rule; // current rule
             bool needsUpdate = true;
             Agent.Agent ag;
             Unifier un;
-            System.Collections.Generic.IEnumerator<List<ITerm>> annotsOptions = null;
+            IEnumerator<List<ITerm>> annotsOptions = null;
             Literal belInBB = null;
             private AgentArchitecture arch;
             private int nbAnnots;
-            private System.Collections.Generic.IEnumerator<Literal> il;
+            private IEnumerator<Literal> il;
 
             public Unifier Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, System.Collections.Generic.IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
+            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
             {
                 this.arch = arch;
                 this.nbAnnots = nbAnnots;
@@ -407,7 +407,7 @@ namespace Assets.Code.AsSyntax
             private void Get()
             {
                 needsUpdate = false;
-                current = null;
+                current = default;
                 if (arch != null && !arch.IsRunning()) return;
 
                 if (annotsOptions != null)
@@ -636,7 +636,7 @@ namespace Assets.Code.AsSyntax
 
             object ReadResolve()
             {
-                return Literal.LTrue;
+                return LTrue;
             }
         }
 
@@ -664,7 +664,7 @@ namespace Assets.Code.AsSyntax
 
             object ReadResolve()
             {
-                return Literal.LFalse;
+                return LFalse;
             }
         }
 
@@ -714,7 +714,7 @@ namespace Assets.Code.AsSyntax
 
             object ReadResolver()
             {
-                return Literal.DefaultNS;
+                return DefaultNS;
             }
         }
 

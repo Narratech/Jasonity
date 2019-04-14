@@ -208,7 +208,7 @@ namespace Assets.Code.Util
         {
             return GetProperty(KQML_RECEIVED_FUNCTOR, Message.kqmlReceivedFunctor);
         }
-        public string getKqmlPlansFile()
+        public string GetKqmlPlansFile()
         {
             return GetProperty(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
         }

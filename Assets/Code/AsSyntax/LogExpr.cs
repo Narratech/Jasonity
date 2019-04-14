@@ -156,13 +156,13 @@ namespace Assets.Code.AsSyntax
     {
         private LogExpr logExpr;
         private Agent.Agent ag;
-        private ReasoningCycle.Unifier un;
+        private Unifier un;
         AndIterator<Unifier> ileft;
         AndIterator<Unifier> iright = null;
         Unifier current = default;
         bool needsUpdate = true;
 
-        public AndIterator(LogExpr logExpr, Agent.Agent ag, ReasoningCycle.Unifier un)
+        public AndIterator(LogExpr logExpr, Agent.Agent ag, Unifier un)
         {
             this.logExpr = logExpr;
             this.ag = ag;
@@ -188,7 +188,7 @@ namespace Assets.Code.AsSyntax
             needsUpdate = false;
             current = default;
             while ((iright == null || iright.MoveNext()) && ileft.MoveNext())
-                iright = logExpr.GetRHS().LogicalConsequence(ag, ileft.Next());
+                iright = logExpr.GetRHS().LogicalConsequence(ag, ileft.Current);
             if (iright != null && iright.HasNext())
                 current = iright.Next();
         }

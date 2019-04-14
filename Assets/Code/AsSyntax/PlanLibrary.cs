@@ -1,12 +1,13 @@
 ﻿using Assets.Code.Util;
 using BDIManager.Beliefs;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Assets.Code.AsSyntax
 {
-    public class PlanLibrary
+    public class PlanLibrary : IEnumerable<Plan>
     {
         // A dictionary from TE to a list of relevant plans
         private Dictionary<PredicateIndicator, List<Plan>> relPlans = new Dictionary<PredicateIndicator, List<Plan>>();
@@ -332,7 +333,7 @@ namespace Assets.Code.AsSyntax
             List<Plan> l = null;
             if (trigger.GetLiteral().IsVar() || trigger.GetNS().IsVar())
             {
-                foreach (var p in this) // ???
+                foreach (var p in this)
                 {
                     if (p.GetTrigger().GetType() == trigger.GetType())
                     {
@@ -374,7 +375,7 @@ namespace Assets.Code.AsSyntax
             try
             {
                 // Synchronized (lockPL)
-                foreach (Plan p in this) // ???
+                foreach (Plan p in this) 
                 {
                     pl.Add((Plan)p.Clone(), false);
                 }
@@ -436,6 +437,16 @@ namespace Assets.Code.AsSyntax
                 }
             }
             return r.ToString() + end.ToString();
+        }
+
+        public IEnumerator<Plan> GetEnumerator()
+        {
+            return plans.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

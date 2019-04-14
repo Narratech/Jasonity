@@ -150,9 +150,9 @@ namespace Assets.Code.AsSyntax
             return l;
         }
 
-        public object GetSrcInfo()
+        public string GetSrcInfo()
         {
-            throw new NotImplementedException();
+            return source;
         }
 
         // Creates a plan from a list with four elements: [Literal, Trigger, Context, Body]

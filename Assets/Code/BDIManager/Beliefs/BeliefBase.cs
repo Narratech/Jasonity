@@ -148,7 +148,7 @@ namespace BDIManager.Beliefs
                     {
                         percepts.Remove(bl);
                     }
-                    bool result = bl.DelAnnots(l.GetAnnots());
+                    bool result = bl.DelAnnots((List<ITerm>)l.GetAnnots());
                     return RemoveFromEntry(bl) || result;
                 }
             }
@@ -245,6 +245,11 @@ namespace BDIManager.Beliefs
             throw new NotImplementedException();
         }
 
+        internal BeliefBase Clone()
+        {
+            throw new NotImplementedException();
+        }
+
         private class IEnumeratorGetPercepts : IEnumerator<Literal>
         {
             private IEnumerator<Literal> i;
@@ -277,6 +282,11 @@ namespace BDIManager.Beliefs
             {
                 throw new NotImplementedException();
             }
+        }
+
+        internal IEnumerator<Literal> GetCandidateBeliefs(PredicateIndicator predicateIndicator)
+        {
+            throw new NotImplementedException();
         }
     }
 }

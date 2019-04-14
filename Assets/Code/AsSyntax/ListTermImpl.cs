@@ -388,7 +388,7 @@ namespace Assets.Code.AsSyntax
 
         private class MyIEnumerator<T> : IEnumerator<T> where T : List<ITerm>
         {
-            private int k;
+            public int k;
 
             public MyIEnumerator(int k)
             {
@@ -405,9 +405,10 @@ namespace Assets.Code.AsSyntax
             {
                 if (open == null)
                 {
-                    open = new LinkedList<>();
-                    thisAsArray = GetAsList().ToArray(thisAsArray);
-                    open.AddAfter(new SubSetSearchState(0, k, null, null));
+                    open = new LinkedList<SubSetSearchState>();
+                    thisAsArray = GetAsList().ToArray(/*thisAsArray*/);
+                    open.AddLast(new SubSetSearchState(0, k, null, null));
+                    //open.AddAfter(new SubSetSearchState(0, k, null, null));
                 }
                 if (next == null)
                 {
@@ -430,7 +431,8 @@ namespace Assets.Code.AsSyntax
             {
                 while (!(open.Count == 0))
                 {
-                    SubSetSearchState s = open.RemoveFirst();
+                    SubSetSearchState s = open.First;
+                    open.RemoveFirst();
                     if (s.d == 0)
                     {
                         next = s.GetAsList();
@@ -438,7 +440,7 @@ namespace Assets.Code.AsSyntax
                     }
                     else
                     {
-                        s.AddNext();
+                        s.AddNexts();
                     }
                 }
                 next = null;
@@ -446,14 +448,14 @@ namespace Assets.Code.AsSyntax
 
             public void Remove() { }
 
-            class SubSetSearchState
+            private class SubSetSearchState
             {
                 int pos;
-                int d;
+                public int d;
                 ITerm value = null;
                 SubSetSearchState f = null;
 
-                SubSetSearchState(int pos, int d, ITerm t, SubSetSearchState father)
+                public SubSetSearchState(int pos, int d, ITerm t, SubSetSearchState father)
                 {
                     this.pos = pos;
                     this.d = d;
@@ -461,7 +463,7 @@ namespace Assets.Code.AsSyntax
                     f = father;
                 }
 
-                void AddNexts()
+                public void AddNexts()
                 {
                     int pSize = (k - d) + thisAsArray.Length;
                     for (int i = thisAsArray.Length-1; i>= pos; i--)
@@ -475,7 +477,7 @@ namespace Assets.Code.AsSyntax
 
                 List<ITerm> GetAsList()
                 {
-                    LinkedList<ITerm> np = new LinkedList<>();
+                    LinkedList<ITerm> np = new LinkedList<ITerm>();
                     SubSetSearchState c = this;
                     while (c.value != null)
                     {
@@ -654,7 +656,7 @@ namespace Assets.Code.AsSyntax
         // conversely, implement all other methods of List based on this iterator
         // (see AbstractSequentialList)
         // merge code of ListTermIterator here and use always the same iterator
-        public IEnumerator<ITerm> listIterator(int startIndex)
+        public IEnumerator<ITerm> ListIterator(int startIndex)
         {
             ListTermImpl list = this;
             return new MyListIterator<ITerm>(startIndex, list);
@@ -738,9 +740,6 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-
-
-
         public override string ToString()
         {
             StringBuilder s = new StringBuilder("[");
@@ -781,21 +780,21 @@ namespace Assets.Code.AsSyntax
         {
             if (c == null) return false;
             IListTerm lt = this;
-            IEnumerator<ITerm> i = c.GetEnumerator();
+            IEnumerator<ITerm> i = (IEnumerator<ITerm>)c.GetEnumerator();
             while (i.MoveNext())
             {
-                lt = lt.Append(i.Next());
+                lt = lt.Append(i.Current);
             }
             return true;
         }
 
         public bool AddAll(int index, IList c)
         {
-            IEnumerator<ITerm> i = c.GetEnumerator();
+            IEnumerator<ITerm> i = (IEnumerator<ITerm>)c.GetEnumerator();
             int p = index;
             while (i.MoveNext())
             {
-                Add(p, i.Next());
+                Add(p, i.Current);
                 p++;
             }
             return true;
@@ -815,7 +814,7 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                return GetNext().Contains(o);
+                return GetNext().Contains((ITerm)o);
             }
             return false;
         }
@@ -823,10 +822,10 @@ namespace Assets.Code.AsSyntax
         public bool ContainsAll(IList c)
         {
             bool r = true;
-            IEnumerator<ITerm> i = c.GetEnumerator();
+            IEnumerator<ITerm> i = (IEnumerator<ITerm>)c.GetEnumerator();
             while (i.MoveNext() && r)
             {
-                r = r && Contains(i.Next());
+                r = r && Contains(i.Current);
             }
             return r;
         }
@@ -852,7 +851,7 @@ namespace Assets.Code.AsSyntax
             }
             else if (GetNext() != null)
             {
-                int n = GetNext().IndexOf(o);
+                int n = GetNext().IndexOf((ITerm)o);
                 if (n >= 0)
                 {
                     return n + 1;
@@ -863,12 +862,12 @@ namespace Assets.Code.AsSyntax
 
         public int LastIndexOf(object arg0)
         {
-            return GetAsList().LastIndexOf(arg0);
+            return GetAsList().LastIndexOf((ITerm)arg0);
         }
 
-        public IEnumerator<ITerm> listIterator()
+        public IEnumerator<ITerm> ListIterator()
         {
-            return listIterator(0);
+            return ListIterator(0);
         }
 
         protected void SetValuesFrom(IListTerm lt)

@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Agent;
+using Assets.Code.AsSemantics;
 using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
@@ -39,7 +40,7 @@ namespace Assets.Code.ReasoningCycle
         public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProcAct, SelInt, ExecInt, ClrInt }
 
 
-        private Assets.Code.Agent.Agent ag = null;
+        private Agent.Agent ag = null;
         private AgentArchitecture agArch = null;
         private Settings settings = null;
         private Circumstance circumstance = null;
@@ -427,9 +428,9 @@ namespace Assets.Code.ReasoningCycle
         {
             if (ip.GetRenamedVars() != null)
             {
-                foreach (VarTerm var in ip.GetRenamedVars().Function().KeySet())
+                foreach (VarTerm var in ip.GetRenamedVars().GetFunction().Keys)
                 {
-                    UnnamedVar vt = (UnnamedVar)ip.GetRenamedVars().Function().Get(var);
+                    UnnamedVar vt = (UnnamedVar)ip.GetRenamedVars().GetFunction()[var];
                     ip.GetUnif().Unifies(var, vt);
                     ITerm vl = values.GetFunction()[vt];
                     if (vl != null)
@@ -527,7 +528,7 @@ namespace Assets.Code.ReasoningCycle
                 List<ITerm> errorAnnots = null;
                 try
                 {
-                    InternalAction ia = ((InternalAction)bTerm).GetIA(ag);
+                    InternalAction ia = ((InternalActionLiteral)bTerm).GetIA(ag);
                     ITerm[] terms = ia.PrepareArguments(body, u);
                     Object result = ia.Execute(this, u, terms);
                     if (result != null)
@@ -547,7 +548,7 @@ namespace Assets.Code.ReasoningCycle
                             errorAnnots = (List<ITerm>)JasonityException.CreateBasicErrorAnnots("ia_failed", "");
                         }
                     }
-                    if (ok && ia.SuspendedIntention())
+                    if (ok && ia.SuspendIntention())
                     {
                         UpdateIntention(curInt);
                     }
@@ -602,7 +603,7 @@ namespace Assets.Code.ReasoningCycle
             } else if (h.GetBodyType() == BodyType.constraint)
             {
 
-                IEnumerator<Unifier> iu = (((ILogicalFormula)bTerm).LogicalConsecuence(ag, u));
+                IEnumerator<Unifier> iu = (((ILogicalFormula)bTerm).LogicalConsequence(ag, u));
                 if (iu.MoveNext())
                 {
                     ip.SetUnif(iu.Current);
@@ -680,7 +681,7 @@ namespace Assets.Code.ReasoningCycle
             } else if (h.GetBodyType() == BodyType.addBel || h.GetBodyType() == BodyType.addBelBegin || h.GetBodyType() == BodyType.addBelEnd || h.GetBodyType() == BodyType.addBelNewFocus)
             {
                 Intention newFocus = Intention.emptyInt;
-                Boolean isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != PlanBody.BodyType.addBelNewFocus;
+                Boolean isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.addBelNewFocus;
                 if (isSameFocus)
                 {
                     newFocus = curInt;
@@ -693,13 +694,13 @@ namespace Assets.Code.ReasoningCycle
                 try
                 {
                     List<Literal>[] result;
-                    if (h.GetBodyType() == PlanBody.BodyType.addBelEnd)
+                    if (h.GetBodyType() == BodyType.addBelEnd)
                     {
-                        result = GetAgent().brf(body, null, curInt, true);
+                        result = GetAgent().Brf(body, null, curInt, true);
                     }
                     else
                     {
-                        result = GetAgent().brf(body, null, curInt);
+                        result = GetAgent().Brf(body, null, curInt);
                     }
                     if (result != null)
                     {
@@ -718,8 +719,8 @@ namespace Assets.Code.ReasoningCycle
                 }
 
             } else if (h.GetBodyType() == BodyType.delBelNewFocus || h.GetBodyType() == BodyType.delBel) {
-                newFocus = Intention.emptyInt; //Here it isnt declare because why not
-                isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != PlanBody.BodyType.delBelNewFocus;
+                Intention newFocus = Intention.emptyInt; 
+                bool isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.delBelNewFocus;
                 if (isSameFocus)
                 {
                     newFocus = curInt;
@@ -730,7 +731,7 @@ namespace Assets.Code.ReasoningCycle
                 }
                 try
                 {
-                    List<Literal>[] result = GetAgent().brf(null, body, curInt);
+                    List<Literal>[] result = GetAgent().Brf(null, body, curInt);
                     if (result != null)
                     {
                         UpdateEvents(result, newFocus);
@@ -741,7 +742,7 @@ namespace Assets.Code.ReasoningCycle
                     } else {
                         UpdateIntention(curInt);
                     }
-                } catch (RevisionFailedEception re)
+                } catch (RevisionFailedException re)
                 {
                     GenerateDesireDeletion(curInt, null);
                 }
@@ -792,14 +793,14 @@ namespace Assets.Code.ReasoningCycle
                     Dictionary<VarTerm, ITerm> adds = null;
                     foreach (VarTerm v in renamedVars)
                     {
-                        ITerm t = u.Function().Get(v);
+                        ITerm t = u.GetFunction()[v];
                         if (t != null && t.IsVar())
                         {
                             if (adds == null)
                                 adds = new Dictionary<VarTerm, ITerm>();
                             try
                             {
-                                adds.Add((VarTerm)t, renamedVars.Function().Get(v));
+                                adds.Add((VarTerm)t, renamedVars.GetFunction()[v]);
                             } catch (Exception e)
                             {
                                 //logger.log(Level.SEVERE, "*** Error adding var into renamed vars. var=" + v + ", value=" + t + ".", e);
@@ -808,7 +809,7 @@ namespace Assets.Code.ReasoningCycle
                     }
                     if (adds != null)
                     {
-                        renamedVars.Function().PutAll(adds);
+                        renamedVars.GetFunction().PutAll(adds);
                     }
                 }
             }
@@ -1015,7 +1016,7 @@ namespace Assets.Code.ReasoningCycle
                 {
                     Intention curInt = a.GetIntention();
                 
-                    if (GetCircumstance().RemovePendingIntention(curInt.GetID()) != null) {
+                    if (GetCircumstance().RemovePendingIntention(curInt.GetID().ToString()) != null) {
                         if (a.GetResult())
                         {
                             UpdateIntention(curInt);
@@ -1084,7 +1085,7 @@ namespace Assets.Code.ReasoningCycle
                         {
                             foreach (VarTerm var in ipBase.GetRenamedVars())
                             {
-                                VarTerm vl = (VarTerm)ipBase.GetRenamedVars().GetFunction().Get(var);
+                                VarTerm vl = (VarTerm)ipBase.GetRenamedVars().GetFunction()[var];
                                 ITerm t = top.GetUnif().Get(vl);
                                 if (t != null)
                                 {
@@ -1092,10 +1093,10 @@ namespace Assets.Code.ReasoningCycle
                                     {
                                         Literal l = (Literal)t.Capply(top.GetUnif());
                                         l.MakeVarsAnnon(top.GetRenamedVars());
-                                        ip.GetUnif().GetFunction().Put(vl, l);
+                                        ip.GetUnif().GetFunction().Insert(vl, l);
                                     } else
                                     {
-                                        ip.GetUnif().GetFunction().Put(vl, t);
+                                        ip.GetUnif().GetFunction().Insert(vl, t);
                                     }
                                 }
                             }
@@ -1127,7 +1128,7 @@ namespace Assets.Code.ReasoningCycle
                             return;
                         } else
                         {
-                            IEnumerator<Unifier> r = context.LogicalConsecuence(ag, relUn);
+                            IEnumerator<Unifier> r = context.LogicalConsequence(ag, relUn);
                             if (r != null && r.MoveNext())
                             {
                                 confP.GetCircumstance().SetSO(new Option(p, r.Current));
@@ -1195,7 +1196,7 @@ namespace Assets.Code.ReasoningCycle
                     } else
                     {
                         bool allU = o.GetPlan().IsAllUnifs();
-                        IEnumerator<Unifier> r = context.LogicalConsecuence(ag, o.GetUnifier());
+                        IEnumerator<Unifier> r = context.LogicalConsequence(ag, o.GetUnifier());
                         if ( r != null)
                         {
                             while(r.MoveNext())
@@ -1420,7 +1421,7 @@ namespace Assets.Code.ReasoningCycle
                 Intention intention = null;
                 if (m.GetInReplyTo() != null)
                 {
-                    intention = GetCircumstance().GetPendingIntentions().Get(m.GetInReplyTo());
+                    intention = GetCircumstance().GetPendingIntentions()[m.GetInReplyTo()];
                 }
                 //Is it a pending intention?
                 if (intention != null)
@@ -1491,7 +1492,7 @@ namespace Assets.Code.ReasoningCycle
                             if (m.GetIlForce().Equals("achieve"))
                             {
                                 content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
-                                GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt()));
+                                GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt));
                                 added = true;
                             } else if (m.GetIlForce().Equals("tell"))
                             {
@@ -1641,8 +1642,13 @@ namespace Assets.Code.ReasoningCycle
                             return 3;
                         }
                     }
-                    return 0;
                 }
+                return 0;
+            }
+
+            internal void FindDesireAndDrop(Reasoner r, Literal body, Unifier unifier)
+            {
+                throw new NotImplementedException();
             }
         }
 
