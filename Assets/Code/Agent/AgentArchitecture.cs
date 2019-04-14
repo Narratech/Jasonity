@@ -126,7 +126,7 @@ namespace Assets.Code.Agent
         }
 
         //Gets the agent's perception as a list of Literals
-        public List<Literal> Perceive()
+        public virtual List<Literal> Perceive()
         {
             if (successor == null) {
                 return null;
@@ -146,7 +146,7 @@ namespace Assets.Code.Agent
         }
 
         //Executes the action
-        public void Act(ExecuteAction action)
+        public virtual void Act(ExecuteAction action)
         {
             if (successor != null)
             {
@@ -166,7 +166,7 @@ namespace Assets.Code.Agent
             return (successor == null) || successor.CanSleep();
         }
 
-        public void Wake()
+        public virtual void Wake()
         {
             if (successor != null)
             {
@@ -174,7 +174,7 @@ namespace Assets.Code.Agent
             }
         }
 
-        public void WakeUpSense()
+        public virtual void WakeUpSense()
         {
             if (successor != null)
             {
@@ -182,7 +182,7 @@ namespace Assets.Code.Agent
             }
         }
 
-        public void WakeUpDeliberate()
+        public virtual void WakeUpDeliberate()
         {
             if(successor != null)
             {
@@ -190,7 +190,7 @@ namespace Assets.Code.Agent
             }
         }
 
-        public void WakeUpAct()
+        public virtual void WakeUpAct()
         {
             if (successor != null)
             {

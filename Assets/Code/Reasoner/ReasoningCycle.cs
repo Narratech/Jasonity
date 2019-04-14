@@ -1529,7 +1529,7 @@ namespace Assets.Code.ReasoningCycle
                 GetCircumstance().ResumeIntention(i);
             } else
             {
-                GenerateDesireDeletion(i, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')")));
+                GenerateDesireDeletion(i, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("ask_failed", "reply of an ask message ('"+answerValue+"') does not unify with fourth argument of .send ('"+answerVar+"')"));
             }
         }
 
@@ -1592,7 +1592,7 @@ namespace Assets.Code.ReasoningCycle
             return "Reasoning cycle of agent " + GetUserAgArch().GetAgentName();
         }
 
-        class FailWithDeadline : fail_goal
+        class FailWithDeadline : Fail_Goal
         {
             Intention intToDrop;
             Trigger t;
