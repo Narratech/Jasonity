@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
+using Assets.Code.Util;
 
 namespace Assets.Code.AsSyntax
 {
@@ -13,7 +14,7 @@ namespace Assets.Code.AsSyntax
         public static readonly List<ITerm> emptyTermList = new List<ITerm>(0);
         public static readonly ITerm[] emptyTermArray = new ITerm[0];
         private List<ITerm> terms;
-        private static readonly bool useShortUnnamedVars = Config.Get().GetBoolean(Config.SHORT_UNNAMED_VARS); //I dont really know what this is for
+        private static readonly bool useShortUnnamedVars = Config.Get().GetBool(Config.SHORT_UNNAMED_VARS);
 
 
         public Structure(string functor) : base(DefaultNS, functor)
