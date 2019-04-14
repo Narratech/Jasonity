@@ -435,7 +435,7 @@ namespace Assets.Code.Agent
         {
             try
             {
-                ArithFunction af = c.newInstance();
+                ArithFunction af = c.NewInstance();
                 string error = null;
                 if (user)
                 {

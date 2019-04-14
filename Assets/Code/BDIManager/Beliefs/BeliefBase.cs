@@ -1,5 +1,6 @@
 // Implements a default Belief Base
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
@@ -51,9 +52,10 @@ namespace BDIManager.Beliefs
             nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);    
         }
         
-        public IEnumerable<Literal> GetPercepts()
+        public IEnumerator<Literal> GetPercepts()
         {
-            throw new NotImplementedException();
+            IEnumerator<Literal> i = percepts.GetEnumerator();
+            return new IEnumeratorGetPercepts(i);
         } 
 
         // Returns percepts
@@ -241,6 +243,40 @@ namespace BDIManager.Beliefs
         internal IEnumerator<Literal> GetCandidateBeliefs(Literal literal, Unifier un)
         {
             throw new NotImplementedException();
+        }
+
+        private class IEnumeratorGetPercepts : IEnumerator<Literal>
+        {
+            private IEnumerator<Literal> i;
+            public IEnumeratorGetPercepts(IEnumerator<Literal> i)
+            {
+                this.i = i;
+            }
+
+            public Literal Current => null;
+
+            object IEnumerator.Current => i.Current;
+
+            public void Dispose()
+            {
+                if (Current == null)
+                {
+
+                }
+                i.Dispose();
+                Current.DelAnnot(TPercept);
+                RemoveFromEntry(Current);
+            }
+
+            public bool MoveNext()
+            {
+                return i.MoveNext();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
