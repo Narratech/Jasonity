@@ -16,6 +16,8 @@ using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
 using BDIManager.Desires;
 using BDIManager.Intentions;
+using System.Reflection;
+
 /**
  * The agent class has the belief base and the library plan
  */
@@ -298,23 +300,23 @@ namespace Assets.Code.Agent
             }
         }
 
-        /*public static synchronized ScheduledExecutorService getScheduler()
+        public static synchronized ScheduledExecutorService GetScheduler()
         {
             if (scheduler == null)
             {
                 int n;
                 try
                 {
-                    n = new Integer(Config.get().get(Config.NB_TH_SCH).toString());
+                    n = new int(Config.Get().Get(Config.NB_TH_SCH).ToString());
                 }
                 catch (Exception e)
                 {
                     n = 2;
                 }
-                scheduler = Executors.newScheduledThreadPool(n);
+                scheduler = Executors.NewScheduledThreadPool(n);
             }
             return scheduler;
-        }*/
+        }
 
         public string GetASLSrc()
         {
@@ -381,13 +383,6 @@ namespace Assets.Code.Agent
             parser.Agent(this);
         }
 
-        public void ParseAs(Reader asIn, string sourceId)
-        {
-            as2j parser = new as2j(asIn);
-            parser.SetASLSource(sourceId);
-            parser.Agent(this);
-        }
-
         public InternalAction GetIA(string iaName) {
             if (iaName.ElementAt(0) == '.')
             {
@@ -396,14 +391,13 @@ namespace Assets.Code.Agent
             InternalAction objIA = internalActions[iaName];
             if (objIA == null)
             {
-                Class iaclass = Class.forName(iaName);
                 try
                 {
-                   Method create = iaclass.getMethod("create", (Class[])null);
-                   objIA = (InternalAction) create.invoke(null, (Object[])null);
+                   MethodInfo create = iaName.GetType().GetMethod("create", null);
+                   objIA = (InternalAction) create.Invoke(null, null); //???????
                 } catch (Exception e)
                 {
-                    objIA = (InternalAction) iaclass.newInstance();
+                    objIA = (InternalAction)iaName.GetType().NewInstance();
                 }
                 internalActions.Add(iaName, objIA);
             }
@@ -422,16 +416,17 @@ namespace Assets.Code.Agent
                 functions = new Dictionary<string, ArithFunction>();
             }
             //addFunction(Count.class, false);
-            AddFunction(Count, false);
+            AddFunction(typeof(Count), false);
         }
+        
         //Class<? extends ArithFunction> c ?? wtf is this
-        public void AddFunction(ArithFunction c)
+        public void AddFunction(Type c)
         {
             AddFunction(c, true);
         }
 
-        //Class<? extends ArithFunction> c ?????????????????????????????
-        private void AddFunction(ArithFunction c, bool user)
+        //Class<? extends ArithFunction> c ?? wtf is this
+        private void AddFunction(Type c, bool user)
         {
             try
             {
