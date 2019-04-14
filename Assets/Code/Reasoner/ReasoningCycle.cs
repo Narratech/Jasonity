@@ -1437,13 +1437,13 @@ namespace Assets.Code.ReasoningCycle
                         content = Literal.LFalse;
                     } else if (content.IsLiteral())
                     {
-                        content = Add_nested_source.AddAnnotToList(content, new AsSyntax.Atom(m.GetSender()));
+                        content = AddNestedSourceStdLib.AddAnnotToList(content, new AsSyntax.Atom(m.GetSender()));
                     } else if (send.GetTerm(1).ToString().Equals("askAll") && content.IsList()) //Adds source in each answer if possible
                     {
                         IListTerm tail = new ListTermImpl();
                         foreach (ITerm t in ((IListTerm)content))
                         {
-                            ITerm term = Add_nested_source.AddAnnotToList(t, new Atom(m.GetSender()));
+                            ITerm term = AddNestedSourceStdLib.AddAnnotToList(t, new Atom(m.GetSender()));
                             tail.Append(term);
                         }
                         content = tail;
@@ -1490,12 +1490,12 @@ namespace Assets.Code.ReasoningCycle
                             //Optimisation to jump kqmlPlans
                             if (m.GetIlForce().Equals("achieve"))
                             {
-                                content = Add_nested_source.AddAnnotToList(content, new Atom(sender));
+                                content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
                                 GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt()));
                                 added = true;
                             } else if (m.GetIlForce().Equals("tell"))
                             {
-                                content = Add_nested_source.AddAnnotToList(content, new Atom(sender));
+                                content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
                                 GetAgent().AddBel((Literal)content);
                                 added = true;
                             }
@@ -1592,7 +1592,7 @@ namespace Assets.Code.ReasoningCycle
             return "Reasoning cycle of agent " + GetUserAgArch().GetAgentName();
         }
 
-        class FailWithDeadline : Fail_Goal
+        class FailWithDeadline : FailGoalStdLib
         {
             Intention intToDrop;
             Trigger t;

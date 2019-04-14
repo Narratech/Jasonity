@@ -68,7 +68,7 @@ namespace Assets.Code.AsSyntax
             Literal t = base.MakeVarsAnnon(u);
             if (t.GetFunctor().Equals(".puts"))
             {
-                ((Puts)Puts.Create()).MakeVarsAnnon(t, u);
+                ((PutsStdLib)PutsStdLib.Create()).MakeVarsAnnon(t, u);
             }
             return t;
         }
