@@ -7,40 +7,90 @@ using BDIManager.Intentions;
 
 namespace BDIMaAssets.Code.ReasoningCycle
 {
+    [Serializable]
     public class ExecuteAction
     {
-        private Literal body;
-        private Intention curInt;
+        private Literal action;
+        private Intention intention;
+        private bool result;
+        private Literal failureReason;
+        private String failureMsg;
 
-        public ExecuteAction(Literal body, Intention curInt)
+        public ExecuteAction(Literal ac, Intention i)
         {
-            this.body = body;
-            this.curInt = curInt;
+            action = ac;
+            intention = i;
+            result = false;
+        }
+
+        public override bool Equals(object ao)
+        {
+            if (ao == null)
+            {
+                return false;
+            } 
+            if(!(ao.GetType() == typeof(ExecuteAction)))
+            {
+                return false;
+            }
+            ExecuteAction a = (ExecuteAction)ao;
+            return action.Equals(a.action);
+        }
+
+        public override int GetHashCode()
+        {
+            return action.GetHashCode();
+        }
+
+        public Structure GetActionTerm()
+        {
+            if (action.GetType() == typeof(Structure))
+                return (Structure)action;
+            else
+                return new Structure(action);
         }
 
         public Intention GetIntention()
         {
-            throw new NotImplementedException();
-        }
-
-        public object GetActionTerm()
-        {
-            throw new NotImplementedException();
+            return intention;
         }
 
         public bool GetResult()
         {
-            throw new NotImplementedException();
+            return result;
+        }
+
+        public void SetResult(bool ok)
+        {
+            result = ok;
+        }
+
+        public void SetFailureReason(Literal reason, String msg)
+        {
+            failureReason = reason;
+            failureMsg = msg;
         }
 
         public string GetFailureMsg()
         {
-            throw new NotImplementedException();
+            return failureMsg;
         }
 
-        public object GetFailureReason()
+        public Literal GetFailureReason()
         {
-            throw new NotImplementedException();
+            return failureReason;
+        }
+
+        public override String ToString()
+        {
+            return "<" + action + "," + intention + "," + result + ">";
+        }
+
+        protected ExecuteAction Clone()
+        {
+            ExecuteAction ae = new ExecuteAction((Pred)action.Clone(), intention.Clone());
+            ae.result = result;
+            return ae;
         }
     }
 }
