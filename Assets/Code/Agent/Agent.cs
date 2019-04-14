@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +16,8 @@ using BDIManager.Beliefs;
 using BDIManager.Desires;
 using BDIManager.Intentions;
 using System.Reflection;
+using Assets.Code.Util;
+using Assets.Code.AsSemantics;
 
 /**
  * The agent class has the belief base and the library plan
@@ -35,7 +36,7 @@ namespace Assets.Code.Agent
         private Dictionary<string, InternalAction> internalActions = null;
         private Dictionary<string, ArithFunction> functions = null;
         private bool hasCustomSelOp = true;
-        //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
+        private static ScheduledExecutorService scheduler = null; //I don't know how to do this
 
         public Agent()
         {
@@ -125,15 +126,8 @@ namespace Assets.Code.Agent
                         //parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc); I don't know what this is
                     } else
                     {
-                        try
-                        {
-                            parsingOk = ParseAs(new URL(asSrc)); //I need to find a replace for url but i don't understand why this is used
-                        } catch (MalformedException e)
-                        {
-                            parsingOk = ParseAs(new File(asSrc));
-                        }
+                        parsingOk = ParseAs(File.Create(asSrc));
                     }
-
                 }
 
                 if (parsingOk)
@@ -177,17 +171,17 @@ namespace Assets.Code.Agent
             }
         }
 
-        public void LoadKQMLPlans()
+        /*public void LoadKQMLPlans()
         {
-            /*
+            
             Config c = Config.Get();
             if (c.GetKqmlPlansFile().Equals(Message.kqmlDefaultPlans))
             {
                 if (c.GetKqmlFunctor().Equals(Message.kqmlReceivedFunctor))
                 {
-                    string file = Message.kqmlDefaultPlans.substring(Message.kqmlDefaultPlans.indexOf("/"));
-                    if (typeof(JasonityException)..GetResource(file) != null) {
-                        parseAS(JasonException.class.getResource(file)); //, "kqmlPlans.asl");
+                    string file = Message.kqmlDefaultPlans.Substring(Message.kqmlDefaultPlans.IndexOf("/"));
+                    if (typeof(JasonityException).GetResource(file) != null) {
+                        ParseAS(JasonityException.class.getResource(file)); //, "kqmlPlans.asl");
                     } else {
                         logger.warning("The kqmlPlans.asl was not found!");
                     }
@@ -199,8 +193,8 @@ namespace Assets.Code.Agent
                 } catch (Exception e) {
                     logger.warning("Error reading kqml semantic plans. "+e+". from file "+c.getKqmlPlansFile());
                 }
-            }*/
-        }
+            }
+        }*/
 
         public void StopAg()
         {
@@ -231,9 +225,9 @@ namespace Assets.Code.Agent
                 //a.logger.setLevel(this.getTS().getSettings().logLevel());
             }
 
-            /*synchronized(getBB().getLock()) {
-                a.bb = this.bb.clone();
-            }*/
+            synchronized(GetBB().GetLock()) {
+                a.bb = bb.Clone();
+            }
             a.pl = pl.Clone();
             try
             {
@@ -258,21 +252,21 @@ namespace Assets.Code.Agent
         private void FixAgInIAandFunctions(Agent a)
         {
            
-            //synchronized (getPL().getLock()) {
-            foreach (Plan p in a.GetPL()) {
-                // search context
-                if (p.GetContext().GetType() == typeof(Literal))
-                {
-                    FixAgInIAandFunctions(a, (Literal) p.GetContext());
-                }
+            synchronized (getPL().getLock()) {
+                foreach (Plan p in a.GetPL().GetPlans()) {
+                    // search context
+                    if (p.GetContext().GetType() == typeof(Literal))
+                    {
+                        FixAgInIAandFunctions(a, (Literal) p.GetContext());
+                    }
 
-                // search body
-                if (p.GetBody().GetType() == typeof(Literal))
-                {
-                    FixAgInIAandFunctions(a, (Literal) p.GetBody());
+                    // search body
+                    if (p.GetBody().GetType() == typeof(Literal))
+                    {
+                        FixAgInIAandFunctions(a, (Literal) p.GetBody());
+                    }
                 }
             }
-            //}
         }
 
         private void FixAgInIAandFunctions(Agent a, Literal l)
@@ -307,7 +301,7 @@ namespace Assets.Code.Agent
                 int n;
                 try
                 {
-                    n = new int(Config.Get().Get(Config.NB_TH_SCH).ToString());
+                    n = new Integer(Config.Get().Get(Config.NB_TH_SCH).ToString());
                 }
                 catch (Exception e)
                 {
@@ -330,34 +324,11 @@ namespace Assets.Code.Agent
             aslSource = file;
         }
 
-        public bool ParseAs(URL asURL)
-        {
-            try
-            {
-                ParseAs(asURL.openStream(), asURL.toString());
-                //logger.fine("as2j: AgentSpeak program '" + asURL + "' parsed successfully!");
-                return true;
-            }
-            catch (IOException e)
-            {
-                //logger.log(Level.SEVERE, "as2j: the AgentSpeak source file '" + asURL + "' was not found!");
-            }
-            catch (ParseException e)
-            {
-                //logger.log(Level.SEVERE, "as2j: parsing error: " + e.getMessage());
-            }
-            catch (Exception e)
-            {
-                //logger.log(Level.SEVERE, "as2j: parsing error: \"" + asURL + "\"", e);
-            }
-            return false;
-        }
-
         public bool ParseAs(File asFile)
         {
             try
             {
-                ParseAs(new FileInputStream(asFile), asFile.GetType().Name);
+                ParseAs(new FileStream(asFile), asFile.GetType().Name);
                 //logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
                 return true;
             }
@@ -615,7 +586,7 @@ namespace Assets.Code.Agent
                     AddInitialDesires(d);
                 }
 
-                foreach (Plan p in a.GetPL())
+                foreach (Plan p in a.GetPL().GetPlans())
                 {
                     GetPL().Add(p, false);
                 }
@@ -648,7 +619,7 @@ namespace Assets.Code.Agent
 
         public Event SelectEvent(Queue<Event> events)
         {
-            return events.Poll();
+            return events.Dequeue();
         }
 
         public Option SelectOption(List<Option> options)
@@ -667,12 +638,12 @@ namespace Assets.Code.Agent
 
         public Intention SelectIntention(Queue<Intention> intentions)
         {
-            return intentions.Poll();
+            return intentions.Dequeue();
         }
 
         public Message SelectMessage(Queue<Message> messages)
         {
-            return messages.Poll();
+            return messages.Dequeue();
         }
 
         public ExecuteAction SelectAction(List<ExecuteAction> actList)
@@ -767,7 +738,7 @@ namespace Assets.Code.Agent
             {
                 try
                 {
-                    Literal lp = lw.GetLiteral().copy().forceFullLiteralImpl();
+                    Literal lp = lw.GetLiteral().Copy().ForceFullLiteralImpl();
                     lp.AddAnnot(BeliefBase.TPercept);
                     if (GetBB().Add(lp))
                     {
@@ -853,7 +824,7 @@ namespace Assets.Code.Agent
                         {
                             result = new List<Literal>[2];
                             result[0] = SingletonList(beliefToAdd);
-                            result[1] = EmptyList();
+                            result[1] = new List<Literal>();
                             //if (logger.isLoggable(Level.FINE)) logger.fine("brf added " + beliefToAdd);
                         }
                     }
@@ -863,7 +834,7 @@ namespace Assets.Code.Agent
                         Unifier u = null;
                         try
                         {
-                            u = i.Peek().unif; // get from current intention
+                            u = i.Peek().GetUnif(); // get from current intention
                         }
                         catch (Exception e)
                         {
@@ -898,7 +869,7 @@ namespace Assets.Code.Agent
                             if (result == null)
                             {
                                 result = new List<Literal>[2];
-                                result[0] = EmptyList();
+                                result[0] = new List<Literal>();
                             }
                             result[1] = SingletonList(beliefToDel);
                         }
@@ -998,6 +969,15 @@ namespace Assets.Code.Agent
             return "Agent from " + GetASLSrc();
         }
 
+        internal Option HasCustomSelectOption(object v)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Event SelectEvent(IEnumerable<Event> enumerable)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
