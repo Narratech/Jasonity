@@ -13,7 +13,7 @@ namespace Assets.Code.AsSyntax
         public static readonly List<ITerm> emptyTermList = new List<ITerm>(0);
         public static readonly ITerm[] emptyTermArray = new ITerm[0];
         private List<ITerm> terms;
-        private const bool useShortUnnamedVars = Config.Get().GetBoolean(Config.SHORT_UNNAMED_VARS); //I dont really know what this is for
+        private static readonly bool useShortUnnamedVars = Config.Get().GetBoolean(Config.SHORT_UNNAMED_VARS); //I dont really know what this is for
 
 
         public Structure(string functor) : base(DefaultNS, functor)
@@ -359,7 +359,7 @@ namespace Assets.Code.AsSyntax
                 UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.Create(a, t.ToString());
                 if (deref.HasAnnot())
                 {
-                    uv.SetAnnots(deref.GetAnnot().CloneLT());
+                    uv.SetAnnots(deref.GetAnnots().CloneLT());
                     uv.MakeVarsAnnon(u);
                 }
                 u.Bind(deref, v);
@@ -374,7 +374,7 @@ namespace Assets.Code.AsSyntax
                 deref = (VarTerm)deref.CloneNS(a);
                 if (v.HasAnnot() && !deref.HasAnnot())
                 {
-                    deref.SetAnnots(v.GetAnnot().CloneLT());
+                    deref.SetAnnots(v.GetAnnots().CloneLT());
                     deref.MakeVarsAnnon(u);
                 }
                 return deref;

@@ -89,7 +89,7 @@ namespace Assets.Code.AsSyntax
                     object oresult = ia.Execute(ag.GetReasoner(), un, ia.PrepareArguments(this, un));
                     if (oresult.GetType() == typeof(bool) && (bool)oresult)
                     {
-                        return LogExpr.CreateUnifIterator(un);
+                        return LogExpr.CreateUnifEnumerator(un);
                     }
                     else if (oresult.GetType() == typeof(IEnumerator<>))
                     {
