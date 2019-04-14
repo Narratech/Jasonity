@@ -33,6 +33,10 @@ namespace Assets.Code.AsSyntax
             next = n;
         }
 
+        /**
+         * Adds a term in the end of the list
+         * @return the ListTerm where the term was added (i.e. the last ListTerm of the list)
+         */
         public IListTerm Append(ITerm t)
         {
             if (IsEmpty())
@@ -43,7 +47,6 @@ namespace Assets.Code.AsSyntax
             }
             else if (IsTail())
             {
-                // What to do?
                 return null;
             }
             else
@@ -52,6 +55,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
+        /** make a hard copy of the terms */
         public override ITerm Capply(Unifier u)
         {
             ListTermImpl t = new ListTermImpl();
@@ -60,6 +64,7 @@ namespace Assets.Code.AsSyntax
             return t;
         }
 
+        /** make a hard copy of the terms */
         public new IListTerm Clone()
         {
             ListTermImpl t = new ListTermImpl();
@@ -69,11 +74,13 @@ namespace Assets.Code.AsSyntax
             return t;
         }
 
+        /** make a hard copy of the terms */
         public IListTerm CloneLT()
         {
             return Clone();
         }
 
+        /** make a shallow copy of the list (terms are not cloned, only the structure) */
         public IListTerm CloneLTShallow()
         {
             ListTermImpl t = new ListTermImpl();
@@ -118,6 +125,7 @@ namespace Assets.Code.AsSyntax
             return base.CompareTo(o);
         }
 
+        // for unifier compatibility
         public override int GetArity()
         {
             if (IsEmpty())
@@ -151,6 +159,10 @@ namespace Assets.Code.AsSyntax
             return SetToList(set);
         }
 
+        /**
+         * Returns this ListTerm as a Java List (implemented by ArrayList).
+         * Note: the tail of the list, if any, is not included! 
+         */
         public List<ITerm> GetAsList()
         {
             List<ITerm> l = new List<ITerm>();
@@ -202,6 +214,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
+        // for unifier compatibility
         public ITerm GetTerm()
         {
             return term;
@@ -214,6 +227,7 @@ namespace Assets.Code.AsSyntax
             return null;
         }
 
+        /** return the this ListTerm elements (0=Term, 1=ListTerm) */
         public new List<ITerm> GetTerms()
         {
             Debug.Log("Do not use GetTerms in lists!");
@@ -238,6 +252,10 @@ namespace Assets.Code.AsSyntax
                 return GetNext().Count + 1;
         }
 
+        /**
+         * insert a term in the begin of this list
+         * @return the new starter of the list
+         */
         public IListTerm Insert(ITerm t)
         {
             IListTerm n = new ListTermImpl(term, next);
@@ -289,13 +307,10 @@ namespace Assets.Code.AsSyntax
             return term == null;
         }
 
-
-
         public bool IsTail()
         {
             return next != null && next.IsVar();
         }
-
 
 
         public ITerm RemoveLast()
@@ -314,6 +329,10 @@ namespace Assets.Code.AsSyntax
             }
         }
 
+        /**
+         * Creates a new (cloned) list with the same elements of this list, but in the reversed order.
+         * The Tail remains the Tail: reverse([a,b|T]) = [b,a|T].
+         */
         public IListTerm Reverse()
         {
             return ReverseInternal(new ListTermImpl());
@@ -342,8 +361,6 @@ namespace Assets.Code.AsSyntax
             next = l;
         }
 
-
-
         public void SetTail(VarTerm v)
         {
             if (GetNext().Count == 0)
@@ -363,20 +380,134 @@ namespace Assets.Code.AsSyntax
             if (i == 1) next = t;
         }
 
-        //
+        /** returns all subsets that take k elements of this list */
         public IEnumerator<List<ITerm>> SubSets(int k)
         {
-            Acabaaaar
+            return new MyIEnumerator<List<ITerm>>(k);
         }
 
+        private class MyIEnumerator<T> : IEnumerator<T> where T : List<ITerm>
+        {
+            private int k;
 
-        /*PIFOSTIO EL QUE SE VIENE*/
+            public MyIEnumerator(int k)
+            {
+                this.k = k;
+            }
 
+            LinkedList<SubSetSearchState> open = null;
 
+            ITerm[] thisAsArray = new ITerm[0];
 
+            List<ITerm> next = null;
 
-        /**************************/
+            public bool HasNext()
+            {
+                if (open == null)
+                {
+                    open = new LinkedList<>();
+                    thisAsArray = GetAsList().ToArray(thisAsArray);
+                    open.AddAfter(new SubSetSearchState(0, k, null, null));
+                }
+                if (next == null)
+                {
+                    GetNext();
+                }
+                return next != null;
+            }
 
+            public List<ITerm> Next()
+            {
+                if (next == null)
+                {
+                    GetNext();
+                }
+                List<ITerm> r = next;
+                return r;
+            }
+
+            void GetNext()
+            {
+                while (!(open.Count == 0))
+                {
+                    SubSetSearchState s = open.RemoveFirst();
+                    if (s.d == 0)
+                    {
+                        next = s.GetAsList();
+                        return;
+                    }
+                    else
+                    {
+                        s.AddNext();
+                    }
+                }
+                next = null;
+            }
+
+            public void Remove() { }
+
+            class SubSetSearchState
+            {
+                int pos;
+                int d;
+                ITerm value = null;
+                SubSetSearchState f = null;
+
+                SubSetSearchState(int pos, int d, ITerm t, SubSetSearchState father)
+                {
+                    this.pos = pos;
+                    this.d = d;
+                    value = t;
+                    f = father;
+                }
+
+                void AddNexts()
+                {
+                    int pSize = (k - d) + thisAsArray.Length;
+                    for (int i = thisAsArray.Length-1; i>= pos; i--)
+                    {
+                        if (pSize - i >= k)
+                        {
+                            open.AddFirst(new SubSetSearchState(i+1, d- 1, thisAsArray[i], this));
+                        }
+                    }
+                }
+
+                List<ITerm> GetAsList()
+                {
+                    LinkedList<ITerm> np = new LinkedList<>();
+                    SubSetSearchState c = this;
+                    while (c.value != null)
+                    {
+                        np.AddFirst(c.value);
+                        c = c.f;
+                    }
+                    return np;
+                }
+            }
+
+            public T Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => throw new NotImplementedException();
+
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool MoveNext()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Reset()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /** returns a new (cloned) list representing the 
+         * set resulting of the union of this list and lt. */
         public IListTerm Union(IListTerm lt)
         {
             ISet<ITerm> set = new SortedSet<ITerm>();
@@ -385,6 +516,8 @@ namespace Assets.Code.AsSyntax
             return SetToList(set);
         }
 
+        /** returns a new (cloned) list representing the 
+         * set resulting of the intersection of this list and lt. */
         public IListTerm Intersection(IListTerm lt)
         {
             ISet<ITerm> set = new SortedSet<ITerm>();
@@ -393,6 +526,7 @@ namespace Assets.Code.AsSyntax
             return SetToList(set);
         }
 
+        // copy the set to a new list
         private IListTerm SetToList(ISet<ITerm> set)
         {
             IListTerm result = new ListTermImpl();
@@ -852,7 +986,7 @@ namespace Assets.Code.AsSyntax
             }
             if (a.Length > s)
             {
-                a[s] = null;
+                a[s] = default(T);//null;
             }
 
             return a;

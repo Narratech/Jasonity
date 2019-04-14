@@ -18,20 +18,6 @@ namespace Assets.Code.Util
         /** path to ant home (jar directory) */
         public static readonly string ANT_LIB       = "antLib";
 
-        /** path to jade.jar */
-        public static readonly string JADE_JAR      = "jadeJar";
-
-        /** runtime jade arguments (the same used in jade.Boot) */
-        public static readonly string JADE_ARGS     = "jadeArgs";
-
-        /** boolean, whether to start jade RMA or not */
-        public static readonly string JADE_RMA      = "jadeRMA";
-
-        /** boolean, whether to start jade Sniffer or not */
-        public static readonly string JADE_SNIFFER  = "jadeSniffer";
-
-        /** path to java home */
-        public static readonly string JAVA_HOME = "javaHome";
 
         public static readonly string RUN_AS_THREAD = "runCentralisedInsideJIDE";
         public static readonly string SHELL_CMD     = "shellCommand";
@@ -75,7 +61,7 @@ namespace Assets.Code.Util
             {
                 if (configFactory == null)
                 {
-                    configFactory = GetType().Name;
+                    configFactory = typeof(Config).Name;
                 }
                 try
                 {
@@ -106,15 +92,15 @@ namespace Assets.Code.Util
         }
 
         /** returns the file where the user preferences are stored */
-        //public File getUserConfFile()
-        //{
-        //    return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
-        //}
+        public File GetUserConfFile()
+        {
+            return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
+        }
 
-        //public File getLocalConfFile()
-        //{
-        //    return new File("jason.properties");
-        //}
+        public File Getlocalconffile()
+        {
+            return new File("jason.properties");
+        }
 
         public string getFileConfComment()
         {
@@ -122,23 +108,23 @@ namespace Assets.Code.Util
         }
 
         /** Returns true if the file is loaded correctly */
-        public bool load()
+        public bool Load()
         {
             try
             {
                 File f = GetLocalConfFile();
                 if (f.Exists())
                 {
-                    base.load(new FileInputStream(f));
+                    base.Load(new FileInputStream(f));
                     return true;
                 }
                 else
                 {
-                    f = getUserConfFile();
-                    if (f.exists())
+                    f = GetUserConfFile();
+                    if (f.Exists())
                     {
                         //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
-                        base.load(new FileInputStream(f));
+                        base.Load(new FileInputStream(f));
                         return true;
                     }
                 }
@@ -175,54 +161,7 @@ namespace Assets.Code.Util
             }
             return "";
         }
-
-        /** Returns the full path to the jade.jar file */
-        public string GetJadeJar()
-        {
-            string r = GetProperty(JADE_JAR);
-            if (r == null)
-            {
-                TryToFixJarFileConf(JADE_JAR, "jade", 2000000);
-                r = GetProperty(JADE_JAR);
-            }
-            return r;
-        }
-
-        /** Return the jade args (those used in jade.Boot) */
-        public string GetJadeArgs()
-        {
-            string a = GetProperty(JADE_ARGS);
-            return a == null ? "" : a;
-        }
-
-        public string[] getJadeArrayArgs()
-        {
-            List<string> ls = new List<string>();
-            string jadeargs = GetProperty(JADE_ARGS);
-            if (jadeargs != null && jadeargs.Length > 0)
-            {
-                StringTokenizer t = new StringTokenizer(jadeargs);
-                while (t.hasMoreTokens())
-                {
-                    ls.Add(t.nextToken());
-                }
-            }
-            string[] @as = new string[ls.Count];
-            for (int i = 0; i < ls.Count; i++)
-            {
-                @as[i] = ls[i];
-            }
-            return @as;
-        }
-
-        /** Returns the path to the java  home directory */
-        public string getJavaHome()
-        {
-            string h = GetProperty(JAVA_HOME);
-            if (!h.EndsWith(File.separator))
-                h += File.separator;
-            return h;
-        }
+        
 
         /** Returns the path to the ant home directory (where its jars are stored) */
         public string getAntLib()
@@ -246,20 +185,7 @@ namespace Assets.Code.Util
 
             return null;
         }
-
-        public void SetJavaHome(string jh)
-        {
-            if (jh != null)
-            {
-                jh = new File(jh).getAbsolutePath();
-                if (!jh.EndsWith(File.separator))
-                {
-                    jh += File.separator;
-                }
-                Put(JAVA_HOME, jh);
-            }
-        }
-
+        
         public void SetAntLib(string al)
         {
             if (al != null)
@@ -303,53 +229,15 @@ namespace Assets.Code.Util
         {
             TryToFixJarFileConf(JASON_JAR, "jason", 700000);
 
-            // fix java home
-            if (Get(JAVA_HOME) == null || !CheckJavaHomePath(GetProperty(JAVA_HOME)))
-            {
-                string javaHome = System.getProperty("java.home");
-                if (CheckJavaHomePath(javaHome))
-                {
-                    SetJavaHome(javaHome);
-                }
-                else
-                {
-                    string javaEnvHome = System.getenv("JAVA_HOME");
-                    if (javaEnvHome != null && CheckJavaHomePath(javaEnvHome))
-                    {
-                        SetJavaHome(javaEnvHome);
-                    }
-                    else
-                    {
-                        string javaHomeUp = javaHome + File.separator + "..";
-                        if (CheckJavaHomePath(javaHomeUp))
-                        {
-                            SetJavaHome(javaHomeUp);
-                        }
-                        else
-                        {
-                            // try JRE
-                            if (CheckJREHomePath(javaHome))
-                            {
-                                SetJavaHome(javaHome);
-                            }
-                            else
-                            {
-                                SetJavaHome(File.separator);
-                            }
-                        }
-                    }
-                }
-            }
-
             // fix ant lib
-            if (Get(ANT_LIB) == null || !CheckAntLib(getAntLib()))
+            if (Get(ANT_LIB) == null || !CheckAntLib(GetAntLib()))
             {
                 try
                 {
                     string jjar = GetJasonJar();
                     if (jjar != null)
                     {
-                        string antlib = new File(jjar).getParentFile().getParentFile().getAbsolutePath() + File.separator + "libs";
+                        string antlib = new File(jjar).getParentFile().GetParentFile().GetAbsolutePath() + File.separator + "libs";
                         if (CheckAntLib(antlib))
                         {
                             SetAntLib(antlib);
@@ -392,11 +280,11 @@ namespace Assets.Code.Util
             // shell command
             if (Get(SHELL_CMD) == null)
             {
-                if (System.getProperty("os.name").startsWith("Windows 9"))
+                if (System.GetProperty("os.name").StartsWith("Windows 9"))
                 {
                     Put(SHELL_CMD, "command.com /e:1024 /c ");
                 }
-                else if (System.getProperty("os.name").indexOf("indows") > 0)
+                else if (System.GetProperty("os.name").IndexOf("indows") > 0)
                 {
                     Put(SHELL_CMD, "cmd /c ");
                 }
@@ -415,12 +303,6 @@ namespace Assets.Code.Util
             if (Get(CHECK_VERSION) == null)
             {
                 Put(CHECK_VERSION, "true");
-            }
-
-            // jade args
-            if (GetProperty(JADE_RMA) == null)
-            {
-                Put(JADE_RMA, "true");
             }
 
             // show annots
@@ -458,10 +340,9 @@ namespace Assets.Code.Util
             SetDefaultInfra();
         }
 
-        private void setDefaultInfra()
+        private void SetDefaultInfra()
         {
-            Put("infrastructure.Centralised", CentralisedFactory./*class*/.getName());
-            Put("infrastructure.Jade", JadeFactory./*class*/.getName());
+            Put("infrastructure.Centralised", typeof(CentralisedFactory).Name);
         }
 
         public void Store()
@@ -499,7 +380,7 @@ namespace Assets.Code.Util
                     int p = sk.IndexOf(".");
                     if (p > 0 && sk.StartsWith("infrastructure") && p == sk.LastIndexOf("."))
                     { // only one "."
-                        String newinfra = sk.Substring(p + 1);
+                        string newinfra = sk.Substring(p + 1);
                         if (!infras.Contains(newinfra))
                         {
                             infras.Add(newinfra);
@@ -509,7 +390,7 @@ namespace Assets.Code.Util
                 if (infras.Count > 0)
                 {
                     // copy infras to a array
-                    String[] r = new string[infras.Count];
+                    string[] r = new string[infras.Count];
                     for (int i = 0; i < r.Length; i++)
                     {
                         r[i] = infras[i];
@@ -524,13 +405,13 @@ namespace Assets.Code.Util
             return new string[] { "Centralised", "Jade" }; //,"JaCaMo"};
         }
 
-        public string getInfrastructureFactoryClass(string infraId)
+        public string GetInfrastructureFactoryClass(string infraId)
         {
             object oClass = Get("infrastructure." + infraId);
             if (oClass == null)
             {
                 // try to fix using default configuration
-                setDefaultInfra();
+                SetDefaultInfra();
                 oClass = Get("infrastructure." + infraId);
             }
             return oClass.ToString();
@@ -540,7 +421,7 @@ namespace Assets.Code.Util
         {
             Put("infrastructure." + infraId, factory);
         }
-        public void removeInfrastructureFactoryClass(string infraId)
+        public void RemoveInfrastructureFactoryClass(string infraId)
         {
             Remove("infrastructure." + infraId);
         }
@@ -565,7 +446,7 @@ namespace Assets.Code.Util
             return "?";
         }
 
-        public bool tryToFixJarFileConf(string jarEntry, string jarFilePrefix, int minSize)
+        public bool TryToFixJarFileConf(string jarEntry, string jarFilePrefix, int minSize)
         {
             string jarFile = GetProperty(jarEntry);
             if (jarFile == null || !CheckJar(jarFile, minSize))
@@ -594,13 +475,13 @@ namespace Assets.Code.Util
                 }
 
                 // try from java web start
-                String jwsDir = System.getProperty("jnlpx.deployment.user.home");
+                string jwsDir = System.GetProperty("jnlpx.deployment.user.home");
                 if (jwsDir == null)
                 {
                     // try another property (windows)
                     try
                     {
-                        jwsDir = System.getProperty("deployment.user.security.trusted.certs");
+                        jwsDir = System.GetProperty("deployment.user.security.trusted.certs");
                         jwsDir = new File(jwsDir).getParentFile().getParent();
                     }
                     catch (Exception e)
@@ -648,7 +529,7 @@ namespace Assets.Code.Util
                     }
                     else
                     {
-                        if (files[i].GetName().endsWith(file) && files[i].Length() > minSize)
+                        if (files[i].GetName().endsWith(file) && files[i].Length > minSize)
                         {
                             return files[i].GetAbsolutePath();
                         }
@@ -658,14 +539,14 @@ namespace Assets.Code.Util
             return null;
         }
 
-        public static string findJarInDirectory(File dir, string prefix)
+        public static string FindJarInDirectory(File dir, string prefix)
         {
             if (dir.IsDirectory())
             {
                 foreach (File f in dir.ListFiles())
                 {
-                    if (f.GetName().startsWith(prefix) && f.GetName().endsWith(".jar") && 
-                        !f.GetName().endsWith("-sources.jar") && !f.GetName().endsWith("-javadoc.jar"))
+                    if (f.GetType().Name.StartsWith(prefix) && f.GetType().Name.EndsWith(".jar") && 
+                        !f.GetType().Name.EndsWith("-sources.jar") && !f.GetType().Name.EndsWith("-javadoc.jar"))
                     {
                         return f.GetAbsolutePath();
                     }
@@ -686,7 +567,7 @@ namespace Assets.Code.Util
             return false;
         }
 
-        public static bool checkJar(string jar, int minSize)
+        public static bool CheckJar(string jar, int minSize)
         {
             try
             {
@@ -698,49 +579,7 @@ namespace Assets.Code.Util
             return false;
         }
 
-        public static bool checkJavaHomePath(string javaHome)
-        {
-            try
-            {
-                if (!javaHome.EndsWith(File.separator))
-                {
-                    javaHome += File.separator;
-                }
-                File javac1 = new File(javaHome + "bin" + File.separatorChar + "javac");
-                File javac2 = new File(javaHome + "bin" + File.separatorChar + "javac.exe");
-                if (javac1.Exists() || javac2.Exists())
-                {
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-            }
-            return false;
-        }
-
-        public static bool checkJREHomePath(string javaHome)
-        {
-            try
-            {
-                if (!javaHome.EndsWith(File.separator))
-                {
-                    javaHome += File.separator;
-                }
-                File javac1 = new File(javaHome + "bin" + File.separatorChar + "java");
-                File javac2 = new File(javaHome + "bin" + File.separatorChar + "java.exe");
-                if (javac1.Exists() || javac2.Exists())
-                {
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-            }
-            return false;
-        }
-
-        public static bool CheckAntLib(ctring al)
+        public static bool CheckAntLib(string al)
         {
             try
             {
@@ -748,7 +587,7 @@ namespace Assets.Code.Util
                 {
                     al = al + File.separator;
                 }
-                if (findJarInDirectory(new File(al), "ant") != null) // new File(al + "ant.jar");
+                if (FindJarInDirectory(new File(al), "ant") != null) // new File(al + "ant.jar");
                     return true;
             }
             catch (Exception e)
@@ -759,7 +598,7 @@ namespace Assets.Code.Util
 
         public static bool IsWindows()
         {
-            return System.GetProperty("os.name").startsWith("Windows");
+            return System.GetProperty("os.name").StartsWith("Windows");
         }
 
         static protected string GetJarFromClassPath(string file)
@@ -767,10 +606,11 @@ namespace Assets.Code.Util
             StringTokenizer st = new StringTokenizer(System.GetProperty("java.class.path"), File.pathSeparator);
             while (st.hasMoreTokens())
             {
-                String token = st.nextToken();
+                string token = st.nextToken();
                 File f = new File(token);
-                if (f.GetName().startsWith(file) && DigitAfterMinus(f.GetName()) && f.GetName().endsWith(".jar") 
-                    && !f.GetName().endsWith("-sources.jar") && !f.GetName().endsWith("-javadoc.jar"))
+                if (f.GetType().Name.StartsWith(file) && DigitAfterMinus(f.GetType().Name)
+                    && f.GetType().Name.EndsWith(".jar") 
+                    && !f.GetType().Name.EndsWith("-sources.jar") && !f.GetType().Name.EndsWith("-javadoc.jar"))
                 {
                     return f.GetAbsolutePath();
                 }
@@ -778,32 +618,13 @@ namespace Assets.Code.Util
             return null;
         }
 
-        private static bool digitAfterMinus(string s)
+        private static bool DigitAfterMinus(string s)
         {
             int pos = s.IndexOf("-");
-            return pos > 0 && char.IsDigit(s.Substring(pos + 1, pos + 2).CharAt(0));
+            return pos > 0 && char.IsDigit(s.Substring(pos + 1, pos + 2).ElementAt(0));
         }
 
-        protected string getEclipseInstallationDirectory()
-        {
-            return "jason";
-        }
-
-        private string getJarFromEclipseInstallation(string file)
-        {
-            string eclipse = System.getProperty("eclipse.launcher");
-            //eclipse = "/Applications/eclipse/eclipse";
-            if (eclipse != null)
-            {
-                File f = (new File(eclipse)).getParentFile().getParentFile();
-                if (eclipse.contains("Eclipse.app/Contents")) // MacOs case
-                    f = f.GetParentFile().getParentFile();
-                return findJarInDirectory(new File(f + "/" + GetEclipseInstallationDirectory() + "/libs"), file);
-            }
-            return null;
-        }
-
-        public string getTemplate(string templateName)
+        public string GetTemplate(string templateName)
         {
             try
             {
@@ -878,23 +699,13 @@ namespace Assets.Code.Util
             return Reasoner.GetResource("/templates/"+templateName).openStream();
         }
 
-        public static void main(string[] args)
+        public static void Main(string[] args)
         {
             Get().Fix();
             Get().Store();
         }
 
-        public string GetMindInspectorArchClassName()
-        {
-            return "jason.architecture.MindInspectorAgArch";
-        }
-
-        public string GetMindInspectorWebServerClassName()
-        {
-            return "jason.architecture.MindInspectorWebImpl";
-        }
-
-        public string getPresentation()
+        public string GetPresentation()
         {
             return "Jason " + GetJasonVersion() + "\n" +
                    "     built on " + GetJasonBuiltDate() + "\n" +
