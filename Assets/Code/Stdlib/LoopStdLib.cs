@@ -95,6 +95,24 @@ namespace Assets.Code.Stdlib
             {
                 throw JasonityException.CreateWrongArgumentNb(this);
             }
+
+            ILogicalFormula logExpr = (ILogicalFormula)args[0];
+            // perform one iteration of the loop
+            IEnumerator<Unifier> iu = logExpr.LogicalConsequence(reasoner.GetAgent(), un);
+            if (iu.MoveNext())
+            {
+                un.Compose(iu.Current);
+
+                // add in the current intention:
+                // 1. the body argument and
+                // 2. the while internal action after the execution of the body
+                //    (to test the loop again)
+                IPlanBody whattoadd = (IPlanBody)args[1].Clone();
+                whattoadd.Add(whileia); // the add clones whileia
+                whattoadd.SetAsBodyTerm(false);
+                ip.InsertAsNextStep(whattoadd);
+            }
+            return true;
         }
     }
 }
