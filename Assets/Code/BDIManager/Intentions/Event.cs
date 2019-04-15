@@ -59,5 +59,33 @@ namespace BDIManager.Intentions {
             }
             return r;
         }
+
+        public override bool Equals(object o)
+        {
+            if (o == null) return false;
+            if (o == this) return true;
+            if (o is Event)
+            {
+                Event oe = (Event)o;
+                if (intention == null && oe.intention != null) return false;
+                if (intention != null && !intention.Equals(oe.intention)) return false;
+
+                return trigger.Equals(oe.trigger);
+            }
+            return false;
+        }
+
+        public object Clone()
+        {
+            Trigger tc = (trigger == null ? null : trigger.Clone());
+            Intention ic = (intention == null ? null : intention.Clone());
+            return new Event(tc, ic);
+        }
+
+        public string ToString()
+        {
+            if (intention == Intention.emptyInt) return "" + trigger;
+            else return trigger + "\n" + intention;
+        }
     }
 }
