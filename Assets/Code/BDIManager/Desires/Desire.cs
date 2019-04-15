@@ -8,14 +8,14 @@ using BDIManager.Intentions;
 
 //Implements the Desire interface
 namespace BDIManager.Desires {
-    public class Desire
+    public class DesireStdlib
     {
         public enum DesireStates { started, suspended, resumed, finished, failed };
         public enum FinishStates { achieved, unachieved, dropped };
 
         Reasoner reasoner;
 
-        public Desire(Reasoner r)
+        public DesireStdlib(Reasoner r)
         {
             reasoner = r;
         }
@@ -85,9 +85,9 @@ namespace BDIManager.Desires {
             }
         }
 
-        internal object AllDesires(Circumstance circumstance, Literal body, object p, Unifier unifier)
+        public object AllDesires(Circumstance circumstance, Literal body, object p, Unifier unifier)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); 
         }
     }
 }

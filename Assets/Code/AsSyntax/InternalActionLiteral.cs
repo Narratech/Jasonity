@@ -1,4 +1,4 @@
-﻿using Assets.Code.Agent;
+﻿using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Stdlib;
 using System;
@@ -42,12 +42,12 @@ namespace Assets.Code.AsSyntax
         }
 
         //used by the parser
-        public InternalActionLiteral(Structure p, Agent.Agent ag):this(DefaultNS, p, ag)
+        public InternalActionLiteral(Structure p, Agent ag):this(DefaultNS, p, ag)
         {
 
         }
 
-        public InternalActionLiteral(Atom ns, Structure p, Agent.Agent ag) : base(ns, p)
+        public InternalActionLiteral(Atom ns, Structure p, Agent ag) : base(ns, p)
         {
             if (ag != null)
                 ia = ag.GetIA(GetFunctor());
@@ -73,7 +73,7 @@ namespace Assets.Code.AsSyntax
             return t;
         }
 
-        public IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
+        public IEnumerator<Unifier> LogicalConsecuence(Agent ag, Unifier un)
         {
             if (ag == null || ag.GetReasoner().GetUserAgArch().IsRunning())
             {
@@ -117,7 +117,7 @@ namespace Assets.Code.AsSyntax
             this.ia = ia;
         }
 
-        public InternalAction GetIA(Agent.Agent ag)
+        public InternalAction GetIA(Agent ag)
         {
             if (ia == null && ag != null)
                 ia = ag.GetIA(GetFunctor());

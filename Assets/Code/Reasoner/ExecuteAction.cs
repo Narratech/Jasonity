@@ -2,7 +2,6 @@
 // Will use other BDIManager classes to handle BB, plans, desires, events, etc.
 using System;
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic;
 using BDIManager.Intentions;
 
 namespace BDIMaAssets.Code.ReasoningCycle
@@ -86,7 +85,7 @@ namespace BDIMaAssets.Code.ReasoningCycle
             return "<" + action + "," + intention + "," + result + ">";
         }
 
-        protected ExecuteAction Clone()
+        public ExecuteAction Clone()
         {
             ExecuteAction ae = new ExecuteAction((Pred)action.Clone(), intention.Clone());
             ae.result = result;

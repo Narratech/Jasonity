@@ -195,5 +195,10 @@ namespace BDIManager.Intentions
             intention.AddTerm(lt);
             return intention;
         }
+
+        internal IEnumerable<IntendedPlan> GetIntendedPlan()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

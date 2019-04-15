@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
 using UnityEngine;
 
@@ -285,7 +286,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             Debug.Log("ListTermImpl cannot be used for logical consequence!");
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();

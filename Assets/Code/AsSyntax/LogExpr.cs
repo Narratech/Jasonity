@@ -1,4 +1,4 @@
-﻿using Assets.Code.Agent;
+﻿using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections;
@@ -19,7 +19,7 @@ namespace Assets.Code.AsSyntax
 
         public new ILogicalFormula GetRHS() => (ILogicalFormula)GetTerm(1);
 
-        public new IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public new IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             try
             {
@@ -155,14 +155,14 @@ namespace Assets.Code.AsSyntax
     public class AndIterator<Unifier> : IEnumerator<Unifier>
     {
         private LogExpr logExpr;
-        private Agent.Agent ag;
+        private Agent ag;
         private Unifier un;
         AndIterator<Unifier> ileft;
         AndIterator<Unifier> iright = null;
         Unifier current = default;
         bool needsUpdate = true;
 
-        public AndIterator(LogExpr logExpr, Agent.Agent ag, Unifier un)
+        public AndIterator(LogExpr logExpr, Agent ag, Unifier un)
         {
             this.logExpr = logExpr;
             this.ag = ag;
@@ -218,14 +218,14 @@ namespace Assets.Code.AsSyntax
     public class OrIterator<Unifier> : IEnumerator<Unifier>
     {
         private LogExpr logExpr;
-        private Agent.Agent ag;
+        private Agent ag;
         private Unifier un;
         OrIterator<Unifier> ileft;
         OrIterator<Unifier> iright;
         Unifier current = default;
         bool needsUpdate = true;
 
-        public OrIterator(LogExpr logExpr, Agent.Agent ag, Unifier un)
+        public OrIterator(LogExpr logExpr, Agent ag, Unifier un)
         {
             this.logExpr = logExpr;
             this.ag = ag;

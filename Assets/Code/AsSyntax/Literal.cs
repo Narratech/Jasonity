@@ -5,9 +5,9 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using Assets.Code.ReasoningCycle;
-using Assets.Code.Agent;
 using System.Collections;
 using Assets.Code.Exceptions;
+using Assets.Code.BDIAgent;
 
 /*
  *  This class represents an abstract literal (an Atom, Structure, Predicate, etc), it is mainly
@@ -345,7 +345,7 @@ namespace Assets.Code.AsSyntax
             return null;
         }
 
-        public virtual IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public virtual IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             IEnumerator<Literal> il = ag.GetBB().GetCandidateBeliefs(this, un);
             if (il == null)
@@ -367,7 +367,7 @@ namespace Assets.Code.AsSyntax
             Literal cloneAnnon = null; // a copy of the literal with makeVarsAnnon
             Rule rule; // current rule
             bool needsUpdate = true;
-            Agent.Agent ag;
+            Agent ag;
             Unifier un;
             IEnumerator<List<ITerm>> annotsOptions = null;
             Literal belInBB = null;
@@ -379,7 +379,7 @@ namespace Assets.Code.AsSyntax
 
             object IEnumerator.Current => throw new NotImplementedException();
 
-            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent.Agent ag, Unifier un)
+            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent ag, Unifier un)
             {
                 this.arch = arch;
                 this.nbAnnots = nbAnnots;
@@ -629,7 +629,7 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+            public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
             {
                 return LogExpr.CreateUnifEnumerator(un);
             }
@@ -657,7 +657,7 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+            public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
             {
                 return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
             }

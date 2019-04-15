@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Code.AsSemantics;
+using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Assets.Code.AsSyntax
     {
         protected INumberTerm value = null;
         private ArithFunction function = null;
-        private Agent.Agent agent = null;
+        private Agent agent = null;
 
         public ArithFunctionTerm(ArithFunction function):base(function.GetName(), 2)
         {
@@ -56,12 +57,12 @@ namespace Assets.Code.AsSyntax
             return true;
         }
 
-        public void SetAgent(Agent.Agent ag)
+        public void SetAgent(Agent ag)
         {
             agent = ag;
         }
 
-        public Agent.Agent GetAgent()
+        public Agent GetAgent()
         {
             return agent;
         }
@@ -106,7 +107,7 @@ namespace Assets.Code.AsSyntax
                 return value.Solve();
         }
 
-        public IEnumerator<Unifier> LogicalConsecuence(Agent.Agent ag, Unifier un)
+        public IEnumerator<Unifier> LogicalConsecuence(Agent ag, Unifier un)
         {
             Debug.Log("Arithmetic term cannot be used for logical consequence");
             return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();

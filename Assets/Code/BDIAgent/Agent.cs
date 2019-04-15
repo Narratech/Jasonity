@@ -134,7 +134,7 @@ namespace Assets.Code.BDIAgent
                 {
                     if (GetPL().HasMetaEventPlans())
                     {
-                        GetReasoner().AddDesireListener(new Desire(GetReasoner()));
+                        GetReasoner().AddDesireListener(new DesireStdlib(GetReasoner()));
                     }
 
                     AddInitialBelsFromProjectInBB();
@@ -160,7 +160,7 @@ namespace Assets.Code.BDIAgent
                 ParseAs(input, sourceId);
 
                 if (GetPL().HasMetaEventPlans())
-                    GetReasoner().AddDesireListener(new Desire(GetReasoner()));
+                    GetReasoner().AddDesireListener(new DesireStdlib(GetReasoner()));
 
                 AddInitialBelsInBB();
                 AddInitialDesiresInReasoner();
@@ -242,7 +242,7 @@ namespace Assets.Code.BDIAgent
             a.SetReasoner(new Reasoner(a, GetReasoner().GetCircumstance().Clone(), arch, GetReasoner().GetSettings()));
             if (a.GetPL().HasMetaEventPlans())
             {
-                a.GetReasoner().AddDesireListener(new Desire(a.GetReasoner()));
+                a.GetReasoner().AddDesireListener(new DesireStdlib(a.GetReasoner()));
             }
 
             a.InitAg(); //for initDefaultFunctions() and for overridden/custom agent
@@ -602,7 +602,7 @@ namespace Assets.Code.BDIAgent
 
                 if (GetPL().HasMetaEventPlans())
                 {
-                    GetReasoner().AddDesireListener(new Desire(GetReasoner()));
+                    GetReasoner().AddDesireListener(new DesireStdlib(GetReasoner()));
                 }
             }
         }

@@ -3,9 +3,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Assets.Code.Agent;
 using Assets.Code.Exceptions;
 using System.Threading;
 using Assets.Code.ReasoningCycle;
@@ -15,6 +12,7 @@ using Assets.Code.BDIManager;
 using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
 using Assets.Code.AsSemantics;
+using Assets.Code.BDIAgent;
 
 
 //This provides an agent architecture where each agent has its ouwn thread. 
@@ -67,7 +65,7 @@ namespace Assets.Code.Infra
             try
             {
                     this.masRunner = masRunner;
-                    Agent.Agent.Create(this, agClass, bbPars, asSrc, stts);
+                    Agent.Create(this, agClass, bbPars, asSrc, stts);
                     InsertAgentArchitecture(this);
 
                     CreateCustomArchs(agArchClasses);
@@ -79,7 +77,7 @@ namespace Assets.Code.Infra
         }
 
         /** init the agent architecture based on another agent */
-        public void CreateArchs(List<string> agArchClasses, Agent.Agent ag, BaseCentralisedMAS masRunner)
+        public void CreateArchs(List<string> agArchClasses, Agent ag, BaseCentralisedMAS masRunner)
         {
             try
             {

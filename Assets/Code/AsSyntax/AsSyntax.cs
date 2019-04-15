@@ -4,9 +4,6 @@ using Assets.Code.Logic.parser;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
@@ -333,9 +330,9 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        internal static string GetHardDeadLineStr()
+        public static string GetHardDeadLineStr()
         {
-            throw new NotImplementedException();
+            return hardDeadLineStr;
         }
     }
 }

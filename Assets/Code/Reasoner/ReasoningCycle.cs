@@ -1,10 +1,10 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSemantics;
+﻿using Assets.Code.AsSemantics;
 using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
-using Assets.Code.Logic;
 using Assets.Code.Stdlib;
+using Assets.Code.Util;
 using Assets.Code.Utilities;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
@@ -15,7 +15,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using static BDIManager.Desires.Desire;
+using static BDIManager.Desires.DesireStdlib;
 
 /*
  * Implements the reasoning cycle. There are 10 steps in the cycle: 
@@ -40,7 +40,7 @@ namespace Assets.Code.ReasoningCycle
         public enum State { StartRC, SelEv, RelPl, ApplPl, SelAppl, FindOp, AddIM, ProcAct, SelInt, ExecInt, ClrInt }
 
 
-        private Agent.Agent ag = null;
+        private Agent ag = null;
         private AgentArchitecture agArch = null;
         private Settings settings = null;
         private Circumstance circumstance = null;
@@ -49,7 +49,7 @@ namespace Assets.Code.ReasoningCycle
         private State stepDeliberate = State.SelEv;
         private State stepAct = State.ProcAct;
 
-        private List<Desire> desireListeners;
+        private List<DesireStdlib> desireListeners;
 
         private bool sleepingEvt = false;
 
@@ -64,15 +64,15 @@ namespace Assets.Code.ReasoningCycle
         //private ConcurrentQueue<IRunnable> taskForBeginOfCycle = new ConcurrentQueue(); - I don't know how to use this
         private ConcurrentQueue<IRunnable> taskForBeginOfCycle = new ConcurrentQueue<IRunnable>();
 
-        private Dictionary<Desire, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
+        private Dictionary<DesireStdlib, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
 
         // the semantic rules are referred to in comments in the functions below
-        //private const string kqmlReceivedFunctor = Config.get().getKqmlFunctor();
+        private readonly string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor();
 
         private static readonly Atom aNOCODE = new Atom("no_code");
 
 
-        public Reasoner(Agent.Agent agent, Circumstance c, AgentArchitecture ar, Settings s)
+        public Reasoner(Agent agent, Circumstance c, AgentArchitecture ar, Settings s)
         {
             ag = agent;
             agArch = ar;
@@ -101,18 +101,18 @@ namespace Assets.Code.ReasoningCycle
         //Desire listeners support methods
 
         //Adds an object that will be notified about events on desires (creation, suspension...)
-        public void AddDesireListener(Desire desire)
+        public void AddDesireListener(DesireStdlib desire)
         {
             if (desireListeners == null)
             {
-                desireListeners = new List<Desire>();
-                listenersMap = new Dictionary<Desire, ICircumstanceListener>();
+                desireListeners = new List<DesireStdlib>();
+                listenersMap = new Dictionary<DesireStdlib, ICircumstanceListener>();
             } else
             {
                 //To not instantiate two DesireListenerForMetaEvents
-                foreach (Desire d in desireListeners)
+                foreach (DesireStdlib d in desireListeners)
                 {
-                    if (d is Desire)
+                    if (d is DesireStdlib)
                     {
                         return;
                     }
@@ -130,12 +130,12 @@ namespace Assets.Code.ReasoningCycle
             return desireListeners != null && !desireListeners.Any();
         }
 
-        public List<Desire> GetDesiresListeners()
+        public List<DesireStdlib> GetDesiresListeners()
         {
             return desireListeners;
         }
 
-        public bool RemoveDesireListener(Desire desire)
+        public bool RemoveDesireListener(DesireStdlib desire)
         {
             ICircumstanceListener cl = listenersMap[desire];
             if (cl != null)
@@ -203,7 +203,7 @@ namespace Assets.Code.ReasoningCycle
                     if (circumstance.HasMsg())
                     {
                         sleepingEvt = false;
-                    } else if (circumstance.HasEvt())
+                    } else if (circumstance.HasEvent())
                     {
                         //Check if there is an event in C.E not produced by idle intention
                         foreach (Event e in circumstance.GetEvents())
@@ -392,7 +392,7 @@ namespace Assets.Code.ReasoningCycle
                 //}
                 if (!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
                 {
-                    foreach (Desire desire in desireListeners)
+                    foreach (DesireStdlib desire in desireListeners)
                     {
                         desire.DesireFinished(topTrigger, FinishStates.achieved);
                     }
@@ -521,7 +521,7 @@ namespace Assets.Code.ReasoningCycle
 
             } else if (h.GetBodyType() == BodyType.action) {
                 body = (Literal)body.Capply(u);
-                confP.GetCircumstance().SetA(new ExecuteAction(body, curInt));
+                confP.GetCircumstance().SetAction(new ExecuteAction(body, curInt));
             } else if (h.GetBodyType() == BodyType.internalAction) {
 
                 bool ok = false;
@@ -809,7 +809,7 @@ namespace Assets.Code.ReasoningCycle
                     }
                     if (adds != null)
                     {
-                        renamedVars.GetFunction().PutAll(adds);
+                        renamedVars.GetFunction().Concat(adds);
                     }
                 }
             }
@@ -878,7 +878,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 if (HasGoalListener())
                 {
-                    foreach (Desire desire in desireListeners)
+                    foreach (DesireStdlib desire in desireListeners)
                     {
                         desire.DesireFailed(ip.GetTrigger());
                         if (!failEventIsRelevant)
@@ -955,7 +955,7 @@ namespace Assets.Code.ReasoningCycle
         {
             if (i != Intention.emptyInt)
             {
-                return i.FindEventForFailure(trigger, GetAgent().GetPL(), GetCircumstance().GetFirst());
+                return i.FindEventForFailure(trigger, GetAgent().GetPL(), GetCircumstance()).GetFirst();
             } else if (trigger.IsGoal() && trigger.IsAddition())
             {
                 Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetTEType(), trigger.GetLiteral());
@@ -1024,7 +1024,7 @@ namespace Assets.Code.ReasoningCycle
 
                             if (HasGoalListener())
                             {
-                                foreach (Desire desire in GetDesiresListeners())
+                                foreach (DesireStdlib desire in GetDesiresListeners())
                                 {
                                     foreach (IntendedPlan ip in curInt.GetIntendedPlan())
                                     {
@@ -1058,10 +1058,10 @@ namespace Assets.Code.ReasoningCycle
         private void ApplyAddIP()
         {
             //Create a new intended plan
-            IntendedPlan ip = new IntendedPlan(conf.GetCircumstance().GetSO(), conf.GetCircumstance().GetSE().GetTrigger());
+            IntendedPlan ip = new IntendedPlan(conf.GetCircumstance().GetSelectedOption(), conf.GetCircumstance().GetSelectedEvent().GetTrigger());
 
             //Rule ExtEv
-            if (conf.GetCircumstance().GetSE().GetIntention() == Intention.emptyInt)
+            if (conf.GetCircumstance().GetSelectedEvent().GetIntention() == Intention.emptyInt)
             {
                 Intention intention = new Intention();
                 intention.Push(ip);
@@ -1071,16 +1071,16 @@ namespace Assets.Code.ReasoningCycle
                 //Rule IntEv
                 if(GetSettings().IsTROon())
                 {
-                    IntendedPlan top = confP.GetCircumstance().GetSE().GetIntention().Peek();
+                    IntendedPlan top = confP.GetCircumstance().GetSelectedEvent().GetIntention().Peek();
 
                     if(top != null && top.GetTrigger().IsAddition() && ip.GetTrigger().IsAddition() && 
                         top.GetTrigger().IsGoal() && ip.GetTrigger().IsGoal() &&
                         top.GetCurrentStep().GetBodyNext() == null &&
                         top.GetTrigger().GetLiteral().GetPredicateIndicator().Equals(ip.GetTrigger().GetLiteral().GetPredicateIndicator()))
                     {
-                        confP.GetCircumstance().GetSE().GetIntention().Pop();
+                        confP.GetCircumstance().GetSelectedEvent().GetIntention().Pop();
 
-                        IntendedPlan ipBase = confP.GetCircumstance().GetSE().GetIntention().Peek();
+                        IntendedPlan ipBase = confP.GetCircumstance().GetSelectedEvent().GetIntention().Peek();
                         if (ipBase != null && ipBase.GetRenamedVars() != null)
                         {
                             foreach (VarTerm var in ipBase.GetRenamedVars())
@@ -1093,18 +1093,18 @@ namespace Assets.Code.ReasoningCycle
                                     {
                                         Literal l = (Literal)t.Capply(top.GetUnif());
                                         l.MakeVarsAnnon(top.GetRenamedVars());
-                                        ip.GetUnif().GetFunction().Insert(vl, l);
+                                        ip.GetUnif().GetFunction().Add(vl, l);
                                     } else
                                     {
-                                        ip.GetUnif().GetFunction().Insert(vl, t);
+                                        ip.GetUnif().GetFunction().Add(vl, t);
                                     }
                                 }
                             }
                         }
                     }
                 }
-                confP.GetCircumstance().GetSE().GetIntention().Push(ip);
-                confP.GetCircumstance().AddRunningIntention(confP.GetCircumstance().GetSE().GetIntention());
+                confP.GetCircumstance().GetSelectedEvent().GetIntention().Push(ip);
+                confP.GetCircumstance().AddRunningIntention(confP.GetCircumstance().GetSelectedEvent().GetIntention());
             }
             confP.stepDeliberate = State.ProcAct;
         }
@@ -1113,25 +1113,25 @@ namespace Assets.Code.ReasoningCycle
         {
             confP.stepDeliberate = State.AddIM;
 
-            List<Plan> candidateRPs = conf.GetAgent().GetPL().GetCandidatePlans(conf.GetCircumstance().GetSE().GetTrigger());
+            List<Plan> candidateRPs = conf.GetAgent().GetPL().GetCandidatePlans(conf.GetCircumstance().GetSelectedEvent().GetTrigger());
             if (candidateRPs != null)
             {
                 foreach (Plan p in candidateRPs)
                 {
-                    Unifier relUn = p.IsRelevant(conf.GetCircumstance().GetSE().GetTrigger());
+                    Unifier relUn = p.IsRelevant(conf.GetCircumstance().GetSelectedEvent().GetTrigger());
                     if (relUn != null)
                     {
                         ILogicalFormula context = p.GetContext();
                         if (context != null)
                         {
-                            confP.GetCircumstance().SetSO(new Option(p, relUn));
+                            confP.GetCircumstance().SetSelectedOption(new Option(p, relUn));
                             return;
                         } else
                         {
                             IEnumerator<Unifier> r = context.LogicalConsequence(ag, relUn);
                             if (r != null && r.MoveNext())
                             {
-                                confP.GetCircumstance().SetSO(new Option(p, r.Current));
+                                confP.GetCircumstance().SetSelectedOption(new Option(p, r.Current));
                                 return;
                             }
                         }
@@ -1148,9 +1148,9 @@ namespace Assets.Code.ReasoningCycle
         private void ApplySelAppl()
         {
             //Rule SelAppl
-            confP.GetCircumstance().SetSO(conf.GetAgent().HasCustomSelectOption(confP.GetCircumstance().GetAP()));
+            confP.GetCircumstance().SetSelectedOption(conf.GetAgent().HasCustomSelectOption(confP.GetCircumstance().GetApplicablePlans()));
 
-            if (confP.GetCircumstance().GetSO() != null)
+            if (confP.GetCircumstance().GetSelectedOption() != null)
             {
                 confP.stepDeliberate = State.AddIM;
                 //if (logger.isLoggable(Level.FINE)) logger.fine("Selected option "+confP.C.SO+" for event "+confP.C.SE);
@@ -1164,10 +1164,10 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplyApplPl()
         {
-            confP.GetCircumstance().SetAP(ApplicablePlans(confP.GetCircumstance().GetRp()));
+            confP.GetCircumstance().SetAP(ApplicablePlans(confP.GetCircumstance().GetRelevantPlans()));
 
             // Rule Appl1
-            if (confP.GetCircumstance().GetAP() != null || GetSettings().Retrieve())
+            if (confP.GetCircumstance().GetApplicablePlans() != null || GetSettings().Retrieve())
             {
                 //Retrieve is mainly for Coo-AgentSpeak
                 confP.stepDeliberate = State.SelAppl;
@@ -1214,7 +1214,7 @@ namespace Assets.Code.ReasoningCycle
 
                                 if(r.MoveNext())
                                 {
-                                    o = new Option(o.GetPlan(), null);
+                                    o = new Option(o.GetPlan(), null); //I need to create a new option for the next loop step
                                 }
                             }
                         }
@@ -1228,10 +1228,10 @@ namespace Assets.Code.ReasoningCycle
         private void ApplyRelPl()
         {
             //Get all relevant plans for the selected event
-            confP.GetCircumstance().SetRP(RelevantPlans(conf.GetCircumstance().GetSE().GetTrigger()));
+            confP.GetCircumstance().SetRelevantPlans(RelevantPlans(conf.GetCircumstance().GetSelectedEvent().GetTrigger()));
 
             //Rule Rel1
-            if (confP.GetCircumstance().GetRp() != null || GetSettings().Retrieve())
+            if (confP.GetCircumstance().GetRelevantPlans() != null || GetSettings().Retrieve())
             {
                 //Is mainly for coo--AgentSpeak
                 confP.stepDeliberate = State.ApplPl;
@@ -1245,16 +1245,16 @@ namespace Assets.Code.ReasoningCycle
         private void ApplyRelApplPlRule2(string m)
         {
             confP.stepDeliberate = State.ProcAct; //Default next step
-            if (conf.GetCircumstance().GetSE().GetTrigger().IsGoal() && !conf.GetCircumstance().GetSE().GetTrigger().IsMetaEvent())
+            if (conf.GetCircumstance().GetSelectedEvent().GetTrigger().IsGoal() && !conf.GetCircumstance().GetSelectedEvent().GetTrigger().IsMetaEvent())
             {
                 //Can't carry on, no relevant/applicable plan
                 try
                 {
-                    if (conf.GetCircumstance().GetSE().GetIntention() != null && conf.GetCircumstance().GetSE().GetIntention().Size() > 3000) //I don't know why is 3000
+                    if (conf.GetCircumstance().GetSelectedEvent().GetIntention() != null && conf.GetCircumstance().GetSelectedEvent().GetIntention().Size() > 3000) //I don't know why is 3000
                     {
                         //logger.warning("we are likely in a problem with event " + conf.C.SE.getTrigger() + " the intention stack has already " + conf.C.SE.getIntention().size() + " intended means!");
                     }
-                    string msg = "Found a goal for which there is no " + m + " plan:" + conf.GetCircumstance().GetSE().GetTrigger();
+                    string msg = "Found a goal for which there is no " + m + " plan:" + conf.GetCircumstance().GetSelectedEvent().GetTrigger();
                     if (!GenerateDesireDeletionFromEvent((List<ITerm>)JasonityException.CreateBasicErrorAnnots("no_" + m, msg)))
                     {
                         //logger.warning(msg);
@@ -1263,19 +1263,19 @@ namespace Assets.Code.ReasoningCycle
                 {
                     return;
                 }
-            } else if (conf.GetCircumstance().GetSE().IsInternal())
+            } else if (conf.GetCircumstance().GetSelectedEvent().IsInternal())
             {
                 // e.g. belief addition as internal event, just go ahead
                 // but note that the event was relevant, yet it is possible
                 // the programmer just wanted to add the belief and it was
                 // relevant by chance, so just carry on instead of dropping the
                 // intention
-                Intention i = conf.GetCircumstance().GetSE().GetIntention();
+                Intention i = conf.GetCircumstance().GetSelectedEvent().GetIntention();
                 JoinRenamedVarsIntoIntentionUnifier(i.Peek(), i.Peek().GetUnif());
                 UpdateIntention(i);
             } else if (GetSettings().Requeue())
             {
-                confP.GetCircumstance().AddEvent(conf.GetCircumstance().GetSE());
+                confP.GetCircumstance().AddEvent(conf.GetCircumstance().GetSelectedEvent());
             } else
             {
                 confP.stepDeliberate = State.SelEv;
@@ -1284,7 +1284,7 @@ namespace Assets.Code.ReasoningCycle
 
         private bool GenerateDesireDeletionFromEvent(List<ITerm> failAnnots)
         {
-            Event e = conf.GetCircumstance().GetSE();
+            Event e = conf.GetCircumstance().GetSelectedEvent();
             if (e == null)
             {
                 //logger.warning("** It was impossible to generate a goal deletion event because SE is null! " + conf.C);
@@ -1297,7 +1297,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 if (HasGoalListener())
                 {
-                    foreach (Desire d in desireListeners)
+                    foreach (DesireStdlib d in desireListeners)
                     {
                         d.DesireFailed(t);
                     }
@@ -1363,8 +1363,8 @@ namespace Assets.Code.ReasoningCycle
             }
 
             // Rule for atomic, events from atomic intention have priority
-            confP.GetCircumstance().SetSE(GetCircumstance().RemoveAtomicEvent());
-            if(confP.GetCircumstance().GetSE() != null)
+            confP.GetCircumstance().SetSelectedEvent(GetCircumstance().RemoveAtomicEvent());
+            if(confP.GetCircumstance().GetSelectedEvent() != null)
             {
                 confP.stepDeliberate = State.RelPl;
                 return;
@@ -1373,8 +1373,8 @@ namespace Assets.Code.ReasoningCycle
             if (conf.GetCircumstance().HasEvent())
             {
                 //Rule SelEv1
-                confP.GetCircumstance().SetSE(conf.GetAgent().SelectEvent(confP.GetCircumstance().GetEvents()));
-                if (confP.GetCircumstance().GetSE() != null)
+                confP.GetCircumstance().SetSelectedEvent(conf.GetAgent().SelectEvent(confP.GetCircumstance().GetEvents()));
+                if (confP.GetCircumstance().GetSelectedEvent() != null)
                 {
                     if (GetAgent().HasCustomSelectOption() || GetSettings().Verbose() == 2) //verbose == debug mode
                     {
@@ -1539,7 +1539,7 @@ namespace Assets.Code.ReasoningCycle
             throw new NotImplementedException();
         }
 
-        public Agent.Agent GetAgent()
+        public Agent GetAgent()
         {
             return ag;
         }
@@ -1623,7 +1623,7 @@ namespace Assets.Code.ReasoningCycle
                     {
                         if (r.HasGoalListener())
                         {
-                            foreach (Desire d in r.GetDesiresListeners())
+                            foreach (DesireStdlib d in r.GetDesiresListeners())
                             {
                                 d.DesireFailed(te);
                             }
@@ -1658,9 +1658,9 @@ namespace Assets.Code.ReasoningCycle
 
         private class CLImplementation : ICircumstanceListener
         {
-            private Desire d;
+            private DesireStdlib d;
 
-            public CLImplementation(Desire desire)
+            public CLImplementation(DesireStdlib desire)
             {
                 d = desire;
             }
@@ -1707,16 +1707,16 @@ namespace Assets.Code.ReasoningCycle
         private class RunnableImpl : IRunnable
         {
             Intention i;
-            Desire d;
+            DesireStdlib d;
             int iSize;
             Reasoner r;
             Literal body;
             Event e;
 
-            public RunnableImpl(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
+            public RunnableImpl(Intention intention, DesireStdlib des, int size, Reasoner res, Literal b, Event ev)
             {
                 Intention i = intention;
-                Desire d = des;
+                DesireStdlib d = des;
                 int iSize = size;
                 Reasoner r = res;
                 Literal body = b;
@@ -1732,16 +1732,14 @@ namespace Assets.Code.ReasoningCycle
             private class RunnableImpl2 : IRunnable
             {
                 Intention i;
-                Desire d;
                 int iSize;
                 Reasoner r;
                 Literal body;
                 Event e;
 
-                public RunnableImpl2(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
+                public RunnableImpl2(Intention intention, int size, Reasoner res, Literal b, Event ev)
                 {
                     Intention i = intention;
-                    Desire d = des;
                     int iSize = size;
                     Reasoner r = res;
                     Literal body = b;
@@ -1753,7 +1751,7 @@ namespace Assets.Code.ReasoningCycle
                     bool drop = false;
                     if (i == null)
                     { // deadline in !!g, test if the agent still desires it
-                        drop = d.AllDesires(r.GetCircumstance(), body, null, new Unifier()).Next();
+                        drop = DesireStdlib.AllDesires(r.GetCircumstance(), body, null, new Unifier()).HasNext();
                     }
                     else if (i.Size() >= iSize && i.HasTrigger(e.GetTrigger(), new Unifier()))
                     {

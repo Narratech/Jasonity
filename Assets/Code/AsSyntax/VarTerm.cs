@@ -1,10 +1,8 @@
-﻿using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.BDIAgent;
+using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
@@ -154,7 +152,7 @@ namespace Assets.Code.AsSyntax
             return true;
         }
 
-        public override IEnumerator<Unifier> LogicalConsequence(Agent.Agent ag, Unifier un)
+        public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
             ITerm t = this.Capply(un);
             if (t.Equals(this))

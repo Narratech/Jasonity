@@ -12,8 +12,6 @@ namespace Assets.Code.AsSyntax
      */
     public class CyclicTerm:LiteralImpl
     {
-        private static readonly long serialVersionUID = 1L;
-
         private VarTerm cyclicVar = null;
 
         public CyclicTerm(Literal t, VarTerm v): base(t)

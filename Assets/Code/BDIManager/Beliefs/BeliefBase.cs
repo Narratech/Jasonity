@@ -3,10 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.Logic;
-using Assets.Code.Logic.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
 namespace BDIManager.Beliefs
@@ -179,7 +178,9 @@ namespace BDIManager.Beliefs
 
         public bool Abolish(Atom nameSpace, PredicateIndicator pi)
         {
-            BelEntry entry = nameSpaces[nameSpace].Remove(pi);
+            
+            BelEntry entry = nameSpaces[nameSpace][pi];
+            nameSpaces[nameSpace].Remove(pi);
             if (entry != null)
             {
                 size -= entry.Size();

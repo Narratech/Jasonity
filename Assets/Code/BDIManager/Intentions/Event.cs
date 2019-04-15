@@ -1,7 +1,5 @@
-// Interface for Events
 // Allows the user to modify the events taking place in the environment
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic;
 
 namespace BDIManager.Intentions {
     public class Event
@@ -75,7 +73,7 @@ namespace BDIManager.Intentions {
             return false;
         }
 
-        public object Clone()
+        public Event Clone()
         {
             Trigger tc = (trigger == null ? null : trigger.Clone());
             Intention ic = (intention == null ? null : intention.Clone());

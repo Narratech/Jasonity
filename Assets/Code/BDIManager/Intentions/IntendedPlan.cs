@@ -3,10 +3,10 @@
 // Previously IntendedMeans, was renamed
 using System;
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
-namespace BDIManager.Intentions {
+namespace BDIManager.Intentions
+{
     public class IntendedPlan
     {
         private Unifier unif = null;

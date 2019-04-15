@@ -1,17 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic;
 
 /**
  * This class is used to unify the selected event and the plan in order to get the relevant plans 
  */
 namespace Assets.Code.ReasoningCycle
 {
-    public class Unifier : IEnumerable<>
+    public class Unifier : IEnumerable<VarTerm>
     {
         Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
 
@@ -127,7 +124,7 @@ namespace Assets.Code.ReasoningCycle
             // If term is a unified variable, clear its annotations
             if (ok && term != null) // Both are predicates
             {
-                if (term.IsVar() && term.HasAnnot())
+                if (term.IsVar() && ((Pred)term).HasAnnot())
                 {
                     term = Deref((VarTerm)term); // ???
                     ITerm termvl = function[(VarTerm)term];
@@ -138,7 +135,7 @@ namespace Assets.Code.ReasoningCycle
                         Bind((VarTerm)term, pvl);
                     }
                 }
-                if (term2.IsVar() && term2.HasAnnot())
+                if (term2.IsVar() && ((Pred)term2).HasAnnot())
                 {
                     term2 = Deref((VarTerm)term2);
                     ITerm term2vl = function[(VarTerm)term2];
@@ -413,7 +410,17 @@ namespace Assets.Code.ReasoningCycle
 
         public void SetDictionary(Dictionary<VarTerm, ITerm> newFunc) => function = newFunc;
 
-        internal object GetFunction()
+        public Dictionary<VarTerm, ITerm>  GetFunction()
+        {
+            return function;
+        }
+
+        public IEnumerator<VarTerm> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

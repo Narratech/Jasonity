@@ -1,5 +1,4 @@
 ﻿using System;
-using Assets.Code.AsSyntax;
 
 namespace Assets.Code.AsSemantics
 {

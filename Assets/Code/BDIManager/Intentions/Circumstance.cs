@@ -1,7 +1,5 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSemantics;
+﻿using Assets.Code.AsSemantics;
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
@@ -120,7 +118,11 @@ namespace Assets.Code.BDIManager
             }
             newE.Insert(pos, ev);
             E.Clear();
-            E.AddRange(newE);
+            foreach (Event e in newE)
+            {
+                E.Enqueue(e);
+            }
+            //E.AddRange(newE);
 
             // Notify listeners
             if (listeners != null)
@@ -396,6 +398,11 @@ namespace Assets.Code.BDIManager
             return false;
         }
 
+        internal Intention GetSI()
+        {
+            throw new NotImplementedException();
+        }
+
         /* Pending events */
         public Dictionary<string, Event> GetPendingEvents() => PE;
 
@@ -442,7 +449,7 @@ namespace Assets.Code.BDIManager
                     t = t.Capply(ev.GetIntention().Peek().GetUnif());
                 if (un.Clone().UnifiesNoUndo(te, t))
                 {
-                    ie.Remove();
+                    ie.Dispose();
 
                     if (listeners != null && ev.GetIntention() != null)
                         foreach (ICircumstanceListener el in listeners)
@@ -750,6 +757,31 @@ namespace Assets.Code.BDIManager
             {
                 intEnumerator.Dispose();
             }
+        }
+
+        internal void SetSI(Intention intention)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetSelectedOption(Option option)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetAP(List<Option> list)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetRelevantPlans(List<Option> list)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetSelectedEvent(Event @event)
+        {
+            throw new NotImplementedException();
         }
     }
 }
