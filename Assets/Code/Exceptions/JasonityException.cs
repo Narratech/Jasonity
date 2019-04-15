@@ -1,5 +1,5 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using System;
 using System.Collections.Generic;
 using System.Linq;

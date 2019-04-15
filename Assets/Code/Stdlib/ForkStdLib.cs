@@ -86,11 +86,11 @@ namespace Assets.Code.Stdlib
             return true;
         }
 
-        class ForkData
+        public class ForkData
         {
             public bool isAnd = true;
             public ISet<Intention> intentions = new HashSet<Intention>();
-            int toFinish = 0;
+            public int toFinish = 0;
 
             public ForkData(bool isAnd)
             {
