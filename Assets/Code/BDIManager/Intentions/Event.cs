@@ -82,7 +82,7 @@ namespace BDIManager.Intentions {
             return new Event(tc, ic);
         }
 
-        public string ToString()
+        public override string ToString()
         {
             if (intention == Intention.emptyInt) return "" + trigger;
             else return trigger + "\n" + intention;

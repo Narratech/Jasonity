@@ -9,10 +9,10 @@ using Assets.Code.ReasoningCycle;
 namespace BDIManager.Intentions {
     public class IntendedPlan
     {
+        private Unifier unif = null;
         protected IPlanBody planBody;
         protected Plan plan;
         private Trigger trigger;
-        private Unifier unif = null;
 
         private Unifier renamedVars = null;
 
@@ -20,14 +20,20 @@ namespace BDIManager.Intentions {
         {
             plan = opt.GetPlan();
             planBody = plan.GetBody();
+            unif = opt.GetUnifier();
+
+            if (te == null)
+                trigger = plan.GetTrigger().Capply(unif);
+            else
+                trigger = te.Capply(unif);
         }
+
+        // Used by clone
+        private IntendedPlan() { }
 
         public ITerm RemoveCurrentStep()
         {
-            if (IsFinished())
-            {
-                return null;
-            }
+            if (IsFinished()) return null;
             else
             {
                 ITerm r = planBody.GetBodyTerm();
@@ -36,11 +42,9 @@ namespace BDIManager.Intentions {
             }
         }
 
-        public IPlanBody GetCurrentStep()
-        {
-            return planBody;
-        }
+        public IPlanBody GetCurrentStep() => planBody;
 
+        // Used by if/for/loop internal actions
         public IPlanBody InsertAsNextStep(IPlanBody pb)
         {
             planBody = new PlanBodyImpl(planBody.GetBodyType(), planBody.GetBodyTerm());
@@ -48,49 +52,56 @@ namespace BDIManager.Intentions {
             return planBody;
         }
 
-        public Plan GetPlan()
+        public Plan GetPlan() => plan;
+
+        public void SetUnif(Unifier unif) => this.unif = unif;
+
+        public Unifier GetUnif() => unif;
+
+        public Trigger GetTrigger() => trigger;
+
+        public void SetTrigger(Trigger tr) => trigger = tr;
+
+        public bool IsAtomic() => plan != null && plan.IsAtomic();
+
+        public bool IsFinished() => planBody == null || planBody.IsEmptyBody();
+
+        public bool IsGoalAdd() => trigger.IsAddition() && trigger.IsGoal();
+
+        public object Clone()
         {
-            return plan;
+            IntendedPlan c = new IntendedPlan();
+            c.unif = unif.Clone();
+            if (planBody != null)
+                c.planBody = planBody.ClonePB();
+            c.trigger = trigger.Clone();
+            c.plan = plan;
+            return c;
         }
 
-        public Trigger GetTrigger()
-        {
-            return trigger;
-        }
+        public override string ToString() => trigger + " <- " + (planBody == null ? "." : "... " + planBody) + " / " + unif;
 
-        public void SetTrigger(Trigger tr)
+        public ITerm GetAsTerm()
         {
-            trigger = tr;
-        }
-
-        public bool IsAtomic()
-        {
-            return plan != null && plan.IsAtomic();
-        }
-
-        public bool IsFinished()
-        {
-            return planBody == null || planBody.IsEmptyBody();
-        }
-
-        public bool IsGoalAdd()
-        {
-            return trigger.IsAddition() && trigger.IsGoal();
-        }
-
-        public Unifier GetUnif()
-        {
-            return unif;
+            if (planBody is PlanBodyImpl || planBody == null)
+            {
+                IPlanBody bd;
+                if (planBody == null)
+                    bd = new PlanBodyImpl();
+                else
+                    bd = (IPlanBody)((PlanBodyImpl)planBody.Clone()).MakeVarsAnnon();
+                bd.SetAsBodyTerm(true);
+                Trigger te = GetTrigger().Clone();
+                te.SetAsTriggerTerm(true);
+                return AsSyntax.CreateStructure("im", AsSyntax.CreateString(plan.GetLabel()), te, bd, unif.GetAsTerm());
+            }
+            else
+                return AsSyntax.CreateAtom("noimplementedforclass" + planBody.GetType().Name);
         }
 
         public Unifier GetRenamedVars()
         {
             return renamedVars;
-        }
-
-        public void SetUnif(Unifier current)
-        {
-            this.unif = current;
         }
 
         public void SetRenamedVars(Unifier renamedVars)
