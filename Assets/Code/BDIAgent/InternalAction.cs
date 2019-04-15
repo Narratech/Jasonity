@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Code.Agent
+namespace Assets.Code.BDIAgent
 {
     public class InternalAction
     {

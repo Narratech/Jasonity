@@ -18,7 +18,7 @@ using Assets.Code.AsSemantics;
 */
 
 
-namespace Assets.Code.Agent
+namespace Assets.Code.BDIAgent
 {
     public class AgentArchitecture
     {

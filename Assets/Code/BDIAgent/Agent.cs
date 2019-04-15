@@ -22,7 +22,7 @@ using Assets.Code.AsSemantics;
 /**
  * The agent class has the belief base and the library plan
  */
-namespace Assets.Code.Agent
+namespace Assets.Code.BDIAgent
 {
     public class Agent
     {
