@@ -35,11 +35,11 @@ namespace Assets.Code.Stdlib
         {
             string sout = ArgsToString(args);
 
-            if (ts != null && ts.GetSettings().LogLevel() != Level.WARNING) {
-                ts.GetLogger().info(sout.ToString());
-            } else {
-                Debug.Log(sout.ToString() + GetNewLine());
-            }
+            //if (ts != null && ts.GetSettings().LogLevel() != Level.WARNING) {
+            //    ts.GetLogger().info(sout.ToString());
+            //} else {
+            //    Debug.Log(sout.ToString() + GetNewLine());
+            //}
 
             return true;
         }

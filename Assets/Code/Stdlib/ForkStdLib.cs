@@ -133,9 +133,9 @@ namespace Assets.Code.Stdlib
                 this.fd = fd;
             }
 
-            public override bool DropGoal(Trigger te, Unifier un)
+            public override bool DropDesire(Trigger te, Unifier un)
             {
-                bool r = base.DropGoal(te, un);
+                bool r = base.DropDesire(te, un);
                 if (r && Size() < forkPoint)
                 {
                     if (fd.toFinish > 0)
@@ -145,7 +145,7 @@ namespace Assets.Code.Stdlib
                     }
                     else
                     {
-                        ClearIM();
+                        ClearIP();
                         //System.out.println("ignore intention");
                         return false;
                     }
@@ -164,10 +164,10 @@ namespace Assets.Code.Stdlib
                 }
             }
 
-            public override Tuple<Event, int> FindEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c)
+            public override KeyValuePair<Event, int> FindEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c)
             {
-                Tuple<Event, int> t = (Tuple<Event, int>)base.FindEventForFailure(tevent, pl, c);
-                if (t.Item2 <= forkPoint)
+                KeyValuePair<Event, int> t = (KeyValuePair<Event, int>)base.FindEventForFailure(tevent, pl, c);
+                if (t.Value <= forkPoint)
                 {
                     if (fd.isAnd)
                     {
@@ -179,7 +179,7 @@ namespace Assets.Code.Stdlib
                     }
                     else
                     {
-                        return new Tuple<Event, int>(null, t.Item2);
+                        return new KeyValuePair<Event, int>(null, t.Value);
                     }
                 }
                 return t;

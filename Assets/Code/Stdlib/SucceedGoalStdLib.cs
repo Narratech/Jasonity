@@ -3,6 +3,7 @@ using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
+using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace Assets.Code.Stdlib
             Circumstance C = rs.GetCircumstance();
             Unifier bak = un.Clone();
 
-            IEnumerator<Intention> itinit = C.GetRunningIntentionPlusAtomic();
+            IEnumerator<Intention> itinit = C.GetRunningIntentionsPlusAtomic();
             while (itinit.MoveNext())
             {
                 Intention i = itinit.Current;
@@ -96,10 +97,10 @@ namespace Assets.Code.Stdlib
             }
 
             //dropping G in Pending Events
-            foreach (string ek in C.GetPendingEvents().KeySet())
+            foreach (string ek in C.GetPendingEvents().Keys)
             {
                 //Test in the intention
-                Event e = C.GetPendingEvents().Get(ek);
+                Event e = C.GetPendingEvents()[ek];
                 Intention i = e.GetIntention();
                 int r = DropGoal(i, g, rs, un);
                 if (r > 0)
@@ -128,7 +129,7 @@ namespace Assets.Code.Stdlib
             }
 
             //Dropping from pending Actions
-            foreach (ActionExec a in C.GetPendingActions().Values())
+            foreach (ExecuteAction a in C.GetPendingActions().Values)
             {
                 Intention i = a.GetIntention();
                 int r = DropGoal(i, g, rs, un);
@@ -144,7 +145,7 @@ namespace Assets.Code.Stdlib
             }
 
             //Dropping from pending intentions
-            foreach(Intention i in C.GetPendingIntentions().Values())
+            foreach(Intention i in C.GetPendingIntentions().Values)
             {
                 int r = DropGoal(i, g, rs, un);
                 if (r > 0)
@@ -166,11 +167,11 @@ namespace Assets.Code.Stdlib
          */
         public virtual int DropGoal(Intention i, Trigger g, Reasoner rs, Unifier un)
         {
-            if (i != null && i.DropGoal(g, un))
+            if (i != null && i.DropDesire(g, un))
             {
                 if (rs.HasGoalListener())
                 {
-                    foreach (GoalListener gl in rs.GetGoalListeners())
+                    foreach (Desire gl in rs.GetDesiresListeners())
                     {
                         gl.GoalFinished(g, FinishStates.achieved);
                     }
@@ -202,7 +203,7 @@ namespace Assets.Code.Stdlib
             {
                 if (rs.HasGoalListener())
                 {
-                    foreach (GoalListener gl in rs.GetGoalListeners())
+                    foreach (Desire gl in rs.GetDesiresListeners())
                     {
                         gl.GoalFinished(e.GetTrigger(), FinishStates.achieved);
                     }

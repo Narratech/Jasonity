@@ -92,7 +92,7 @@ namespace BDIManager.Intentions
         }
 
         // Remove all IP until the lowest IP with trigger te
-        public bool DropDesire(Trigger te, Unifier un)
+        public virtual bool DropDesire(Trigger te, Unifier un)
         {
             bool r = false;
             IntendedPlan ip = GetIntendedPlan(te, un);
@@ -107,9 +107,9 @@ namespace BDIManager.Intentions
             return r;
         }
 
-        public void Fail(Circumstance c) { }
+        public virtual void Fail(Circumstance c) { }
 
-        public KeyValuePair<Event, int> FindEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c)
+        public virtual KeyValuePair<Event, int> FindEventForFailure(Trigger tevent, PlanLibrary pl, Circumstance c)
         {
             Trigger failTrigger = new Trigger(TEOperator.del, tevent.GetTEType(), tevent.GetLiteral());
             IEnumerator<IntendedPlan> ii = GetEnumerator();

@@ -3,6 +3,7 @@ using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
+using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace Assets.Code.Stdlib
             Trigger teGoal = new Trigger(TEOperator.add, TEType.achieve, (Literal)args[0]);
 
             // search in PA
-            foreach (ActionExec a in C.GetPendingActions().Values)
+            foreach (ExecuteAction a in C.GetPendingActions().Values)
                 if (a.GetIntention().HasTrigger(teGoal, un))
             return un.Unifies(args[1], aAct);
 

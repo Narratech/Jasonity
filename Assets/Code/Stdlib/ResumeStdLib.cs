@@ -49,16 +49,16 @@ namespace Assets.Code.Stdlib
             Circumstance C = ts.GetCircumstance();
 
             // Search the goal in PI
-            IEnumerator<string> ik = C.GetPendingIntentions().KeySet().iterator();
-            while (ik.hasNext()) {
-                string k = ik.next();
+            IEnumerator<string> ik = C.GetPendingIntentions().Keys.GetEnumerator();
+            while (ik.MoveNext()) {
+                string k = ik.Current;
                 Intention i = C.GetPendingIntentions()[k];
                 if (i.IsSuspended() && i.HasTrigger(g, un))
                 {
                     i.SetSuspended(false);
                     bool notify = true;
                     if (k.StartsWith(SuspendStdLib.SUSPENDED_INT)) { // if not SUSPENDED_INT, it was suspended while already in PI, so, do not remove it from PI, just change the suspeded status
-                        ik.remove();
+                        ik.Dispose();
 
                         // add it back in I if not in PA
                         if (! C.GetPendingActions().ContainsKey(i.GetID())) {
@@ -70,10 +70,10 @@ namespace Assets.Code.Stdlib
                     // notify meta event listeners
                     if (notify && C.GetListeners() != null)
                         foreach (ICircumstanceListener el in C.GetListeners())
-                            el.intentionResumed(i);
+                            el.IntentionResumed(i);
 
                     // remove the IA .suspend in case of self-suspend
-                    if (k.StartsWith(suspend.SELF_SUSPENDED_INT))
+                    if (k.StartsWith(SuspendStdLib.SELF_SUSPENDED_INT))
                         i.Peek().RemoveCurrentStep();
 
                     //System.out.println("res "+g+" from I "+i.getId());
@@ -81,14 +81,14 @@ namespace Assets.Code.Stdlib
             }
 
             // Search the goal in PE
-            ik = C.GetPendingEvents().KeySet().iterator();
-            while (ik.hasNext()) {
-                string k = ik.next();
+            ik = C.GetPendingEvents().Keys.GetEnumerator();
+            while (ik.MoveNext()) {
+                string k = ik.Current;
                 if (k.StartsWith(SuspendStdLib.SUSPENDED_INT)) {
                     Event e = C.GetPendingEvents()[k];
                     Intention i = e.GetIntention();
                     if (un.Unifies(g, e.GetTrigger()) || (i != null && i.HasTrigger(g, un))) {
-                        ik.remove();
+                        ik.Dispose();
                         C.AddEvent(e);
                         if (i != null)
                             i.SetSuspended(false);

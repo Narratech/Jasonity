@@ -35,11 +35,11 @@ namespace Assets.Code.Stdlib
                 {
                     if (te == null || new Unifier().Unifies(p.GetTrigger(), te))
                     {
-                        reasoner.GetLogger().Info(p.ToString());
                     }
                 }
-            } else {
-                reasoner.GetLogger().Info(reasoner.GetAgent().GetPL().GetAsTxt(false));
+            }
+            else
+            {
             }
             return true;
         }

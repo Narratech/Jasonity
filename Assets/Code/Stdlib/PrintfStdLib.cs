@@ -66,14 +66,14 @@ namespace Assets.Code.Stdlib
             }
             string sout = string.Format(((IStringTerm)args[0]).GetString(), cSharpArgs);
 
-            if (ts != null && ts.GetSettings().LogLevel() != Level.WARNING)
-            {
-                ts.GetLogger().info(sout.ToString());
-            }
-            else
-            {
-                Debug.Log(sout.ToString() + GetNewLine());
-            }
+            //if (ts != null && ts.GetSettings().LogLevel() != Level.WARNING)
+            //{
+            //    ts.GetLogger().info(sout.ToString());
+            //}
+            //else
+            //{
+            //    Debug.Log(sout.ToString() + GetNewLine());
+            //}
 
             return true;
         }

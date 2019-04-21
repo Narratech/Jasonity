@@ -22,7 +22,6 @@ namespace Assets.Code.Stdlib
         {
             foreach (Literal b in reasoner.GetAgent().GetBB())
             {
-                reasoner.GetLogger().Info(ToString());
             }
             return true;
         }

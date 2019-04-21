@@ -57,7 +57,7 @@ namespace Assets.Code.Stdlib
                 }
                 return un.Unifies(args[1], result);
             } catch (Exception e) {
-                ts.GetLogger().Warning("Error in internal action 'get_rules'! "+e);
+                //ts.GetLogger().Warning("Error in internal action 'get_rules'! "+e);
             }
             return false;
         }

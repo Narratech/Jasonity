@@ -52,9 +52,9 @@ namespace Assets.Code.Stdlib
             ITerm label = args[1];
             Plan p;
             if (label.IsLiteral())
-                p = ts.GetAgent().GetPL().Get((Literal) label);
+                p = ts.GetAgent().GetPL().Get(((Literal) label).ToString());
             else
-                p = ts.GetAgent().GetPL().Get(new Atom(label.ToString()));
+                p = ts.GetAgent().GetPL().Get((new Atom(label.ToString()).ToString()));
 
             if (p != null) {
                 p = (Plan) p.Clone();

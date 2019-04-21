@@ -83,7 +83,7 @@ namespace Assets.Code.Stdlib
 
                 if (index < 0 || index >= list.Size())
                 {
-                    throw new JasonityException("nth: index " + index + " is out of bounds (" + list.size() + ")");
+                    throw new JasonityException("nth: index " + index + " is out of bounds (" + list.Size() + ")");
                 }
 
                 return un.Unifies(args[2], list[index]);

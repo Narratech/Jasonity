@@ -53,7 +53,7 @@ namespace Assets.Code.Stdlib
             public NameSpaceStdLibIterator(Reasoner ts, Unifier un, ITerm[] args)
             {
                 this.ts = ts;
-                i = this.ts.GetAgent().GetBB().GetNameSpaces().Iterator();
+                i = this.ts.GetAgent().GetBB().GetNameSpaces().GetEnumerator();
                 n = default;
                 this.un = un;
                 this.args = args;
@@ -76,9 +76,9 @@ namespace Assets.Code.Stdlib
                 Unifier c = n;
 
                 n = un.Clone();
-                if (i.HasNext())
+                if (i.MoveNext())
                 {
-                    if (!n.UnifiesNoUndo(args[0], i.Next()))
+                    if (!n.UnifiesNoUndo(args[0], i.Current))
                         Next();
                 }
                 else

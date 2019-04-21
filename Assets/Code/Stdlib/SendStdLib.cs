@@ -103,18 +103,18 @@ namespace Assets.Code.Stdlib
             ITerm pcnt = args[2];
 
             // create a message to be sent
-            Message m = new Message(ilf.ToString(), ts.GetUserAgArch().GetAgName(), null, pcnt);
+            Message m = new Message(ilf.ToString(), ts.GetUserAgArch().GetAgentName(), null, pcnt);
 
             // async ask has a fourth argument and should suspend the intention
             lastSendWasSynAsk = m.IsAsk() && args.Length > 3;
             if (lastSendWasSynAsk)
             {
-                m.SetSyncAskMsgId();
-                ts.GetCircumstance().AddPendingIntention(m.GetMsgId(), ts.GetCircumstance().GetSelectedIntention());
+                m.SetSyncAskMsgID();
+                ts.GetCircumstance().AddPendingIntention(m.GetMsgID(), ts.GetCircumstance().GetSelectedIntention());
             }
 
             // (un)tell or unknown performative with 4 args is a reply to
-            if ((m.IsTell() || m.IsUnTell() || !m.IsKnownPerformative()) && args.Length > 3)
+            if ((m.IsTell() || m.IsUntell() || !m.IsKnownPerformative()) && args.Length > 3)
             {
                 ITerm mid = args[3];
                 if (!mid.IsAtom())
@@ -196,9 +196,9 @@ namespace Assets.Code.Stdlib
     	    else
                 rec = to.ToString();
             if (rec.Equals("self"))
-                rec = ts.GetUserAgArch().GetAgName();
+                rec = ts.GetUserAgArch().GetAgentName();
             m.SetReceiver(rec);
-            ts.GetUserAgArch().SendMsg(m);
+            ts.GetUserAgArch().SendMessage(m);
         }
 
         override public bool SuspendIntention()

@@ -7,6 +7,7 @@ using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using static BDIManager.Desires.DesireStdlib;
+//using Assets.Code.BDIManager.Desires;
 
 namespace Assets.Code.Stdlib
 {
@@ -28,12 +29,12 @@ namespace Assets.Code.Stdlib
         {
             if (i != null)
             {
-                if (i.DropGoal(g ,un))
+                if (i.DropDesire(g ,un))
                 {
                     //notify listener
                     if (rs.HasGoalListener())
                     {
-                        foreach (GoalListener gl in rs.GetGoalListeners())
+                        foreach (Desire gl in rs.GetDesiresListeners())
                         {
                             gl.GoalFailed(g);
                         }
@@ -51,7 +52,7 @@ namespace Assets.Code.Stdlib
                     {
                         if (rs.HasGoalListener())
                         {
-                            foreach (GoalListener gl in rs.GetGoalListeners())
+                            foreach (Desire gl in rs.GetDesiresListeners())
                             {
                                 gl.GoalFinished(g, FinishStates.unachieved);
                             }

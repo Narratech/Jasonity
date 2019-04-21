@@ -35,8 +35,8 @@ namespace Assets.Code.Stdlib
         {
             Settings stts = ts.GetSettings();
             stts.SetVerbose((int)((INumberTerm) args[0]).Solve());
-            ts.GetAgent().GetLogger().SetLevel(stts.LogLevel());
-            ts.GetLogger().SetLevel(stts.LogLevel());
+            //ts.GetAgent().GetLogger().SetLevel(stts.LogLevel());
+            //ts.GetLogger().SetLevel(stts.LogLevel());
             return true;
         }
     }

@@ -4,6 +4,7 @@ using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
+using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;
 using System.Collections.Generic;
@@ -76,7 +77,7 @@ namespace Assets.Code.Stdlib
             // ** Must test in PA/PI first since some actions (as .suspend) put intention in PI
 
             // suspending from Pending Actions
-            foreach (ActionExec a in C.GetPendingActions().Values)
+            foreach (ExecuteAction a in C.GetPendingActions().Values)
             {
                 Intention ia = a.GetIntention();
                 if (ia.HasTrigger(g, un))

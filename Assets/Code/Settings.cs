@@ -54,6 +54,11 @@ namespace Assets.Code
             throw new NotImplementedException();
         }
 
+        internal void SetVerbose(int v)
+        {
+            throw new NotImplementedException();
+        }
+
         internal string GetUserParameter(object iNIT_BELS)
         {
             throw new NotImplementedException();

@@ -78,7 +78,7 @@ namespace Assets.Code.Stdlib
                 throw new JasonityException("The time parameter ('" + time + "') of the internal action 'at' did not parse correctly!");
             }
 
-            Trigger te = Trigger.TryToGetGetTrigger(args[1]);
+            Trigger te = Trigger.TryToGetTrigger(args[1]);
 
             Agent.GetScheduler().Schedule(new CheckDeadline(te, ts), deadline, TimeUnit.MILLISECONDS);
             return true;
