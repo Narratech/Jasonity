@@ -50,10 +50,9 @@ namespace Assets.Code.Stdlib
             CheckArguments(args);
             DateTime myDt = new DateTime();
             Calendar now = new GregorianCalendar();
-            return un.Unifies(args[0], new NumberTermImpl(now.GetHour(myDt.Hour))) &&
-                un.Unifies(args[1], new NumberTermImpl(now.GetMinute(myDt.Minute))) &&
-                un.Unifies(args[2], new NumberTermImpl(now.GetSecond(myDt.Second)));
-            //No se como va esto exactamente pero por aquí van los tiros
+            return un.Unifies(args[0], new NumberTermImpl(now.GetHour(myDt))) &&
+                un.Unifies(args[1], new NumberTermImpl(now.GetMinute(myDt))) &&
+                un.Unifies(args[2], new NumberTermImpl(now.GetSecond(myDt)));
         }
     }
 }

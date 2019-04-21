@@ -9,30 +9,20 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Stdlib
 {
-    public class GroundStdLib:InternalAction
+    public class UnionStdLib:DifferenceStdLib //to inherit checkArguments
     {
         private static InternalAction singleton = null;
         public static InternalAction Create()
         {
             if (singleton == null)
-                singleton = new GroundStdLib();
+                singleton = new UnionStdLib();
             return singleton;
         }
 
-        override public int GetMinArgs()
-        {
-            return 1;
-        }
-
-        override public int GetMaxArgs()
-        {
-            return 1;
-        }
-
-        public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
+        override public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            return args[0].IsGround();
+            return un.Unifies(args[2], ((IListTerm) args[0]).Union((IListTerm) args[1]) );
         }
-}
+    }
 }

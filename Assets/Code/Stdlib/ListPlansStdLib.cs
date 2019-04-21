@@ -1,5 +1,5 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -35,11 +35,11 @@ namespace Assets.Code.Stdlib
                 {
                     if (te == null || new Unifier().Unifies(p.GetTrigger(), te))
                     {
-                        //reasoner.GetLogger().Info(p.ToString());
+                        reasoner.GetLogger().Info(p.ToString());
                     }
                 }
             } else {
-                //reasoner.GetLogger().Info(reasoner.GetAgent().GetPL().GetAsTxt(false));
+                reasoner.GetLogger().Info(reasoner.GetAgent().GetPL().GetAsTxt(false));
             }
             return true;
         }

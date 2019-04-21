@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
+using static BDIManager.Desires.DesireStdlib;
 
 namespace Assets.Code.Stdlib
 {
@@ -52,7 +53,7 @@ namespace Assets.Code.Stdlib
                         {
                             foreach (GoalListener gl in rs.GetGoalListeners())
                             {
-                                gl.GoalFinished(g, FinishStates.unachived);
+                                gl.GoalFinished(g, FinishStates.unachieved);
                             }
                         }
                         i.Fail(rs.GetCircumstance());

@@ -1,5 +1,5 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
@@ -27,7 +27,7 @@ namespace Assets.Code.Stdlib
         {
             CheckArguments(args);
             Circumstance C = ts.GetCircumstance();
-            C.ClearRunnigIntentions();
+            C.ClearRunningIntentions();
             C.ClearPendingIntentions();
             C.ClearPendingActions();
 

@@ -54,7 +54,7 @@ namespace Assets.Code.Stdlib
             if (label.IsLiteral())
                 p = ts.GetAgent().GetPL().Get((Literal) label);
             else
-                p = ts.GetAgent().GetPL().Get( new Atom(label.ToString()));
+                p = ts.GetAgent().GetPL().Get(new Atom(label.ToString()));
 
             if (p != null) {
                 p = (Plan) p.Clone();

@@ -1,6 +1,6 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSemantics;
+﻿using Assets.Code.AsSemantics;
 using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using System;

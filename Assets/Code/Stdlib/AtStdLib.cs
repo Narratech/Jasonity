@@ -1,5 +1,6 @@
 ﻿using Assets.Code.Agent;
 using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
@@ -79,14 +80,14 @@ namespace Assets.Code.Stdlib
 
             Trigger te = Trigger.TryToGetGetTrigger(args[1]);
 
-            Agent.Agent.GetScheduler().Schedule(new CheckDeadLine(te, ts), deadline, TimeUnit.MILLISECONDS);
+            Agent.GetScheduler().Schedule(new CheckDeadline(te, ts), deadline, TimeUnit.MILLISECONDS);
             return true;
         }
 
         //Here they use AtomicInteger class, but ther is nor such a thing in C#
         private static int idCount = 0;
         ///******************************************************************
-        private ConcurrentDictionary<int?, CheckDeadline> ats = new ConcurrentDictionary<int?, CheckDeadline>();
+        private static ConcurrentDictionary<int?, CheckDeadline> ats = new ConcurrentDictionary<int?, CheckDeadline>();
 
         public void CancelAts()
         {

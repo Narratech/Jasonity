@@ -1,5 +1,5 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BDIManager.Desires.DesireStdlib;
 
 namespace Assets.Code.Stdlib
 {
@@ -171,7 +172,7 @@ namespace Assets.Code.Stdlib
                 {
                     foreach (GoalListener gl in rs.GetGoalListeners())
                     {
-                        gl.GoalFinished(g, FinishStates.achived);
+                        gl.GoalFinished(g, FinishStates.achieved);
                     }
                 }
                 //continue the intention
@@ -203,7 +204,7 @@ namespace Assets.Code.Stdlib
                 {
                     foreach (GoalListener gl in rs.GetGoalListeners())
                     {
-                        gl.GoalFinished(e.GetTrigger(), FinishStates.achived);
+                        gl.GoalFinished(e.GetTrigger(), FinishStates.achieved);
                     }
                     i.Peek().RemoveCurrentStep();
                     rs.ApplyClrInt(i);

@@ -1,4 +1,4 @@
-﻿using Assets.Code.Agent;
+﻿using Assets.Code.BDIAgent;
 using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;

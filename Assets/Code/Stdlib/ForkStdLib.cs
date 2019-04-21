@@ -1,5 +1,5 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
@@ -138,9 +138,9 @@ namespace Assets.Code.Stdlib
                 bool r = base.DropGoal(te, un);
                 if (r && Size() < forkPoint)
                 {
-                    if (fd.ToFinish > 0)
+                    if (fd.toFinish > 0)
                     { // the first intentions of the fork being dropped, keep it and ignore the rest
-                        fd.ToFinish = 0;
+                        fd.toFinish = 0;
                         return true;
                     }
                     else

@@ -69,7 +69,7 @@ namespace Assets.Code.Stdlib
 
                     // notify meta event listeners
                     if (notify && C.GetListeners() != null)
-                        foreach (CircumstanceListener el in C.GetListeners())
+                        foreach (ICircumstanceListener el in C.GetListeners())
                             el.intentionResumed(i);
 
                     // remove the IA .suspend in case of self-suspend

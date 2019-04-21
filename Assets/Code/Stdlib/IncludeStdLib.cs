@@ -1,5 +1,6 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
+using Assets.Code.Logic.AsSyntax.directives;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -33,13 +34,13 @@ namespace Assets.Code.Stdlib
         {
             CheckArguments(args);
 
-            Agent.Agent ag = reasoner.GetAgent();
+            Agent ag = reasoner.GetAgent();
             Pred inc = new Pred(ns, "include");
             inc.AddTerms(args);
 
             //-Cosas Java???
             //-Sí Peterrr, cÓsas Naz* ¡digo! cÓsas Java
-            Agent.Agent result = ((IncludeStdLib)DirectiveProcessor.getDirective("include")).process(inc, ag, null);
+            Agent result = ((IncludeStdLib)DirectiveProcessor.GetDirective("include")).Process(inc, ag, null);
 
             ag.ImportComponents(result);
             ag.AddInitialBelsInBB();
