@@ -1,7 +1,8 @@
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic.parser;
+using Assets.Code.BDIAgent;
+using Assets.Code.parser;
 
-namespace Assets.Code.Logic.AsSyntax.directives
+namespace Assets.Code.AsSyntax.directives
 { 
     public class DefaultDirective : IDirective {
 
@@ -15,7 +16,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         }
 
-        public Agent.Agent Process(Pred directive, Agent.Agent outerContent, Agent.Agent innerContent)
+        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             return innerContent;
         }

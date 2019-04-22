@@ -1,26 +1,28 @@
-using Assets.Code.AsSyntax;
-using Assets.Code.Logic.parser;
+using Assets.Code.BDIAgent;
+using Assets.Code.parser;
+using Assets.Code.Runtime;
+using Assets.Code.Util;
 using System;
 using System.IO;
 
-namespace Assets.Code.Logic.AsSyntax.directives
+namespace Assets.Code.AsSyntax.directives
 { 
     public partial class Include : DefaultDirective, IDirective {
 
         //HACER: Clase SourcePath de runtime
         private SourcePath aslSourcePath = new SourcePath();
 
-        public Agent.Agent Process(Pred directive, Agent.Agent outerContent, Agent.Agent innerContent)
+        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             if (outerContent == null)
                 return null;
 
             // handles file (arg[0])
-            string file = ((IStringTerm)directive.GetTerm(0)).GetString().ReplaceAll("\\\\", "/");
+            string file = ((IStringTerm)directive.GetTerm(0)).GetString().Replace("\\\\", "/");
             try
             {
                 //CAMBIAR: similar c# de InputStream
-                InputStream in = null;
+                InputStream input = null;
                 // test include from jar
                 if (file.StartsWith("$"))
                 { // the case of "$jasonJar/src/a.asl"
@@ -34,7 +36,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                     string path = Config.Get().Get(jar).ToString();
                     file = "jar:file:" + path + "!" + file.Substring(file.IndexOf("/"));
                     //CAMBIAR: Similar URL en c#
-                    in = new URL(file).openStream();
+                    input = new URL(file).openStream();
                 }
 
                 else
@@ -46,9 +48,9 @@ namespace Assets.Code.Logic.AsSyntax.directives
                         if (outerPrefix.StartsWith("jar"))
                         {
                             outerPrefix = outerPrefix.Substring(0, outerPrefix.IndexOf("!") + 1) + "/";
-                            file = aslSourcePath.fixPath(file, outerPrefix);
+                            file = aslSourcePath.FixPath(file, outerPrefix);
                             //HACER: Similar URL en c#
-                            in = new URL(file).openStream();
+                            input = new URL(file).openStream();
                         }
 
                         //HACER: Crear clase SourcePath de runtime
@@ -61,12 +63,12 @@ namespace Assets.Code.Logic.AsSyntax.directives
                             SourcePath newpath = new SourcePath();
                             if (outerPrefix.IndexOf("/") != posSlash)
                             { // has only one slash
-                                newpath.addPath(outerPrefix.Substring(SourcePath.CRPrefix.length() + 1, posSlash));
+                                newpath.AddPath(outerPrefix.Substring(SourcePath.CRPrefix.Length + 1, posSlash));
                             }
-                            newpath.addAll(aslSourcePath);
+                            newpath.AddAll(aslSourcePath);
 
-                            file = newpath.fixPath(file, SourcePath.CRPrefix + "/");
-                            in = Agent.Agent.GetResource(file.Substring(SourcePath.CRPrefix.length())).openStream();
+                            file = newpath.FixPath(file, SourcePath.CRPrefix + "/");
+                            input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();
 
                         }
 
@@ -75,7 +77,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                             //CAMBIAR: Similiar URL en c#
                             URL url = new URL(new URL(outerPrefix), file);
                             file = url.ToString();
-                            in = url.openStream();
+                            input = url.openStream();
 
                         }
 
@@ -83,7 +85,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                         {
                             URL url = new URL(file);
                             file = url.ToString();
-                            in = url.openStream();
+                            input = url.openStream();
                         }
 
                         else
@@ -95,16 +97,16 @@ namespace Assets.Code.Logic.AsSyntax.directives
                         SourcePath newpath = new SourcePath();
                         
                         //CAMBIAR: Similar File en c#
-                        newpath.addPath(new File(outerPrefix).getAbsoluteFile().getParent());
-                        newpath.addAll(aslSourcePath);
-                        file = newpath.fixPath(file, null);
-                        in = new FileInputStream(file);
+                        newpath.AddPath(new File(outerPrefix).GetAbsoluteFile().getParent());
+                        newpath.AddAll(aslSourcePath);
+                        file = newpath.FixPath(file, null);
+                        input = new FileInputStream(file);
                         }   
                     }
 
                     else
                     {
-                        in = new FileInputStream(aslSourcePath.fixPath(file, null));
+                        input = new FileInputStream(aslSourcePath.FixPath(file, null));
                     }
                 }
 
@@ -124,11 +126,11 @@ namespace Assets.Code.Logic.AsSyntax.directives
                         }
                     }
                 }
-                Agent.Agent ag = new Agent.Agent();
+                Agent ag = new Agent();
                 ag.InitAg();
 
                 //HACER: Terminar el parser
-                as2j sparser = new as2j(in);
+                as2j sparser = new as2j(input);
                 sparser.SetASLSource(file);
                 sparser.SetNS(ns);
                 sparser.agent(ag);

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System;
 using Assets.Code.AsSyntax;
 
-namespace Assets.Code.Logic.AsSyntax.directives
+namespace Assets.Code.AsSyntax.directives
 {
     public class DirectiveProcessor {
 

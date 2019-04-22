@@ -1,5 +1,5 @@
 /* as2jTokenManager.cs */
-namespace  Assets.Code.Logic.AsSyntax.parser {
+namespace  Assets.Code.AsSyntax.parser {
 
 public class as2jConstants {
 public const int EOF  = 0;

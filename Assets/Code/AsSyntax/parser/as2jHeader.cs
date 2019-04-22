@@ -1,46 +1,47 @@
 using System;
 using System.Collections.Generic;
 
-using Assets.Code.Logic.AsSyntax.parser;
+using Assets.Code.AsSyntax.parser;
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic.AsSyntax.directives;
+using Assets.Code.AsSyntax.directives;
+using Assets.Code.BDIAgent;
+using Assets.Code.Util;
+using Assets.Code.AsSemantics;
 
-namespace Assets.Code.Logic.parser
+namespace Assets.Code.parser
 { 
     public partial class as2j : as2jConstants {
 
-        private String asSource = "no-asl-source";
-        private Agent.Agent curAg = null;
+        private string asSource = "no-asl-source";
+        private Agent curAg = null;
 
         private Atom @namespace = Literal.DefaultNS;
         private Atom thisnamespace = Literal.DefaultNS;
 
-        //carpeta directive de asSyntax
         private DirectiveProcessor directiveProcessor = new DirectiveProcessor();
         private NameSpace nsDirective = (NameSpace)directiveProcessor.GetInstance("namespace");
 
         private static HashSet<string> parsedFiles = new HashSet<String>();
-        //carpeta util jason
         private static Config config = Config.Get(false);
 
-        public void SetAg(Agent.Agent ag) { curAg = ag; }
+        public void SetAg(Agent ag) { curAg = ag; }
         public void SetNS(Atom  ns) { @namespace = ns; thisnamespace = ns; }
         public Atom GetNS()         { return @namespace; }
 
         public void SetASLSource(String src) { asSource = src; }
         
-        private String GetSourceRef(SourceInfo s) {
+        private string GetSourceRef(SourceInfo s) {
             if (s == null)
                 return "[]";
             else
                 return "["+s.GetSrcFile()+":"+s.GetBeginSrcLine()+"]";
         }
 
-        private String GetSourceRef(DefaultTerm t) {
+        private string GetSourceRef(DefaultTerm t) {
             return GetSourceRef( t.GetSrcInfo());
         }
 
-        private String GetSourceRef(object t) {
+        private string GetSourceRef(object t) {
             if (t.GetType() == typeof(DefaultTerm)) {
                 return GetSourceRef((DefaultTerm)t);
             }
@@ -53,7 +54,7 @@ namespace Assets.Code.Logic.parser
                 return "[]";
         }
 
-        private InternalActionLiteral CheckInternalActionsInContext(ILogicalFormula f, Agent.Agent ag) {
+        private InternalActionLiteral CheckInternalActionsInContext(ILogicalFormula f, Agent ag) {
             if (f != null) {
                 if (f.GetType() == typeof(InternalActionLiteral)) {
                     InternalActionLiteral ial = (InternalActionLiteral)f;
@@ -75,15 +76,14 @@ namespace Assets.Code.Logic.parser
             return null;
         }
 
-        private ArithFunctionTerm GetArithFunction(Literal l) {
-            ArithFunctionTerm af = null;
+        private ArithFunction GetArithFunction(Literal l) {
+            ArithFunction af = null;
             if (curAg != null)
                // try to find the function in agent register
                af = curAg.GetFunction(l.GetFunctor(), l.GetArity());
             if (af == null)
                // try global function
-               //carpeta directiva de asSyntax
-               af = FunctionRegister.getFunction(l.GetFunctor(), l.GetArity());
+               af = FunctionRegister.GetFunction(l.GetFunctor(), l.GetArity());
             return af;
         }
 

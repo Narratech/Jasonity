@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System;
-using Assets.Code.AsSyntax;
 using Assets.Code.functions;
+using Assets.Code.AsSemantics;
+using Assets.Code.BDIAgent;
 
-namespace Assets.Code.Logic.AsSyntax.directives
+namespace Assets.Code.AsSyntax.directives
 {
     public class FunctionRegister : DefaultDirective, IDirective {
 
-        private static Dictionary<string, ArithFunctionTerm> functions = new Dictionary<string, ArithFunctionTerm>();
+        private static Dictionary<string, ArithFunction> functions = new Dictionary<string, ArithFunction>();
 
         static FunctionRegister() {
             AddJasonFunction(typeof(Abs));
@@ -32,7 +33,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
         {
             try
             {
-                ArithFunctionTerm af = c.NewInstance();
+                ArithFunction af = (ArithFunction)Activator.CreateInstance(typeof(ArithFunction));
                 functions[af.GetName()] = af;
             }
             catch (Exception e)
@@ -46,7 +47,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
         {
             try
             {
-                ArithFunctionTerm af = c.NewInstance();
+                ArithFunction af = (ArithFunction)Activator.CreateInstance(typeof(ArithFunction));
                 string error = FunctionRegister.CheckFunctionName(af.GetName());
                 if (error == null)
                     functions[af.GetName()] = af; 
@@ -69,9 +70,9 @@ namespace Assets.Code.Logic.AsSyntax.directives
                 return null;
         }
 
-        public static ArithFunctionTerm GetFunction(string function, int arity)
+        public static ArithFunction GetFunction(string function, int arity)
         {
-            ArithFunctionTerm af = functions[function];
+            ArithFunction af = functions[function];
 
             if (af != null && af.CheckArity(arity))
                 return af;
@@ -79,7 +80,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                 return null;
         }
 
-        public Agent.Agent Process(Pred directive, Agent.Agent outerContent, Agent.Agent innerContent)
+        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             if (outerContent == null)
                 return null;
@@ -89,7 +90,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
                 if (directive.GetArity() == 1)
                 {
                     // it is implemented in java
-                    //HACER: Funcion AddFunctio de Agent
+                    //HACER: GITHUB Class
                     outerContent.AddFunction((Class<ArithFunction>)Class.forName(id));
                 }
                 else if (directive.GetArity() == 3)

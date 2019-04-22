@@ -1,6 +1,6 @@
 ﻿using Assets.Code.Exceptions;
-using Assets.Code.Logic.AsSyntax.parser;
-using Assets.Code.Logic.parser;
+using Assets.Code.AsSyntax.parser;
+using Assets.Code.parser;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,6 +38,11 @@ namespace Assets.Code.AsSyntax
         public static void AddKeyword (PredicateIndicator pi)
         {
             keywords.Add(pi);
+        }
+
+        public static bool IsKeyword(Literal l)
+        {
+            return keywords.Contains(l.GetPredicateIndicator());
         }
 
         public static Literal CreateLiteral (string functor, params ITerm[] t)
@@ -138,8 +143,8 @@ namespace Assets.Code.AsSyntax
         public static Literal ParseLiteral(string sLiteral)
         {
             as2j parser = new as2j(new StringReader(sLiteral));
-            Literal l = parser.Literal();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            Literal l = parser.literal();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after "+l+" for parameter '"+sLiteral+"'");
             }  
@@ -154,8 +159,8 @@ namespace Assets.Code.AsSyntax
         public static Structure ParseStructure(string sStructure)
         {
             as2j parser = new as2j(new StringReader(sStructure));
-            ITerm t = parser.Term();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            ITerm t = parser.term();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after "+t+" for parameter '"+sStructure+"'");
             }
@@ -172,8 +177,8 @@ namespace Assets.Code.AsSyntax
         public static VarTerm ParseVar(string sVar)
         { 
             as2j parser = new as2j(new StringReader(sVar));
-            VarTerm v = parser.Var(Literal.DefaultNS);
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            VarTerm v = parser.var(Literal.DefaultNS);
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after "+v+" for parameter '"+sVar+"'");
             }
@@ -183,8 +188,8 @@ namespace Assets.Code.AsSyntax
         public static ITerm ParseTerm(string sTerm)
         {
             as2j parser = new as2j(new StringReader(sTerm));
-            ITerm t = parser.Term();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            ITerm t = parser.term();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after "+t+" for parameter '"+sTerm+"'");
             }
@@ -194,7 +199,7 @@ namespace Assets.Code.AsSyntax
         public static Plan ParsePlan(string sPlan)
         { 
             as2j parser = new as2j(new StringReader(sPlan));
-            Plan p = parser.Plan();
+            Plan p = parser.plan();
             if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after " + p + " for parameter '" + sPlan + "'");
@@ -205,8 +210,8 @@ namespace Assets.Code.AsSyntax
         public static IPlanBody ParsePlanBody(string sPlanBody) 
         { 
             as2j parser = new as2j(new StringReader(sPlanBody));
-            IPlanBody p = parser.Plan_body();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            IPlanBody p = parser.plan_body();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after " + p + " for parameter '" + sPlanBody + "'");
             }
@@ -216,8 +221,8 @@ namespace Assets.Code.AsSyntax
         public static Trigger ParseTrigger(string sTe)
         {
             as2j parser = new as2j(new StringReader(sTe));
-            Trigger te = parser.Trigger();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            Trigger te = parser.trigger();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after " + te + " for parameter '" + sTe + "'");
             }
@@ -227,8 +232,8 @@ namespace Assets.Code.AsSyntax
         public static IListTerm ParseList(string sList)
         {
             as2j parser = new as2j(new StringReader(sList));
-            IListTerm l = parser.List();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            IListTerm l = parser.list();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after " + l + " for parameter '" + sList + "'");
             }
@@ -238,8 +243,8 @@ namespace Assets.Code.AsSyntax
         public static ILogicalFormula ParseFormula(string sExpr)
         {
             as2j parser = new as2j(new StringReader(sExpr));
-            ILogicalFormula l = (ILogicalFormula)parser.Log_expr();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            ILogicalFormula l = (ILogicalFormula)parser.log_expr();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after "+l+" for parameter '"+sExpr+"'");
             }
@@ -249,8 +254,8 @@ namespace Assets.Code.AsSyntax
         public static Rule ParseRule(string sRule)
         {
             as2j parser = new as2j(new StringReader(sRule));
-            Rule r = (Rule)parser.Belief();
-            if (parser.GetNextToken().kind != as2jConstants.EOF)
+            Rule r = (Rule)parser.belief();
+            if (parser.getNextToken().kind != as2jConstants.EOF)
             {
                 throw new ParseException("Expected <EOF> after "+r+" for parameter '"+sRule+"'");
             }

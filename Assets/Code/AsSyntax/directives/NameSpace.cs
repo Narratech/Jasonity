@@ -1,9 +1,9 @@
-using Assets.Code.AsSyntax;
-using Assets.Code.Logic.parser;
+using Assets.Code.BDIAgent;
+using Assets.Code.parser;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Assets.Code.Logic.AsSyntax.directives
+namespace Assets.Code.AsSyntax.directives
 { 
     public partial class NameSpace : IDirective {
 
@@ -16,7 +16,7 @@ namespace Assets.Code.Logic.AsSyntax.directives
             return false;
         }
 
-        public Agent.Agent Process(Pred directive, Agent.Agent outerContent, Agent.Agent innerContent)
+        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             return innerContent;
         }
@@ -65,7 +65,6 @@ namespace Assets.Code.Logic.AsSyntax.directives
 
         public bool IsLocalNS(Atom ns)
         {
-            //CAMBIAR: Funcion get similar en diccionarios de c#
             return localNSs[ns] != null;
         }
 

@@ -1,13 +1,14 @@
 using Assets.Code.AsSyntax;
-using Assets.Code.Logic.parser;
+using Assets.Code.BDIAgent;
+using Assets.Code.parser;
 
-namespace Assets.Code.Logic.AsSyntax.directives
+namespace Assets.Code.AsSyntax.directives
 { 
     public interface IDirective {
 
         void Begin(Pred directive, as2j parser);
 
-        Agent.Agent Process(Pred directive, Agent.Agent outerContent, Agent.Agent innerContent);
+        Agent Process(Pred directive, Agent outerContent, Agent innerContent);
 
         void End(Pred directive, as2j parser);
 
