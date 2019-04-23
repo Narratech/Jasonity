@@ -42,9 +42,11 @@ namespace Assets.Code.Stdlib
             CheckArguments(args);
 
             List<ITerm> lt = ((IListTerm)args[0]).GetAsList();
-            Collections.shuffle(lt);
+            //Collections.shuffle(lt); //programarse un shuffler
+            Random r = new Random();
+            lt = lt.OrderBy(x => r.Next()).ToList();
             IListTerm ls = new ListTermImpl();
-            ls.AddAll(lt);
+            ls.AddAll(lt);//un foreach
             return un.Unifies(args[1], ls);
         }
     }

@@ -64,7 +64,7 @@ namespace Assets.Code.Stdlib
         {
             CheckArguments(args);
             List<ITerm> l = ((IListTerm)args[0]).GetAsList();
-            Collections.sort(l);
+            l.Sort();
             return un.Unifies(AsSyntax.AsSyntax.CreateList(l), args[1]);
         }
     }

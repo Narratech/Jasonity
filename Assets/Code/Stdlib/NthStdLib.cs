@@ -71,9 +71,9 @@ namespace Assets.Code.Stdlib
             else if (args[1].IsString())
             {
                 list = new ListTermImpl();
-                foreach (byte b in ((IStringTerm)args[1]).GetString().GetBytes())
+                foreach (byte b in Encoding.UTF8.GetBytes(((IStringTerm)args[1]).GetString()))
                 {
-                    list.Add(new StringTermImpl(new string(new byte[] { b })));
+                    list.Add(new StringTermImpl(Encoding.UTF8.GetString(new byte[] { b }))); //Esto a la wiki
                 }
             }
 

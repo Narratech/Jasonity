@@ -4,6 +4,7 @@ using Assets.Code.Runtime;
 using Assets.Code.Util;
 using System;
 using System.IO;
+using UnityEngine;
 
 namespace Assets.Code.AsSyntax.directives
 { 
@@ -21,22 +22,23 @@ namespace Assets.Code.AsSyntax.directives
             string file = ((IStringTerm)directive.GetTerm(0)).GetString().Replace("\\\\", "/");
             try
             {
-                //CAMBIAR: similar c# de InputStream
-                InputStream input = null;
+                TextReader input = null; //Es posible que haya que cambiarlo a streamreader
                 // test include from jar
                 if (file.StartsWith("$"))
                 { // the case of "$jasonJar/src/a.asl"
                     string jar = file.Substring(1, file.IndexOf("/"));
-                    //HACER: Clase Config de util
-                    if (Config.Get().Get(jar) == null)
+                    string result; 
+                    if (Config.Get().TryGetValue(jar, out result)) //esto mirarlo con la calma
                     {
                         return null;
                     }
 
-                    string path = Config.Get().Get(jar).ToString();
-                    file = "jar:file:" + path + "!" + file.Substring(file.IndexOf("/"));
-                    //CAMBIAR: Similar URL en c#
-                    input = new URL(file).openStream();
+                    Config.Get().TryGetValue(jar, out result);
+                    string path =  result.ToString();
+                    file = "jar:file:" + path + "!" + file.Substring(file.IndexOf("/")); //este file tiene que ser una ruta al archivo asl
+                    //CAMBIAR: Similar URL en c# Existe una clase URI pero es mas facil con string
+                    //input = new URL(file).openStream(); //WIKIIIIII
+                    input = File.OpenText(file);
                 }
 
                 else
@@ -50,7 +52,7 @@ namespace Assets.Code.AsSyntax.directives
                             outerPrefix = outerPrefix.Substring(0, outerPrefix.IndexOf("!") + 1) + "/";
                             file = aslSourcePath.FixPath(file, outerPrefix);
                             //HACER: Similar URL en c#
-                            input = new URL(file).openStream();
+                            input = File.OpenText(file);
                         }
 
                         //HACER: Crear clase SourcePath de runtime
@@ -68,8 +70,11 @@ namespace Assets.Code.AsSyntax.directives
                             newpath.AddAll(aslSourcePath);
 
                             file = newpath.FixPath(file, SourcePath.CRPrefix + "/");
-                            input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();
-
+                            /*Esto esta buscando en el paquete concreto de bdi agent*/
+                            //En input tenemos que acabar abriendo un textreader
+                            //Tenemos que ver exactamente donde esta esta cosa
+                            //input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();//Mirar los resources de unity por si acaso hay algo
+                            //Esto hay que hacerlo con unity porque esto es raruno
                         }
 
                         else if (outerPrefix.StartsWith("file:") || outerPrefix.StartsWith("http:") || outerPrefix.StartsWith("https:"))
@@ -77,14 +82,14 @@ namespace Assets.Code.AsSyntax.directives
                             //CAMBIAR: Similiar URL en c#
                             URL url = new URL(new URL(outerPrefix), file);
                             file = url.ToString();
-                            input = url.openStream();
+                            input = File.OpenText(file);.openStream(); //Mirar arriba
 
                         }
 
                         else if (file.StartsWith("jar:") || file.StartsWith("file:") || file.StartsWith("http:") || file.StartsWith("https:"))
                         {
                             URL url = new URL(file);
-                            file = url.ToString();
+                            file = url.ToString(); //Mirar arriba
                             input = url.openStream();
                         }
 
@@ -106,7 +111,7 @@ namespace Assets.Code.AsSyntax.directives
 
                     else
                     {
-                        input = new FileInputStream(aslSourcePath.FixPath(file, null));
+                        input = new FileInputStream(aslSourcePath.FixPath(file, null)); //mirar arriba
                     }
                 }
 
@@ -129,7 +134,6 @@ namespace Assets.Code.AsSyntax.directives
                 Agent ag = new Agent();
                 ag.InitAg();
 
-                //HACER: Terminar el parser
                 as2j sparser = new as2j(input);
                 sparser.SetASLSource(file);
                 sparser.SetNS(ns);

@@ -6,8 +6,8 @@ using Assets.Code.AsSyntax;
 using Assets.Code.Exceptions;
 using Assets.Code.functions;
 using Assets.Code.Logic;
-using Assets.Code.Logic.AsSyntax.directives;
-using Assets.Code.Logic.parser;
+using Assets.Code.AsSyntax.directives;
+using Assets.Code.parser;
 using Assets.Code.Mas2J;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
@@ -36,12 +36,13 @@ namespace Assets.Code.BDIAgent
         private Dictionary<string, InternalAction> internalActions = null;
         private Dictionary<string, ArithFunction> functions = null;
         private bool hasCustomSelOp = true;
-        private static ScheduledExecutorService scheduler = null; //I don't know how to do this
+        //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
 
         public Agent()
         {
             CheckCustomSelectOption();
         }
+
 
         public static Agent Create(AgentArchitecture agArch, string agClass, ClassParameters bbPars, string asSrc, Settings stts)  
         {
@@ -112,6 +113,11 @@ namespace Assets.Code.BDIAgent
             Load(asSrc);
         }
 
+        internal static object GetResource(string v)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Load(string asSrc)
         {
             try
@@ -171,7 +177,7 @@ namespace Assets.Code.BDIAgent
             }
         }
 
-        /*public void LoadKQMLPlans()
+        public void LoadKQMLPlans()
         {
             
             Config c = Config.Get();
@@ -181,20 +187,20 @@ namespace Assets.Code.BDIAgent
                 {
                     string file = Message.kqmlDefaultPlans.Substring(Message.kqmlDefaultPlans.IndexOf("/"));
                     if (typeof(JasonityException).GetResource(file) != null) {
-                        ParseAS(JasonityException.class.getResource(file)); //, "kqmlPlans.asl");
+                        ParseAS(JasonityException.GetResource(file)); //, "kqmlPlans.asl");
                     } else {
-                        logger.warning("The kqmlPlans.asl was not found!");
+                        
                     }
                 }
             } else {
                 // load from specified file
                 try {
-                    parseAS(new File(c.getKqmlPlansFile()));
+                    ParseAS(new File(c.getKqmlPlansFile()));
                 } catch (Exception e) {
-                    logger.warning("Error reading kqml semantic plans. "+e+". from file "+c.getKqmlPlansFile());
+                    
                 }
             }
-        }*/
+        }
 
         public void StopAg()
         {
@@ -294,7 +300,7 @@ namespace Assets.Code.BDIAgent
             }
         }
 
-        public static synchronized ScheduledExecutorService GetScheduler()
+        public static ScheduledExecutorService GetScheduler()
         {
             if (scheduler == null)
             {
@@ -324,7 +330,7 @@ namespace Assets.Code.BDIAgent
             aslSource = file;
         }
 
-        public bool ParseAs(File asFile)
+        public bool ParseAs(TextReader asFile)
         {
             try
             {
@@ -351,7 +357,7 @@ namespace Assets.Code.BDIAgent
         {
             as2j parser = new as2j(asIn);
             parser.SetASLSource(sourceId);
-            parser.Agent(this);
+            parser.agent(this);
         }
 
         public InternalAction GetIA(string iaName) {

@@ -1,5 +1,4 @@
-﻿using Assets.Code.Agent;
-using Assets.Code.AsSyntax;
+﻿using Assets.Code.AsSyntax;
 using Assets.Code.BDIAgent;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
@@ -109,7 +108,7 @@ namespace Assets.Code.Stdlib
                 this.id = idCount + 1;
                 this.@event = new Event(te, Intention.emptyInt);
                 this.ts = ts;
-                ats.Put(id, this);
+                ats.TryAdd(id, this);
             }
 
             public void Cancel()
@@ -129,7 +128,8 @@ namespace Assets.Code.Stdlib
                 }
                 finally
                 {
-                    ats.Remove(id);
+                    CheckDeadline result;
+                    ats.TryRemove(id, out result);
                 }
             }
         }

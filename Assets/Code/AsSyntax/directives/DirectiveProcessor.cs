@@ -44,16 +44,18 @@ namespace Assets.Code.AsSyntax.directives
             return null;
         }
 
-        static DirectiveProcessor() {
+        static DirectiveProcessor()
+        {
+           
             RegisterDirective("include", typeof(Include));
             RegisterDirective("register_function", typeof(FunctionRegister));
             RegisterDirective("namespace", typeof(NameSpace));
+           
         }
-
 
         public IDirective GetInstance(Pred directive)
         {
-        return GetInstance(directive.GetFunctor());
+            return GetInstance(directive.GetFunctor());
         }
 
         public IDirective GetInstance(string id)

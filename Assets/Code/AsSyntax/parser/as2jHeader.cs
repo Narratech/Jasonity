@@ -18,8 +18,11 @@ namespace Assets.Code.parser
         private Atom @namespace = Literal.DefaultNS;
         private Atom thisnamespace = Literal.DefaultNS;
 
-        private DirectiveProcessor directiveProcessor = new DirectiveProcessor();
-        private NameSpace nsDirective = (NameSpace)directiveProcessor.GetInstance("namespace");
+        private DirectiveProcessor dProcessor = new DirectiveProcessor();
+        //private NameSpace nsDirective = (NameSpace)dProcessor.GetInstance("namespace");
+        private NameSpace nsDirective;
+        
+
 
         private static HashSet<string> parsedFiles = new HashSet<String>();
         private static Config config = Config.Get(false);

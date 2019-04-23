@@ -90,8 +90,9 @@ namespace Assets.Code.AsSyntax
         {
             if (HasTerm())
             {
-                return GetTerms().ToArray(Structure.emptyTermArray);
-                //Structure.emptyTermArray
+                //return GetTerms().ToArray(Structure.emptyTermArray);
+                return GetTerms().ToArray();
+                
             }
             else
             {
@@ -360,7 +361,7 @@ namespace Assets.Code.AsSyntax
             
         }
 
-        private class MyIEnumerator<Unifier>: IEnumerator<Unifier>
+        private class MyIEnumerator<T>: IEnumerator<T> where T : Unifier
         {
             Unifier current = default;
             IEnumerator<Unifier> ruleIt = null; // current rule solutions iterator
@@ -378,6 +379,8 @@ namespace Assets.Code.AsSyntax
             public Unifier Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
+
+            T IEnumerator<T>.Current => throw new NotImplementedException();
 
             public MyIEnumerator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent ag, Unifier un)
             {

@@ -4,12 +4,13 @@ using Assets.Code.BDIAgent;
 using Assets.Code.Stdlib;
 using Assets.Code.AsSyntax.parser;
 using Assets.Code.AsSyntax.directives;
-using NUnit.Framework;
 using System;
 using System.Collections;
 using BDIManager.Beliefs;
 using static RelExpr;
 using static Assets.Code.AsSyntax.ArithExpr;
+using System.Collections.Generic;
+using Assets.Code.AsSemantics;
 
 namespace Assets.Code.parser {
 
@@ -1229,7 +1230,11 @@ namespace Assets.Code.parser {
 
         /* Annotated Formulae */
         public Pred pred() {
-            Token K; Pred p; List l; IListTerm lt; ITerm b;
+            Token K;
+            Pred p;
+            List<ITerm> l;
+            IListTerm lt;
+            ITerm b;
             Atom ons = @namespace; @namespace = Literal.DefaultNS;
 
             // do not replace abstract namespace for terms
@@ -1288,7 +1293,7 @@ namespace Assets.Code.parser {
 
 
         /* List of terms */
-        public List terms() { ArrayList listTerms = new ArrayList(); ITerm v; IPlanBody o;
+        public List<ITerm> terms() { List<ITerm> listTerms = new List<ITerm>(); ITerm v; IPlanBody o;
 
             v = term();
             listTerms.Add(v);
@@ -1306,13 +1311,10 @@ namespace Assets.Code.parser {
                 listTerms.Add(v);
             }
         end_label_9:;
-            listTerms.TrimToSize();
+            listTerms.TrimExcess();
             return listTerms;
 
-
         }
-
-
 
 
         public ITerm term() { object o;
@@ -1921,15 +1923,15 @@ namespace Assets.Code.parser {
 
 
 
-        public ITerm function() { Literal l;
+        public ITerm function() { Literal l; //Mirar bien para ver que hacemos con llos arithfunction
 
             l = literal();
-            ArithFunctionTerm af = GetArithFunction(l);
+            ArithFunction af = GetArithFunction(l);
             if (af == null) {
                 return l;
             }
             else {
-                ArithFunctionTerm at = new ArithFunctionTerm(af);
+                ArithFunction at = new ArithFunction(af);
                 at.SetSrcInfo(l.GetSrcInfo());
                 at.SetTerms(l.GetTerms());
                 at.SetAgent(curAg);
@@ -1960,9 +1962,10 @@ namespace Assets.Code.parser {
                 v = new VarTerm(ns, K.image); v.SetSrcInfo(new SourceInfo(asSource, K.beginLine));
             } else if (false || switch_65 == UNNAMEDVARID) {
                 K = jj_consume_token(UNNAMEDVARID);
-                Matcher matcher = patternUnnamedWithId.matcher(K.image); //CAMBIAR: Clase Matcher
+                //Mirar la clase Regex y el match 
+                Matcher matcher = patternUnnamedWithId.matcher(K.image); //CAMBIAR: Clase Matcher. Mirar las expresiones regulares. Mirar RegEx
                 if (matcher.find()) {
-                    v = UnnamedVar.Create(ns, Integer.ParseInt(matcher.group(1)), K.image);
+                    v = UnnamedVar.Create(ns, int.Parse(matcher.group(1)), K.image);
                 } else {
                     v = UnnamedVar.Create(ns, K.image);
                 }
@@ -3418,6 +3421,7 @@ namespace Assets.Code.parser {
             jj_gen = 0;
             for (int i = 0; i < jj_2_rtns.Length; i++) jj_2_rtns[i] = new JJCalls();
             hasError = false;
+            nsDirective = (NameSpace)dProcessor.GetInstance("namespace");
         }
 
         /** Reinitialise. */

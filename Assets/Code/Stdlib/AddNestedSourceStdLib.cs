@@ -40,7 +40,7 @@ namespace Assets.Code.Stdlib
             CheckArguments(args);
             try
             {
-                return un.Unifies(AddAnnotToList(args[0], args[1], args[2])); //????
+                return un.Unifies(AddAnnotToList(args[0], args[1]), args[2]); 
             }
             catch (Exception e)
             {

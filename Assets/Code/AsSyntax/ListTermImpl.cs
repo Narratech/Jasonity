@@ -11,7 +11,6 @@ namespace Assets.Code.AsSyntax
 {
     public class ListTermImpl : Structure, IListTerm
     {
-        private static readonly long serialVersionUID = 1L;
 
         public static readonly string LIST_FUNCTOR = ".";
         private ITerm term;

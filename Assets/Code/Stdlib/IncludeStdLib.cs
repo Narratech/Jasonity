@@ -1,6 +1,6 @@
 ﻿using Assets.Code.AsSyntax;
+using Assets.Code.AsSyntax.directives;
 using Assets.Code.BDIAgent;
-using Assets.Code.Logic.AsSyntax.directives;
 using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace Assets.Code.Stdlib
 
             //-Cosas Java???
             //-Sí Peterrr, cÓsas Naz* ¡digo! cÓsas Java
-            Agent result = ((IncludeStdLib)DirectiveProcessor.GetDirective("include")).Process(inc, ag, null);
+            Agent result = ((Include)DirectiveProcessor.GetDirective("include")).Process(inc, ag, null);
 
             ag.ImportComponents(result);
             ag.AddInitialBelsInBB();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
-using static BDIManager.Desires.DesireStdlib;
+using BDIManager.Desires;
 //using Assets.Code.BDIManager.Desires;
 
 namespace Assets.Code.Stdlib
@@ -34,13 +34,14 @@ namespace Assets.Code.Stdlib
                     //notify listener
                     if (rs.HasGoalListener())
                     {
-                        foreach (Desire gl in rs.GetDesiresListeners())
+                        foreach (Desire gl in rs.GetDesiresListeners().GetEnumerator())
                         {
-                            gl.GoalFailed(g);
+                            gl.DesireFailed(g);
                         }
                     }
 
                     //generate failure event
+                    //Esto es muy raro, mirar
                     Event failEvent = TaskScheduler.FindEventForFailure(i, g); //find fail event for the goal just dropped
                     if (failEvent != null)
                     {

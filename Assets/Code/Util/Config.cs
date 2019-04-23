@@ -8,7 +8,9 @@ using UnityEngine;
 
 namespace Assets.Code.Util
 {
-    public class Config
+    //Esto intentar quitarlo fuerte
+    //Esto extiende de settings o de appsettings o similar. Lo del dictionary revisarlo por si acaso
+    public class Config : Dictionary<string, string>
     {
         /** path to jason.jar */
         public static readonly string JASON_JAR     = "jasonJar";
@@ -53,7 +55,7 @@ namespace Assets.Code.Util
             return Get(false);
         }
 
-        public static Config Get(bool tryToFixConfig)
+        public static Config Get(bool tryToFixConfig) //Esto se hace para intentar arreglar el valor del diccionario si es vacio
         {
             if (singleton == null)
             {
@@ -63,7 +65,9 @@ namespace Assets.Code.Util
                 }
                 try
                 {
-                    singleton = (Config)ForName(configFactory).NewInstance();
+                    singleton = (Config)Activator.CreateInstance(configFactory.GetType());
+                    //singleton = (Config)ForName(configFactory).NewInstance();
+                    //TODO: A LA WIKI
                 }
                 catch (Exception e)
                 {
@@ -89,28 +93,34 @@ namespace Assets.Code.Util
             showFixMsgs = b;
         }
 
-        /** returns the file where the user preferences are stored */
-        public File GetUserConfFile()
-        {
-            return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
-        }
 
-        public File Getlocalconffile()
+        //THis may not be needed because of unity magic
+        /** returns the file where the user preferences are stored */
+        /*public FileStream GetUserConfFile()
+        {
+            retuSystem.getProperties().get("user.home") rn new FileStream(+ File.separator + ".jason/user.properties");
+            //return new File(System.getProperties().get("user.home") + File.separator + ".jason/user.properties");
+        }*/
+
+            //Unity magic
+        /*public File Getlocalconffile()
         {
             return new File("jason.properties");
-        }
+        }*/
 
+            //Unity magic
+            /*
         public string getFileConfComment()
         {
             return "Jason user configuration";
-        }
+        }*/
 
         /** Returns true if the file is loaded correctly */
         public bool Load()
         {
             try
             {
-                File f = GetLocalConfFile();
+                File f = GetLocalConfFile();//Aqui a pincho la ruta pero lo mismo no hace falta porque unity magic
                 if (f.Exists())
                 {
                     base.Load(new FileInputStream(f));
@@ -118,7 +128,7 @@ namespace Assets.Code.Util
                 }
                 else
                 {
-                    f = GetUserConfFile();
+                    f = GetUserConfFile(); //Esto igual
                     if (f.Exists())
                     {
                         //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
@@ -164,7 +174,9 @@ namespace Assets.Code.Util
         /** Returns the path to the ant home directory (where its jars are stored) */
         public string getAntLib()
         {
-            return GetProperty(ANT_LIB);
+            string result = null;
+            TryGetValue(ANT_LIB, out result); //Esto en vez de los [] WIKIIIII
+            return result;
         }
 
         public string getAntJar()

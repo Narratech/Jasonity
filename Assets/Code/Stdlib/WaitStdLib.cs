@@ -146,7 +146,7 @@ namespace Assets.Code.Stdlib
                 sEvt = si.GetID() + "/" + sEvt;
                 c.AddPendingIntention(sEvt, si);
 
-                startTime = System.currentTimeMillis();
+                startTime = System.currentTimeMillis(); //hay que usar el de c# o el de unity? MISTERIO
 
                 if (timeout >= 0)
                 {

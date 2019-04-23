@@ -4,13 +4,13 @@ using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
+using BDIManager.Desires;
 using BDIManager.Intentions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static BDIManager.Desires.DesireStdlib;
 
 namespace Assets.Code.Stdlib
 {

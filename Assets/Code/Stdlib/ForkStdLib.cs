@@ -145,7 +145,7 @@ namespace Assets.Code.Stdlib
                     }
                     else
                     {
-                        ClearIP();
+                        ClearPlans();
                         //System.out.println("ignore intention");
                         return false;
                     }

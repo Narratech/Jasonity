@@ -90,8 +90,8 @@ namespace Assets.Code.AsSyntax.directives
                 if (directive.GetArity() == 1)
                 {
                     // it is implemented in java
-                    //HACER: GITHUB Class
-                    outerContent.AddFunction((Class<ArithFunction>)Class.forName(id));
+                    //outerContent.AddFunction((Class<ArithFunction>)Class.forName(id));
+                    outerContent.AddFunction(Type.GetType(id));
                 }
                 else if (directive.GetArity() == 3)
                 {

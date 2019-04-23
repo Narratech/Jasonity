@@ -81,9 +81,9 @@ namespace Assets.Code.AsSyntax
             Add(p, false);
         }
 
-        private string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor(); // ???
+        private string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor(); 
 
-        public void Add(Plan p, bool before)
+        public void Add(Plan p, bool before) //Revisarse el nuevo jason
         {
             // synchronized (lockPL)
             if (p.GetLabel() != null && planLabels.ContainsKey(GetStringForLabel(p.GetLabel())))

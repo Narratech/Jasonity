@@ -152,7 +152,7 @@ namespace Assets.Code.AsSyntax
         }
     }
 
-    public class AndIterator<Unifier> : IEnumerator<Unifier>
+    public class AndIterator<T> : IEnumerator<T> where T : Unifier
     {
         private LogExpr logExpr;
         private Agent ag;
@@ -198,6 +198,8 @@ namespace Assets.Code.AsSyntax
         public Unifier Current => throw new NotImplementedException();
 
         object IEnumerator.Current => throw new NotImplementedException();
+
+        T IEnumerator<T>.Current => throw new NotImplementedException();
 
         public void Dispose()
         {
