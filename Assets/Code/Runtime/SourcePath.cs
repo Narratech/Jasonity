@@ -112,9 +112,9 @@ namespace Assets.Code.Runtime
                         try
                         {
                             FileStream newname = File.Create(path + "/" + f.ToString());
-                            if (newname.Exists())
+                            if (File.Exists(newname.ToString()))
                             {
-                                return newname.GetCanonicalFile().ToString();
+                                return Path.GetFullPath(newname.ToString());
                             }
                         }
                         catch (Exception e)
