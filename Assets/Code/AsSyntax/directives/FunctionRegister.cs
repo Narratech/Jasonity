@@ -48,7 +48,7 @@ namespace Assets.Code.AsSyntax.directives
             try
             {
                 ArithFunction af = (ArithFunction)Activator.CreateInstance(typeof(ArithFunction));
-                string error = FunctionRegister.CheckFunctionName(af.GetName());
+                string error = CheckFunctionName(af.GetName());
                 if (error == null)
                     functions[af.GetName()] = af; 
             }
@@ -80,7 +80,7 @@ namespace Assets.Code.AsSyntax.directives
                 return null;
         }
 
-        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
+        public override Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             if (outerContent == null)
                 return null;

@@ -48,7 +48,7 @@ namespace Assets.Code.Stdlib
         override public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            return un.Unifies(args[0], new Atom(ts.GetUserAgArch().getAgName()));
+            return un.Unifies(args[0], new Atom(ts.GetUserAgArch().GetAgentName()));
         }
     }
 }

@@ -320,7 +320,7 @@ namespace Assets.Code.AsSyntax
             else if (t.IsList())
             {
                 List<object> list = new List<object>();
-                foreach (ITerm t1 in (IListTerm)t) //i dont know how to do this
+                foreach (ITerm t1 in (IListTerm)t) 
                 {
                     list.Add(TermToObject(t1));
                 }

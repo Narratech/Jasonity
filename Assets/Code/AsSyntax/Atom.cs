@@ -64,9 +64,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        //Cambiar por ITerm, Java permite devolución covariante, c# no
-        //Este "virtual new" ha sido un triple importante, en el código original es override
-        public virtual new Literal CloneNS(Atom newNamespace)
+        public override ITerm CloneNS(Atom newNamespace)
         {
             return new Atom(newNamespace, this);
         }

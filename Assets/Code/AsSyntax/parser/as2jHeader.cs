@@ -61,7 +61,6 @@ namespace Assets.Code.parser
             if (f != null) {
                 if (f.GetType() == typeof(InternalActionLiteral)) {
                     InternalActionLiteral ial = (InternalActionLiteral)f;
-                    //InternalAction de carpeta Agent sin hacer
                     if (!ial.GetIA(ag).CanBeUsedInContext()) {
                         return ial;
                     }

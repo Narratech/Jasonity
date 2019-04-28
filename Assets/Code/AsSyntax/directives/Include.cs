@@ -4,16 +4,15 @@ using Assets.Code.Runtime;
 using Assets.Code.Util;
 using System;
 using System.IO;
-using UnityEngine;
 
 namespace Assets.Code.AsSyntax.directives
-{ 
+{
     public partial class Include : DefaultDirective, IDirective {
 
         //HACER: Clase SourcePath de runtime
         private SourcePath aslSourcePath = new SourcePath();
 
-        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
+        public override Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             if (outerContent == null)
                 return null;
@@ -28,16 +27,16 @@ namespace Assets.Code.AsSyntax.directives
                 { // the case of "$jasonJar/src/a.asl"
                     string jar = file.Substring(1, file.IndexOf("/"));
                     string result; 
-                    if (Config.Get().TryGetValue(jar, out result)) //esto mirarlo con la calma
+                    if (Config.Get().TryGetValue(jar, out result))
                     {
                         return null;
                     }
 
                     Config.Get().TryGetValue(jar, out result);
                     string path =  result.ToString();
-                    file = "jar:file:" + path + "!" + file.Substring(file.IndexOf("/")); //este file tiene que ser una ruta al archivo asl
-                    //CAMBIAR: Similar URL en c# Existe una clase URI pero es mas facil con string
-                    //input = new URL(file).openStream(); //WIKIIIIII
+                    file = "jar:file:" + path + "!" + file.Substring(file.IndexOf("/"));
+                    //este file tiene que ser una ruta al archivo asl
+                    //input = new URL(file).openStream();
                     input = File.OpenText(file);
                 }
 
@@ -51,17 +50,13 @@ namespace Assets.Code.AsSyntax.directives
                         {
                             outerPrefix = outerPrefix.Substring(0, outerPrefix.IndexOf("!") + 1) + "/";
                             file = aslSourcePath.FixPath(file, outerPrefix);
-                            //HACER: Similar URL en c#
                             input = File.OpenText(file);
                         }
 
-                        //HACER: Crear clase SourcePath de runtime
                         else if (outerPrefix.StartsWith(SourcePath.CRPrefix))
                         {
                             // outer is loaded from a resource ("application".jar) file, used for java web start
                             int posSlash = outerPrefix.LastIndexOf("/");
-
-                            //HACER: Crear clase SourcePath de runtime
                             SourcePath newpath = new SourcePath();
                             if (outerPrefix.IndexOf("/") != posSlash)
                             { // has only one slash
@@ -73,24 +68,26 @@ namespace Assets.Code.AsSyntax.directives
                             /*Esto esta buscando en el paquete concreto de bdi agent*/
                             //En input tenemos que acabar abriendo un textreader
                             //Tenemos que ver exactamente donde esta esta cosa
-                            //input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();//Mirar los resources de unity por si acaso hay algo
+                            input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();//Mirar los resources de unity por si acaso hay algo
                             //Esto hay que hacerlo con unity porque esto es raruno
                         }
 
                         else if (outerPrefix.StartsWith("file:") || outerPrefix.StartsWith("http:") || outerPrefix.StartsWith("https:"))
                         {
-                            //CAMBIAR: Similiar URL en c#
-                            URL url = new URL(new URL(outerPrefix), file);
-                            file = url.ToString();
-                            input = File.OpenText(file);.openStream(); //Mirar arriba
+                            //URL url = new URL(new URL(outerPrefix), file);
+                            //file = url.ToString();
+                            file = outerPrefix + file;
+                            input = File.OpenText(file);
 
                         }
 
                         else if (file.StartsWith("jar:") || file.StartsWith("file:") || file.StartsWith("http:") || file.StartsWith("https:"))
                         {
-                            URL url = new URL(file);
-                            file = url.ToString(); //Mirar arriba
-                            input = url.openStream();
+                            //URL url = new URL(file);
+                            //file = url.ToString(); //Mirar arriba
+                            //input = url.openStream();
+                            file = outerPrefix + file;
+                            input = File.OpenText(file);
                         }
 
                         else
@@ -98,20 +95,17 @@ namespace Assets.Code.AsSyntax.directives
                         // get the directory of the source of the outer agent and
                         // try to find the included source in the same directory
                         // or in the source paths
-                        //HACER: Crear clase SourcePath de runtime
                         SourcePath newpath = new SourcePath();
-                        
-                        //CAMBIAR: Similar File en c#
-                        newpath.AddPath(new File(outerPrefix).GetAbsoluteFile().getParent());
+                        newpath.AddPath(new StreamReader(outerPrefix).GetAbsoluteFile().getParent()); //Hay que mirar que era el original
                         newpath.AddAll(aslSourcePath);
                         file = newpath.FixPath(file, null);
-                        input = new FileInputStream(file);
+                        input = new StreamReader(file);
                         }   
                     }
 
                     else
                     {
-                        input = new FileInputStream(aslSourcePath.FixPath(file, null)); //mirar arriba
+                        input = new StreamReader(aslSourcePath.FixPath(file, null)); 
                     }
                 }
 
@@ -151,7 +145,6 @@ namespace Assets.Code.AsSyntax.directives
         return null;
         }
 
-        //HACER: Crear clase SourcePath de runtime
         public void SetSourcePath(SourcePath sp)
         {
             aslSourcePath = sp;

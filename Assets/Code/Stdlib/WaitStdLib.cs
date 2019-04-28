@@ -166,7 +166,7 @@ namespace Assets.Code.Stdlib
                 c.RemoveEventListener(this);
 
                 // invoke changes in C latter, so to avoid concurrent changes in C
-                ts.RunAtBeginOfNextCycle(new IRunnable()
+                ts.RunAtBeginOfNextCycle(new RunnableImpl());
                 /*{
                  * public void run() {
                     try {
@@ -199,7 +199,7 @@ namespace Assets.Code.Stdlib
                         ts.getLogger().log(Level.SEVERE, "Error at .wait thread", e);
                     }
 }
-                }*/);
+                }*/
                 ts.GetUserAgArch().WakeUpDeliberate();
             }
 
@@ -244,6 +244,14 @@ namespace Assets.Code.Stdlib
             public string ToString()
             {
                 return sEvt;
+            }
+        }
+
+        class RunnableImpl : IRunnable
+        {
+            public void Run()
+            {
+                throw new NotImplementedException();
             }
         }
     }

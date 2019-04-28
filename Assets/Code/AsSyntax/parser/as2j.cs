@@ -5,7 +5,6 @@ using Assets.Code.Stdlib;
 using Assets.Code.AsSyntax.parser;
 using Assets.Code.AsSyntax.directives;
 using System;
-using System.Collections;
 using BDIManager.Beliefs;
 using static RelExpr;
 using static Assets.Code.AsSyntax.ArithExpr;
@@ -218,7 +217,7 @@ namespace Assets.Code.parser {
                 Agent innerAg = new Agent();
                 innerAg.InitAg();
                 dir = new Pred(@namespace, dir);
-                IDirective d = directiveProcessor.GetInstance(dir);
+                IDirective d = dProcessor.GetInstance(dir);
                 d.Begin(dir, this);
 
 
@@ -258,7 +257,7 @@ namespace Assets.Code.parser {
                         return true;
 
                     dir = new Pred(@namespace, dir);
-                    IDirective d = directiveProcessor.GetInstance(dir);
+                    IDirective d = dProcessor.GetInstance(dir);
                     d.Begin(dir, this); // to declare the namespace as local
                     resultOfDirective = d.Process(dir, outerAg, null);
                     d.End(dir, this);
@@ -522,43 +521,51 @@ namespace Assets.Code.parser {
 
 
 
-        public IPlanBody plan_body_term() { Object F; IPlanBody R = null;
-
+        public IPlanBody plan_body_term() {
+            object F;
+            IPlanBody R = null;
             F = plan_body_factor();
             int switch_19 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_19 == TK_POR) {
+            if (false || switch_19 == TK_POR) {
                 jj_consume_token(TK_POR);
                 R = plan_body_term();
             } else {
                 jj_la1[18] = jj_gen;
-                ;
+                //; //Aquí había un ; suelto sin nada así que lo he comentado por si acaso 
             }
-
             if (R == null)
+            {
                 return (IPlanBody)F;
-            try {
-                Structure s = AsSyntax.AsSyntax.CreateStructure(".fork", ForkStdLib.aOr, (ITerm)F);
-
-                if (R.ToString().StartsWith(".fork(or,")) {
-                    // if R is another fork or, put they args into this fork
-                    InternalActionLiteral ial = (InternalActionLiteral)R.GetBodyTerm();
-
-                    if (ial.GetIA(curAg).GetType() == typeof(ForkStdLib)) {
-                        for (int i = 1; i < ial.GetArity(); i++) {
-                            s.AddTerm(ial.GetTerm(i));
+            } else
+            {
+                try
+                {
+                    Structure s = AsSyntax.AsSyntax.CreateStructure(".fork", ForkStdLib.aOr, (ITerm)F);
+                    if (R.ToString().StartsWith(".fork(or,"))
+                    {
+                        // if R is another fork or, put they args into this fork
+                        InternalActionLiteral ial = (InternalActionLiteral)R.GetBodyTerm();
+                        if (ial.GetIA(curAg).GetType() == typeof(ForkStdLib))
+                        {
+                            for (int i = 1; i < ial.GetArity(); i++)
+                            {
+                                s.AddTerm(ial.GetTerm(i));
+                            }
                         }
                     }
-                }
-                else {
-                    s.AddTerm(R);
-                }
+                    else
+                    {
+                        s.AddTerm(R);
+                    }
 
-                Literal stmtLiteral = new InternalActionLiteral(s, curAg);
-                stmtLiteral.SetSrcInfo(((ITerm)F).GetSrcInfo());
-                return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
-            } catch (Exception e) {
-                
+                    Literal stmtLiteral = new InternalActionLiteral(s, curAg);
+                    stmtLiteral.SetSrcInfo(((ITerm)F).GetSrcInfo());
+                    return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+                }
+                catch (Exception e)
+                {
+                    throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
+                }
             }
         }
 
@@ -635,7 +642,7 @@ namespace Assets.Code.parser {
                 stmtLiteral.SetSrcInfo(((ITerm)F).GetSrcInfo());
                 return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
             } catch (Exception e) {
-      
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver 
             }
         }
 
@@ -699,7 +706,7 @@ namespace Assets.Code.parser {
                 stmtLiteral.SetSrcInfo(((ITerm)B).GetSrcInfo());
                 return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
             } catch (Exception e) {
-                
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
             }
         }
 
@@ -724,7 +731,7 @@ namespace Assets.Code.parser {
                 stmtLiteral.SetSrcInfo(((ITerm)B).GetSrcInfo());
                 return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
             } catch (Exception e) {
-                
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
             }
         }
 
@@ -749,7 +756,7 @@ namespace Assets.Code.parser {
                 stmtLiteral.SetSrcInfo(((ITerm)B).GetSrcInfo());
                 return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
             } catch (Exception e) {
-            
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
             }
         }
 
@@ -1923,7 +1930,7 @@ namespace Assets.Code.parser {
 
 
 
-        public ITerm function() { Literal l; //Mirar bien para ver que hacemos con llos arithfunction
+        public ITerm function() { Literal l; //Mirar bien para ver que hacemos con los arithfunction
 
             l = literal();
             ArithFunction af = GetArithFunction(l);
@@ -1937,17 +1944,6 @@ namespace Assets.Code.parser {
                 at.SetAgent(curAg);
                 return at;
             }
-
-
-
-
-
-
-
-
-
-
-
         }
 
 

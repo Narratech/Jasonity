@@ -46,7 +46,11 @@ namespace Assets.Code.Stdlib
             Random r = new Random();
             lt = lt.OrderBy(x => r.Next()).ToList();
             IListTerm ls = new ListTermImpl();
-            ls.AddAll(lt);//un foreach
+
+            foreach (ITerm i in lt)
+            {
+                ls.Add(i);
+            }
             return un.Unifies(args[1], ls);
         }
     }

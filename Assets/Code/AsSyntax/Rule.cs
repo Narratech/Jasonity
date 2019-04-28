@@ -1,5 +1,4 @@
-﻿using Assets.Code.Logic.AsSyntax;
-using Assets.Code.ReasoningCycle;
+﻿using Assets.Code.ReasoningCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -639,7 +639,7 @@ namespace Assets.Code.AsSyntax
             return new Pred(this);
         }
 
-        public override Literal CloneNS(Atom newnamespace)
+        public override ITerm CloneNS(Atom newnamespace)
         {
             return new Pred(newnamespace, this);
         }

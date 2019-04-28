@@ -27,7 +27,6 @@ namespace Assets.Code.AsSyntax.directives
             Type c = directives[id];
             try
             {
-                //d = (Directive)c.newInstance();
                 d = (IDirective)Activator.CreateInstance(typeof(Type));
 
                 if (d.IsSingleton())
@@ -73,7 +72,6 @@ namespace Assets.Code.AsSyntax.directives
 
             try
             {
-                //d = (Directive)c.newInstance();
                 d = (IDirective)Activator.CreateInstance(typeof(Type));
                 if (d.IsSingleton())
                     singletons[id] = d;

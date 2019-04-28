@@ -108,7 +108,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
     // Make a hard copy of the terms
     public new ILogicalFormula Clone() => new RelExpr(GetTerm(0).Clone(), op, GetTerm(1).Clone());
 
-    public override Literal CloneNS(Atom newnamespace) => new RelExpr(GetTerm(0).CloneNS(newnamespace), op, GetTerm(1).CloneNS(newnamespace));
+    public override ITerm CloneNS(Atom newnamespace) => new RelExpr(GetTerm(0).CloneNS(newnamespace), op, GetTerm(1).CloneNS(newnamespace));
 
     public RelationalOp GetOp() => op;
 

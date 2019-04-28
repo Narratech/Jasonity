@@ -1,9 +1,8 @@
-using Assets.Code.AsSyntax;
 using Assets.Code.BDIAgent;
 using Assets.Code.parser;
 
 namespace Assets.Code.AsSyntax.directives
-{ 
+{
     public class DefaultDirective : IDirective {
 
         public bool IsSingleton()
@@ -16,7 +15,7 @@ namespace Assets.Code.AsSyntax.directives
 
         }
 
-        public Agent Process(Pred directive, Agent outerContent, Agent innerContent)
+        public virtual Agent Process(Pred directive, Agent outerContent, Agent innerContent)
         {
             return innerContent;
         }

@@ -155,7 +155,7 @@ namespace Assets.Code.BDIManager
                     t = t.Capply(ev.GetIntention().Peek().GetUnif());
                 if (un.Clone().UnifiesNoUndo(te, t))
                 {
-                    ie.Remove();
+                    ie.Dispose();
                     if (ev.GetIntention() != null && listeners != null)
                         foreach (ICircumstanceListener el in listeners)
                             el.IntentionDropped(ev.GetIntention());
@@ -533,7 +533,7 @@ namespace Assets.Code.BDIManager
         // Gets all intentions
         public IEnumerator<Intention> GetAllIntentions()
         {
-            return new IEnumeratorIntentions();
+            return new IEnumeratorIntentions(this);
         }
 
         public void DropIntention(Intention del)
@@ -617,7 +617,7 @@ namespace Assets.Code.BDIManager
         {
             // Data structure with intentions
             enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
-
+            Circumstance c; 
             Step curStep = Step.selEvt;
             Intention curInt = null;
             IEnumerator<Event> evtEnumerator = null;
@@ -625,6 +625,11 @@ namespace Assets.Code.BDIManager
             IEnumerator<ExecuteAction> pendActEnumerator = null;
             IEnumerator<Intention> pendIntEnumerator = null;
             IEnumerator<Intention> intEnumerator = null;
+
+            public IEnumeratorIntentions(Circumstance c)
+            {
+                this.c = c;
+            }
 
             public Intention Current => intEnumerator.Current;
 
@@ -650,9 +655,9 @@ namespace Assets.Code.BDIManager
                     case Step.selEvt:
                         curStep = Step.selInt; // Set next step
                                                // We must check the intention in the selected event in this cycle
-                        if (GetSelectedEvent() != null)
+                        if (c.GetSelectedEvent() != null)
                         {
-                            curInt = GetSelectedEvent().GetIntention();
+                            curInt = c.GetSelectedEvent().GetIntention();
                             if (curInt != null) return;
                         }
                         Find();
@@ -662,17 +667,17 @@ namespace Assets.Code.BDIManager
                         curStep = Step.evt; // Set next step
                                             // We need to check the selected intention in this cycle
                         Intention prev = curInt;
-                        curInt = GetSelectedIntention();
+                        curInt = c.GetSelectedIntention();
                         if (curInt != null && !curInt.Equals(prev)) return;
                         Find();
                         return;
 
                     case Step.evt:
-                        if (evtEnumerator == null) evtEnumerator = GetEventsPlusAtomic();
+                        if (evtEnumerator == null) evtEnumerator = c.GetEventsPlusAtomic();
                         while (evtEnumerator.MoveNext())
                         {
                             curInt = evtEnumerator.Current.GetIntention();
-                            if (curInt != null && !curInt.Equals(GetSelectedIntention())) return;
+                            if (curInt != null && !curInt.Equals(c.GetSelectedIntention())) return;
                         }
                         curStep = Step.pendEvt; // set next step
                         Find();
@@ -680,7 +685,7 @@ namespace Assets.Code.BDIManager
 
                     case Step.pendEvt:
                         if (pendEvtEnumerator == null)
-                            pendEvtEnumerator = GetPendingEvents().Values.GetEnumerator();
+                            pendEvtEnumerator = c.GetPendingEvents().Values.GetEnumerator();
                         while (pendEvtEnumerator.MoveNext())
                         {
                             curInt = pendEvtEnumerator.Current.GetIntention();
@@ -692,10 +697,10 @@ namespace Assets.Code.BDIManager
 
                     case Step.pendAct:
                         // Intention may be suspended in PA
-                        if (HasPendingAction())
+                        if (c.HasPendingAction())
                         {
                             if (pendActEnumerator == null)
-                                pendActEnumerator = GetPendingActions().Values.GetEnumerator();
+                                pendActEnumerator = c.GetPendingActions().Values.GetEnumerator();
                             while (pendActEnumerator.MoveNext())
                             {
                                 curInt = pendActEnumerator.Current.GetIntention();
@@ -707,10 +712,10 @@ namespace Assets.Code.BDIManager
                         return;
 
                     case Step.pendInt:
-                        if (HasPendingIntention())
+                        if (c.HasPendingIntention())
                         {
                             if (pendIntEnumerator == null)
-                                pendIntEnumerator = GetPendingIntentions().Values.GetEnumerator();
+                                pendIntEnumerator = c.GetPendingIntentions().Values.GetEnumerator();
 
                             if (pendIntEnumerator.MoveNext())
                             {
@@ -724,7 +729,7 @@ namespace Assets.Code.BDIManager
 
                     case Step.intentions:
                         if (intEnumerator == null)
-                            intEnumerator = GetRunningIntentionsPlusAtomic();
+                            intEnumerator = c.GetRunningIntentionsPlusAtomic();
 
                         if (intEnumerator.MoveNext())
                         {

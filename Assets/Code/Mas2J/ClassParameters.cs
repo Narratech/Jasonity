@@ -16,7 +16,7 @@ namespace Assets.Code.Mas2J
             this.structure = structure;
         }
 
-        internal object GetParametersArray()
+        public string[] GetParametersArray()
         {
             throw new NotImplementedException();
         }

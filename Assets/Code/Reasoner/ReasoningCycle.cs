@@ -14,8 +14,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
-using static BDIManager.Desires.DesireStdlib;
 
 /*
  * Implements the reasoning cycle. There are 10 steps in the cycle: 
@@ -49,7 +47,7 @@ namespace Assets.Code.ReasoningCycle
         private State stepDeliberate = State.SelEv;
         private State stepAct = State.ProcAct;
 
-        private List<DesireStdlib> desireListeners;
+        private List<Desire> desireListeners;
 
         private bool sleepingEvt = false;
 
@@ -64,7 +62,7 @@ namespace Assets.Code.ReasoningCycle
         //private ConcurrentQueue<IRunnable> taskForBeginOfCycle = new ConcurrentQueue(); - I don't know how to use this
         private ConcurrentQueue<IRunnable> taskForBeginOfCycle = new ConcurrentQueue<IRunnable>();
 
-        private Dictionary<DesireStdlib, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
+        private Dictionary<Desire, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
 
         // the semantic rules are referred to in comments in the functions below
         private readonly string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor();
@@ -101,18 +99,18 @@ namespace Assets.Code.ReasoningCycle
         //Desire listeners support methods
 
         //Adds an object that will be notified about events on desires (creation, suspension...)
-        public void AddDesireListener(DesireStdlib desire)
+        public void AddDesireListener(Desire desire)
         {
             if (desireListeners == null)
             {
-                desireListeners = new List<DesireStdlib>();
-                listenersMap = new Dictionary<DesireStdlib, ICircumstanceListener>();
+                desireListeners = new List<Desire>();
+                listenersMap = new Dictionary<Desire, ICircumstanceListener>();
             } else
             {
                 //To not instantiate two DesireListenerForMetaEvents
-                foreach (DesireStdlib d in desireListeners)
+                foreach (Desire d in desireListeners)
                 {
-                    if (d is DesireStdlib)
+                    if (d is Desire)
                     {
                         return;
                     }
@@ -130,12 +128,12 @@ namespace Assets.Code.ReasoningCycle
             return desireListeners != null && !desireListeners.Any();
         }
 
-        public List<DesireStdlib> GetDesiresListeners()
+        public List<Desire> GetDesiresListeners()
         {
             return desireListeners;
         }
 
-        public bool RemoveDesireListener(DesireStdlib desire)
+        public bool RemoveDesireListener(Desire desire)
         {
             ICircumstanceListener cl = listenersMap[desire];
             if (cl != null)
@@ -392,9 +390,9 @@ namespace Assets.Code.ReasoningCycle
                 //}
                 if (!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
                 {
-                    foreach (DesireStdlib desire in desireListeners)
+                    foreach (Desire desire in desireListeners)
                     {
-                        desire.DesireFinished(topTrigger, FinishStates.achieved);
+                        desire.DesireFinished(topTrigger, Desire.FinishStates.achieved);
                     }
                 }
 
@@ -878,12 +876,12 @@ namespace Assets.Code.ReasoningCycle
             {
                 if (HasGoalListener())
                 {
-                    foreach (DesireStdlib desire in desireListeners)
+                    foreach (Desire desire in desireListeners)
                     {
                         desire.DesireFailed(ip.GetTrigger());
                         if (!failEventIsRelevant)
                         {
-                            desire.DesireFinished(ip.GetTrigger(), FinishStates.unachieved);
+                            desire.DesireFinished(ip.GetTrigger(), Desire.FinishStates.unachieved);
                         }
                     }
                 }
@@ -955,7 +953,7 @@ namespace Assets.Code.ReasoningCycle
         {
             if (i != Intention.emptyInt)
             {
-                return i.FindEventForFailure(trigger, GetAgent().GetPL(), GetCircumstance()).GetFirst();
+                return i.FindEventForFailure(trigger, GetAgent().GetPL(), GetCircumstance()).Key;
             } else if (trigger.IsGoal() && trigger.IsAddition())
             {
                 Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetTEType(), trigger.GetLiteral());
@@ -1024,7 +1022,7 @@ namespace Assets.Code.ReasoningCycle
 
                             if (HasGoalListener())
                             {
-                                foreach (DesireStdlib desire in GetDesiresListeners())
+                                foreach (Desire desire in GetDesiresListeners())
                                 {
                                     foreach (IntendedPlan ip in curInt.GetIntendedPlan())
                                     {
@@ -1297,7 +1295,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 if (HasGoalListener())
                 {
-                    foreach (DesireStdlib d in desireListeners)
+                    foreach (Desire d in desireListeners)
                     {
                         d.DesireFailed(t);
                     }
@@ -1658,9 +1656,9 @@ namespace Assets.Code.ReasoningCycle
 
         private class CLImplementation : ICircumstanceListener
         {
-            private DesireStdlib d;
+            private Desire d;
 
-            public CLImplementation(DesireStdlib desire)
+            public CLImplementation(Desire desire)
             {
                 d = desire;
             }
@@ -1707,16 +1705,16 @@ namespace Assets.Code.ReasoningCycle
         private class RunnableImpl : IRunnable
         {
             Intention i;
-            DesireStdlib d;
+            Desire d;
             int iSize;
             Reasoner r;
             Literal body;
             Event e;
 
-            public RunnableImpl(Intention intention, DesireStdlib des, int size, Reasoner res, Literal b, Event ev)
+            public RunnableImpl(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
             {
                 Intention i = intention;
-                DesireStdlib d = des;
+                Desire d = des;
                 int iSize = size;
                 Reasoner r = res;
                 Literal body = b;
@@ -1725,7 +1723,7 @@ namespace Assets.Code.ReasoningCycle
 
             public void Run()
             {
-                r.RunAtBeginOfNextCycle(new RunnableImpl2(i, d, iSize, r, body, e));
+                r.RunAtBeginOfNextCycle(new RunnableImpl2(i, iSize, r, body, e));
                 r.GetUserAgArch().WakeUpSense();
             }
 
@@ -1736,14 +1734,16 @@ namespace Assets.Code.ReasoningCycle
                 Reasoner r;
                 Literal body;
                 Event e;
+                Desire des;
 
-                public RunnableImpl2(Intention intention, int size, Reasoner res, Literal b, Event ev)
+                public RunnableImpl2(Desire d, Intention intention, int size, Reasoner res, Literal b, Event ev)
                 {
-                    Intention i = intention;
-                    int iSize = size;
-                    Reasoner r = res;
-                    Literal body = b;
-                    Event e = ev;
+                    i = intention;
+                    iSize = size;
+                    r = res;
+                    body = b;
+                    e = ev;
+                    des = d;
                 }
 
                 public void Run()
@@ -1751,7 +1751,7 @@ namespace Assets.Code.ReasoningCycle
                     bool drop = false;
                     if (i == null)
                     { // deadline in !!g, test if the agent still desires it
-                        drop = DesireStdlib.AllDesires(r.GetCircumstance(), body, null, new Unifier()).HasNext();
+                        drop = des.AllDesires(r.GetCircumstance(), body, null, new Unifier()).HasNext();
                     }
                     else if (i.Size() >= iSize && i.HasTrigger(e.GetTrigger(), new Unifier()))
                     {

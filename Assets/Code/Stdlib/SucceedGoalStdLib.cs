@@ -173,7 +173,7 @@ namespace Assets.Code.Stdlib
                 {
                     foreach (Desire gl in rs.GetDesiresListeners())
                     {
-                        gl.GoalFinished(g, FinishStates.achieved);
+                        gl.DesireFinished(g, Desire.FinishStates.achieved);
                     }
                 }
                 //continue the intention
@@ -205,7 +205,7 @@ namespace Assets.Code.Stdlib
                 {
                     foreach (Desire gl in rs.GetDesiresListeners())
                     {
-                        gl.GoalFinished(e.GetTrigger(), FinishStates.achieved);
+                        gl.DesireFinished(e.GetTrigger(), Desire.FinishStates.achieved);
                     }
                     i.Peek().RemoveCurrentStep();
                     rs.ApplyClrInt(i);

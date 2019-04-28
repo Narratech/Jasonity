@@ -187,8 +187,8 @@ namespace BDIManager.Beliefs
                 IEnumerator<Literal> i = percepts.GetEnumerator();
                 while (i.MoveNext())
                 {
-                    Literal l = i.MoveNext();
-                    if (l.GetPredicateIndicator().Equals(pi)) i.Remove();
+                    Literal l = i.Current;
+                    if (l.GetPredicateIndicator().Equals(pi)) i.Dispose();
                 }
                 return true;
             }
@@ -282,7 +282,7 @@ namespace BDIManager.Beliefs
                 il.Dispose();
             }
 
-            public bool HasNext() => il.HasNext();
+            public bool HasNext() => il.MoveNext();
 
             public bool MoveNext()
             {
@@ -291,13 +291,13 @@ namespace BDIManager.Beliefs
 
             public Literal Next()
             {
-                last = il.MoveNext();
+                last = il.Current;
                 return last;
             }
 
             public void Remove()
             {
-                il.Remove();
+                il.Dispose();
                 entry.Remove(last);
                 if (last.HasAnnot(TPercept)) percepts.Remove(last);
                 size--;
@@ -312,7 +312,7 @@ namespace BDIManager.Beliefs
         // Each predicate indicator has one BelEntry assigned
         class BelEntry
         {
-            private List<Literal> list = new List<Literal>(); // Keeps the order of the beliefs
+            public List<Literal> list = new List<Literal>(); // Keeps the order of the beliefs
             private Dictionary<StructureWrapperForLiteral, Literal> map = new Dictionary<StructureWrapperForLiteral, Literal>();
 
             public void Add(Literal l, bool addInEnd)
@@ -399,7 +399,7 @@ namespace BDIManager.Beliefs
             {
                 if (current == null) Console.WriteLine("No perception to remove!");
                 // Remove from percepts
-                i.Remove();
+                i.Dispose();
                 // Remove percept annot
                 current.DelAnnot(TPercept);
                 // Remove from BB
@@ -417,17 +417,21 @@ namespace BDIManager.Beliefs
             public IEnumerator<Dictionary<PredicateIndicator, BelEntry>> ins;
             public HashSet<Literal> percepts;
             public int size;
+            IEnumerator<BelEntry> ibe = null;
+            IEnumerator<Literal> il = null;
+            IEnumerator<Literal> ilr = null;
+            Literal l = null;
             public IEnumeratorEnumerator(IEnumerator<Dictionary<PredicateIndicator, BelEntry>> ins, HashSet<Literal> percepts, int size)
             {
                 this.ins = ins;
                 this.percepts = percepts;
                 this.size = size;
+                ibe = ins.Current.Values.GetEnumerator();
+                il = null;
+                ilr = null;
+                l = null;
             }
-
-            IEnumerator<BelEntry> ibe = ins.MoveNext().Values().GetEnumerator();
-            IEnumerator<Literal> il = null;
-            IEnumerator<Literal> ilr = null;
-            Literal l = null;
+            
 
             public Literal Current => il.Current;
 
@@ -457,7 +461,7 @@ namespace BDIManager.Beliefs
 
             public void Remove()
             {
-                ilr.Remove();
+                ilr.Dispose();
                 if (l.HasAnnot(TPercept)) percepts.Remove(l);
                 size--;
             }

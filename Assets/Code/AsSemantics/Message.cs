@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Assets.Code.AsSemantics
+﻿namespace Assets.Code.AsSemantics
 {
     public class Message
     {
@@ -132,9 +130,9 @@ namespace Assets.Code.AsSemantics
             return "<" + msgID + irt + "," + sender + "," + ilForce + "," + receiver + "," + propCont + ">";
         }
 
-        internal string GetMessageId()
+        public string GetMessageId()
         {
-            throw new NotImplementedException();
+            return msgID;
         }
     }
 }

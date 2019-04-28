@@ -129,10 +129,10 @@ namespace Assets.Code.BDIAgent
 
                     if (asSrc.StartsWith(SourcePath.CRPrefix))
                     {
-                        //parseAS(Agent.class.getResource(asSrc.substring(SourcePath.CRPrefix.length())).openStream() , asSrc); I don't know what this is
+                        ParseAs(Agent.GetResource(asSrc.Substring(SourcePath.CRPrefix.Length)).openStream() , asSrc); //I don't know what this is
                     } else
                     {
-                        parsingOk = ParseAs(File.Create(asSrc));
+                        parsingOk = ParseAs(new StreamReader(asSrc));
                     }
                 }
 
@@ -140,7 +140,7 @@ namespace Assets.Code.BDIAgent
                 {
                     if (GetPL().HasMetaEventPlans())
                     {
-                        GetReasoner().AddDesireListener(new DesireStdlib(GetReasoner()));
+                        GetReasoner().AddDesireListener(new Desire(GetReasoner()));
                     }
 
                     AddInitialBelsFromProjectInBB();
@@ -166,7 +166,7 @@ namespace Assets.Code.BDIAgent
                 ParseAs(input, sourceId);
 
                 if (GetPL().HasMetaEventPlans())
-                    GetReasoner().AddDesireListener(new DesireStdlib(GetReasoner()));
+                    GetReasoner().AddDesireListener(new Desire(GetReasoner()));
 
                 AddInitialBelsInBB();
                 AddInitialDesiresInReasoner();
@@ -187,7 +187,7 @@ namespace Assets.Code.BDIAgent
                 {
                     string file = Message.kqmlDefaultPlans.Substring(Message.kqmlDefaultPlans.IndexOf("/"));
                     if (typeof(JasonityException).GetResource(file) != null) {
-                        ParseAS(JasonityException.GetResource(file)); //, "kqmlPlans.asl");
+                        ParseAs(JasonityException.GetResource(file)); //, "kqmlPlans.asl");
                     } else {
                         
                     }
@@ -195,7 +195,7 @@ namespace Assets.Code.BDIAgent
             } else {
                 // load from specified file
                 try {
-                    ParseAS(new File(c.getKqmlPlansFile()));
+                    ParseAs(new StreamReader(c.GetKqmlPlansFile()));
                 } catch (Exception e) {
                     
                 }
@@ -248,7 +248,7 @@ namespace Assets.Code.BDIAgent
             a.SetReasoner(new Reasoner(a, GetReasoner().GetCircumstance().Clone(), arch, GetReasoner().GetSettings()));
             if (a.GetPL().HasMetaEventPlans())
             {
-                a.GetReasoner().AddDesireListener(new DesireStdlib(a.GetReasoner()));
+                a.GetReasoner().AddDesireListener(new Desire(a.GetReasoner()));
             }
 
             a.InitAg(); //for initDefaultFunctions() and for overridden/custom agent
@@ -258,7 +258,7 @@ namespace Assets.Code.BDIAgent
         private void FixAgInIAandFunctions(Agent a)
         {
            
-            synchronized (getPL().getLock()) {
+            synchronized (GetPL().getLock()) {
                 foreach (Plan p in a.GetPL().GetPlans()) {
                     // search context
                     if (p.GetContext().GetType() == typeof(Literal))
@@ -307,7 +307,9 @@ namespace Assets.Code.BDIAgent
                 int n;
                 try
                 {
-                    n = new Integer(Config.Get().Get(Config.NB_TH_SCH).ToString());
+                    string result;
+                    Config.Get().TryGetValue(Config.NB_TH_SCH, out result);
+                    n = int.Parse(result.ToString());
                 }
                 catch (Exception e)
                 {
@@ -334,7 +336,7 @@ namespace Assets.Code.BDIAgent
         {
             try
             {
-                ParseAs(new FileStream(asFile), asFile.GetType().Name);
+                ParseAs((StreamReader)asFile, asFile.GetType().Name);
                 //logger.fine("as2j: AgentSpeak program '" + asFile + "' parsed successfully!");
                 return true;
             }

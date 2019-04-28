@@ -41,8 +41,7 @@ namespace Assets.Code.Stdlib
                     }
 
                     //generate failure event
-                    //Esto es muy raro, mirar
-                    Event failEvent = TaskScheduler.FindEventForFailure(i, g); //find fail event for the goal just dropped
+                    Event failEvent = rs.FindEventForFailure(i, g); //find fail event for the goal just dropped
                     if (failEvent != null)
                     {
                         failEvent = new Event(failEvent.GetTrigger().Capply(un), failEvent.GetIntention());
@@ -55,7 +54,7 @@ namespace Assets.Code.Stdlib
                         {
                             foreach (Desire gl in rs.GetDesiresListeners())
                             {
-                                gl.GoalFinished(g, FinishStates.unachieved);
+                                gl.DesireFinished(g, Desire.FinishStates.unachieved);
                             }
                         }
                         i.Fail(rs.GetCircumstance());
