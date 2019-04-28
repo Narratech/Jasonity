@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,7 +101,7 @@ namespace Assets.Code.Runtime
                 return f;
             if (urlPrefix == null || urlPrefix.Length == 0)
             {
-                if (new File(f).exists())
+                if (File.Exists(f))
                 {
                     return f;
                 }
@@ -110,8 +111,8 @@ namespace Assets.Code.Runtime
                     {
                         try
                         {
-                            File newname = new File(path + "/" + f.ToString());
-                            if (newname.exists())
+                            FileStream newname = File.Create(path + "/" + f.ToString());
+                            if (newname.Exists())
                             {
                                 return newname.GetCanonicalFile().ToString();
                             }
@@ -150,10 +151,12 @@ namespace Assets.Code.Runtime
                 if (asSrc.StartsWith(CRPrefix))
                 {
                     SourcePath./*class*/GetResource(asSrc.Substring(CRPrefix.Length).OpenStream());
+                    return true;
                 }
                 else
                 {
-                    new URl(asSrc).openStream();
+                    File.OpenText(asSrc);
+                    return true;
                 }
             }
             catch (Exception e)
