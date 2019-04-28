@@ -111,9 +111,12 @@ namespace Assets.Code.Runtime
                     {
                         try
                         {
+                            //File newname = new File(path + "/" + f.toString());
                             FileStream newname = File.Create(path + "/" + f.ToString());
+                                //File newname = new File(path + "/" + f.toString());
                             if (File.Exists(newname.ToString()))
                             {
+                                //return newname.getCanonicalFile().toString();
                                 return Path.GetFullPath(newname.ToString());
                             }
                         }
