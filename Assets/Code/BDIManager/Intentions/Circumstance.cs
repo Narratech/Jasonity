@@ -12,8 +12,8 @@ namespace Assets.Code.BDIManager
 {
     public class Circumstance
     {
-        private Queue<Event> E;
-        private Queue<Intention> I;
+        private List<Event> E;
+        private List<Intention> I;
         private ExecuteAction A;
         private Queue<Message> MB;
         private List<Option> RP;
@@ -48,8 +48,8 @@ namespace Assets.Code.BDIManager
         // Creates new collections for E, I, MB, PA, PI, and FA
         public void Create()
         {
-            E = new Queue<Event>();
-            I = new Queue<Intention>();
+            E = new List<Event>();
+            I = new List<Intention>();
             MB = new Queue<Message>();
             PA = new Dictionary<int, ExecuteAction>();
             PI = new Dictionary<string, Intention>();
@@ -97,7 +97,7 @@ namespace Assets.Code.BDIManager
         public void AddEvent(Event ev)
         {
             if (ev.IsAtomic()) AE = ev;
-            else E.Enqueue(ev);
+            else E.Add(ev);
 
             // Notify listeners
             if (listeners != null)
@@ -120,7 +120,7 @@ namespace Assets.Code.BDIManager
             E.Clear();
             foreach (Event e in newE)
             {
-                E.Enqueue(e);
+                E.Add(e);
             }
             //E.AddRange(newE);
 
@@ -137,7 +137,7 @@ namespace Assets.Code.BDIManager
                 AE = null;
                 removed = true;
             }
-            else removed = E.Remove(ev);
+            else removed = E.Remove(ev); // ?????
             if (removed && ev.GetIntention() != null && listeners != null)
                 foreach (ICircumstanceListener el in listeners)
                     el.IntentionDropped(ev.GetIntention());
@@ -230,7 +230,7 @@ namespace Assets.Code.BDIManager
 
         /* Intentions */
 
-        public Queue<Intention> GetRunningIntentions() => I;
+        public List<Intention> GetRunningIntentions() => I;
 
         public IEnumerator<Intention> GetRunningIntentionsPlusAtomic()
         {
@@ -258,7 +258,7 @@ namespace Assets.Code.BDIManager
         public void AddRunningIntention(Intention i)
         {
             if (i.IsAtomic()) SetAtomicIntention(i);
-            else I.Enqueue(i);
+            else I.Add(i);
 
             // Notify
             if (listeners != null)
@@ -577,9 +577,9 @@ namespace Assets.Code.BDIManager
             c.atomicIntSuspended = atomicIntSuspended;
 
             foreach (Event e in E)
-                c.E.Enqueue(e.Clone());
+                c.E.Add(e.Clone());
             foreach (Intention i in I)
-                c.I.Enqueue(i.Clone());
+                c.I.Add(i.Clone());
             foreach (Message m in MB)
                 c.MB.Enqueue(m.Clone());
             foreach (int k in PA.Keys)

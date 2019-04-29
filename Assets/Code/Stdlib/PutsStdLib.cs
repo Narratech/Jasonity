@@ -86,7 +86,7 @@ namespace Assets.Code.Stdlib
                         matcher.appendReplacement(sb, "#{" + sVar + "}");
                     }
                 }
-                matcher.ppendTail(sb);
+                matcher.appendTail(sb);
             }
 
             if (args[args.Length - 1].IsVar())

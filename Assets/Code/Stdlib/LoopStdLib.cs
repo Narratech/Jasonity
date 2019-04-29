@@ -71,7 +71,7 @@ namespace Assets.Code.Stdlib
 
         public override object Execute(Reasoner reasoner, Unifier un, ITerm[] args)
         {
-            IntendedPlan ip = reasoner.GetCircumstance().GetSelectedIntention();
+            IntendedPlan ip = reasoner.GetCircumstance().GetSelectedIntention().Peek();
             IPlanBody whileia = ip.GetCurrentStep();
 
             // if the IA has a backup unifier, use that (it is an object term)

@@ -61,7 +61,7 @@ namespace BDIManager.Beliefs
         public IEnumerator<Literal> GetPercepts()
         {
             IEnumerator<Literal> i = percepts.GetEnumerator();
-            return new IEnumeratorGetPercepts(i);
+            return new IEnumeratorGetPercepts(i, this);
         }
 
         // Returns percepts
@@ -372,7 +372,13 @@ namespace BDIManager.Beliefs
         {
             IEnumerator<Literal> i = null;
             Literal current = null;
-            public IEnumeratorGetPercepts(IEnumerator<Literal> i) => this.i = i;
+            private BeliefBase bb;
+
+            public IEnumeratorGetPercepts(IEnumerator<Literal> i, BeliefBase bb)
+            {
+                this.i = i;
+                this.bb = bb;
+            }
 
             public Literal Current => i.Current;
 
@@ -403,7 +409,7 @@ namespace BDIManager.Beliefs
                 // Remove percept annot
                 current.DelAnnot(TPercept);
                 // Remove from BB
-                RemoveFromEntry(current);
+                bb.RemoveFromEntry(current);
             }
 
             public void Reset()

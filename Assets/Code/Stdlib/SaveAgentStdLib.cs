@@ -49,7 +49,8 @@ namespace Assets.Code.Stdlib
             if (args.Length > 1)
                 goals = (IListTerm)args[1];
 
-            BufferedStream bs = new BufferedStream(new StreamWriter(fileName));
+            BufferedStream bs = new BufferedStream(new FileStream(fileName, FileMode.Open)); // Not sure if this works, but it doesn't give an error
+            // ORIGINAL: BufferedStream bs = new BufferedStream(new FileWriter(fileName));
 
             // store beliefs (and rules)
             bs.Append("// beliefs and rules\n");
@@ -62,7 +63,7 @@ namespace Assets.Code.Stdlib
 
             // store initial goals
             bs.Append("\n\n// initial goals\n");
-            for (ITerm g in goals)
+            foreach (ITerm g in goals)
             {
                 bs.Append("!" + g + ".\n");
             }
@@ -70,7 +71,7 @@ namespace Assets.Code.Stdlib
 
             // store plans
             bs.Append(ts.GetAgent().GetPL().GetAsTxt(false));
-            bs.close();
+            bs.Close();
             return true;
         }
     }

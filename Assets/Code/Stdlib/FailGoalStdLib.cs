@@ -34,7 +34,7 @@ namespace Assets.Code.Stdlib
                     //notify listener
                     if (rs.HasGoalListener())
                     {
-                        foreach (Desire gl in rs.GetDesiresListeners().GetEnumerator())
+                        foreach (Desire gl in rs.GetDesiresListeners())
                         {
                             gl.DesireFailed(g);
                         }

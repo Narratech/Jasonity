@@ -87,7 +87,7 @@ namespace Assets.Code.AsSyntax
             return new VarTerm(this.GetNS(), this);
         }
 
-        public override Literal CloneNS(Atom newNamespace)
+        public new Literal CloneNS(Atom newNamespace)
         {
             return new VarTerm(newNamespace, this);
         }

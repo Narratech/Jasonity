@@ -33,10 +33,10 @@ namespace Assets.Code.AsSyntax
 
         // Adds a new plan written as a string. Source is usually "self" or the agent who sent this plan.
         // New plans are added at the end of the library.
-        Plan Add(IStringTerm stPlan, ITerm tSource) => Add(stPlan, tSource, false);
+        public Plan Add(IStringTerm stPlan, ITerm tSource) => Add(stPlan, tSource, false);
 
         // Same as previous Add. If "before" is true, add at the beginning of the library.
-         Plan Add(IStringTerm stPlan, ITerm tSource, bool before)
+         public Plan Add(IStringTerm stPlan, ITerm tSource, bool before)
         {
             string sPlan = stPlan.GetString();
             // Remove quotes
@@ -54,7 +54,7 @@ namespace Assets.Code.AsSyntax
         }
 
         // Adds a new Plan to the library. If "before" is true, add at the beginning of the library.
-        Plan Add(Plan p, ITerm tSource, bool before)
+        public Plan Add(Plan p, ITerm tSource, bool before)
         {
             // synchronized(lockPL)
             int i = plans.IndexOf(p);
@@ -444,7 +444,7 @@ namespace Assets.Code.AsSyntax
             return plans.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

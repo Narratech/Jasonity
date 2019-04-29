@@ -121,7 +121,7 @@ namespace Assets.Code.AsSyntax
             else return new LogExpr((ILogicalFormula)GetTerm(0).Clone(), op, (ILogicalFormula)GetTerm(1).Clone());
         }
 
-        public override Literal CloneNS(Atom newnamespace)
+        public new Literal CloneNS(Atom newnamespace)
         {
             if (IsUnary()) return new LogExpr(op, (ILogicalFormula)GetTerm(0).CloneNS(newnamespace));
             else return new LogExpr((ILogicalFormula)GetTerm(0).CloneNS(newnamespace), op, (ILogicalFormula)GetTerm(1).CloneNS(newnamespace));
@@ -167,7 +167,7 @@ namespace Assets.Code.AsSyntax
             this.logExpr = logExpr;
             this.ag = ag;
             this.un = un;
-            ileft = logExpr.GetLHS().LogicalConsequence(ag, un);
+            ileft = (AndIterator<Unifier>)logExpr.GetLHS().LogicalConsequence(ag, un);
         }
 
         public bool HasNext()
@@ -188,7 +188,7 @@ namespace Assets.Code.AsSyntax
             needsUpdate = false;
             current = default;
             while ((iright == null || iright.MoveNext()) && ileft.MoveNext())
-                iright = logExpr.GetRHS().LogicalConsequence(ag, ileft.Current);
+                iright = (AndIterator<Unifier>)logExpr.GetRHS().LogicalConsequence(ag, ileft.Current);
             if (iright != null && iright.HasNext())
                 current = iright.Next();
         }
@@ -217,7 +217,7 @@ namespace Assets.Code.AsSyntax
         }
     }
 
-    public class OrIterator<Unifier> : IEnumerator<Unifier>
+    public class OrIterator<T> : IEnumerator<Unifier>
     {
         private LogExpr logExpr;
         private Agent ag;
@@ -232,7 +232,7 @@ namespace Assets.Code.AsSyntax
             this.logExpr = logExpr;
             this.ag = ag;
             this.un = un;
-            ileft = logExpr.GetLHS().LogicalConsequence(ag, un);
+            ileft = (OrIterator<Unifier>)logExpr.GetLHS().LogicalConsequence(ag, un);
         }
 
         public bool HasNext()
@@ -257,7 +257,7 @@ namespace Assets.Code.AsSyntax
             else
             {
                 if (iright == null)
-                    iright = logExpr.GetRHS().LogicalConsequence(ag, un);
+                    iright = (OrIterator<Unifier>)logExpr.GetRHS().LogicalConsequence(ag, un);
                 if (iright != null && iright.HasNext())
                     current = iright.Next();
             }

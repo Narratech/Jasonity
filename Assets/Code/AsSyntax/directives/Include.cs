@@ -96,7 +96,8 @@ namespace Assets.Code.AsSyntax.directives
                         // try to find the included source in the same directory
                         // or in the source paths
                         SourcePath newpath = new SourcePath();
-                        newpath.AddPath(new StreamReader(outerPrefix).GetAbsoluteFile().getParent()); //Hay que mirar que era el original
+                        newpath.AddPath(Path.GetFullPath((new StreamReader(outerPrefix)).ToString())); //Hay que mirar que era el original
+                                           // new StreamReader(outerPrefix).GetAbsoluteFile().getParent()
                         newpath.AddAll(aslSourcePath);
                         file = newpath.FixPath(file, null);
                         input = new StreamReader(file);

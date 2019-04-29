@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
@@ -388,16 +389,16 @@ namespace Assets.Code.AsSyntax
 
         private class MyIEnumerator<T> : IEnumerator<T> where T : List<ITerm>
         {
-            public int k;
+            public static int k;
 
-            public MyIEnumerator(int k)
+            public MyIEnumerator(int n)
             {
-                this.k = k;
+                k = n;
             }
 
-            LinkedList<SubSetSearchState> open = null;
+            static List<SubSetSearchState> open = null;
 
-            ITerm[] thisAsArray = new ITerm[0];
+            static ITerm[] thisAsArray = new ITerm[0];
 
             List<ITerm> next = null;
 
@@ -405,9 +406,11 @@ namespace Assets.Code.AsSyntax
             {
                 if (open == null)
                 {
-                    open = new LinkedList<SubSetSearchState>();
-                    thisAsArray = GetAsList().ToArray(/*thisAsArray*/);
-                    open.AddLast(new SubSetSearchState(0, k, null, null));
+                    open = new List<SubSetSearchState>();
+                    ListTermImpl lti = new ListTermImpl();
+                    thisAsArray = lti.GetAsList().ToArray();
+                        //ORIGINAL: ToArray(thisAsArray);
+                    open.Insert(open.Count, new SubSetSearchState(0, k, null, null));
                     //open.AddAfter(new SubSetSearchState(0, k, null, null));
                 }
                 if (next == null)
@@ -431,8 +434,8 @@ namespace Assets.Code.AsSyntax
             {
                 while (!(open.Count == 0))
                 {
-                    SubSetSearchState s = open.First;
-                    open.RemoveFirst();
+                    SubSetSearchState s = open.First();
+                    open.RemoveAt(0);
                     if (s.d == 0)
                     {
                         next = s.GetAsList();
@@ -465,23 +468,23 @@ namespace Assets.Code.AsSyntax
 
                 public void AddNexts()
                 {
-                    int pSize = (k - d) + thisAsArray.Length;
+                    int pSize = k - d + thisAsArray.Length;
                     for (int i = thisAsArray.Length-1; i>= pos; i--)
                     {
                         if (pSize - i >= k)
                         {
-                            open.AddFirst(new SubSetSearchState(i+1, d- 1, thisAsArray[i], this));
+                            open.Insert(0, new SubSetSearchState(i+1, d- 1, thisAsArray[i], this));
                         }
                     }
                 }
 
-                List<ITerm> GetAsList()
+                public List<ITerm> GetAsList()
                 {
-                    LinkedList<ITerm> np = new LinkedList<ITerm>();
+                    List<ITerm> np = new List<ITerm>();
                     SubSetSearchState c = this;
                     while (c.value != null)
                     {
-                        np.AddFirst(c.value);
+                        np.Insert(0, c.value);
                         c = c.f;
                     }
                     return np;
@@ -662,7 +665,7 @@ namespace Assets.Code.AsSyntax
             return new MyListIterator<ITerm>(startIndex, list);
         }
 
-        private class MyListIterator<ITerm>:IEnumerator<ITerm>
+        private class MyListIterator<T>:IEnumerator<ITerm>
         {
             ListTermImpl list;
             int pos, startIndex;
@@ -675,7 +678,8 @@ namespace Assets.Code.AsSyntax
                 pos = startIndex;
                 this.startIndex = startIndex;
                 last = -1;
-                size = Size();
+                ListTermImpl lti = new ListTermImpl();
+                size = lti.Size();
             }
 
             public ITerm Current => throw new NotImplementedException();
@@ -698,7 +702,7 @@ namespace Assets.Code.AsSyntax
             {
                 last = pos;
                 pos++;
-                return Get(last);
+                return (ITerm)Get(last);
             }
             public int NextIndex()
             {
@@ -708,7 +712,7 @@ namespace Assets.Code.AsSyntax
             {
                 last = pos;
                 pos--;
-                return Get(last);
+                return (ITerm)Get(last);
             }
             public int PreviousIndex()
             {
@@ -830,15 +834,16 @@ namespace Assets.Code.AsSyntax
             return r;
         }
 
-        public ITerm Get(int index)
+        public static ITerm Get(int index)
         {
+            ListTermImpl lti = new ListTermImpl();
             if (index == 0)
             {
-                return this.term;
+                return lti.term;
             }
-            else if (GetNext() != null)
+            else if (lti.GetNext() != null)
             {
-                return GetNext()[index - 1];
+                return lti.GetNext()[index - 1];
             }
             return null;
         }
@@ -964,7 +969,7 @@ namespace Assets.Code.AsSyntax
 
         public List<ITerm> SubList(int arg0, int arg1)
         {
-            return GetAsList().SubList(arg0, arg1);
+            return GetAsList().GetRange(arg0, arg1);
         }
 
         public object[] ToArray()

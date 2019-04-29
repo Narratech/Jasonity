@@ -137,7 +137,7 @@ namespace Assets.Code.AsSyntax
             return new InternalActionLiteral(this);
         }
 
-        public override Literal CloneNS(Atom newNamespace)
+        public new Literal CloneNS(Atom newNamespace)
         {
             return new InternalActionLiteral(newNamespace, this);
         }

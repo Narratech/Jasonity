@@ -353,7 +353,7 @@ namespace Assets.Code.AsSyntax
             AgentArchitecture arch = (ag != null && ag.GetReasoner() != null ? ag.GetReasoner().GetUserAgArch() : null);
             int nbAnnots = (HasAnnot() && GetAnnots().GetTail() == null ? GetAnnots().Count : 0);
 
-            return new MyIEnumerator<Unifier>(arch, nbAnnots, il, ag, un);
+            return new MyIEnumerator<Unifier>(arch, nbAnnots, il, ag, un, this);
             
         }
 
@@ -371,6 +371,7 @@ namespace Assets.Code.AsSyntax
             private AgentArchitecture arch;
             private int nbAnnots;
             private IEnumerator<Literal> il;
+            private Literal lit;
 
             public Unifier Current => throw new NotImplementedException();
 
@@ -378,13 +379,14 @@ namespace Assets.Code.AsSyntax
 
             T IEnumerator<T>.Current => throw new NotImplementedException();
 
-            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent ag, Unifier un)
+            public MyIEnumerator(AgentArchitecture arch, int nbAnnots, IEnumerator<Literal> il, Agent ag, Unifier un, Literal lit)
             {
                 this.arch = arch;
                 this.nbAnnots = nbAnnots;
                 this.il = il;
                 this.ag = ag;
                 this.un = un;
+                this.lit = lit;
             }
 
             public bool HasNext()
@@ -415,7 +417,7 @@ namespace Assets.Code.AsSyntax
                     {
                         Literal belToTry = belInBB.Copy().SetAnnots(null).AddAnnots(annotsOptions.Current);
                         Unifier u = un.Clone();
-                        if (u.UnifiesNoUndo(this, belToTry))
+                        if (u.UnifiesNoUndo(lit, belToTry))
                         {
                             current = u;
                             return;
@@ -434,7 +436,7 @@ namespace Assets.Code.AsSyntax
                         rHead.MakeVarsAnnon();
 
                         Unifier unC = un.Clone();
-                        if (unC.UnifiesNoUndo(this, rHead))
+                        if (unC.UnifiesNoUndo(lit, rHead))
                         {
                             current = unC;
                             return;
@@ -451,7 +453,7 @@ namespace Assets.Code.AsSyntax
                         rule = (Rule)belInBB;
                         if (cloneAnnon == null)
                         {
-                            cloneAnnon = (Literal)this.Capply(un);
+                            cloneAnnon = (Literal)lit.Capply(un);
                             cloneAnnon.MakeVarsAnnon();
                         }
 
@@ -482,7 +484,7 @@ namespace Assets.Code.AsSyntax
                             else
                             {
                                 Unifier u = un.Clone();
-                                if (u.UnifiesNoUndo(this, belInBB))
+                                if (u.UnifiesNoUndo(lit, belInBB))
                                 {
                                     current = u;
                                     return;
@@ -511,7 +513,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        private void UseDerefVars(ITerm p, Unifier un)
+        private static void UseDerefVars(ITerm p, Unifier un)
         {
             if (p.GetType() == typeof(Literal))
             {
@@ -618,7 +620,7 @@ namespace Assets.Code.AsSyntax
 
             }
 
-            public override Literal CloneNS(Atom newNamespace)
+            public new Literal CloneNS(Atom newNamespace)
             {
                 return this;
             }
@@ -646,7 +648,7 @@ namespace Assets.Code.AsSyntax
 
             }
 
-            public override Literal CloneNS(Atom newNamespace)
+            public new Literal CloneNS(Atom newNamespace)
             {
                 return this;
             }
@@ -684,7 +686,7 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public override Literal CloneNS(Atom newnamespace)
+            public new Literal CloneNS(Atom newnamespace)
             {
                 return this;
             }

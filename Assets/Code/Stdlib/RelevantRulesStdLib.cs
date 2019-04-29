@@ -38,7 +38,7 @@ namespace Assets.Code.Stdlib
         try {
                 Literal pattern = (Literal)args[0];
                 IListTerm result = new ListTermImpl();
-                synchronized(ts.GetAgent().GetBB().GetLock()) {
+                //synchronized(ts.GetAgent().GetBB().GetLock()) {
                     IEnumerator<Literal> i = ts.GetAgent().GetBB().GetCandidateBeliefs(pattern, un);
                     while (i.MoveNext())
                     {
@@ -54,7 +54,7 @@ namespace Assets.Code.Stdlib
                             }
                         }
                     }
-                }
+                //}
                 return un.Unifies(args[1], result);
             } catch (Exception e) {
                 //ts.GetLogger().Warning("Error in internal action 'get_rules'! "+e);
