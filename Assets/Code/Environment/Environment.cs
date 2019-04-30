@@ -1,12 +1,14 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using Assets.Code.AsSyntax;
 
 public class Environment : MonoBehaviour{
 
     private IList<Literal> percepts = new ArrayList<Literal>();
-    private IDictionary<String,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
-    private boolean isRunning = true;
-    private ISet<String> uptodateAgs = new HashSet<String>();
+    private IDictionary<string,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
+    private bool isRunning = true;
+    private ISet<string> uptodateAgs = new HashSet<string>();
 
     //protected ExecutorService executor; // the thread pool used to execute actions
 
@@ -18,7 +20,7 @@ public class Environment : MonoBehaviour{
      * Called before the MAS execution with the args informed in
      * .mas2j project, the user environment could override it.
      */
-    public void init(String[] args) {
+    public void init(string[] args) {
     }
     
     /**
