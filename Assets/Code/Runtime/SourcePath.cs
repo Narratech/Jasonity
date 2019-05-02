@@ -153,7 +153,8 @@ namespace Assets.Code.Runtime
             {
                 if (asSrc.StartsWith(CRPrefix))
                 {
-                    SourcePath./*class*/GetResource(asSrc.Substring(CRPrefix.Length).OpenStream());
+                    //SourcePath.class.GetResource(asSrc.Substring(CRPrefix.Length).OpenStream());
+                    StringReader sr = new StringReader(asSrc.Substring(CRPrefix.Length));
                     return true;
                 }
                 else

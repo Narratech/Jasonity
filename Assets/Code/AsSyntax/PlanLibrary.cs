@@ -115,7 +115,7 @@ namespace Assets.Code.AsSyntax
 
             if (p.GetTrigger().GetLiteral().GetFunctor().Equals(kqmlReceivedFunctor))
             {
-                if (!(p.GetSrcInfo() != null && "kmqlPlans.asl".Equals(p.GetSrcInfo().GetSrcFile())))
+                if (!(p.GetSrcInfo() != null && "kmqlPlans.asl".Equals(p.GetSrcInfo()/*.GetSrcFile()*/)))
                 {
                     hasUserKqmlReceived = true;
                 }

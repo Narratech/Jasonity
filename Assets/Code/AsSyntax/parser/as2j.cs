@@ -10,6 +10,7 @@ using static RelExpr;
 using static Assets.Code.AsSyntax.ArithExpr;
 using System.Collections.Generic;
 using Assets.Code.AsSemantics;
+using System.Text.RegularExpressions;
 
 namespace Assets.Code.parser {
 
@@ -1938,7 +1939,8 @@ namespace Assets.Code.parser {
                 return l;
             }
             else {
-                ArithFunction at = new ArithFunction(af);
+                ArithFunctionTerm at = new ArithFunctionTerm(af);
+                //ArithFunction at = new ArithFunction(af);
                 at.SetSrcInfo(l.GetSrcInfo());
                 at.SetTerms(l.GetTerms());
                 at.SetAgent(curAg);
@@ -1959,9 +1961,10 @@ namespace Assets.Code.parser {
             } else if (false || switch_65 == UNNAMEDVARID) {
                 K = jj_consume_token(UNNAMEDVARID);
                 //Mirar la clase Regex y el match 
-                Matcher matcher = patternUnnamedWithId.matcher(K.image); //CAMBIAR: Clase Matcher. Mirar las expresiones regulares. Mirar RegEx
-                if (matcher.find()) {
-                    v = UnnamedVar.Create(ns, int.Parse(matcher.group(1)), K.image);
+                //Matcher m = patternUnnamedWithId.matcher(K.image);
+                Match matcher = patternUnnamedWithId.Match(K.image); //CAMBIAR: Clase Matcher. Mirar las expresiones regulares. Mirar RegEx
+                if (matcher.Success/*find()*/) {
+                    v = UnnamedVar.Create(ns, int.Parse(matcher.Value/*.group(1)*/), K.image);
                 } else {
                     v = UnnamedVar.Create(ns, K.image);
                 }
@@ -3801,6 +3804,15 @@ namespace Assets.Code.parser {
                     jj_lasttokens[(jj_endpos = pos) - 1] = kind;
                 }
             }
+        }
+
+        /*FUNCIÓN AÑADIDA PARA PODER COMPILAR
+         LA FUNCIÓN ORIGINALK DE JASON ESTÁ EN OTRO FICHERO LLAMADO MAS2J
+         */
+        public Dictionary<string,object> ASoptions()
+        {
+            /*Esto está MAL ,debería devolver un diccionario con las opciones*/
+            return new Dictionary<string, object>();
         }
     }
 }

@@ -981,7 +981,8 @@ namespace Assets.Code.AsSyntax
         {
             int s = Size();
             if (a.Length < s)
-                a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), s);
+                a = (T[])Array.CreateInstance(a.GetType().GetElementType(), s);
+                //a = (T[])java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), s);
 
             int i = 0;
             foreach (ITerm t in this)

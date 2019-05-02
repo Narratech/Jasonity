@@ -68,7 +68,9 @@ namespace Assets.Code.AsSyntax.directives
                             /*Esto esta buscando en el paquete concreto de bdi agent*/
                             //En input tenemos que acabar abriendo un textreader
                             //Tenemos que ver exactamente donde esta esta cosa
-                            input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();//Mirar los resources de unity por si acaso hay algo
+                            //Esto para hacerlo bien Unity hay que usar el sistema de getión de recursos de Unity: Resource.Load(string); 
+                            //input = Agent.GetResource(file.Substring(SourcePath.CRPrefix.Length)).openStream();//Mirar los resources de unity por si acaso hay algo
+                            input = new StringReader(file.Substring(SourcePath.CRPrefix.Length));
                             //Esto hay que hacerlo con unity porque esto es raruno
                         }
 

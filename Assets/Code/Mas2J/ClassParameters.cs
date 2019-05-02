@@ -65,22 +65,24 @@ namespace Assets.Code.Mas2J
             int i = 0;
             foreach (string s in parameters)
             {
-                s = RemoveQuotes(s);
+                //Esto lo hacía directamaente sobre s en Java
+                string sAux;
+                sAux = RemoveQuotes(s);
                 try
                 {
-                    p[i] = int.Parse(s);
+                    p[i] = int.Parse(sAux);
                 }
                 catch (Exception e)
                 {
                     try
                     {
-                        p[i] = double.Parse(s);
+                        p[i] = double.Parse(sAux);
                     }
                     catch (Exception e3)
                     {
-                        if (s.Equals("true")) p[i] = true;
-                        else if (s.Equals("false")) p[i] = false;
-                        else p[i] = s;
+                        if (sAux.Equals("true")) p[i] = true;
+                        else if (sAux.Equals("false")) p[i] = false;
+                        else p[i] = sAux;
                     }
                 }
                 i++;

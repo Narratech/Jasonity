@@ -7,6 +7,7 @@ using Assets.Code.AsSyntax.directives;
 using Assets.Code.BDIAgent;
 using Assets.Code.Util;
 using Assets.Code.AsSemantics;
+using System.Text.RegularExpressions;
 
 namespace Assets.Code.parser
 { 
@@ -26,6 +27,8 @@ namespace Assets.Code.parser
 
         private static HashSet<string> parsedFiles = new HashSet<String>();
         private static Config config = Config.Get(false);
+        //private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
+        private static Regex patternUnnamedWithId = new Regex("_(\\d+)(.*)"); //Igual hay que adaptar la expresión a c#
 
         public void SetAg(Agent ag) { curAg = ag; }
         public void SetNS(Atom  ns) { @namespace = ns; thisnamespace = ns; }

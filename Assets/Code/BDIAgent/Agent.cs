@@ -113,6 +113,7 @@ namespace Assets.Code.BDIAgent
             Load(asSrc);
         }
 
+        //Creemos que GetResource es un método de Java que no implementamos nosotros
         internal static object GetResource(string v)
         {
             throw new NotImplementedException();
