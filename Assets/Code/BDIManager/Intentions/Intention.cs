@@ -122,7 +122,7 @@ namespace BDIManager.Intentions
                 failTrigger = new Trigger(TEOperator.del, tevent.GetTEType(), tevent.GetLiteral());
                 posInStak--;
             }
-            if (tevent.IsGoal() && tevent.IsAddition() && pl.HasCandidatePlan(failTrigger))
+            if (tevent.IsDesire() && tevent.IsAddition() && pl.HasCandidatePlan(failTrigger))
                 return new KeyValuePair<Event, int>(new Event(failTrigger.Clone(), this), posInStak);
             else
                 return new KeyValuePair<Event, int>(null, 0);

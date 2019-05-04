@@ -11,12 +11,12 @@ using BDIManager.Desires;
 
 namespace Assets.Code.Stdlib
 {
-    public class FailGoalStdLib: SucceedGoalStdLib
+    public class FailDesireStdLib: SucceedDesireStdLib
     {
         public override object Execute(Reasoner reasoner, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            FindGoalAndDrop(reasoner, (Literal)args[0], un);
+            FindDesireAndDrop(reasoner, (Literal)args[0], un);
             return true;
         }
 
@@ -25,14 +25,14 @@ namespace Assets.Code.Stdlib
          *           2 = fail event was generated and added in C.E
          *           3 = simply removed without event
          */
-        public override int DropGoal(Intention i, Trigger g, Reasoner rs, Unifier un)
+        public override int DropDesire(Intention i, Trigger g, Reasoner rs, Unifier un)
         {
             if (i != null)
             {
                 if (i.DropDesire(g ,un))
                 {
                     //notify listener
-                    if (rs.HasGoalListener())
+                    if (rs.HasDesireListener())
                     {
                         foreach (Desire gl in rs.GetDesiresListeners())
                         {
@@ -50,7 +50,7 @@ namespace Assets.Code.Stdlib
                     }
                     else //i is finished or without failure plan
                     {
-                        if (rs.HasGoalListener())
+                        if (rs.HasDesireListener())
                         {
                             foreach (Desire gl in rs.GetDesiresListeners())
                             {
@@ -65,7 +65,7 @@ namespace Assets.Code.Stdlib
             return 0;
         }
 
-        public override void DropGoalInEvent(Reasoner rs, Event e, Intention i)
+        public override void DropDesireInEvent(Reasoner rs, Event e, Intention i)
         {
             e.GetTrigger().SetTrigOp(TEOperator.del);
         }

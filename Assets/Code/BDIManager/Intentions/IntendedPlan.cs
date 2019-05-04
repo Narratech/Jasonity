@@ -66,7 +66,7 @@ namespace BDIManager.Intentions
 
         public bool IsFinished() => planBody == null || planBody.IsEmptyBody();
 
-        public bool IsGoalAdd() => trigger.IsAddition() && trigger.IsGoal();
+        public bool IsDesireAdd() => trigger.IsAddition() && trigger.IsDesire();
 
         public object Clone()
         {

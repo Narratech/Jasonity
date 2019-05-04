@@ -178,7 +178,7 @@ namespace Assets.Code.AsSyntax
                 }
             }
 
-            if (pte.GetOperator() == TEOperator.goalState)
+            if (pte.GetOperator() == TEOperator.desireState)
             {
                 hasMetaEventPlans = true;
             }

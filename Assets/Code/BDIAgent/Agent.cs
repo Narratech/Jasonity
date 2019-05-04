@@ -32,7 +32,7 @@ namespace Assets.Code.BDIAgent
         private Reasoner reasoner = null;
         private string aslSource = null;
         //The ones in the source code
-        private List<Literal> initialGoals = null;
+        private List<Literal> initialDesires = null;
         private List<Literal> initialBeliefs = null;
         private Dictionary<string, InternalAction> internalActions = null;
         private Dictionary<string, ArithFunction> functions = null;
@@ -92,9 +92,9 @@ namespace Assets.Code.BDIAgent
                 pl = new PlanLibrary();
             }
 
-            if (initialGoals == null)
+            if (initialDesires == null)
             {
-                initialGoals = new List<Literal>();
+                initialDesires = new List<Literal>();
             }
 
             if (initialBeliefs == null)
@@ -535,29 +535,29 @@ namespace Assets.Code.BDIAgent
 
         public void AddInitialDesires(Literal g)
         {
-            initialGoals.Add(g);
+            initialDesires.Add(g);
         }
 
         public List<Literal> GetInitialDesires()
         {
-            return initialGoals;
+            return initialDesires;
         }
 
         public void AddInitialDesiresInReasoner()
         {
-            foreach (Literal d in initialGoals)
+            foreach (Literal d in initialDesires)
             {
                 d.MakeVarsAnnon();
                 if (!d.HasSource())
                     d.AddAnnot(BeliefBase.TSelf);
                 GetReasoner().GetCircumstance().AddAchieveDesire(d, Intention.emptyInt);
             }
-            initialGoals.Clear();
+            initialDesires.Clear();
         }
 
         protected void AddInitialDesiresFromProjectInBB()
         {
-            string sGoals = GetReasoner().GetSettings().GetUserParameter(Settings.INIT_GOALS);
+            string sGoals = GetReasoner().GetSettings().GetUserParameter(Settings.INIT_DESIRES);
             if (sGoals != null)
             {
                 try
@@ -596,7 +596,7 @@ namespace Assets.Code.BDIAgent
                     }
                 }
 
-                foreach (Literal d in a.initialGoals)
+                foreach (Literal d in a.initialDesires)
                 {
                     AddInitialDesires(d);
                 }

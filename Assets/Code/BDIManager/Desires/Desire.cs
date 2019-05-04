@@ -77,7 +77,7 @@ namespace BDIManager.Desires {
                     stateAnnot.AddAnnot(AsSyntax.CreateStructure("reason", new StringTermImpl(reason)));
                 }
                 newDesire.AddAnnot(stateAnnot);
-                Trigger eEnd = new Trigger(TEOperator.goalState, type, newDesire);
+                Trigger eEnd = new Trigger(TEOperator.desireState, type, newDesire);
                 if (reasoner.GetAgent().GetPL().HasCandidatePlan(eEnd))
                 {
                     reasoner.GetCircumstance().InsertMetaEvent(new Event(eEnd, null));

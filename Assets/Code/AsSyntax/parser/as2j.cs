@@ -432,7 +432,7 @@ namespace Assets.Code.parser {
             } else if (false
              || switch_14 == 43) {
                 jj_consume_token(43);
-                teOp = TEOperator.goalState;
+                teOp = TEOperator.desireState;
             } else {
                 jj_la1[13] = jj_gen;
                 jj_consume_token(-1);

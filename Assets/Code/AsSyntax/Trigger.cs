@@ -85,19 +85,19 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public bool IsAchvGoal()
+        public bool IsAchvDesire()
         {
             return type == TEType.achieve;
         }
 
-        public bool IsGoal()
+        public bool IsDesire()
         {
             return type == TEType.achieve || type == TEType.test;
         }
 
         public bool IsMetaEvent()
         {
-            return op == TEOperator.goalState;
+            return op == TEOperator.desireState;
         }
 
         public TEOperator GetOperator()
@@ -237,7 +237,7 @@ namespace Assets.Code.AsSyntax
     {
         public readonly static TEOperator add;
         public readonly static TEOperator del;
-        public readonly static TEOperator goalState;
+        public readonly static TEOperator desireState;
 
         public override string ToString()
         {
@@ -249,7 +249,7 @@ namespace Assets.Code.AsSyntax
             {
                 return "-";
             }
-            else if (this == goalState)
+            else if (this == desireState)
             {
                 return "^";
             }

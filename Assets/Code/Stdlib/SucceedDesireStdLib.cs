@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Stdlib
 {
-    public class SucceedGoalStdLib:InternalAction
+    public class SucceedDesireStdLib:InternalAction
     {
         public override int GetMinArgs()
         {
@@ -38,11 +38,11 @@ namespace Assets.Code.Stdlib
         public override object Execute(Reasoner reasoner, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            FindGoalAndDrop(reasoner, (Literal)args[0], un);
+            FindDesireAndDrop(reasoner, (Literal)args[0], un);
             return true;
         }
 
-        public void FindGoalAndDrop(Reasoner rs, Literal l, Unifier un)
+        public void FindDesireAndDrop(Reasoner rs, Literal l, Unifier un)
         {
             Trigger g = new Trigger(TEOperator.add, TEType.achieve, l);
             Circumstance C = rs.GetCircumstance();
@@ -52,7 +52,7 @@ namespace Assets.Code.Stdlib
             while (itinit.MoveNext())
             {
                 Intention i = itinit.Current;
-                if (DropGoal(i, g, rs, un) > 1)
+                if (DropDesire(i, g, rs, un) > 1)
                 {
                     C.DropRunningIntention(i);
                     un = bak.Clone();
@@ -60,7 +60,7 @@ namespace Assets.Code.Stdlib
             }
 
             // dropping the current intention?
-            DropGoal(C.GetSelectedIntention(), g, rs, un);
+            DropDesire(C.GetSelectedIntention(), g, rs, un);
             un = bak.Clone();
 
             //dropping G in Events
@@ -70,7 +70,7 @@ namespace Assets.Code.Stdlib
                 Event e = ie.Current;
                 //Test in the intention
                 Intention i = e.GetIntention();
-                int r = DropGoal(i, g, rs, un);
+                int r = DropDesire(i, g, rs, un);
                 if (r > 0)
                 {
                     C.RemoveEvent(e);
@@ -90,7 +90,7 @@ namespace Assets.Code.Stdlib
                     }
                     if (un.Unifies(g, t))
                     {
-                        DropGoalInEvent(rs, e, i);
+                        DropDesireInEvent(rs, e, i);
                         un = bak.Clone();
                     }
                 }
@@ -102,7 +102,7 @@ namespace Assets.Code.Stdlib
                 //Test in the intention
                 Event e = C.GetPendingEvents()[ek];
                 Intention i = e.GetIntention();
-                int r = DropGoal(i, g, rs, un);
+                int r = DropDesire(i, g, rs, un);
                 if (r > 0)
                 {
                     C.RemovePendingEvent(ek);
@@ -122,7 +122,7 @@ namespace Assets.Code.Stdlib
                     }
                     if (un.Unifies(g, t))
                     {
-                        DropGoalInEvent(rs, e, i);
+                        DropDesireInEvent(rs, e, i);
                         un = bak.Clone();
                     }
                 }
@@ -132,7 +132,7 @@ namespace Assets.Code.Stdlib
             foreach (ExecuteAction a in C.GetPendingActions().Values)
             {
                 Intention i = a.GetIntention();
-                int r = DropGoal(i, g, rs, un);
+                int r = DropDesire(i, g, rs, un);
                 if (r > 0) //i was changed
                 {
                     C.RemovePendingAction(i.GetID());   // remove i from PA
@@ -147,7 +147,7 @@ namespace Assets.Code.Stdlib
             //Dropping from pending intentions
             foreach(Intention i in C.GetPendingIntentions().Values)
             {
-                int r = DropGoal(i, g, rs, un);
+                int r = DropDesire(i, g, rs, un);
                 if (r > 0)
                 {
                     C.RemovePendingIntention(i.GetID());
@@ -165,11 +165,11 @@ namespace Assets.Code.Stdlib
          *           2 = fail event was generated and added in C.E
          *           3 = simply removed without event
          */
-        public virtual int DropGoal(Intention i, Trigger g, Reasoner rs, Unifier un)
+        public virtual int DropDesire(Intention i, Trigger g, Reasoner rs, Unifier un)
         {
             if (i != null && i.DropDesire(g, un))
             {
-                if (rs.HasGoalListener())
+                if (rs.HasDesireListener())
                 {
                     foreach (Desire gl in rs.GetDesiresListeners())
                     {
@@ -195,13 +195,13 @@ namespace Assets.Code.Stdlib
             return 0;
         }
 
-        public virtual void DropGoalInEvent(Reasoner rs, Event e, Intention i)
+        public virtual void DropDesireInEvent(Reasoner rs, Event e, Intention i)
         {
             Circumstance C = rs.GetCircumstance();
             C.RemoveEvent(e);
             if (i != null)
             {
-                if (rs.HasGoalListener())
+                if (rs.HasDesireListener())
                 {
                     foreach (Desire gl in rs.GetDesiresListeners())
                     {

@@ -124,7 +124,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        public bool HasGoalListener()
+        public bool HasDesireListener()
         {
             return desireListeners != null && !desireListeners.Any();
         }
@@ -389,7 +389,7 @@ namespace Assets.Code.ReasoningCycle
                 //{
                 //logger.fine("Returning from IM " + topIM.getPlan().getLabel() + ", te=" + topTrigger + " unif=" + topIM.unif);
                 //}
-                if (!topTrigger.IsMetaEvent() && topTrigger.IsGoal() && HasGoalListener())
+                if (!topTrigger.IsMetaEvent() && topTrigger.IsDesire() && HasDesireListener())
                 {
                     foreach (Desire desire in desireListeners)
                     {
@@ -397,7 +397,7 @@ namespace Assets.Code.ReasoningCycle
                     }
                 }
 
-                if (ip.GetTrigger().IsGoal() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
+                if (ip.GetTrigger().IsDesire() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
                 {
                     ip = i.Peek();
                     if (ip.IsFinished() || !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve) ||
@@ -405,7 +405,7 @@ namespace Assets.Code.ReasoningCycle
                     {
                         ip.Pop();
                     }
-                    while (!i.IsFinished() && !(ip.GetUnif().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsGoal())
+                    while (!i.IsFinished() && !(ip.GetUnif().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsDesire())
                         && !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve)) {
                         ip = i.Pop();
                     }
@@ -875,9 +875,9 @@ namespace Assets.Code.ReasoningCycle
 
             ITerm bodyPart = ip.GetCurrentStep().GetBodyTerm().Capply(ip.GetUnif());
             SetDefaultFailureAnnots(failEvent, bodyPart, errorAnnots);
-            if (ip.IsGoalAdd())
+            if (ip.IsDesireAdd())
             {
-                if (HasGoalListener())
+                if (HasDesireListener())
                 {
                     foreach (Desire desire in desireListeners)
                     {
@@ -957,7 +957,7 @@ namespace Assets.Code.ReasoningCycle
             if (i != Intention.emptyInt)
             {
                 return i.FindEventForFailure(trigger, GetAgent().GetPL(), GetCircumstance()).Key;
-            } else if (trigger.IsGoal() && trigger.IsAddition())
+            } else if (trigger.IsDesire() && trigger.IsAddition())
             {
                 Trigger failTrigger = new Trigger(TEOperator.del, trigger.GetTEType(), trigger.GetLiteral());
                 if(GetAgent().GetPL().HasCandidatePlan(failTrigger))
@@ -1023,7 +1023,7 @@ namespace Assets.Code.ReasoningCycle
                             UpdateIntention(curInt);
                             ApplyClrInt(curInt);
 
-                            if (HasGoalListener())
+                            if (HasDesireListener())
                             {
                                 foreach (Desire desire in GetDesiresListeners())
                                 {
@@ -1075,7 +1075,7 @@ namespace Assets.Code.ReasoningCycle
                     IntendedPlan top = confP.GetCircumstance().GetSelectedEvent().GetIntention().Peek();
 
                     if(top != null && top.GetTrigger().IsAddition() && ip.GetTrigger().IsAddition() && 
-                        top.GetTrigger().IsGoal() && ip.GetTrigger().IsGoal() &&
+                        top.GetTrigger().IsDesire() && ip.GetTrigger().IsDesire() &&
                         top.GetCurrentStep().GetBodyNext() == null &&
                         top.GetTrigger().GetLiteral().GetPredicateIndicator().Equals(ip.GetTrigger().GetLiteral().GetPredicateIndicator()))
                     {
@@ -1246,7 +1246,7 @@ namespace Assets.Code.ReasoningCycle
         private void ApplyRelApplPlRule2(string m)
         {
             confP.stepDeliberate = State.ProcAct; //Default next step
-            if (conf.GetCircumstance().GetSelectedEvent().GetTrigger().IsGoal() && !conf.GetCircumstance().GetSelectedEvent().GetTrigger().IsMetaEvent())
+            if (conf.GetCircumstance().GetSelectedEvent().GetTrigger().IsDesire() && !conf.GetCircumstance().GetSelectedEvent().GetTrigger().IsMetaEvent())
             {
                 //Can't carry on, no relevant/applicable plan
                 try
@@ -1294,9 +1294,9 @@ namespace Assets.Code.ReasoningCycle
 
             Trigger t = e.GetTrigger();
             bool failEventGenerated = false;
-            if(t.IsAddition() && t.IsGoal())
+            if(t.IsAddition() && t.IsDesire())
             {
-                if (HasGoalListener())
+                if (HasDesireListener())
                 {
                     foreach (Desire d in desireListeners)
                     {
@@ -1594,7 +1594,7 @@ namespace Assets.Code.ReasoningCycle
             return "Reasoning cycle of agent " + GetUserAgArch().GetAgentName();
         }
 
-        class FailWithDeadline : FailGoalStdLib
+        class FailWithDeadline : FailDesireStdLib
         {
             Intention intToDrop;
             Trigger t;
@@ -1622,7 +1622,7 @@ namespace Assets.Code.ReasoningCycle
 
                     if (i.DropDesire(te, u))
                     {
-                        if (r.HasGoalListener())
+                        if (r.HasDesireListener())
                         {
                             foreach (Desire d in r.GetDesiresListeners())
                             {
@@ -1665,7 +1665,7 @@ namespace Assets.Code.ReasoningCycle
 
             public void EventAdded(Event e)
             {
-                if (e.GetTrigger().IsAddition() && e.GetTrigger().IsGoal())
+                if (e.GetTrigger().IsAddition() && e.GetTrigger().IsDesire())
                     d.DesireStarted(e);
             }
 
@@ -1678,7 +1678,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 foreach (IntendedPlan ip in i.GetIntendedPlan())
                 {
-                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
+                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsDesire())
                         d.DesireFinished(ip.GetTrigger(), FinishStates.dropped);
                 }
             }
@@ -1687,7 +1687,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 foreach (IntendedPlan ip in i.GetIntendedPlan())
                 {
-                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
+                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsDesire())
                         d.DesireResumed(ip.GetTrigger());
                 }
             }
@@ -1696,7 +1696,7 @@ namespace Assets.Code.ReasoningCycle
             {
                 foreach (IntendedPlan ip in i.GetIntendedPlan())
                 {
-                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsGoal())
+                    if (ip.GetTrigger().IsAddition() && ip.GetTrigger().IsDesire())
                         d.DesireSuspended(ip.GetTrigger(), reason);
                 }
             }
@@ -1758,7 +1758,7 @@ namespace Assets.Code.ReasoningCycle
                         try
                         {
                             FailWithDeadline ia = new FailWithDeadline(i, e.GetTrigger());
-                            ia.FindGoalAndDrop(r, body, new Unifier());
+                            ia.FindDesireAndDrop(r, body, new Unifier());
                         }
                         catch (Exception e)
                         {

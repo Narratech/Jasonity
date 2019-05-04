@@ -35,7 +35,7 @@ namespace Assets.Code.Runtime
 
         public static readonly string PROJECT_PARAMETER = "project-parameter";
         public static readonly string INIT_BELS  = "beliefs";
-        public static readonly string INIT_GOALS = "goals";
+        public static readonly string INIT_DESIRES = "desires";
         public static readonly string MIND_INSPECTOR = "mindinspector";
         
         public Settings()
