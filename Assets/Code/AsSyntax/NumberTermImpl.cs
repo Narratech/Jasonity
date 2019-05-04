@@ -85,12 +85,10 @@ namespace Assets.Code.AsSyntax
             if (value == (double)r)
             {
                 return r.ToString();
-                //return r.ToString();
             }
             else
             {
                 return value.ToString();
-                //return value.ToString();
             }
         }
     }

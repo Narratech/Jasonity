@@ -61,8 +61,8 @@ namespace Assets.Code.ReasoningCycle
 
         private Dictionary<VarTerm, ITerm> CloneFunction()
         {
-            // return (Dictionary<VarTerm, ITerm>)((HashMap)function).Clone(); // ???
-            return null;
+            Dictionary<VarTerm, ITerm> clone = new Dictionary<VarTerm, ITerm>(function);
+            return clone;
         }
 
         public bool UnifiesNoUndo(ITerm term, ITerm term2)
@@ -171,8 +171,8 @@ namespace Assets.Code.ReasoningCycle
                 VarTerm term2v = term2IsVar ? (VarTerm)term2 : null;
 
                 // Get their values
-                ITerm termvl = termIsVar ? Get(termv) : term; // ???
-                ITerm term2vl = term2IsVar ? Get(term2v) : term2; // ???
+                ITerm termvl = termIsVar ? Get(termv) : term;
+                ITerm term2vl = term2IsVar ? Get(term2v) : term2;
 
                 if (termvl != null && term2vl != null) // Unify the values of the two variables
                 {
@@ -400,7 +400,7 @@ namespace Assets.Code.ReasoningCycle
             return s * 31;
         }
 
-        public bool Equals(object o)
+        public override bool Equals(object o)
         {
             if (o == null) return false;
             if (o == this) return true;

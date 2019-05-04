@@ -487,7 +487,7 @@ namespace Assets.Code.ReasoningCycle
                 {
                     if (h.GetBodyType() != BodyType.action)
                     {
-                        String msg = h.GetSrcInfo() + ": " + "The operator '" + h.GetBodyType() + "' is lost with the variable '" + bTerm + "' unified with a plan body. ";
+                        string msg = h.GetSrcInfo() + ": " + "The operator '" + h.GetBodyType() + "' is lost with the variable '" + bTerm + "' unified with a plan body. ";
                         if (!GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("body_var_with_op", msg)))
                         {
                             //logger.log(Level.SEVERE, msg);
@@ -680,7 +680,7 @@ namespace Assets.Code.ReasoningCycle
             } else if (h.GetBodyType() == BodyType.addBel || h.GetBodyType() == BodyType.addBelBegin || h.GetBodyType() == BodyType.addBelEnd || h.GetBodyType() == BodyType.addBelNewFocus)
             {
                 Intention newFocus = Intention.emptyInt;
-                Boolean isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.addBelNewFocus;
+                bool isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.addBelNewFocus;
                 if (isSameFocus)
                 {
                     newFocus = curInt;
@@ -847,7 +847,7 @@ namespace Assets.Code.ReasoningCycle
             int deadline = 0;
             try
             {
-                deadline = (int)((INumberTerm)hdl.GetTerm(0)).Solve(); //I have to look this 
+                deadline = (int)((INumberTerm)hdl.GetTerm(0)).Solve();
             }
             catch (NoValueException e)
             {
@@ -1480,7 +1480,7 @@ namespace Assets.Code.ReasoningCycle
                     if (!m.IsReplyToSyncAsk())
                     {
                         //Ignore answer after the timeout
-                        String sender = m.GetSender();
+                        string sender = m.GetSender();
                         if (sender.Equals(GetUserAgArch().GetAgentName()))
                         {
                             sender = "self";
@@ -1522,7 +1522,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private void ResumeSyncAskIntention(String msgId, ITerm answerVar, ITerm answerValue)
+        private void ResumeSyncAskIntention(string msgId, ITerm answerVar, ITerm answerValue)
         {
             Intention i = GetCircumstance().RemovePendingIntention(msgId);
             i.Peek().RemoveCurrentStep();

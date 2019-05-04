@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Assets.Code.BDIAgent;
 using Assets.Code.Logic;
 using Assets.Code.ReasoningCycle;
 
@@ -122,7 +123,10 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        // public Iterator<Unifier> logicalConsequence(Agent ag, Unifier un) { }
+        public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
+        {
+            return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
+        }
 
         override public bool Equals(object o)
         {

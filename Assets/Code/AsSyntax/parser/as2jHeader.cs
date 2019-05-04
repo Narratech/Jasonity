@@ -25,7 +25,7 @@ namespace Assets.Code.parser
         
 
 
-        private static HashSet<string> parsedFiles = new HashSet<String>();
+        private static HashSet<string> parsedFiles = new HashSet<string>();
         private static Config config = Config.Get(false);
         //private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
         private static Regex patternUnnamedWithId = new Regex("_(\\d+)(.*)"); //Igual hay que adaptar la expresión a c#
@@ -34,7 +34,7 @@ namespace Assets.Code.parser
         public void SetNS(Atom  ns) { @namespace = ns; thisnamespace = ns; }
         public Atom GetNS()         { return @namespace; }
 
-        public void SetASLSource(String src) { asSource = src; }
+        public void SetASLSource(string src) { asSource = src; }
         
         private string GetSourceRef(SourceInfo s) {
             if (s == null)

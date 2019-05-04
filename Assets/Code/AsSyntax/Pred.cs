@@ -196,7 +196,7 @@ namespace Assets.Code.AsSyntax
             {
                 return null;
             }
-            foreach (ITerm t in annotations) //okay (?)
+            foreach (ITerm t in annotations)
             {
                 if (t.IsLiteral())
                 {
@@ -558,7 +558,7 @@ namespace Assets.Code.AsSyntax
             return base.MakeVarsAnnon(un);
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (o == null)
             {
@@ -579,7 +579,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override bool EqualsAsStructure(Object p)
+        public override bool EqualsAsStructure(object p)
         { 
             return base.Equals((ITerm)p);
         }

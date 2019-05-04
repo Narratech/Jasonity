@@ -19,7 +19,7 @@ namespace Assets.Code.AsSyntax
 
         public VarTerm(string s):base(s)
         {
-            if (s != null && Char.IsLower(s, 0))
+            if (s != null && char.IsLower(s, 0))
             {
                 Exception e = new Exception("stack");
                 //e.printStackTrace();
@@ -87,7 +87,7 @@ namespace Assets.Code.AsSyntax
             return new VarTerm(this.GetNS(), this);
         }
 
-        public new Literal CloneNS(Atom newNamespace)
+        public virtual new Literal CloneNS(Atom newNamespace)
         {
             return new VarTerm(newNamespace, this);
         }
@@ -347,27 +347,27 @@ namespace Assets.Code.AsSyntax
             return -1;
         }
 
-        public int lastIndexOf(object o)
+        public int LastIndexOf(object o)
         {
             return -1;
         }
 
-        public IEnumerator<ITerm> Iterator()
+        public IEnumerator<ITerm> GetEnumerator()
         {
             return null;
         }
 
-        /*
-        public ListIterator<Term> ListIterator()
+        
+        public IEnumerator<ITerm> ListEnumerator()
         {
             return null;
         }
 
-        public ListIterator<Term> ListIterator(int index)
+        public IEnumerator<ITerm> ListEnumerator(int index)
         {
             return null;
         }
-        */
+        
 
         public ITerm Remove(int index)
         {
@@ -511,11 +511,6 @@ namespace Assets.Code.AsSyntax
         }
 
         public bool Remove(ITerm item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<ITerm> GetEnumerator()
         {
             throw new NotImplementedException();
         }

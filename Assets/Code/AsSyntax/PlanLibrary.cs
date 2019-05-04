@@ -295,17 +295,17 @@ namespace Assets.Code.AsSyntax
             {
                 varPlans.Remove(p);
                 // Removes p from all entries and cleans empty entries
-                /*
-                 * Iterator<PredicateIndicator> ipi = relPlans.keySet().iterator();
-                 * while (ipi.hasNext()) {
-                 *      PredicateIndicator pi = ipi.next();
-                 *      List<Plan> lp = relPlans.get(pi);
-                 *      lp.remove(p);
-                 *      if (lp.isEmpty()) {
-                 *          ipi.remove();
-                 *      }
-                 * }
-                 */
+
+                IEnumerator<PredicateIndicator> ipi = relPlans.Keys.GetEnumerator();
+                while (ipi.MoveNext()) {
+                    PredicateIndicator pi = ipi.Current;
+                    List<Plan> lp = relPlans[pi];
+                    lp.Remove(p);
+                    if (lp.Count == 0) {
+                        ipi.Dispose();
+                    }
+                }
+                 
             }
             else
             {
@@ -444,7 +444,7 @@ namespace Assets.Code.AsSyntax
             return plans.GetEnumerator();
         }
 
-        public IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }

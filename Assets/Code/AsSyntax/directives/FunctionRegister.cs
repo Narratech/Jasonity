@@ -58,7 +58,7 @@ namespace Assets.Code.AsSyntax.directives
             }
         }
 
-        public static String CheckFunctionName(string fName)
+        public static string CheckFunctionName(string fName)
         {
             if (functions[fName] != null)
                 return "Can not register the function " + fName + "  twice!";
@@ -97,7 +97,7 @@ namespace Assets.Code.AsSyntax.directives
                 {
                     // is is implemented in AS
                     int arity = (int)((INumberTerm)directive.GetTerm(1)).Solve();
-                    String predicate = ((IStringTerm)directive.GetTerm(2)).GetString();
+                    string predicate = ((IStringTerm)directive.GetTerm(2)).GetString();
                     outerContent.AddFunction(id, arity, predicate);
                 }
             }

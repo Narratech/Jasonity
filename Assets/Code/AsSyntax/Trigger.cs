@@ -76,7 +76,7 @@ namespace Assets.Code.AsSyntax
             return op == e.op && type == e.type;
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (o != null && o.GetType() == typeof(Trigger)) {
                 Trigger t = (Trigger)o;
@@ -156,9 +156,9 @@ namespace Assets.Code.AsSyntax
             isTerm = b;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
-            String b, e;
+            string b, e;
             if (isTerm)
             {
                 b = "{ ";

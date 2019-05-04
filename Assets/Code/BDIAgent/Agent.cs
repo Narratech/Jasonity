@@ -840,7 +840,9 @@ namespace Assets.Code.BDIAgent
                         if (GetBB().Add(position, beliefToAdd))
                         {
                             result = new List<Literal>[2];
-                            result[0] = SingletonList(beliefToAdd);
+                            //result[0] = SingletonList(beliefToAdd);
+                            result[0] = new List<Literal>();
+                            result[0].Add(beliefToAdd);
                             result[1] = new List<Literal>();
                             //if (logger.isLoggable(Level.FINE)) logger.fine("brf added " + beliefToAdd);
                         }
@@ -888,7 +890,9 @@ namespace Assets.Code.BDIAgent
                                 result = new List<Literal>[2];
                                 result[0] = new List<Literal>();
                             }
-                            result[1] = SingletonList(beliefToDel);
+                            //result[1] = SingletonList(beliefToDel);
+                            result[1] = new List<Literal>();
+                            result[1].Add(beliefToDel);
                         }
                     }
                 }

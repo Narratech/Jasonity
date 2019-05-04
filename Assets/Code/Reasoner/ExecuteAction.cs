@@ -13,7 +13,7 @@ namespace BDIMaAssets.Code.ReasoningCycle
         private Intention intention;
         private bool result;
         private Literal failureReason;
-        private String failureMsg;
+        private string failureMsg;
 
         public ExecuteAction(Literal ac, Intention i)
         {
@@ -64,7 +64,7 @@ namespace BDIMaAssets.Code.ReasoningCycle
             result = ok;
         }
 
-        public void SetFailureReason(Literal reason, String msg)
+        public void SetFailureReason(Literal reason, string msg)
         {
             failureReason = reason;
             failureMsg = msg;
@@ -80,7 +80,7 @@ namespace BDIMaAssets.Code.ReasoningCycle
             return failureReason;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return "<" + action + "," + intention + "," + result + ">";
         }

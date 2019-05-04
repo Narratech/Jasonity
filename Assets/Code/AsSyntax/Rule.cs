@@ -60,7 +60,7 @@ namespace Assets.Code.AsSyntax
             return isTerm;
         }
 
-        public override bool Equals(Object o)
+        public override bool Equals(object o)
         {
             if (o != null && o.GetType() == typeof(Rule)) {
                 Rule r = (Rule)o;
@@ -117,7 +117,7 @@ namespace Assets.Code.AsSyntax
             return (Literal)base.Capply(u);
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             if (IsTerm())
             {

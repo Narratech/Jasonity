@@ -140,7 +140,7 @@ namespace Assets.Code.AsSyntax
 
         public bool IsPlanTerm() => isTerm;
 
-        public IListTerm GetAsListOfTerms()
+        public new IListTerm GetAsListOfTerms()
         {
             IListTerm l = new ListTermImpl();
             l.Add(GetLabel());
@@ -150,7 +150,7 @@ namespace Assets.Code.AsSyntax
             return l;
         }
 
-        public string GetSrcInfo()
+        public new string GetSrcInfo()
         {
             return source;
         }
