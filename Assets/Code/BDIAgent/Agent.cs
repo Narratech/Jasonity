@@ -18,6 +18,7 @@ using BDIManager.Intentions;
 using System.Reflection;
 using Assets.Code.Util;
 using Assets.Code.AsSemantics;
+using Assets.Code.Utilities;
 
 /**
  * The agent class has the belief base and the library plan
@@ -37,6 +38,8 @@ namespace Assets.Code.BDIAgent
         private Dictionary<string, ArithFunction> functions = null;
         private bool hasCustomSelOp = true;
         //private static ScheduledExecutorService scheduler = null; //I don't know how to do this
+        private static ScheduledExecutor executor = null;
+
 
         public Agent()
         {
@@ -111,12 +114,6 @@ namespace Assets.Code.BDIAgent
         {
             InitAg();
             Load(asSrc);
-        }
-
-        //Creemos que GetResource es un método de Java que no implementamos nosotros
-        internal static object GetResource(string v)
-        {
-            throw new NotImplementedException();
         }
 
         public void Load(string asSrc)
@@ -232,9 +229,9 @@ namespace Assets.Code.BDIAgent
                 //a.logger.setLevel(this.getTS().getSettings().logLevel());
             }
 
-            synchronized(GetBB().GetLock()) {
+            //synchronized(GetBB().GetLock()) {
                 a.bb = bb.Clone();
-            }
+            //}
             a.pl = pl.Clone();
             try
             {
@@ -259,7 +256,7 @@ namespace Assets.Code.BDIAgent
         private void FixAgInIAandFunctions(Agent a)
         {
            
-            synchronized (GetPL().getLock()) {
+            //synchronized (GetPL().getLock()) {
                 foreach (Plan p in a.GetPL().GetPlans()) {
                     // search context
                     if (p.GetContext().GetType() == typeof(Literal))
@@ -273,7 +270,7 @@ namespace Assets.Code.BDIAgent
                         FixAgInIAandFunctions(a, (Literal) p.GetBody());
                     }
                 }
-            }
+            //}
         }
 
         private void FixAgInIAandFunctions(Agent a, Literal l)
@@ -301,7 +298,16 @@ namespace Assets.Code.BDIAgent
             }
         }
 
-        public static ScheduledExecutorService GetScheduler()
+        public static ScheduledExecutor GetExecutor()
+        {
+            if (executor == null)
+            {
+                executor = new ScheduledExecutor();
+            }
+            return executor;
+        }
+
+       /* public static ScheduledExecutorService GetScheduler()
         {
             if (scheduler == null)
             {
@@ -319,7 +325,7 @@ namespace Assets.Code.BDIAgent
                 scheduler = Executors.NewScheduledThreadPool(n);
             }
             return scheduler;
-        }
+        }*/
 
         public string GetASLSrc()
         {
@@ -377,7 +383,7 @@ namespace Assets.Code.BDIAgent
                    objIA = (InternalAction) create.Invoke(null, null); //???????
                 } catch (Exception e)
                 {
-                    objIA = (InternalAction)iaName.GetType().NewInstance();
+                    objIA = (InternalAction)Activator.CreateInstance(iaName.GetType());
                 }
                 internalActions.Add(iaName, objIA);
             }
@@ -410,7 +416,7 @@ namespace Assets.Code.BDIAgent
         {
             try
             {
-                ArithFunction af = c.NewInstance();
+                ArithFunction af = (ArithFunction)Activator.CreateInstance(typeof(ArithFunction));
                 string error = null;
                 if (user)
                 {
@@ -544,7 +550,7 @@ namespace Assets.Code.BDIAgent
                 d.MakeVarsAnnon();
                 if (!d.HasSource())
                     d.AddAnnot(BeliefBase.TSelf);
-                GetReasoner().GetCircumstance().AddAchvGoal(d, Intention.emptyInt);
+                GetReasoner().GetCircumstance().AddAchieveDesire(d, Intention.emptyInt);
             }
             initialGoals.Clear();
         }
@@ -564,7 +570,7 @@ namespace Assets.Code.BDIAgent
                         {
                             g.AddAnnot(BeliefBase.TSelf);
                         }
-                        GetReasoner().GetCircumstance().AddAchvGoal(g, Intention.emptyInt);
+                        GetReasoner().GetCircumstance().AddAchieveDesire(g, Intention.emptyInt);
                     }
                 }
                 catch (Exception e)
@@ -611,7 +617,7 @@ namespace Assets.Code.BDIAgent
 
                 if (GetPL().HasMetaEventPlans())
                 {
-                    GetReasoner().AddDesireListener(new DesireStdlib(GetReasoner()));
+                    GetReasoner().AddDesireListener(new Desire(GetReasoner()));
                 }
             }
         }
@@ -645,9 +651,11 @@ namespace Assets.Code.BDIAgent
             }
         }
 
-        public Intention SelectIntention(Queue<Intention> intentions)
+        public Intention SelectIntention(List<Intention> intentions)
         {
-            return intentions.Dequeue();
+            Intention i = intentions[0];
+            intentions.RemoveAt(0);
+            return i;
         }
 
         public Message SelectMessage(Queue<Message> messages)

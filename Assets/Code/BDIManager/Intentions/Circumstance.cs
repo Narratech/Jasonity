@@ -106,7 +106,7 @@ namespace Assets.Code.BDIManager
             }
         }
 
-        internal void InsertMetaEvent(Event ev)
+        public void InsertMetaEvent(Event ev)
         {
             // Meta events have to be placed in the beginning of the queue, but not before other meta events
             List<Event> newE = new List<Event>(E);
@@ -398,11 +398,6 @@ namespace Assets.Code.BDIManager
             return false;
         }
 
-        internal Intention GetSI()
-        {
-            throw new NotImplementedException();
-        }
-
         /* Pending events */
         public Dictionary<string, Event> GetPendingEvents() => PE;
 
@@ -530,12 +525,7 @@ namespace Assets.Code.BDIManager
             }
             return false;
         }
-        // Gets all intentions
-        public IEnumerator<Intention> GetAllIntentions()
-        {
-            return new IEnumeratorIntentions(this);
-        }
-
+       
         public void DropIntention(Intention del)
         {
             // Intention may be suspended in E or PE
@@ -593,7 +583,7 @@ namespace Assets.Code.BDIManager
             return c;
         }
 
-        public string ToString()
+        public override string ToString()
         {
             StringBuilder s = new StringBuilder("Circumstance:\n");
             s.Append("  E =" + E + "\n");
@@ -764,29 +754,35 @@ namespace Assets.Code.BDIManager
             }
         }
 
-        internal void SetSI(Intention intention)
+        public void SetSelectedIntention(Intention intention)
         {
-            throw new NotImplementedException();
+            SI = intention;
         }
 
-        internal void SetSelectedOption(Option option)
+        public void SetSelectedOption(Option option)
         {
-            throw new NotImplementedException();
+            SO = option;
         }
 
-        internal void SetAP(List<Option> list)
+        public void SetRelevantPlans(List<Option> list)
         {
-            throw new NotImplementedException();
+            foreach (Option l in list)
+            {
+                RP.Add(l);
+            }
         }
 
-        internal void SetRelevantPlans(List<Option> list)
+        public void SetApplicablePlans(List<Option> list)
         {
-            throw new NotImplementedException();
+            foreach (Option l in list)
+            {
+                AP.Add(l);
+            }
         }
 
-        internal void SetSelectedEvent(Event @event)
+        public void SetSelectedEvent(Event @event)
         {
-            throw new NotImplementedException();
+            SE = @event;
         }
     }
 }

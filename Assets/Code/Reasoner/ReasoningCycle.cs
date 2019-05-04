@@ -14,6 +14,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using static BDIManager.Desires.Desire;
 
 /*
  * Implements the reasoning cycle. There are 10 steps in the cycle: 
@@ -353,7 +354,7 @@ namespace Assets.Code.ReasoningCycle
                     break;
                 case State.ClrInt:
                     confP.stepAct = State.StartRC;
-                    ApplyClrInt(conf.GetCircumstance().GetSI());
+                    ApplyClrInt(conf.GetCircumstance().GetSelectedIntention());
                     break;
                 default:
                     break;
@@ -448,7 +449,7 @@ namespace Assets.Code.ReasoningCycle
         {
             confP.stepAct = State.ClrInt;
 
-            Intention curInt = conf.GetCircumstance().GetSI();
+            Intention curInt = conf.GetCircumstance().GetSelectedIntention();
             if (curInt == null)
             {
                 return;
@@ -853,7 +854,9 @@ namespace Assets.Code.ReasoningCycle
 
             }
 
-            Agent.GetScheduler().Schedule(new RunnableImpl(), deadline, TimeUnit.MILLISECONDS);
+            Agent.GetExecutor().AddTask(new RunnableImpl(i, iSize, this, body, evt));
+
+            //Agent.GetScheduler().Schedule(new RunnableImpl(), deadline, TimeUnit.MILLISECONDS);
 
         }
 
@@ -981,17 +984,17 @@ namespace Assets.Code.ReasoningCycle
         {
             confP.stepAct = State.ExecInt;
 
-            confP.GetCircumstance().SetSI(GetCircumstance().RemoveAtomicIntention());
-            if (confP.GetCircumstance().GetSI() != null)
+            confP.GetCircumstance().SetSelectedIntention(GetCircumstance().RemoveAtomicIntention());
+            if (confP.GetCircumstance().GetSelectedIntention() != null)
             {
                 return;
             }
 
             if (!conf.GetCircumstance().IsAtomicIntentionSuspended() && conf.GetCircumstance().HasRunningIntention())
             {
-                confP.GetCircumstance().SetSI(conf.GetAgent().SelectIntention(conf.GetCircumstance().GetRunningIntentions()));
+                confP.GetCircumstance().SetSelectedIntention(conf.GetAgent().SelectIntention(conf.GetCircumstance().GetRunningIntentions()));
                 //if (logger.isLoggable(Level.FINE)) logger.fine("Selected intention " + confP.C.SI);
-                if (confP.GetCircumstance().GetSI() != null)
+                if (confP.GetCircumstance().GetSelectedIntention() != null)
                 { 
                     return;
                 }
@@ -1162,7 +1165,7 @@ namespace Assets.Code.ReasoningCycle
 
         private void ApplyApplPl()
         {
-            confP.GetCircumstance().SetAP(ApplicablePlans(confP.GetCircumstance().GetRelevantPlans()));
+            confP.GetCircumstance().SetApplicablePlans(ApplicablePlans(confP.GetCircumstance().GetRelevantPlans()));
 
             // Rule Appl1
             if (confP.GetCircumstance().GetApplicablePlans() != null || GetSettings().Retrieve())
@@ -1621,7 +1624,7 @@ namespace Assets.Code.ReasoningCycle
                     {
                         if (r.HasGoalListener())
                         {
-                            foreach (DesireStdlib d in r.GetDesiresListeners())
+                            foreach (Desire d in r.GetDesiresListeners())
                             {
                                 d.DesireFailed(te);
                             }
@@ -1644,10 +1647,7 @@ namespace Assets.Code.ReasoningCycle
                 return 0;
             }
 
-            internal void FindDesireAndDrop(Reasoner r, Literal body, Unifier unifier)
-            {
-                throw new NotImplementedException();
-            }
+           
         }
 
         /*
@@ -1705,16 +1705,14 @@ namespace Assets.Code.ReasoningCycle
         private class RunnableImpl : IRunnable
         {
             Intention i;
-            Desire d;
             int iSize;
             Reasoner r;
             Literal body;
             Event e;
 
-            public RunnableImpl(Intention intention, Desire des, int size, Reasoner res, Literal b, Event ev)
+            public RunnableImpl(Intention intention, int size, Reasoner res, Literal b, Event ev)
             {
                 Intention i = intention;
-                Desire d = des;
                 int iSize = size;
                 Reasoner r = res;
                 Literal body = b;
@@ -1734,16 +1732,14 @@ namespace Assets.Code.ReasoningCycle
                 Reasoner r;
                 Literal body;
                 Event e;
-                Desire des;
 
-                public RunnableImpl2(Desire d, Intention intention, int size, Reasoner res, Literal b, Event ev)
+                public RunnableImpl2(Intention intention, int size, Reasoner res, Literal b, Event ev)
                 {
                     i = intention;
                     iSize = size;
                     r = res;
                     body = b;
                     e = ev;
-                    des = d;
                 }
 
                 public void Run()
@@ -1751,7 +1747,7 @@ namespace Assets.Code.ReasoningCycle
                     bool drop = false;
                     if (i == null)
                     { // deadline in !!g, test if the agent still desires it
-                        drop = des.AllDesires(r.GetCircumstance(), body, null, new Unifier()).HasNext();
+                        drop = DesireStdLib.AllDesires(r.GetCircumstance(), body, null, new Unifier()).MoveNext();
                     }
                     else if (i.Size() >= iSize && i.HasTrigger(e.GetTrigger(), new Unifier()))
                     {
@@ -1762,7 +1758,7 @@ namespace Assets.Code.ReasoningCycle
                         try
                         {
                             FailWithDeadline ia = new FailWithDeadline(i, e.GetTrigger());
-                            ia.FindDesireAndDrop(r, body, new Unifier());
+                            ia.FindGoalAndDrop(r, body, new Unifier());
                         }
                         catch (Exception e)
                         {
