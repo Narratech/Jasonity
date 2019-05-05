@@ -16,7 +16,7 @@ namespace Assets.Code.Stdlib
     {
         public static readonly string atAtom = ".at";
         
-        public int GetMinArgs()
+        public override int GetMinArgs()
         {
             return 2;
         }

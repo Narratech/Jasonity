@@ -443,7 +443,7 @@ namespace BDIManager.Beliefs
 
             object IEnumerator.Current => il.Current;
 
-            // { GoNext(); }
+            //static IEnumeratorEnumerator(){ GoNext(); }
 
             public bool HasNext() => il != null && il.MoveNext();
 

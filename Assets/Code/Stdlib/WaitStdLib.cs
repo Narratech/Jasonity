@@ -150,13 +150,13 @@ namespace Assets.Code.Stdlib
 
                 if (timeout >= 0)
                 {
-                    //Agent.GetScheduler().schedule(new Runnable()
+                    //agent.getscheduler().schedule(new runnable()
                     //{
-                    //public void run()
-                    //{
-                    //    resume(true);
-                    //}
-                    //}, timeout, TimeUnit.MILLISECONDS);
+                    //    public void run()
+                    //    {
+                    //        resume(true);
+                    //    }
+                    //    }, timeout, timeunit.milliseconds);
                 }
             }
 
@@ -241,7 +241,7 @@ namespace Assets.Code.Stdlib
                 
             }
 
-            public string ToString()
+            public override string ToString()
             {
                 return sEvt;
             }
