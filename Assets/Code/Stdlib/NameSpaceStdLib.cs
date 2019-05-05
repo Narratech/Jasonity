@@ -59,12 +59,10 @@ namespace Assets.Code.Stdlib
                 this.args = args;
             }
 
-            //PERO QUÉ MIERRRRRDAS ES ESTO?!?!
-            /*
+            static NameSpaceStdLibIterator()
             {
-                Current; // consume the first (and set first n value, i.e. the first solution)
+                return Current; // consume the first (and set first n value, i.e. the first solution)
             } 
-            */
 
             //public bool HasNext()
             //{

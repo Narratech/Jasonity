@@ -632,7 +632,7 @@ namespace Assets.Code.BDIManager
 
             object IEnumerator.Current => intEnumerator.Current;
 
-            // { Find(); }
+            static EnumeratorIntentions(){ Find(); }
 
             public bool HasNext() => curInt != null;
 
