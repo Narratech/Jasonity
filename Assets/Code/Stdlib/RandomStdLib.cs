@@ -88,12 +88,12 @@ namespace Assets.Code.Stdlib
             }
 
             // we always have a next random number
-            public bool HasNext()
-            {
-                return (n < max || max == 0) && ts.GetUserAgArch().IsRunning();
-            }
+            //public bool HasNext()
+            //{
+            //    return (n < max || max == 0) && ts.GetUserAgArch().IsRunning();
+            //}
 
-            public Unifier next()
+            public Unifier Next()
             {
                 Unifier c = un.Clone();
                 c.Unifies(args[0], new NumberTermImpl(random.NextDouble()));
@@ -101,7 +101,7 @@ namespace Assets.Code.Stdlib
                 return c;
             }
 
-            public void Remove() { }
+            //public void Remove() { }
 
             public Unifier Current => throw new NotImplementedException();
 
@@ -109,12 +109,13 @@ namespace Assets.Code.Stdlib
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                
             }
 
+            // we always have a next random number
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                return (n < max || max == 0) && ts.GetUserAgArch().IsRunning();
             }
 
             public void Reset()

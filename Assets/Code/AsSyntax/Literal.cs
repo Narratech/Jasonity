@@ -389,12 +389,12 @@ namespace Assets.Code.AsSyntax
                 this.lit = lit;
             }
 
-            public bool HasNext()
-            {
-                if (needsUpdate)
-                    Get();
-                return current != null;
-            }
+            //public bool HasNext()
+            //{
+            //    if (needsUpdate)
+            //        Get();
+            //    return current != null;
+            //}
 
             public Unifier Next()
             {
@@ -495,11 +495,13 @@ namespace Assets.Code.AsSyntax
                 }
             }
 
-            public void Remove() { }
+            //public void Remove() { }
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                if (needsUpdate)
+                    Get();
+                return current != null;
             }
 
             public void Reset()
@@ -509,7 +511,7 @@ namespace Assets.Code.AsSyntax
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                
             }
         }
 
