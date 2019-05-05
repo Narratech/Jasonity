@@ -14,15 +14,15 @@ public class BaseCentralisedMAS{
     //protected CentralisedExecutionControl   control     = null; //No tiene uso?
     protected IMap<String,CentralisedAgArch> ags         = new ConcurrentHashMap<String,CentralisedAgArch>();
 
-    public boolean isDebug() {
+    public boolean IsDebug() {
         return debug;
     }
 
-    public static BaseCentralisedMAS getRunner() {
+    public static BaseCentralisedMAS GetRunner() {
         return runner;
     }
 
-    public RuntimeServicesInfraTier getRuntimeServices() {
+    public RuntimeServicesInfraTier GetRuntimeServices() {
         return new CentralisedRuntimeServices(runner);
     }
 
@@ -31,29 +31,29 @@ public class BaseCentralisedMAS{
         return control;
     }
 */
-    public CentralisedEnvironment getEnvironmentInfraTier() {
+    public CentralisedEnvironment GetEnvironmentInfraTier() {
         return env;
     }
 
-    public void addAg(CentralisedAgArch ag) {
+    public void AddAg(CentralisedAgArch ag) {
         ags.Put(ag.getAgName(), ag);
     }
-    public CentralisedAgArch delAg(String agName) {
+    public CentralisedAgArch DelAg(String agName) {
         return ags.Remove(agName);
     }
 
-    public CentralisedAgArch getAg(String agName) {
+    public CentralisedAgArch GetAg(String agName) {
         return ags.Get(agName);
     }
 
-    public IMap<String,CentralisedAgArch> getAgs() {
+    public IMap<String,CentralisedAgArch> GetAgs() {
         return ags;
     }
-    public int getNbAgents() {
+    public int GetNbAgents() {
         return ags.size();
     }
 
-    public void finish(){
+    public void Finish(){
          Application.Quit();
     }
     
