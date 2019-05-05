@@ -62,7 +62,7 @@ namespace Assets.Code.Stdlib
             //PERO QUÉ MIERRRRRDAS ES ESTO?!?!
             /*
             {
-                next(); // consume the first (and set first n value, i.e. the first solution)
+                Current; // consume the first (and set first n value, i.e. the first solution)
             } 
             */
 
@@ -100,7 +100,7 @@ namespace Assets.Code.Stdlib
                     if (i.MoveNext())
                     {
                         if (!n.UnifiesNoUndo(args[0], i.Current))
-                            Current;
+                            return Current;
                     }
                     else
                     {
