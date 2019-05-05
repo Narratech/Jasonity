@@ -15,13 +15,8 @@ public class CentralisedRuntimeServices : RuntimeServices{
         return new CentralisedAgArch();
     }
 
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, ClassParameters bbPars, Settings stts, Agent father) {
+    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, Settings stts, Agent father) {
         Debug.Log("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
-
-        AgentParameters ap = new AgentParameters();
-        ap.SetAgClass(agClass);
-        ap.AddArchClass(archClasses);
-        ap.SetBB(bbPars);
 
         if (stts == null)
             stts = new Settings();
