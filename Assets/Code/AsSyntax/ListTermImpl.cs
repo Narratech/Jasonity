@@ -387,7 +387,7 @@ namespace Assets.Code.AsSyntax
             return new MyIEnumerator<List<ITerm>>(k);
         }
 
-        private class MyIEnumerator<T> : IEnumerator<T> where T : List<ITerm>
+        private class MyIEnumerator<T> : IEnumerator<List<ITerm>>
         {
             public static int k;
 
@@ -438,15 +438,15 @@ namespace Assets.Code.AsSyntax
                 return next != null;
             }
 
-            public List<ITerm> Next()
-            {
-                if (next == null)
-                {
-                    GetNext();
-                }
-                List<ITerm> r = next;
-                return r;
-            }
+            //public List<ITerm> Next()
+            //{
+            //    if (next == null)
+            //    {
+            //        GetNext();
+            //    }
+            //    List<ITerm> r = next;
+            //    return r;
+            //}
 
             void GetNext()
             {
@@ -509,7 +509,16 @@ namespace Assets.Code.AsSyntax
                 }
             }
 
-            public T Current => throw new NotImplementedException();
+            public List<ITerm> Current {
+                get {
+                    if (next == null)
+                    {
+                        GetNext();
+                    }
+                    List<ITerm> r = next;
+                    return r;
+                }
+            }
 
             object IEnumerator.Current => throw new NotImplementedException();
 
@@ -561,17 +570,26 @@ namespace Assets.Code.AsSyntax
             return new MyListTermIterator<IListTerm>(this);
         }
 
-        private class MyListTermIterator<T>: ListTermIterator<T> where T: IListTerm
+        private class MyListTermIterator<T>: ListTermIterator<T> where T : IListTerm
         {
             public MyListTermIterator(T l) : base(l)
             {
 
             }
 
-            public IListTerm Next()
+            //public IListTerm Next()
+            //{
+            //    MyMoveNext();
+            //    return current;
+            //}
+
+            public new IListTerm Current
             {
-                MyMoveNext();
-                return current;
+                get
+                {
+                    MyMoveNext();
+                    return current;
+                }
             }
         }
 
@@ -604,16 +622,23 @@ namespace Assets.Code.AsSyntax
                 return nextLT != null && !(nextLT.Count == 0) && nextLT.IsList();
             }
 
-            public ITerm Next()
-            {
-                MyMoveNext();
-                return current.GetTerm();
-            }
+            //public ITerm Next()
+            //{
+            //    MyMoveNext();
+            //    return current.GetTerm();
+            //}
 
-            //public ITerm Current => MyMoveNext();
+            public new ITerm Current
+            {
+                get
+                {
+                    MyMoveNext();
+                    return current.GetTerm();
+                }
+            }
         }
 
-        private abstract class ListTermIterator<T>: IEnumerator<T> where T: ITerm
+        private abstract class ListTermIterator<T>: IEnumerator<T> where T : ITerm
         {
             public IListTerm nextLT;
             public IListTerm current = null;
@@ -697,8 +722,15 @@ namespace Assets.Code.AsSyntax
                 size = lti.Size();
             }
 
-            public ITerm Current => throw new NotImplementedException();
-
+            public ITerm Current
+            {
+                get
+                {
+                    last = pos;
+                    pos++;
+                    return (ITerm)Get(last);
+                }
+            }
             object IEnumerator.Current => throw new NotImplementedException();
 
             public void Add(ITerm o)
@@ -713,12 +745,12 @@ namespace Assets.Code.AsSyntax
             {
                 return pos > startIndex;
             }
-            public ITerm Next()
-            {
-                last = pos;
-                pos++;
-                return (ITerm)Get(last);
-            }
+            //public ITerm Next()
+            //{
+            //    last = pos;
+            //    pos++;
+            //    return (ITerm)Get(last);
+            //}
             public int NextIndex()
             {
                 return pos + 1;

@@ -66,31 +66,49 @@ namespace Assets.Code.Stdlib
             } 
             */
 
-            public bool HasNext()
-            {
-                return n != default;
-            }
+            //public bool HasNext()
+            //{
+            //    return n != default;
+            //}
 
-            public Unifier Next()
-            {
-                Unifier c = n;
+            //public Unifier Next()
+            //{
+            //    Unifier c = n;
 
-                n = un.Clone();
-                if (i.MoveNext())
-                {
-                    if (!n.UnifiesNoUndo(args[0], i.Current))
-                        Next();
-                }
-                else
-                {
-                    n = default;
-                }
-                return c;
-            }
+            //    n = un.Clone();
+            //    if (i.MoveNext())
+            //    {
+            //        if (!n.UnifiesNoUndo(args[0], i.Current))
+            //            Next();
+            //    }
+            //    else
+            //    {
+            //        n = default;
+            //    }
+            //    return c;
+            //}
 
             //public void Remove() { }
 
-            public Unifier Current => throw new NotImplementedException();
+            public Unifier Current
+            {
+                get
+                {
+                    Unifier c = n;
+
+                    n = un.Clone();
+                    if (i.MoveNext())
+                    {
+                        if (!n.UnifiesNoUndo(args[0], i.Current))
+                            Current;
+                    }
+                    else
+                    {
+                        n = default;
+                    }
+                    return c;
+                }
+            }
 
             object IEnumerator.Current => throw new NotImplementedException();
 

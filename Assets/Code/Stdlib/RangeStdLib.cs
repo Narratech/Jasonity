@@ -110,17 +110,26 @@ namespace Assets.Code.Stdlib
             //        return vl + step >= end;
             //}
 
-            public Unifier Next()
-            {
-                vl += step;
-                Unifier c = un.Clone();
-                c.UnifiesNoUndo(var, new NumberTermImpl(vl));
-                return c;
-            }
+            //public Unifier Next()
+            //{
+            //    vl += step;
+            //    Unifier c = un.Clone();
+            //    c.UnifiesNoUndo(var, new NumberTermImpl(vl));
+            //    return c;
+            //}
 
             //public void Remove() { }
 
-            public Unifier Current => throw new NotImplementedException();
+            public Unifier Current
+            {
+                get
+                {
+                    vl += step;
+                    Unifier c = un.Clone();
+                    c.UnifiesNoUndo(var, new NumberTermImpl(vl));
+                    return c;
+                }
+            }
 
             object IEnumerator.Current => throw new NotImplementedException();
 

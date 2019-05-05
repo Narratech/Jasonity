@@ -176,12 +176,12 @@ namespace Assets.Code.AsSyntax
         //    return current != null;
         //}
 
-        public Unifier Next()
-        {
-            if (needsUpdate) Get();
-            if (current != null) needsUpdate = true;
-            return current;
-        }
+        //public Unifier Next()
+        //{
+        //    if (needsUpdate) Get();
+        //    if (current != null) needsUpdate = true;
+        //    return current;
+        //}
 
         private void Get()
         {
@@ -190,12 +190,20 @@ namespace Assets.Code.AsSyntax
             while ((iright == null || iright.MoveNext()) && ileft.MoveNext())
                 iright = (AndIterator<Unifier>)logExpr.GetRHS().LogicalConsequence(ag, ileft.Current);
             if (iright != null && iright.MoveNext())
-                current = iright.Next();
+                current = iright.Current;
         }
 
         //public void Remove() { }
 
-        public Unifier Current => throw new NotImplementedException();
+        public Unifier Current
+        {
+            get
+            {
+                if (needsUpdate) Get();
+                if (current != null) needsUpdate = true;
+                return current;
+            }
+        }
 
         object IEnumerator.Current => throw new NotImplementedException();
 
@@ -242,31 +250,39 @@ namespace Assets.Code.AsSyntax
         //    return current != null;
         //}
 
-        public Unifier Next()
-        {
-            if (needsUpdate) Get();
-            if (current != default) needsUpdate = true;
-            return current;
-        }
+        //public Unifier Next()
+        //{
+        //    if (needsUpdate) Get();
+        //    if (current != default) needsUpdate = true;
+        //    return current;
+        //}
 
         private void Get()
         {
             needsUpdate = false;
             current = default;
             if (ileft != null && ileft.MoveNext())
-                current = ileft.Next();
+                current = ileft.Current;
             else
             {
                 if (iright == null)
                     iright = (OrIterator<Unifier>)logExpr.GetRHS().LogicalConsequence(ag, un);
                 if (iright != null && iright.MoveNext())
-                    current = iright.Next();
+                    current = iright.Current;
             }
         }
 
         //public void Remove() { }
 
-        public Unifier Current => throw new NotImplementedException(); //  <= arreglar
+        public Unifier Current
+        {
+            get
+            {
+                if (needsUpdate) Get();
+                if (current != default) needsUpdate = true;
+                return current;
+            }
+        }
 
         object IEnumerator.Current => throw new NotImplementedException();
 

@@ -29,6 +29,8 @@ namespace Assets.Code.Stdlib
 
         private class EnumeratorImpl : IEnumerator<Unifier>
         {
+
+
             public Unifier Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();

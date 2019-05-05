@@ -54,7 +54,16 @@ namespace Assets.Code.Stdlib
             Trigger g;
             ITerm intAsTerm;
 
-            public Unifier Current => throw new System.NotImplementedException();
+            public Unifier Current
+            {
+                get
+                {
+                    if (solution == null) Find();
+                    Unifier b = solution;
+                    Find(); // find next response
+                    return b;
+                }
+            }
 
             object IEnumerator.Current => throw new System.NotImplementedException();
 
@@ -72,13 +81,13 @@ namespace Assets.Code.Stdlib
                 return solution != null;
             }
 
-            public Unifier Next()
-            {
-                if (solution == null) Find();
-                Unifier b = solution;
-                Find(); // find next response
-                return b;
-            }
+            //public Unifier Next()
+            //{
+            //    if (solution == null) Find();
+            //    Unifier b = solution;
+            //    Find(); // find next response
+            //    return b;
+            //}
 
             bool IsSolution()
             {
@@ -115,7 +124,7 @@ namespace Assets.Code.Stdlib
 
             public void Dispose()
             {
-                throw new System.NotImplementedException();
+                
             }
         }   
     }

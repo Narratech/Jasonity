@@ -373,7 +373,17 @@ namespace Assets.Code.AsSyntax
             private IEnumerator<Literal> il;
             private Literal lit;
 
-            public Unifier Current => throw new NotImplementedException();
+            public Unifier Current
+            {
+                get
+                {
+                    if (needsUpdate)
+                        Get();
+                    if (current != null)
+                        needsUpdate = true;
+                    return current;
+                }
+            }
 
             object IEnumerator.Current => throw new NotImplementedException();
 
@@ -396,14 +406,14 @@ namespace Assets.Code.AsSyntax
             //    return current != null;
             //}
 
-            public Unifier Next()
-            {
-                if (needsUpdate)
-                    Get();
-                if (current != null)
-                    needsUpdate = true;
-                return current;
-            }
+            //public Unifier Next()
+            //{
+            //    if (needsUpdate)
+            //        Get();
+            //    if (current != null)
+            //        needsUpdate = true;
+            //    return current;
+            //}
 
             private void Get()
             {

@@ -119,14 +119,14 @@ namespace Assets.Code.Stdlib
             //    return c != default;
             //}
 
-            public Unifier Next()
-            {
-                if (c == null)
-                    Find(); // find next response
-                Unifier b = c;
-                Find();
-                return b;
-            }
+            //public Unifier Next()
+            //{
+            //    if (c == null)
+            //        Find(); // find next response
+            //    Unifier b = c;
+            //    Find();
+            //    return b;
+            //}
 
             void Find()
             {
@@ -146,7 +146,17 @@ namespace Assets.Code.Stdlib
 
             //public void Remove() { }
 
-            public Unifier Current => throw new NotImplementedException();
+            public Unifier Current
+            {
+                get
+                {
+                    if (c == null)
+                        Find(); // find next response
+                    Unifier b = c;
+                    Find();
+                    return b;
+                }
+            }
 
             object IEnumerator.Current => throw new NotImplementedException();
 

@@ -93,17 +93,26 @@ namespace Assets.Code.Stdlib
             //    return (n < max || max == 0) && ts.GetUserAgArch().IsRunning();
             //}
 
-            public Unifier Next()
-            {
-                Unifier c = un.Clone();
-                c.Unifies(args[0], new NumberTermImpl(random.NextDouble()));
-                n++;
-                return c;
-            }
+            //public Unifier Next()
+            //{
+            //    Unifier c = un.Clone();
+            //    c.Unifies(args[0], new NumberTermImpl(random.NextDouble()));
+            //    n++;
+            //    return c;
+            //}
 
             //public void Remove() { }
 
-            public Unifier Current => throw new NotImplementedException();
+            public Unifier Current
+            {
+                get
+                {
+                    Unifier c = un.Clone();
+                    c.Unifies(args[0], new NumberTermImpl(random.NextDouble()));
+                    n++;
+                    return c;
+                }
+            }
 
             object IEnumerator.Current => throw new NotImplementedException();
 
