@@ -10,7 +10,10 @@ public class Environment : MonoBehaviour{
     private bool isRunning = true;
     private ISet<string> uptodateAgs = new HashSet<string>();
 
-    //protected ExecutorService executor; // the thread pool used to execute actions
+    // /** the infrastructure tier for environment (Centralised, Saci, ...) */
+    private EnvironmentInfraTier environmentInfraTier = null;
+
+    protected ScheduledExecutor executor; // the thread pool used to execute actions
 
     public void Start(){
 
@@ -32,7 +35,7 @@ public class Environment : MonoBehaviour{
         //executor.shutdownNow();
     }
 
-    public boolean isRunning() {
+    public bool isRunning() {
         return isRunning;
     }
 
@@ -95,7 +98,7 @@ public class Environment : MonoBehaviour{
         }
     }
         /** Removes a perception from the common perception list */
-    public boolean removePercept(Literal per) {
+    public bool removePercept(Literal per) {
         if (per != null) {
             uptodateAgs.clear();
             return percepts.remove(per);
@@ -132,7 +135,7 @@ public class Environment : MonoBehaviour{
         }
     }
     /** Returns true if the list of common percepts contains the perception <i>per</i>. */
-    public boolean containsPercept(Literal per) {
+    public bool containsPercept(Literal per) {
         if (per != null) {
             return percepts.contains(per);
         }
@@ -155,7 +158,7 @@ public class Environment : MonoBehaviour{
         }
     }
     /** Removes a perception for an agent */
-    public boolean removePercept(String agName, Literal per) {
+    public bool removePercept(String agName, Literal per) {
         if (per != null && agName != null) {
             IList<Literal> agl = agPercepts.get(agName);
             if (agl != null) {
@@ -186,7 +189,7 @@ public class Environment : MonoBehaviour{
         }
         return c;
     }
-    public boolean containsPercept(String agName, Literal per) {
+    public bool containsPercept(String agName, Literal per) {
         if (per != null && agName != null) {
             IList agl = (IList)agPercepts.get(agName);
             if (agl != null) {
@@ -211,25 +214,26 @@ public class Environment : MonoBehaviour{
         foreach (String ag in agPercepts.keySet())
             clearPercepts(ag);
     }
-        /**
+
+    /**
      * Executes an action on the environment. This method is probably overridden in the user environment class.
      */
-    public boolean executeAction(String agName, Structure act) {
+    public virtual bool executeAction(String agName, Structure act) {
         Debug.Log("The action "+act+" done by "+agName+" is not implemented in the default environment.");
         return false;
     }
 
-        /**
-     * Sets the infrastructure tier of the environment (saci, jade, centralised, ...)
-     *
+    /**
+    * Sets the infrastructure tier of the environment (saci, jade, centralised, ...)
+    */
     public void setEnvironmentInfraTier(EnvironmentInfraTier je) {
         environmentInfraTier = je;
     }
+
     public EnvironmentInfraTier getEnvironmentInfraTier() {
         return environmentInfraTier;
     }
-    
-    
+        
     public void informAgsEnvironmentChanged(Collection<String> agents) {
         if (environmentInfraTier != null) {
             environmentInfraTier.informAgsEnvironmentChanged(agents);
@@ -239,20 +243,20 @@ public class Environment : MonoBehaviour{
     /**
      * Called by the agent infrastructure to schedule an action to be
      * executed on the environment
-     
+     */
     public void scheduleAction(String agName, Structure action, Object infraData) {
-        executor.execute(new Runnable() {
-            public void run() {
+        executor.execute(new customRunnable());
+    }
+    private class customRunnable : IRunnable{
+        public void Run() {
                 try {
-                    boolean success = executeAction(agName, action);
+                    bool success = executeAction(agName, action);
                     environmentInfraTier.actionExecuted(agName, action, success, infraData); // send the result of the execution to the agent
                 } catch (Exception ie) {
-                    if (!(ie instanceof InterruptedException)) {
-                        logger.log(Level.WARNING, "act error!",ie);
+                    if (!(ie.GetType()==typeof(InterruptedException))) {
+                        Debug.Log(Level.WARNING, "act error!",ie);
                     }
                 }
             }
-        });
     }
-    */
 }
