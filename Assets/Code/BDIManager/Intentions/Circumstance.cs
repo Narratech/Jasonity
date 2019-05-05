@@ -31,6 +31,8 @@ namespace Assets.Code.BDIManager
         private Dictionary<string, Intention> PI; // Pending intentions, suspended
         private Dictionary<string, Event> PE; // Pending events, suspended
 
+        
+
         private Queue<ICircumstanceListener> listeners;
 
         private Reasoner reasoner = null;
@@ -603,7 +605,12 @@ namespace Assets.Code.BDIManager
             return s.ToString();
         }
 
-        public class IEnumeratorIntentions : IEnumerator<Intention>
+        public IEnumerator<Intention> GetAllIntentions()
+        {
+            return new EnumeratorIntentions<Intention>(this);
+        }
+
+        private class EnumeratorIntentions<T> : IEnumerator<Intention>
         {
             // Data structure with intentions
             enum Step { selEvt, selInt, evt, pendEvt, pendAct, pendInt, intentions, end }
@@ -616,7 +623,7 @@ namespace Assets.Code.BDIManager
             IEnumerator<Intention> pendIntEnumerator = null;
             IEnumerator<Intention> intEnumerator = null;
 
-            public IEnumeratorIntentions(Circumstance c)
+            public EnumeratorIntentions(Circumstance c)
             {
                 this.c = c;
             }

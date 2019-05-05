@@ -40,6 +40,11 @@ namespace Assets.Code.Stdlib
             private Unifier un;
             private Trigger teFromL;
 
+            //static EnumeratorImpl()
+            //{
+            //    Find();
+            //}
+
             public EnumeratorImpl(Circumstance c, Literal l, ITerm intAsTerm, Unifier un, Trigger teFroml)
             {
                 this.C = c;
