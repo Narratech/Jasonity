@@ -170,11 +170,11 @@ namespace Assets.Code.AsSyntax
             ileft = (AndIterator<Unifier>)logExpr.GetLHS().LogicalConsequence(ag, un);
         }
 
-        public bool HasNext()
-        {
-            if (needsUpdate) Get();
-            return current != null;
-        }
+        //public bool HasNext()
+        //{
+        //    if (needsUpdate) Get();
+        //    return current != null;
+        //}
 
         public Unifier Next()
         {
@@ -189,11 +189,11 @@ namespace Assets.Code.AsSyntax
             current = default;
             while ((iright == null || iright.MoveNext()) && ileft.MoveNext())
                 iright = (AndIterator<Unifier>)logExpr.GetRHS().LogicalConsequence(ag, ileft.Current);
-            if (iright != null && iright.HasNext())
+            if (iright != null && iright.MoveNext())
                 current = iright.Next();
         }
 
-        public void Remove() { }
+        //public void Remove() { }
 
         public Unifier Current => throw new NotImplementedException();
 
@@ -203,12 +203,13 @@ namespace Assets.Code.AsSyntax
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
 
         public bool MoveNext()
         {
-            throw new NotImplementedException();
+            if (needsUpdate) Get();
+            return current != null;
         }
 
         public void Reset()

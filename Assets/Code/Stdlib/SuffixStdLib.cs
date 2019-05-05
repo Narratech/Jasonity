@@ -88,12 +88,12 @@ namespace Assets.Code.Stdlib
                 c = null;
             }
 
-            public bool HasNext()
-            {
-                if (c == null) // the first call of hasNext should find the first response
-                    Find();
-                return c != null;
-            }
+            //public bool HasNext()
+            //{
+            //    if (c == null) // the first call of hasNext should find the first response
+            //        Find();
+            //    return c != null;
+            //}
 
             public Unifier Next()
             {
@@ -120,7 +120,7 @@ namespace Assets.Code.Stdlib
                 c = null; // no more sublists found
             }
 
-            public void Remove() { }
+            //public void Remove() { }
 
             public Unifier Current => throw new NotImplementedException();
 
@@ -128,12 +128,14 @@ namespace Assets.Code.Stdlib
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                
             }
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                if (c == null) // the first call of hasNext should find the first response
+                    Find();
+                return c != null;
             }
 
             public void Reset()

@@ -88,18 +88,20 @@ namespace Assets.Code.Stdlib
                 return c;
             }
 
+            //public void Remove() { }
+
             public Unifier Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                
             }
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                return n != default;
             }
 
             public void Reset()
@@ -107,7 +109,5 @@ namespace Assets.Code.Stdlib
                 throw new NotImplementedException();
             }
         }
-
-        public void Remove() { }
     }
 }

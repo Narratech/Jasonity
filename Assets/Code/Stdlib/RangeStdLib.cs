@@ -102,13 +102,13 @@ namespace Assets.Code.Stdlib
                 this.var = var;
             }
 
-            public bool HasNext()
-            {
-                if (step > 0)
-                    return vl + step <= end;
-                else
-                    return vl + step >= end;
-            }
+            //public bool HasNext()
+            //{
+            //    if (step > 0)
+            //        return vl + step <= end;
+            //    else
+            //        return vl + step >= end;
+            //}
 
             public Unifier Next()
             {
@@ -118,7 +118,7 @@ namespace Assets.Code.Stdlib
                 return c;
             }
 
-            public void Remove() { }
+            //public void Remove() { }
 
             public Unifier Current => throw new NotImplementedException();
 
@@ -126,12 +126,15 @@ namespace Assets.Code.Stdlib
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                
             }
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                if (step > 0)
+                    return vl + step <= end;
+                else
+                    return vl + step >= end;
             }
 
             public void Reset()

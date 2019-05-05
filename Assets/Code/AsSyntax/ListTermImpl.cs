@@ -402,7 +402,25 @@ namespace Assets.Code.AsSyntax
 
             List<ITerm> next = null;
 
-            public bool HasNext()
+            //public bool HasNext()
+            //{
+            //    if (open == null)
+            //    {
+            //        open = new List<SubSetSearchState>();
+            //        ListTermImpl lti = new ListTermImpl();
+            //        thisAsArray = lti.GetAsList().ToArray();
+            //        //ORIGINAL: ToArray(thisAsArray);
+            //        open.Insert(open.Count, new SubSetSearchState(0, k, null, null));
+            //        //open.AddAfter(new SubSetSearchState(0, k, null, null));
+            //    }
+            //    if (next == null)
+            //    {
+            //        GetNext();
+            //    }
+            //    return next != null;
+            //}
+
+            public bool MoveNext()
             {
                 if (open == null)
                 {
@@ -449,7 +467,7 @@ namespace Assets.Code.AsSyntax
                 next = null;
             }
 
-            public void Remove() { }
+            public void Dispose() { }
 
             private class SubSetSearchState
             {
@@ -494,16 +512,6 @@ namespace Assets.Code.AsSyntax
             public T Current => throw new NotImplementedException();
 
             object IEnumerator.Current => throw new NotImplementedException();
-
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
-
-            public bool MoveNext()
-            {
-                throw new NotImplementedException();
-            }
 
             public void Reset()
             {
@@ -562,7 +570,7 @@ namespace Assets.Code.AsSyntax
 
             public IListTerm Next()
             {
-                MoveNext();
+                MyMoveNext();
                 return current;
             }
         }
@@ -586,16 +594,23 @@ namespace Assets.Code.AsSyntax
 
             }
 
-            public override bool HasNext()
+            //public override bool HasNext()
+            //{
+            //    return nextLT != null && !(nextLT.Count == 0) && nextLT.IsList();
+            //}
+
+            public override bool MoveNext()
             {
                 return nextLT != null && !(nextLT.Count == 0) && nextLT.IsList();
             }
 
             public ITerm Next()
             {
-                MoveNext();
+                MyMoveNext();
                 return current.GetTerm();
             }
+
+            //public ITerm Current => MyMoveNext();
         }
 
         private abstract class ListTermIterator<T>: IEnumerator<T> where T: ITerm
@@ -617,25 +632,20 @@ namespace Assets.Code.AsSyntax
                 nextLT = lt;
             }
 
-            public virtual bool HasNext()
+            //public virtual bool HasNext()
+            //{
+            //    return nextLT != null;
+            //}
+
+            public virtual bool MoveNext()
             {
                 return nextLT != null;
             }
 
-            public void MoveNext()
+            public void MyMoveNext()
             {
                 current = nextLT;
                 nextLT = nextLT.GetNext();
-            }
-
-            public void Remove()
-            {
-                if (current != null && nextLT != null)
-                {
-                    current.SetTerm(nextLT.GetTerm());
-                    current.SetNext(nextLT.GetNext());
-                    nextLT = current;
-                }
             }
 
             bool IEnumerator.MoveNext()
@@ -650,7 +660,12 @@ namespace Assets.Code.AsSyntax
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                if (current != null && nextLT != null)
+                {
+                    current.SetTerm(nextLT.GetTerm());
+                    current.SetNext(nextLT.GetNext());
+                    nextLT = current;
+                }
             }
         }
 
@@ -690,10 +705,10 @@ namespace Assets.Code.AsSyntax
             {
                 list.Add(last, o);
             }
-            public bool HasNext()
-            {
-                return pos < size;
-            }
+            //public bool HasNext()
+            //{
+            //    return pos < size;
+            //}
             public bool HasPrevious()
             {
                 return pos > startIndex;
@@ -718,24 +733,25 @@ namespace Assets.Code.AsSyntax
             {
                 return pos - 1;
             }
-            public void Remove()
-            {
-                list.Remove(last);
-            }
+            //public void Remove()
+            //{
+            //    list.Remove(last);
+            //}
             public void Set(ITerm o)
             {
-                Remove();
+                //Remove();
+                Dispose();
                 Add(o);
             }
 
             public void Dispose()
             {
-                throw new NotImplementedException();
+                list.Remove(last);
             }
 
             public bool MoveNext()
             {
-                throw new NotImplementedException();
+                return pos < size;
             }
 
             public void Reset()
