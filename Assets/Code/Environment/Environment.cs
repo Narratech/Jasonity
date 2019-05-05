@@ -2,11 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Code.AsSyntax;
+using Assets.Code.Utilities;
+using Assets.Code.ReasoningCycle;
+using System;
 
 public class Environment : MonoBehaviour{
 
-    private IList<Literal> percepts = new ArrayList<Literal>();
-    private IDictionary<string,List<Literal>>  agPercepts = new ConcurrentHashMap<String, List<Literal>>();
+    private IList<Literal> percepts = new List<Literal>();
+    private IDictionary<string,List<Literal>>  agPercepts = new Dictionary<string, List<Literal>>();
     private bool isRunning = true;
     private ISet<string> uptodateAgs = new HashSet<string>();
 
@@ -23,43 +26,49 @@ public class Environment : MonoBehaviour{
      * Called before the MAS execution with the args informed in
      * .mas2j project, the user environment could override it.
      */
-    public void init(string[] args) {
+    public void Init(string[] args) {
     }
     
     /**
      * Called just before the end of MAS execution, the user
      * environment could override it.
      */
-    public void stop() {
+    public void Stop() {
         isRunning = false;
         //executor.shutdownNow();
     }
 
-    public bool isRunning() {
+    public bool IsRunning() {
         return isRunning;
     }
 
 
-    public Collection<Literal> getPercepts(String agName) {
+    public List<Literal> GetPercepts(string agName) {
         // check whether this agent needs the current version of perception
-        if (uptodateAgs.contains(agName)) {
+        if (uptodateAgs.Contains(agName)) {
             return null;
         }
         // add agName in the set of updated agents
-        uptodateAgs.add(agName);
+        uptodateAgs.Add(agName);
 
-        int size = percepts.size();
-        IList<Literal> agl = agPercepts.get(agName);
+        int size = percepts.Count;
+        IList<Literal> agl = agPercepts[agName];
         if (agl != null) {
-            size += agl.size();
+            size += agl.Count;
         }
-        Collection<Literal> p = new ArrayList<Literal>(size);
+        List<Literal> p = new List<Literal>(size);
 
-        if (!percepts.isEmpty()) { // has global perception?
-            p.addAll(percepts);
+        if (percepts.Count > 0) { // has global perception?
+            foreach (Literal l in percepts)
+            {
+                p.Add(l);
+            }
         }
         if (agl != null) { // add agent personal perception
-            p.addAll(agl);
+            foreach (Literal l in agl)
+            {
+                p.Add(l);
+            }
         }
 
         return p;
@@ -70,38 +79,44 @@ public class Environment : MonoBehaviour{
      *  It is the same list returned by getPercepts, but
      *  doesn't consider the last call of the method.
      */
-    public IList<Literal> consultPercepts(String agName) {
-        int size = percepts.size();
-        IList<Literal> agl = agPercepts.get(agName);
+    public IList<Literal> ConsultPercepts(string agName) {
+        int size = percepts.Count;
+        IList<Literal> agl = agPercepts[agName];
         if (agl != null) {
-            size += agl.size();
+            size += agl.Count;
         }
-        IList<Literal> p = new ArrayList<Literal>(size);
+        IList<Literal> p = new List<Literal>(size);
 
-        if (!percepts.isEmpty()) { // has global perception?
-                p.addAll(percepts);
+        if (percepts.Count > 0) { // has global perception?
+            foreach (Literal l in percepts)
+            {
+                p.Add(l);
+            }
         }
         if (agl != null) { // add agent personal perception
-                p.addAll(agl);
+            foreach (Literal l in agl)
+            {
+                p.Add(l);
+            }
         }
         return p;
     }
     /** Adds a perception for all agents */
-    public void addPercept(Literal[] perceptions) {
+    public void AddPercept(Literal[] perceptions) {
         if (perceptions != null) {
             foreach (Literal per in perceptions) {
-                if (!percepts.contains(per)) {
-                    percepts.add(per);
+                if (!percepts.Contains(per)) {
+                    percepts.Add(per);
                 }
             }
-            uptodateAgs.clear();
+            uptodateAgs.Clear();
         }
     }
         /** Removes a perception from the common perception list */
-    public bool removePercept(Literal per) {
+    public bool RemovePercept(Literal per) {
         if (per != null) {
-            uptodateAgs.clear();
-            return percepts.remove(per);
+            uptodateAgs.Clear();
+            return percepts.Remove(per);
         }
         return false;
     }
@@ -112,58 +127,58 @@ public class Environment : MonoBehaviour{
      *
      *  @return the number of removed percepts.
      */
-    public int removePerceptsByUnif(Literal per) {
+    public int RemovePerceptsByUnif(Literal per) {
         int c = 0;
-        if (! percepts.isEmpty()) { // has global perception?
-            Iterator<Literal> i = percepts.iterator();
-            while (i.hasNext()) {
-                Literal l = i.next();
-                if (new Unifier().unifies(l,per)) {
-                    i.remove();
+        if (percepts.Count > 0) { // has global perception?
+            IEnumerator<Literal> i = percepts.GetEnumerator();
+            while (i.MoveNext()) {
+                Literal l = i.Current;
+                if (new Unifier().Unifies(l,per)) {
+                    i.remove(); //Borrar el elemento apuntado por el enumerator
                     c++;
                 }
             }
-            if (c>0) uptodateAgs.clear();
+            if (c>0) uptodateAgs.Clear();
         }
         return c;
     }
     /** Clears the list of global percepts */
-    public void clearPercepts() {
-        if (!percepts.isEmpty()) {
-            uptodateAgs.clear();
-            percepts.clear();
+    public void ClearPercepts() {
+        if (percepts.Count > 0) {
+            uptodateAgs.Clear();
+            percepts.Clear();
         }
     }
     /** Returns true if the list of common percepts contains the perception <i>per</i>. */
-    public bool containsPercept(Literal per) {
+    public bool ContainsPercept(Literal per) {
         if (per != null) {
-            return percepts.contains(per);
+            return percepts.Contains(per);
         }
         return false;
     }
     /** Adds a perception for a specific agent */
-    public void addPercept(String agName, Literal[] per) {
+    public void AddPercept(string agName, Literal[] per) {
         if (per != null && agName != null) {
-            IList<Literal> agl = agPercepts.get(agName);
+            IList<Literal> agl = agPercepts[agName];
             if (agl == null) {
-                agl = Collections.synchronizedList(new ArrayList<Literal>());
-                agPercepts.put( agName, agl);
+                agl = new List<Literal>();
+                agPercepts.Add(agName, (List<Literal>)agl);
             }
             foreach (Literal p in per) {
-                if (!agl.contains(p)) {
-                    uptodateAgs.remove(agName);
-                    agl.add(p);
+                if (!agl.Contains(p)) {
+                    uptodateAgs.Remove(agName);
+                    agl.Add(p);
                 }
             }
         }
     }
     /** Removes a perception for an agent */
-    public bool removePercept(String agName, Literal per) {
+    public bool RemovePercept(string agName, Literal per) {
         if (per != null && agName != null) {
-            IList<Literal> agl = agPercepts.get(agName);
+            IList<Literal> agl = agPercepts[agName];
             if (agl != null) {
-                uptodateAgs.remove(agName);
-                return agl.remove(per);
+                uptodateAgs.Remove(agName);
+                return agl.Remove(per);
             }
         }
         return false;
@@ -171,54 +186,54 @@ public class Environment : MonoBehaviour{
     /** Removes from an agent perception all percepts that unifies with <i>per</i>.
      *  @return the number of removed percepts.
      */
-    public int removePerceptsByUnif(String agName, Literal per) {
+    public int RemovePerceptsByUnif(string agName, Literal per) {
         int c = 0;
         if (per != null && agName != null) {
-            IList<Literal> agl = agPercepts.get(agName);
+            IList<Literal> agl = agPercepts[agName];
             if (agl != null) {
-                    Iterator<Literal> i = agl.iterator();
-                    while (i.hasNext()) {
-                        Literal l = i.next();
-                        if (new Unifier().unifies(l,per)) {
+                    IEnumerator<Literal> i = agl.GetEnumerator();
+                    while (i.MoveNext()) {
+                        Literal l = i.Current;
+                        if (new Unifier().Unifies(l,per)) {
                             i.remove();
                             c++;
                         }
                     }
-                if (c>0) uptodateAgs.remove(agName);
+                if (c>0) uptodateAgs.Remove(agName);
             }
         }
         return c;
     }
-    public bool containsPercept(String agName, Literal per) {
+    public bool ContainsPercept(string agName, Literal per) {
         if (per != null && agName != null) {
-            IList agl = (IList)agPercepts.get(agName);
+            IList agl = (IList)agPercepts[agName];
             if (agl != null) {
-                return agl.contains(per);
+                return agl.Contains(per);
             }
         }
         return false;
     }
      /** Clears the list of percepts of a specific agent */
-    public void clearPercepts(String agName) {
+    public void ClearPercepts(string agName) {
         if (agName != null) {
-            IList<Literal> agl = agPercepts.get(agName);
+            IList<Literal> agl = agPercepts[agName];
             if (agl != null) {
-                uptodateAgs.remove(agName);
-                agl.clear();
+                uptodateAgs.Remove(agName);
+                agl.Clear();
             }
         }
     }
      /** Clears all perception (from common list and individual perceptions) */
-    public void clearAllPercepts() {
-        clearPercepts();
-        foreach (String ag in agPercepts.keySet())
-            clearPercepts(ag);
+    public void ClearAllPercepts() {
+        ClearPercepts();
+        foreach (string ag in agPercepts.Keys)
+            ClearPercepts(ag);
     }
 
     /**
      * Executes an action on the environment. This method is probably overridden in the user environment class.
      */
-    public virtual bool executeAction(String agName, Structure act) {
+    public virtual bool ExecuteAction(string agName, Structure act) {
         Debug.Log("The action "+act+" done by "+agName+" is not implemented in the default environment.");
         return false;
     }
@@ -226,17 +241,17 @@ public class Environment : MonoBehaviour{
     /**
     * Sets the infrastructure tier of the environment (saci, jade, centralised, ...)
     */
-    public void setEnvironmentInfraTier(EnvironmentInfraTier je) {
+    public void SetEnvironmentInfraTier(EnvironmentInfraTier je) {
         environmentInfraTier = je;
     }
 
-    public EnvironmentInfraTier getEnvironmentInfraTier() {
+    public EnvironmentInfraTier GetEnvironmentInfraTier() {
         return environmentInfraTier;
     }
         
-    public void informAgsEnvironmentChanged(Collection<String> agents) {
+    public void InformAgsEnvironmentChanged(List<string> agents) {
         if (environmentInfraTier != null) {
-            environmentInfraTier.informAgsEnvironmentChanged(agents);
+            environmentInfraTier.InformAgsEnvironmentChanged(agents);
         }
     }
     
@@ -244,17 +259,33 @@ public class Environment : MonoBehaviour{
      * Called by the agent infrastructure to schedule an action to be
      * executed on the environment
      */
-    public void scheduleAction(String agName, Structure action, Object infraData) {
-        executor.execute(new customRunnable());
+    public void ScheduleAction(string agName, Structure action, object infraData) {
+        executor.Execute(new CustomRunnable(agName, action, this, environmentInfraTier, infraData));
     }
-    private class customRunnable : IRunnable{
+    private class CustomRunnable : IRunnable{
+
+        string agName;
+        Structure action;
+        Environment e;
+        EnvironmentInfraTier envInfraTier;
+        object infraData;
+
+        public CustomRunnable(string agName, Structure action, Environment e, EnvironmentInfraTier envInfraTier, object infraData)
+        {
+            this.agName = agName;
+            this.action = action;
+            this.e = e;
+            this.envInfraTier = envInfraTier;
+            this.infraData = infraData;
+        }
+
         public void Run() {
                 try {
-                    bool success = executeAction(agName, action);
-                    environmentInfraTier.actionExecuted(agName, action, success, infraData); // send the result of the execution to the agent
+                    bool success = e.ExecuteAction(agName, action);
+                    envInfraTier.ActionExecuted(agName, action, success, infraData); // send the result of the execution to the agent
                 } catch (Exception ie) {
-                    if (!(ie.GetType()==typeof(InterruptedException))) {
-                        Debug.Log(Level.WARNING, "act error!",ie);
+                    if (!(ie.GetType()==typeof(Exception))) {
+                        //Debug.Log(Level.WARNING, "act error!",ie);
                     }
                 }
             }

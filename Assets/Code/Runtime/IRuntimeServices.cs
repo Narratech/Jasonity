@@ -8,7 +8,7 @@ using Assets.Code.Mas2J;
 
 namespace Assets.Code.Runtime
 {
-    public interface RuntimeServices
+    public interface IRuntimeServices
     {
         /**
          * Creates a new agent with <i>agName</i> from source
@@ -31,7 +31,7 @@ namespace Assets.Code.Runtime
          * Returns the name of the agent
          */
         string CreateAgent(string name, string source, string agClass, List<string> agArchClasses,
-            ClassParameters bbPars, Code.Settings settings, Agent agent);
+            ClassParameters bbPars, Settings settings, Agent agent);
 
         string GetNewAgentName(string name);
 
