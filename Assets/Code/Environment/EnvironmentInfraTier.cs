@@ -2,30 +2,36 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Code.AsSyntax;
+using Assets.Code.Mas2J;
+using System;
+using Assets.Code.Exceptions;
+using BDIMaAssets.Code.ReasoningCycle;
+using Assets.Code.Infra;
+using Assets.Code.Runtime;
 
 public class EnvironmentInfraTier{
     /** the user customisation class for the environment */
     private Environment userEnv;
-    private BaseCentralisedMAS masRunner = BaseCentralisedMAS.getRunner();
-    private boolean running = true;
+    private BaseCentralisedMAS masRunner = BaseCentralisedMAS.GetRunner();
+    private bool running = true;
 
     public EnvironmentInfraTier(ClassParameters userEnvArgs, BaseCentralisedMAS masRunner){
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
             try {
                 userEnv = (Environment) getClass().getClassLoader().loadClass(userEnvArgs.getClassName()).newInstance();
-                userEnv.setEnvironmentInfraTier(this);
-                userEnv.init(userEnvArgs.getParametersArray());
+                userEnv.SetEnvironmentInfraTier(this);
+                userEnv.Init(userEnvArgs.GetParametersArray());
             } catch (Exception e) {
                 Debug.Log("Error in Centralised MAS environment creation");
                 Debug.Log(e);
-                throw new JasonityException("The user environment class instantiation '"+userEnvArgs+"' has failed!"+e.getMessage());
+                throw new JasonityException("The user environment class instantiation '"+userEnvArgs+"' has failed!"+e.Message);
             }
         }
     }
 
     /** returns true if the infrastructure environment is running */
-    public boolean IsRunning() {
+    public bool IsRunning() {
         return running;
     }
 
@@ -42,9 +48,9 @@ public class EnvironmentInfraTier{
     }
 
     /** called by the agent infra arch to perform an action in the environment */
-    public void Act(String agName, ActionExec action) {
+    public void Act(string agName, ExecuteAction action) {
         if (running) {
-            userEnv.scheduleAction(agName, action.getActionTerm(), action);
+            userEnv.ScheduleAction(agName, action.GetActionTerm(), action);
         }
     }
     /**
@@ -52,14 +58,14 @@ public class EnvironmentInfraTier{
      * (called by the user environment). If no agent is informed, the notification is sent
      * to all agents.
      */
-    public void informAgsEnvironmentChanged(String[] agents){
-        if (agents.length == 0) {
+    public void InformAgsEnvironmentChanged(String[] agents){
+        if (agents.Length == 0) {
             foreach (CentralisedAgArch ag in masRunner.GetAgs().Values()) {
-                ag.getTS().getUserAgArch().wakeUpSense();
+                ag.GetReasoner().GetUserAgArch().WakeUpSense();
             }
         } else {
             foreach (String agName in agents) {
-                CentralisedAgArch ag = masRunner.getAg(agName);
+                CentralisedAgArch ag = masRunner.GetAg(agName);
                 if (ag != null) {
                         ag.WakeUpSense();
                 } else {
@@ -76,14 +82,16 @@ public class EnvironmentInfraTier{
      *
      * @deprecated use the informAgsEnvironmentChanged with String... parameter
      */
-    public void InformAgsEnvironmentChanged(Collection<String> agents){
-         if (agentsToNotify == null) {
-            informAgsEnvironmentChanged();
-        } else {
+    public void InformAgsEnvironmentChanged(List<String> agents){
+        if (agentsToNotify == null)
+        {
+            InformAgsEnvironmentChanged();
+        } else
+        {
             foreach (String agName in agentsToNotify) {
                 CentralisedAgArch ag = masRunner.GetAg(agName);
                 if (ag != null) {
-                    ag.getTS().GetUserAgArch().WakeUpSense();
+                    ag.GetReasoner().GetUserAgArch().WakeUpSense();
                 } else {
                     Debug.Log("Error sending message notification: agent " + agName + " does not exist!");
                 }
@@ -92,7 +100,7 @@ public class EnvironmentInfraTier{
     }
 
     /** Gets an object with infrastructure runtime services */
-    public RuntimeServices getRuntimeServices(){
+    public RuntimeServices GetRuntimeServices(){ //Esto es una interfaz, supongo que tenemos que convertirla en una clase
        return new RuntimeServices(masRunner);
     }
 
@@ -100,8 +108,8 @@ public class EnvironmentInfraTier{
 
 
     /** called by the user implementation of the environment when the action was executed */
-    public void ActionExecuted(String agName, Structure actTerm, boolean success, Object infraData){
-        ActionExec action = (ActionExec)infraData;
+    public void ActionExecuted(String agName, Structure actTerm, bool success, object infraData){
+        ExecuteAction action = (ExecuteAction)infraData;
         action.SetResult(success);
         CentralisedAgArch ag = masRunner.GetAg(agName);
         if (ag != null) // the agent may was killed

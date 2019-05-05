@@ -18,9 +18,9 @@ using Assets.Code.BDIAgent;
 //This provides an agent architecture where each agent has its ouwn thread. 
 namespace Assets.Code.Infra
 {
-    class CentralisedAgArch : AgentArchitecture, IRunnable
+    public class CentralisedAgArch : AgentArchitecture, IRunnable
     {
-        protected CentralisedEnvironment infraEnv = null; //I think this wont exist in our project
+        protected CentralisedEnvironment infraEnv = null; //Esto va a ser un EnvironmentInfraTier o un Environment, no me acuerdo
         private CentralisedExecutionControl infraControl = null;
         private BaseCentralisedMAS masRunner = BaseCentralisedMAS.GetRunner();
         private string agName = "";
@@ -28,13 +28,13 @@ namespace Assets.Code.Infra
         private ConcurrentQueue<Message> mbox = new ConcurrentQueue<Message>();
         //protected Logger logger = Logger.getLogger(CentralisedAgArch.class.getName());
         private static List<IMsgListener> msgListeners = null;
-        private Thread myThread = null;
+        //private Thread myThread = null; //Sin theads yay
         private object sleepSync = new object();
         private int sleepTime = 50;
         public static readonly int MAX_SLEEP = 1000;
         private object syncMonitor = new object();
         private volatile bool inWaitSyncMonitor = false;
-        private RConf conf;
+        private RConf conf; //??
 
         private int cycles = 1;
 
@@ -99,10 +99,10 @@ namespace Assets.Code.Infra
         {
             running = false;
             Wake(); // so that it leaves the run loop
-            if (myThread != null)
-            {
-                myThread.Interrupt();
-            }
+            //if (myThread != null)
+            //{
+                //myThread.Interrupt();
+            //}
             GetReasoner().GetAgent().StopAg();
             GetUserAgArch().Stop(); // stops all archs
         }
@@ -150,16 +150,16 @@ namespace Assets.Code.Infra
             return infraControl;
         }
 
-        public void SetThread(Thread t)
+        /*public void SetThread(Thread t)
         {
             myThread = t;
             myThread.Name = agName;
-        }
+        }*/
 
-        public void StartThread()
+        /*public void StartThread()
         {
             myThread.Start();
-        }
+        }*/
 
         public new bool IsRunning()
         {
@@ -256,15 +256,15 @@ namespace Assets.Code.Infra
                 {
                     //logger.fine("Entering in sleep mode....");
                     //synchronized(sleepSync) {
-                        sleepSync.Wait(sleepTime); // wait for messages
+                        sleepSync.Wait(sleepTime); // wait for messages //Esto entiendo queno hace falta
                         if (sleepTime < MAX_SLEEP)
                             sleepTime += 100;
                     //}
                 }
             }
-            catch (ThreadInterruptedException e)
+            /*catch (ThreadInterruptedException e)
             {
-            }
+            }*/
             catch (Exception e)
             {
                 
@@ -273,11 +273,11 @@ namespace Assets.Code.Infra
 
         public override void Wake()
         {
-            synchronized(sleepSync) 
-            {
+            //synchronized(sleepSync) 
+            //{
                 sleepTime = 50;
-                sleepSync.NotifyAll(); // notify sleep method
-            }
+                sleepSync.NotifyAll(); // notify sleep method //Entiendo que esto tampoco
+            //}
         }
 
         public override void WakeUpSense()
@@ -329,13 +329,13 @@ namespace Assets.Code.Infra
 
         public void ReceiveMsg(Message m)
         {
-            mbox.Offer(m);
+            mbox.Enqueue(m);
             WakeUpSense();
         }
 
-        public void Broadcast(Message m)
+        public new void Broadcast(Message m)
         {
-            foreach (string agName in masRunner.GetAgs().KeySet())
+            foreach (string agName in masRunner.GetAgs().Key)
             {
                 if (!agName.Equals(GetAgName()))
                 {
@@ -349,11 +349,12 @@ namespace Assets.Code.Infra
         public new void CheckMail()
         {
             Circumstance C = GetReasoner().GetCircumstance();
-            Message im = mbox.Dequeue();
+            Message im;
+            mbox.TryDequeue(out im);
             while (im != null)
             {
                 C.AddMsg(im);
-                im = mbox.Poll();
+                im = mbox.Poll(); //Mirar que hace el de java
             }
         }
 
@@ -395,16 +396,16 @@ namespace Assets.Code.Infra
         {
             try
             {
-                synchronized(syncMonitor) 
-                {
+                //synchronized(syncMonitor) 
+                //{
                     inWaitSyncMonitor = true;
-                    syncMonitor.Wait();
+                    syncMonitor.Wait();//esto creo que no hace falta
                     inWaitSyncMonitor = false;
-                }
+                //}
             }
-            catch (ThreadInterruptedException e)
+            /*catch (ThreadInterruptedException e)
             {
-            }
+            }*/
             catch (Exception e)
             {
 
@@ -415,19 +416,19 @@ namespace Assets.Code.Infra
          * inform this agent that it can continue, if it is in sync mode and
          * waiting a signal
          */
-        public void ReceiveSyncSignal()
+        public void ReceiveSyncSignal() //Esto creo que no hace falta yay
         {
             try
             {
-                synchronized(syncMonitor) 
-                {
+                //synchronized(syncMonitor) 
+                //{
                     while (!inWaitSyncMonitor && IsRunning())
                     {
                         // waits the agent to enter in waitSyncSignal
                         syncMonitor.Wait(50);
                     }
                     syncMonitor.NotifyAll();
-                }
+                //}
             }
             catch (ThreadInterruptedException e)
             {
