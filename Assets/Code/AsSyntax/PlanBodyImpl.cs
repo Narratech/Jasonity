@@ -79,7 +79,10 @@ namespace Assets.Code.AsSyntax
 
         public override bool IsPlanBody() => true;
 
-        // public Iterator<PlanBody> iterator() { }
+        public IEnumerator<IPlanBody> GetEnumerator()
+        {
+            return new IEnumeratorEnumerator(this);
+        }
 
         // Overrides some structure methods to work with unification/equals
         public override int GetArity()
@@ -431,14 +434,35 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public IEnumerator<IPlanBody> GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             throw new NotImplementedException();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        private class IEnumeratorEnumerator : IEnumerator<IPlanBody>
         {
-            throw new NotImplementedException();
+            public IEnumeratorEnumerator(PlanBodyImpl pbi)
+            {
+                Current = pbi;
+            }
+
+            public IPlanBody Current { get; private set; }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() { }
+
+            public bool MoveNext() => Current != null && Current.GetBodyTerm() != null;
+
+            public IPlanBody Next()
+            {
+                IPlanBody r = Current;
+                if (Current != null)
+                    Current = Current.GetBodyNext();
+                return r;
+            }
+
+            public void Reset() { }
         }
     }
 }
