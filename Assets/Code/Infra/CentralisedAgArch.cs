@@ -20,7 +20,7 @@ namespace Assets.Code.Infra
 {
     public class CentralisedAgArch : AgentArchitecture, IRunnable
     {
-        protected CentralisedEnvironment infraEnv = null; //Esto va a ser un EnvironmentInfraTier o un Environment, no me acuerdo
+        protected EnvironmentInfraTier infraEnv = null; //Esto va a ser un EnvironmentInfraTier o un Environment, no me acuerdo
         private CentralisedExecutionControl infraControl = null;
         private BaseCentralisedMAS masRunner = BaseCentralisedMAS.GetRunner();
         private string agName = "";
@@ -130,12 +130,12 @@ namespace Assets.Code.Infra
             return GetFirstAgentArchitecture();
         }
 
-        public void SetEnvInfraTier(CentralisedEnvironment env)
+        public void SetEnvInfraTier(EnvironmentInfraTier env)
         {
             infraEnv = env;
         }
 
-        public CentralisedEnvironment GetEnvInfraTier()
+        public EnvironmentInfraTier GetEnvInfraTier()
         {
             return infraEnv;
         }
@@ -335,7 +335,7 @@ namespace Assets.Code.Infra
 
         public new void Broadcast(Message m)
         {
-            foreach (string agName in masRunner.GetAgs().Key)
+            foreach (string agName in masRunner.GetAgs().Keys)
             {
                 if (!agName.Equals(GetAgName()))
                 {
@@ -416,12 +416,12 @@ namespace Assets.Code.Infra
          * inform this agent that it can continue, if it is in sync mode and
          * waiting a signal
          */
-        public void ReceiveSyncSignal() //Esto creo que no hace falta yay
+        public void ReceiveSyncSignal() //Esto creo que no hace falta yay,,l,
         {
             try
             {
                 //synchronized(syncMonitor) 
-                //{
+                //{0010
                     while (!inWaitSyncMonitor && IsRunning())
                     {
                         // waits the agent to enter in waitSyncSignal
@@ -451,7 +451,7 @@ namespace Assets.Code.Infra
             infraControl.ReceiveFinishedCycle(GetAgName(), breakpoint, cycle);
         }
 
-        public new RuntimeServices GetRuntimeServices()
+        public new IRuntimeServices GetRuntimeServices()
         {
             return masRunner.GetRuntimeServices();
         }

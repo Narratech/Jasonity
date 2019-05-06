@@ -6,7 +6,7 @@ using Assets.Code.Utilities;
 using Assets.Code.ReasoningCycle;
 using System;
 
-public class Environment : MonoBehaviour{
+public class Environment : MonoBehaviour {
 
     private IList<Literal> percepts = new List<Literal>();
     private IDictionary<string,List<Literal>>  agPercepts = new Dictionary<string, List<Literal>>();
@@ -134,6 +134,7 @@ public class Environment : MonoBehaviour{
             while (i.MoveNext()) {
                 Literal l = i.Current;
                 if (new Unifier().Unifies(l,per)) {
+                     
                     i.remove(); //Borrar el elemento apuntado por el enumerator
                     c++;
                 }
