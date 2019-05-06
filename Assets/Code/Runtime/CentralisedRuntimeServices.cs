@@ -2,8 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Code.AsSyntax;
+using Assets.Code.Runtime;
+using Assets.Code.Infra;
+using Assets.Code.BDIAgent;
 
-public class CentralisedRuntimeServices : RuntimeServices{
+public class CentralisedRuntimeServices : IRuntimeServices{
 
     protected BaseCentralisedMAS masRunner;
 
@@ -11,28 +14,28 @@ public class CentralisedRuntimeServices : RuntimeServices{
         this.masRunner = masRunner;
     }
 
-    protected CentralisedAgArch newAgInstance() {
+    protected CentralisedAgArch NewAgInstance() {
         return new CentralisedAgArch();
     }
 
-    public String createAgent(String agName, String agSource, String agClass, List<String> archClasses, Settings stts, Agent father) {
+    public string CreateAgent(string agName, string agSource, string agClass, List<string> archClasses, Settings stts, Agent father) {
         Debug.Log("Creating centralised agent " + agName + " from source " + agSource + " (agClass=" + agClass + ", archClass=" + archClasses + ", settings=" + stts);
 
         if (stts == null)
             stts = new Settings();
 
-        String prefix = null;
+        string prefix = null;
         if (father != null && father.GetASLSrc().StartsWith(SourcePath.CRPrefix))
             prefix = SourcePath.CRPrefix + "/";
         agSource = masRunner.GetProject().GetSourcePaths().FixPath(agSource, prefix);
 
-        String nb = "";
+        string nb = "";
             int n = 1;
             while (masRunner.GetAg(agName+nb) != null)
                 nb = "_" + (n++);
             agName = agName + nb;
 
-            CentralisedAgArch agArch = newAgInstance();
+            CentralisedAgArch agArch = NewAgInstance();
             agArch.SetAgName(agName);
             agArch.CreateArchs(ap.GetAgArchClasses(), ap.agClass.GetClassName(), ap.getBBClass(), agSource, stts, masRunner);
             agArch.SetEnvInfraTier(masRunner.GetEnvironmentInfraTier());
@@ -42,9 +45,9 @@ public class CentralisedRuntimeServices : RuntimeServices{
             if (masRunner.IsDebug()) {
                 stts.SetVerbose(2);
                 stts.SetSync(true);
-                agArch.GetLogger().SetLevel(Level.FINE);
-                agArch.GetTS().GetLogger().SetLevel(Level.FINE);
-                agArch.GetTS().GetAg().GetLogger().SetLevel(Level.FINE);
+                //agArch.GetLogger().SetLevel(Level.FINE);
+                //agArch.GetTS().GetLogger().SetLevel(Level.FINE);
+                //agArch.GetTS().GetAg().GetLogger().SetLevel(Level.FINE);
             }
 
             masRunner.AddAg(agArch);
@@ -53,16 +56,16 @@ public class CentralisedRuntimeServices : RuntimeServices{
         return agName;
     }
 
-    public void startAgent(String agName) {
+    public void StartAgent(string agName) {
         // create the agent thread
         CentralisedAgArch agArch = masRunner.GetAg(agName);
-        Thread agThread = new Thread(agArch);
-        agArch.Start();
+        //Thread agThread = new Thread(agArch); //Yo quitaria los threads
+        agArch.ReasoningCycleStarting();
     }
 
-    public AgArch clone(Agent source, List<String> archClasses, String agName) {
+    public AgentArchitecture Clone(Agent source, List<string> archClasses, string agName) {
         // create a new infra arch
-        CentralisedAgArch agArch = newAgInstance();
+        CentralisedAgArch agArch = NewAgInstance();
         agArch.SetAgName(agName);
         agArch.SetEnvInfraTier(masRunner.GetEnvironmentInfraTier());
         agArch.SetControlInfraTier(masRunner.GetControllerInfraTier());
@@ -70,22 +73,22 @@ public class CentralisedRuntimeServices : RuntimeServices{
 
         agArch.CreateArchs(archClasses, source, masRunner);
 
-        startAgent(agName);
+        StartAgent(agName);
         return agArch.GetUserAgArch();
     }
 
-    public Set<String> GSetAgentsNames() {
-        return masRunner.GetAgs().KeySet();
+    public ISet<string> GSetAgentsNames() {
+        return masRunner.GetAgs().Keys;
     }
 
     public int GetAgentsQty() {
-        return masRunner.GetAgs().KeySet().Size();
+        return masRunner.GetAgs().Keys.Count;
     }
 
-    public boolean KillAgent(String agName, String byAg) {
+    public bool KillAgent(string agName, string byAg) {
         Debug.Log("Killing centralised agent " + agName);
         CentralisedAgArch ag = masRunner.GetAg(agName);
-        if (ag != null && ag.GetTS().GetAg().KillAcc(byAg)) {
+        if (ag != null && ag.GetReasoner().GetAgent().KillAcc(byAg)) {
             ag.StopAg();
             masRunner.DelAg(agName);
             return true;
@@ -97,20 +100,20 @@ public class CentralisedRuntimeServices : RuntimeServices{
         masRunner.Finish();
     }
   
-    public void DfRegister(String agName, String service, String type) {
+    public void DfRegister(string agName, string service, string type) {
         masRunner.DfRegister(agName, service);
     }
  
-    public void DfDeRegister(String agName, String service, String type) {
+    public void DfDeRegister(string agName, string service, string type) {
         masRunner.DfDeRegister(agName, service);
     }
      
-    public Collection<String> DfSearch(String service, String type) {
+    public List<string> DfSearch(string service, string type) {
         return masRunner.DfSearch(service);
     }
   
-    public void DfSubscribe(String agName, String service, String type) {
-        masRunner.dfSubscribe(agName, service);
+    public void DfSubscribe(string agName, string service, string type) {
+        masRunner.DfSubscribe(agName, service);
     }
     
 

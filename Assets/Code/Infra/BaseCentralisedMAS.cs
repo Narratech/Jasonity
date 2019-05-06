@@ -2,19 +2,20 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Assets.Code.AsSyntax;
+using Assets.Code.Infra;
 
 public class BaseCentralisedMAS{
 
     protected static BaseCentralisedMAS runner        = null;
-    protected static String             urlPrefix     = "";
-    protected static boolean            readFromJAR   = false;
-    protected static boolean            debug         = false;
+    protected static string             urlPrefix     = "";
+    protected static bool            readFromJAR   = false;
+    protected static bool            debug         = false;
 
-    protected getEnvironmentInfraTier        env         = null;
+    protected EnvironmentInfraTier        env         = null;
     //protected CentralisedExecutionControl   control     = null; //No tiene uso?
-    protected IMap<String,CentralisedAgArch> ags         = new ConcurrentHashMap<String,CentralisedAgArch>();
+    protected Dictionary<string,CentralisedAgArch> ags         = new Dictionary<string,CentralisedAgArch>();
 
-    public boolean IsDebug() {
+    public bool IsDebug() {
         return debug;
     }
 
@@ -22,7 +23,7 @@ public class BaseCentralisedMAS{
         return runner;
     }
 
-    public RuntimeServicesInfraTier GetRuntimeServices() {
+    public CentralisedRuntimeServices GetRuntimeServices() {
         return new CentralisedRuntimeServices(runner);
     }
 
@@ -31,26 +32,28 @@ public class BaseCentralisedMAS{
         return control;
     }
 */
-    public CentralisedEnvironment GetEnvironmentInfraTier() {
+    public EnvironmentInfraTier GetEnvironmentInfraTier() {
         return env;
     }
 
     public void AddAg(CentralisedAgArch ag) {
-        ags.Put(ag.getAgName(), ag);
+        ags.Add(ag.GetAgName(), ag);
     }
-    public CentralisedAgArch DelAg(String agName) {
-        return ags.Remove(agName);
-    }
-
-    public CentralisedAgArch GetAg(String agName) {
-        return ags.Get(agName);
+    public CentralisedAgArch DelAg(string agName) {
+        CentralisedAgArch agArch = ags[agName];
+        ags.Remove(agName);
+        return agArch;
     }
 
-    public IMap<String,CentralisedAgArch> GetAgs() {
+    public CentralisedAgArch GetAg(string agName) {
+        return ags[agName];
+    }
+
+    public Dictionary<string,CentralisedAgArch> GetAgs() {
         return ags;
     }
     public int GetNbAgents() {
-        return ags.size();
+        return ags.Count;
     }
 
     public void Finish(){
