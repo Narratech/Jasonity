@@ -436,6 +436,7 @@ namespace BDIManager.Beliefs
                 il = null;
                 ilr = null;
                 l = null;
+                GoNext();
             }
             
 

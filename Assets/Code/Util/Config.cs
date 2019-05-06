@@ -120,7 +120,8 @@ namespace Assets.Code.Util
         {
             try
             {
-                File f = GetLocalConfFile();//Aqui a pincho la ruta pero lo mismo no hace falta porque unity magic
+                //FlieStream o FileReader o FileInfo mejor
+                FileInfo f = GetLocalConfFile();//Aqui a pincho la ruta pero lo mismo no hace falta porque unity magic
                 if (f.Exists())
                 {
                     base.Load(new FileInputStream(f));

@@ -49,28 +49,32 @@ namespace Assets.Code.Stdlib
             if (args.Length > 1)
                 goals = (IListTerm)args[1];
 
-            BufferedStream bs = new BufferedStream(new FileStream(fileName, FileMode.Open)); // Not sure if this works, but it doesn't give an error
-            // ORIGINAL: BufferedStream bs = new BufferedStream(new FileWriter(fileName));
+            StreamWriter bs = new StreamWriter(new FileStream(fileName, FileMode.Open)); // Not sure if this works, but it doesn't give an error
+            // ORIGINAL: BufferedWriter bs = new BufferedWriter(new FileWriter(fileName));
 
             // store beliefs (and rules)
-            bs.Append("// beliefs and rules\n");
+            //Hemos cambiado todos los Append por Write
+            bs.Write("// beliefs and rules\n");
             foreach (Literal b in ts.GetAgent().GetBB())
             {
-                b = b.Copy();
-                b.DelSource(BeliefBase.ASelf);
-                bs.Append(b + ".\n");
+                //b = b.copy();
+                //b.delSource(BeliefBase.ASelf);
+                //out.append(b + ".\n");
+                var baux = b.Copy();
+                baux.DelSource(BeliefBase.ASelf);
+                bs.Write(baux + ".\n");
             }
 
             // store initial goals
-            bs.Append("\n\n// initial goals\n");
+            bs.Write("\n\n// initial goals\n");
             foreach (ITerm g in goals)
             {
-                bs.Append("!" + g + ".\n");
+                bs.Write("!" + g + ".\n");
             }
 
 
             // store plans
-            bs.Append(ts.GetAgent().GetPL().GetAsTxt(false));
+            bs.Write(ts.GetAgent().GetPL().GetAsTxt(false));
             bs.Close();
             return true;
         }

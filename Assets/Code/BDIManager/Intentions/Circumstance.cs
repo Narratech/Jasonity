@@ -626,13 +626,15 @@ namespace Assets.Code.BDIManager
             public EnumeratorIntentions(Circumstance c)
             {
                 this.c = c;
+                //Ponemos el método en el constructor, fuera del bloque estático
+                Find();
             }
 
             public Intention Current => intEnumerator.Current;
 
             object IEnumerator.Current => intEnumerator.Current;
 
-            static EnumeratorIntentions(){ Find(); }
+            //static EnumeratorIntentions(){ Find(); }
 
             public bool HasNext() => curInt != null;
 

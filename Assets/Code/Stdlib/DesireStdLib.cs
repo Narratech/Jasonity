@@ -40,10 +40,10 @@ namespace Assets.Code.Stdlib
             private Unifier un;
             private Trigger teFromL;
 
-            static EnumeratorImpl()
-            {
-                Find();
-            }
+            //static EnumeratorImpl()
+            //{
+            //    Find();
+            //}
 
             public EnumeratorImpl(Circumstance c, Literal l, ITerm intAsTerm, Unifier un, Trigger teFroml)
             {
@@ -56,6 +56,7 @@ namespace Assets.Code.Stdlib
                 evtIterator = null;
                 intendInterator = null;
                 this.teFromL = teFroml;
+                Find(); //Movido del bloque estático aquí para que funcione
             }
 
             public Unifier Current

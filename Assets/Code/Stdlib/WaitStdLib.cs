@@ -146,7 +146,10 @@ namespace Assets.Code.Stdlib
                 sEvt = si.GetID() + "/" + sEvt;
                 c.AddPendingIntention(sEvt, si);
 
-                startTime = System.currentTimeMillis(); //hay que usar el de c# o el de unity? MISTERIO
+                //startTime = System.currentTimeMillis(); //hay que usar el de c# o el de unity? MISTERIO
+                // Seguramente lo que querramos en C# no son los milisegundos desde el año 1970... sino algo así: Environment.TickCount
+                DateTime Jan1st1970 = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                startTime = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
 
                 if (timeout >= 0)
                 {

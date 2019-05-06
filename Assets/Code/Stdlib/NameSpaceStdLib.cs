@@ -57,12 +57,14 @@ namespace Assets.Code.Stdlib
                 n = default;
                 this.un = un;
                 this.args = args;
+                //Llamamos a current pero no nos quedamos el valor, como en Java
+                var v = Current; // consume the first (and set first n value, i.e. the first solution)
             }
 
-            static NameSpaceStdLibIterator()
-            {
-                return Current; // consume the first (and set first n value, i.e. the first solution)
-            } 
+            //static NameSpaceStdLibIterator()
+            //{
+            //    return Current; // consume the first (and set first n value, i.e. the first solution)
+            //} 
 
             //public bool HasNext()
             //{
