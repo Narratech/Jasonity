@@ -2,6 +2,7 @@
 using Assets.Code.BDIAgent;
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
+using Assets.Code.Utilities;
 using BDIManager.Intentions;
 using System;
 using System.Collections.Concurrent;
@@ -79,7 +80,9 @@ namespace Assets.Code.Stdlib
 
             Trigger te = Trigger.TryToGetTrigger(args[1]);
 
-            Agent.GetScheduler().Schedule(new CheckDeadline(te, ts), deadline, TimeUnit.MILLISECONDS);
+            Agent.GetExecutor().AddTask(new CheckDeadline(te, ts));
+
+            //Agent.GetScheduler().Schedule(new CheckDeadline(te, ts), deadline, TimeUnit.MILLISECONDS);
             return true;
         }
 
@@ -96,7 +99,7 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        class CheckDeadline
+        class CheckDeadline : IRunnable
         {
             private int id = 0;
             private Event @event;

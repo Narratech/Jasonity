@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.Code.AsSyntax;
 using Assets.Code.Infra;
+using System;
 
 public class BaseCentralisedMAS{
 
@@ -36,6 +37,11 @@ public class BaseCentralisedMAS{
         return env;
     }
 
+    internal object GetProject()
+    {
+        throw new NotImplementedException();
+    }
+
     public void AddAg(CentralisedAgArch ag) {
         ags.Add(ag.GetAgName(), ag);
     }
@@ -59,5 +65,24 @@ public class BaseCentralisedMAS{
     public void Finish(){
          Application.Quit();
     }
-    
+
+    internal void DfRegister(string agName, string service)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void DfDeRegister(string agName, string service)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal IEnumerable<string> DfSearch(string service)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void DfSubscribe(string agName, string service)
+    {
+        throw new NotImplementedException();
+    }
 }

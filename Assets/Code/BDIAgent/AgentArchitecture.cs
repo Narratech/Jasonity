@@ -199,7 +199,7 @@ namespace Assets.Code.BDIAgent
             }
         }
 
-        public RuntimeServices GetRuntimeServices()
+        public IRuntimeServices GetRuntimeServices()
         {
             if (successor == null)
             {

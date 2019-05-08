@@ -134,8 +134,9 @@ public class Environment : MonoBehaviour {
             while (i.MoveNext()) {
                 Literal l = i.Current;
                 if (new Unifier().Unifies(l,per)) {
-                     
-                    i.remove(); //Borrar el elemento apuntado por el enumerator
+
+                    percepts.Remove(l);
+                    //i.remove(); //Borrar el elemento apuntado por el enumerator
                     c++;
                 }
             }
@@ -192,14 +193,16 @@ public class Environment : MonoBehaviour {
         if (per != null && agName != null) {
             IList<Literal> agl = agPercepts[agName];
             if (agl != null) {
-                    IEnumerator<Literal> i = agl.GetEnumerator();
-                    while (i.MoveNext()) {
-                        Literal l = i.Current;
-                        if (new Unifier().Unifies(l,per)) {
-                            i.remove();
-                            c++;
-                        }
+                IEnumerator<Literal> i = agl.GetEnumerator();
+                while (i.MoveNext()) {
+                    Literal l = i.Current;
+                    if (new Unifier().Unifies(l,per)) {
+
+                        agl.Remove(l);
+                        //i.remove();
+                        c++;
                     }
+                }
                 if (c>0) uptodateAgs.Remove(agName);
             }
         }

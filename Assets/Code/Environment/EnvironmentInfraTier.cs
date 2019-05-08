@@ -19,7 +19,7 @@ public class EnvironmentInfraTier{
         this.masRunner = masRunner;
         if (userEnvArgs != null) {
             try {
-                userEnv = (Environment) getClass().getClassLoader().loadClass(userEnvArgs.getClassName()).newInstance();
+                userEnv = (Environment) Activator.CreateInstance(typeof(Environment));
                 userEnv.SetEnvironmentInfraTier(this);
                 userEnv.Init(userEnvArgs.GetParametersArray());
             } catch (Exception e) {
@@ -58,13 +58,13 @@ public class EnvironmentInfraTier{
      * (called by the user environment). If no agent is informed, the notification is sent
      * to all agents.
      */
-    public void InformAgsEnvironmentChanged(String[] agents){
+    public void InformAgsEnvironmentChanged(string[] agents){
         if (agents.Length == 0) {
-            foreach (CentralisedAgArch ag in masRunner.GetAgs().Values()) {
+            foreach (CentralisedAgArch ag in masRunner.GetAgs().Values) {
                 ag.GetReasoner().GetUserAgArch().WakeUpSense();
             }
         } else {
-            foreach (String agName in agents) {
+            foreach (string agName in agents) {
                 CentralisedAgArch ag = masRunner.GetAg(agName);
                 if (ag != null) {
                         ag.WakeUpSense();
@@ -80,15 +80,15 @@ public class EnvironmentInfraTier{
      * The collection has the agents' names.
      * (called by the user environment).
      *
-     * @deprecated use the informAgsEnvironmentChanged with String... parameter
+     * @deprecated use the informAgsEnvironmentChanged with string... parameter
      */
-    public void InformAgsEnvironmentChanged(List<String> agents){
+    public void InformAgsEnvironmentChanged(List<string> agents){
         if (agentsToNotify == null)
         {
             InformAgsEnvironmentChanged();
         } else
         {
-            foreach (String agName in agentsToNotify) {
+            foreach (string agName in agentsToNotify) {
                 CentralisedAgArch ag = masRunner.GetAg(agName);
                 if (ag != null) {
                     ag.GetReasoner().GetUserAgArch().WakeUpSense();
@@ -100,20 +100,19 @@ public class EnvironmentInfraTier{
     }
 
     /** Gets an object with infrastructure runtime services */
-    public RuntimeServices GetRuntimeServices(){ //Esto es una interfaz, supongo que tenemos que convertirla en una clase
-       return new RuntimeServices(masRunner);
+    public IRuntimeServices GetRuntimeServices(){ //Esto es una interfaz, supongo que tenemos que convertirla en una clase
+       return new CentralisedRuntimeServices(masRunner);
     }
 
 
 
 
     /** called by the user implementation of the environment when the action was executed */
-    public void ActionExecuted(String agName, Structure actTerm, bool success, object infraData){
+    public void ActionExecuted(string agName, Structure actTerm, bool success, object infraData){
         ExecuteAction action = (ExecuteAction)infraData;
         action.SetResult(success);
         CentralisedAgArch ag = masRunner.GetAg(agName);
         if (ag != null) // the agent may was killed
             ag.ActionExecuted(action);
     }
-
 }

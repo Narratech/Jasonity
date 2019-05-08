@@ -15,7 +15,7 @@ using Assets.Code.AsSemantics;
 using Assets.Code.BDIAgent;
 
 
-//This provides an agent architecture where each agent has its ouwn thread. 
+//This provides an agent architecture where each agent has its own thread. 
 namespace Assets.Code.Infra
 {
     public class CentralisedAgArch : AgentArchitecture, IRunnable
@@ -25,7 +25,7 @@ namespace Assets.Code.Infra
         private BaseCentralisedMAS masRunner = BaseCentralisedMAS.GetRunner();
         private string agName = "";
         private volatile bool running = true;
-        private ConcurrentQueue<Message> mbox = new ConcurrentQueue<Message>();
+        private Queue<Message> mbox = new Queue<Message>();
         //protected Logger logger = Logger.getLogger(CentralisedAgArch.class.getName());
         private static List<IMsgListener> msgListeners = null;
         //private Thread myThread = null; //Sin theads yay
@@ -34,7 +34,6 @@ namespace Assets.Code.Infra
         public static readonly int MAX_SLEEP = 1000;
         private object syncMonitor = new object();
         private volatile bool inWaitSyncMonitor = false;
-        private RConf conf; //??
 
         private int cycles = 1;
 
@@ -225,7 +224,7 @@ namespace Assets.Code.Infra
             {
                 if (reasoner.GetSettings().IsSync())
                 {
-                    WaitSyncSignal();
+                    //WaitSyncSignal();
                     ReasoningCycle();
                     bool isBreakPoint = false;
                     try
@@ -256,7 +255,7 @@ namespace Assets.Code.Infra
                 {
                     //logger.fine("Entering in sleep mode....");
                     //synchronized(sleepSync) {
-                        sleepSync.Wait(sleepTime); // wait for messages //Esto entiendo queno hace falta
+                        //sleepSync.Wait(sleepTime); // wait for messages //Esto entiendo queno hace falta
                         if (sleepTime < MAX_SLEEP)
                             sleepTime += 100;
                     //}
@@ -276,7 +275,7 @@ namespace Assets.Code.Infra
             //synchronized(sleepSync) 
             //{
                 sleepTime = 50;
-                sleepSync.NotifyAll(); // notify sleep method //Entiendo que esto tampoco
+                //sleepSync.NotifyAll(); // notify sleep method //Entiendo que esto tampoco
             //}
         }
 
@@ -349,12 +348,11 @@ namespace Assets.Code.Infra
         public new void CheckMail()
         {
             Circumstance C = GetReasoner().GetCircumstance();
-            Message im;
-            mbox.TryDequeue(out im);
+            Message im = mbox.Dequeue();
             while (im != null)
             {
                 C.AddMsg(im);
-                im = mbox.Poll(); //Mirar que hace el de java
+                im = mbox.Dequeue(); 
             }
         }
 
@@ -384,7 +382,7 @@ namespace Assets.Code.Infra
 
         public new bool CanSleep()
         {
-            return mbox.IsEmpty && IsRunning();
+            return (mbox.Count == 0) && IsRunning();
         }
 
 
@@ -392,52 +390,52 @@ namespace Assets.Code.Infra
          * waits for a signal to continue the execution (used in synchronised
          * execution mode)
          */
-        private void WaitSyncSignal()
-        {
-            try
-            {
-                //synchronized(syncMonitor) 
-                //{
-                    inWaitSyncMonitor = true;
-                    syncMonitor.Wait();//esto creo que no hace falta
-                    inWaitSyncMonitor = false;
-                //}
-            }
-            /*catch (ThreadInterruptedException e)
-            {
-            }*/
-            catch (Exception e)
-            {
+        //private void WaitSyncSignal()
+        //{
+        //    try
+        //    {
+        //        //synchronized(syncMonitor) 
+        //        //{
+        //            inWaitSyncMonitor = true;
+        //            syncMonitor.Wait();//esto creo que no hace falta
+        //            inWaitSyncMonitor = false;
+        //        //}
+        //    }
+        //    /*catch (ThreadInterruptedException e)
+        //    {
+        //    }*/
+        //    catch (Exception e)
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         /**
          * inform this agent that it can continue, if it is in sync mode and
          * waiting a signal
          */
-        public void ReceiveSyncSignal() //Esto creo que no hace falta yay,,l,
-        {
-            try
-            {
-                //synchronized(syncMonitor) 
-                //{0010
-                    while (!inWaitSyncMonitor && IsRunning())
-                    {
-                        // waits the agent to enter in waitSyncSignal
-                        syncMonitor.Wait(50);
-                    }
-                    syncMonitor.NotifyAll();
-                //}
-            }
-            catch (ThreadInterruptedException e)
-            {
-            }
-            catch (Exception e)
-            {
-                
-            }
-        }
+        //public void receivesyncsignal() //esto creo que no hace falta yay,,l,
+        //{
+        //    try
+        //    {
+        //        //synchronized(syncmonitor) 
+        //        //{
+        //            while (!inwaitsyncmonitor && isrunning())
+        //            {
+        //                // waits the agent to enter in waitsyncsignal
+        //                syncmonitor.wait(50);
+        //            }
+        //            syncmonitor.notifyall();
+        //        //}
+        //    }
+        //    catch (threadinterruptedexception e)
+        //    {
+        //    }
+        //    catch (exception e)
+        //    {
+
+        //    }
+        //}
 
         /**
          *  Informs the infrastructure tier controller that the agent
@@ -454,16 +452,6 @@ namespace Assets.Code.Infra
         public new IRuntimeServices GetRuntimeServices()
         {
             return masRunner.GetRuntimeServices();
-        }
-        
-        public void SetConf(RConf conf)
-        {
-            this.conf = conf;
-        }
-
-        public RConf GetConf()
-        {
-            return conf;
         }
 
         public int GetCycles()

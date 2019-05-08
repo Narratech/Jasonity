@@ -3,6 +3,7 @@ using Assets.Code.AsSyntax;
 using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
+using Assets.Code.Runtime;
 using Assets.Code.Stdlib;
 using Assets.Code.Util;
 using Assets.Code.Utilities;
@@ -53,7 +54,7 @@ namespace Assets.Code.ReasoningCycle
         private bool sleepingEvt = false;
 
 
-        private int nrcslbr = Settings.DEFAULT_NUMBER_REASONING_CYCLES; //number of reasoning cycles since last belief revision
+        private int nrcslbr = Settings.ODefaultNRC; //number of reasoning cycles since last belief revision
 
         //I don't understand this. Both conf and confP point to this object, this is just to make it look more like the SOS. What is the SOS??
         private Reasoner conf;
@@ -1184,8 +1185,11 @@ namespace Assets.Code.ReasoningCycle
             List<Option> ap = null;
             if(rp != null)
             {
-                foreach (Option o in rp) 
+                //foreach (Option o in rp) 
+                Option o;
+                for (int i = 0; i < rp.Count; i++)
                 {
+                    o = rp[i];
                     ILogicalFormula context = o.GetPlan().GetContext();
                     if (context == null)
                     {

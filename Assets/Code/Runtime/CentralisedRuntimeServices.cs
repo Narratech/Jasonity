@@ -6,7 +6,7 @@ using Assets.Code.Runtime;
 using Assets.Code.Infra;
 using Assets.Code.BDIAgent;
 
-public class CentralisedRuntimeServices : IRuntimeServices{
+public class CentralisedRuntimeServices : IRuntimeServices{ 
 
     protected BaseCentralisedMAS masRunner;
 
@@ -27,7 +27,7 @@ public class CentralisedRuntimeServices : IRuntimeServices{
         string prefix = null;
         if (father != null && father.GetASLSrc().StartsWith(SourcePath.CRPrefix))
             prefix = SourcePath.CRPrefix + "/";
-        agSource = masRunner.GetProject().GetSourcePaths().FixPath(agSource, prefix);
+        agSource = masRunner.GetProject().GetSourcePaths().FixPath(agSource, prefix); //el proyect creo que es algo con unity. Sep, esto es unity
 
         string nb = "";
             int n = 1;
@@ -37,9 +37,9 @@ public class CentralisedRuntimeServices : IRuntimeServices{
 
             CentralisedAgArch agArch = NewAgInstance();
             agArch.SetAgName(agName);
-            agArch.CreateArchs(ap.GetAgArchClasses(), ap.agClass.GetClassName(), ap.getBBClass(), agSource, stts, masRunner);
+            //agArch.CreateArchs(ap.GetAgArchClasses(), ap.agClass.GetClassName(), ap.getBBClass(), agSource, stts, masRunner); //esto creo que no hace falta porque no tenemos cosas personalizadas
             agArch.SetEnvInfraTier(masRunner.GetEnvironmentInfraTier());
-            agArch.SetControlInfraTier(masRunner.GetControllerInfraTier());
+            agArch.SetControlInfraTier(masRunner.GetControllerInfraTier()); //Esto esta comentado en masrunner
             
             // if debug mode is active, set up new agent to be synchronous and visible for ExecutionControlGUI
             if (masRunner.IsDebug()) {
@@ -68,7 +68,7 @@ public class CentralisedRuntimeServices : IRuntimeServices{
         CentralisedAgArch agArch = NewAgInstance();
         agArch.SetAgName(agName);
         agArch.SetEnvInfraTier(masRunner.GetEnvironmentInfraTier());
-        agArch.SetControlInfraTier(masRunner.GetControllerInfraTier());
+        agArch.SetControlInfraTier(masRunner.GetControllerInfraTier()); 
         masRunner.AddAg(agArch);
 
         agArch.CreateArchs(archClasses, source, masRunner);
@@ -77,7 +77,7 @@ public class CentralisedRuntimeServices : IRuntimeServices{
         return agArch.GetUserAgArch();
     }
 
-    public ISet<string> GSetAgentsNames() {
+    public IEnumerable<string> GetAgentsNames() {
         return masRunner.GetAgs().Keys;
     }
 
@@ -108,13 +108,21 @@ public class CentralisedRuntimeServices : IRuntimeServices{
         masRunner.DfDeRegister(agName, service);
     }
      
-    public List<string> DfSearch(string service, string type) {
+    public IEnumerable<string> DfSearch(string service, string type) {
         return masRunner.DfSearch(service);
     }
   
     public void DfSubscribe(string agName, string service, string type) {
         masRunner.DfSubscribe(agName, service);
     }
-    
 
+    public string GetNewAgentName(string name)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Clone(Agent agent, object p, string agName)
+    {
+        throw new System.NotImplementedException();
+    }
 }

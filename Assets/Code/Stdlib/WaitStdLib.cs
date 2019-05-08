@@ -1,6 +1,7 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.BDIAgent;
 using Assets.Code.BDIManager;
+using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Utilities;
 using BDIManager.Intentions;
@@ -147,12 +148,15 @@ namespace Assets.Code.Stdlib
                 c.AddPendingIntention(sEvt, si);
 
                 //startTime = System.currentTimeMillis(); //hay que usar el de c# o el de unity? MISTERIO
+                startTime = DateTime.Now.Millisecond;
                 // Seguramente lo que querramos en C# no son los milisegundos desde el año 1970... sino algo así: Environment.TickCount
                 DateTime Jan1st1970 = new DateTime (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
                 startTime = (long)(DateTime.UtcNow - Jan1st1970).TotalMilliseconds;
 
                 if (timeout >= 0)
-                {
+                { 
+                    Agent.GetExecutor().AddTask(new MyRunnable1(this));
+
                     //agent.getscheduler().schedule(new runnable()
                     //{
                     //    public void run()
@@ -163,13 +167,13 @@ namespace Assets.Code.Stdlib
                 }
             }
 
-            void Resume(bool stopByTimeout)
+            public void Resume(bool stopByTimeout)
             {
                 // unregister (to not receive intentionAdded again)
                 c.RemoveEventListener(this);
 
                 // invoke changes in C latter, so to avoid concurrent changes in C
-                ts.RunAtBeginOfNextCycle(new RunnableImpl());
+                ts.RunAtBeginOfNextCycle(new MyRunnable2(c, si, sEvt, dropped, stopByTimeout, te, formula, elapsedTimeTerm, ts, un, startTime));
                 /*{
                  * public void run() {
                     try {
@@ -250,12 +254,98 @@ namespace Assets.Code.Stdlib
             }
         }
 
-        class RunnableImpl : IRunnable
+        class MyRunnable1 : IRunnable
         {
+            WaitEvent w = null;
+
+            public MyRunnable1(WaitEvent w)
+            {
+                this.w = w;
+            }
+
             public void Run()
             {
-                throw new NotImplementedException();
+                w.Resume(true);
+            }
+        }
+
+        class MyRunnable2 : IRunnable
+        {
+            Circumstance c = null;
+            Intention si = null;
+            string sEvt;
+            bool dropped = false;
+            bool stopByTimeout;
+            Trigger te;
+            ILogicalFormula formula;
+            ITerm elapsedTimeTerm;
+            Reasoner rs = null;
+            Unifier un = null;
+            long startTime;
+
+            public MyRunnable2(Circumstance c, Intention si, string sEvt, bool dropped, bool stopByTimeout, Trigger te, ILogicalFormula formula, ITerm elapsedTimeTerm, Reasoner rs, Unifier un, long startTime)
+            {
+                this.c = c;
+                this.si = si;
+                this.sEvt = sEvt;
+                this.dropped = dropped;
+                this.stopByTimeout = stopByTimeout;
+                this.te = te;
+                this.formula = formula;
+                this.elapsedTimeTerm = elapsedTimeTerm;
+                this.rs = rs;
+                this.un = un;
+                this.startTime = startTime;
+            }
+
+            public void Run()
+            {
+                try
+                {
+                    // add SI again in C.I if (1) it was not removed (2) is is not running (by some other reason) -- but this test does not apply to atomic intentions --, and (3) this wait was not dropped
+                    if (c.RemovePendingIntention(sEvt) == si && (si.IsAtomic() || !c.HasRunningIntention(si)) && !dropped)
+                    {
+                        if (stopByTimeout && (te != null || formula != null) && elapsedTimeTerm == null)
+                        {
+                            // fail the .wait by timeout
+                            if (si.IsSuspended())
+                            { // if the intention was suspended by .suspend
+                                IPlanBody body = si.Peek().GetPlan().GetBody();
+                                body.Add(1, new PlanBodyImpl(BodyType.internalAction, new InternalActionLiteral(".fail")));
+                                c.AddPendingIntention(SuspendStdLib.SUSPENDED_INT + si.GetID(), si);
+                            }
+                            else
+                            {
+                                rs.GenerateDesireDeletion(si, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("wait_timeout", "timeout in .wait"));
+                            }
+                        }
+                        else if (!si.IsFinished())
+                        {
+                            si.Peek().RemoveCurrentStep();
+
+                            if (elapsedTimeTerm != null)
+                            {
+                                long elapsedTime = DateTime.Now.Millisecond - startTime;
+                                //long elapsedTime = System.currentTimeMillis() - startTime;
+                                un.Unifies(elapsedTimeTerm, new NumberTermImpl(elapsedTime));
+                            }
+                            if (si.IsSuspended())
+                            { // if the intention was suspended by .suspend
+                                c.AddPendingIntention(SuspendStdLib.SUSPENDED_INT + si.GetID(), si);
+                            }
+                            else
+                            {
+                                c.ResumeIntention(si);
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    //rs.getLogger().log(Level.SEVERE, "Error at .wait thread", e);
+                }
             }
         }
     }
 }
+

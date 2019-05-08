@@ -30,17 +30,11 @@ namespace Assets.Code.Runtime
          *
          * Returns the name of the agent
          */
-        string CreateAgent(string name, string source, string agClass, List<string> agArchClasses,
-            ClassParameters bbPars, Settings settings, Agent agent);
+        string CreateAgent(string agName, string agSource, string agClass, List<string> archClasses, Settings stts, Agent father);
 
         string GetNewAgentName(string name);
 
         void Clone(Agent agent, object p, string agName);
-
-        /** register a class to be included as new agents archs */
-        void RegisterDefaultAgArch(string agArch);
-
-        IEnumerable<string> GetDefaultAgArchs();
 
         /** starts an agent (e.g. create thread for it) */
         void StartAgent(string name);
@@ -54,13 +48,13 @@ namespace Assets.Code.Runtime
          * @return the agent arch created
          * @throws JasonException
          */
-        AgentArchitecture Clone(Agent source, IEnumerable<string> archClasses, string agName);
+        AgentArchitecture Clone(Agent source, List<string> archClasses, string agName);
 
         /**
         * Kills the agent named <i>agName</i> as a requested by <i>byAg</i>.
         * Agent.stopAg() method is called before the agent is removed.
         */
-        object KillAgent(string name, string v);
+        bool KillAgent(string name, string v);
 
         /** Returns a set of all agents' name */
         IEnumerable<string> GetAgentsNames();
