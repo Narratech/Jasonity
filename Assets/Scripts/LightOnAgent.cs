@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class LightOnAgent : MonoBehaviour
 {
+    public string aslPath;
+
     // Start is called before the first frame update
     void Start()
     {
