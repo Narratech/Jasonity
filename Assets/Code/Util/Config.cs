@@ -118,56 +118,57 @@ namespace Assets.Code.Util
         /** Returns true if the file is loaded correctly */
         public bool Load()
         {
-            try
-            {
-                //FlieStream o FileReader o FileInfo mejor
-                FileInfo f = GetLocalConfFile();//Aqui a pincho la ruta pero lo mismo no hace falta porque unity magic
-                if (f.Exists())
-                {
-                    base.Load(new FileInputStream(f));
-                    return true;
-                }
-                else
-                {
-                    f = GetUserConfFile(); //Esto igual
-                    if (f.Exists())
-                    {
-                        //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
-                        base.Load(new FileInputStream(f));
-                        return true;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Error reading preferences");
-                e.ToString();
-            }
+            //try
+            //{
+            //    //FlieStream o FileReader o FileInfo mejor
+            //    FileInfo f = GetLocalConfFile();//Aqui a pincho la ruta pero lo mismo no hace falta porque unity magic
+            //    if (f.Exists())
+            //    {
+            //        base.Load(new FileInputStream(f));
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        f = GetUserConfFile(); //Esto igual
+            //        if (f.Exists())
+            //        {
+            //            //System.out.println("User config file not found, loading master: "+f.getAbsolutePath());
+            //            base.Load(new FileInputStream(f));
+            //            return true;
+            //        }
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Debug.Log("Error reading preferences");
+            //    e.ToString();
+            //}
             return false;
         }
 
         public bool GetBool(string key)
         {
-            return "true".Equals(Get(key));
+            return "true".Equals(key);
         }
 
         /** Returns the full path to the jason.jar file */
         public string GetJasonJar()
         {
-            return GetProperty(JASON_JAR);
+            //return GetProperty(JASON_JAR);
+            return "";
         }
 
         /** returns the jason home (based on jason.jar) */
         public string getJasonHome()
         {
-            try
-            {
-                return new File(getJasonJar()).getParentFile().getParent();
-            }
-            catch (Exception e)
-            {
-                //e.printStackTrace();
-            }
+            //try
+            //{
+            //    return new File(getJasonJar()).getParentFile().getParent();
+            //}
+            //catch (Exception e)
+            //{
+            //    //e.printStackTrace();
+            //}
             return "";
         }
         
@@ -183,254 +184,258 @@ namespace Assets.Code.Util
         public string getAntJar()
         {
             string ant = getAntLib();
-            if (ant != null)
-            {
-                ant = findJarInDirectory(new File(ant), "ant-launcher");
-                if (ant != null)
-                {
-                    File fAnt = new File(ant);
-                    if (fAnt.exists())
-                        return fAnt.GetName();
-                }
-            }
+            //if (ant != null)
+            //{
+            //    ant = findJarInDirectory(new File(ant), "ant-launcher");
+            //    if (ant != null)
+            //    {
+            //        File fAnt = new File(ant);
+            //        if (fAnt.exists())
+            //            return fAnt.GetName();
+            //    }
+            //}
 
             return null;
         }
         
         public void SetAntLib(string al)
         {
-            if (al != null)
-            {
-                al = new File(al).getAbsolutePath();
-                if (!al.EndsWith(File.separator))
-                {
-                    al += File.separator;
-                }
-                Put(ANT_LIB, al);
-            }
+            //if (al != null)
+            //{
+            //    al = new File(al).getAbsolutePath();
+            //    if (!al.EndsWith(File.separator))
+            //    {
+            //        al += File.separator;
+            //    }
+            //    Put(ANT_LIB, al);
+            //}
         }
 
         public string GetShellCommand()
         {
-            return GetProperty(SHELL_CMD);
+            return "";
+            //return GetProperty(SHELL_CMD);
         }
 
         public string GetKqmlFunctor()
         {
-            return GetProperty(KQML_RECEIVED_FUNCTOR, Message.kqmlReceivedFunctor);
+            return "";
+            //return GetProperty(KQML_RECEIVED_FUNCTOR, Message.kqmlReceivedFunctor);
         }
         public string GetKqmlPlansFile()
         {
-            return GetProperty(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
+            return "";
+            //return GetProperty(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
         }
 
         public void ResetSomeProps()
         {
             //System.out.println("Reseting configuration of "+Config.JASON_JAR);
-            Remove(JASON_JAR);
+            //Remove(JASON_JAR);
             //System.out.println("Reseting configuration of "+Config.JADE_JAR);
-            Remove(JADE_JAR);
+            //Remove(JADE_JAR);
             //System.out.println("Reseting configuration of "+Config.ANT_LIB);
-            Remove(ANT_LIB);
-            Put(SHOW_ANNOTS, "false");
+            //Remove(ANT_LIB);
+            //Put(SHOW_ANNOTS, "false");
         }
 
         /** Set most important parameters with default values */
         public void Fix()
         {
-            TryToFixJarFileConf(JASON_JAR, "jason", 700000);
+            //TryToFixJarFileConf(JASON_JAR, "jason", 700000);
 
-            // fix ant lib
-            if (Get(ANT_LIB) == null || !CheckAntLib(GetAntLib()))
-            {
-                try
-                {
-                    string jjar = GetJasonJar();
-                    if (jjar != null)
-                    {
-                        string antlib = new File(jjar).getParentFile().GetParentFile().GetAbsolutePath() + File.separator + "libs";
-                        if (CheckAntLib(antlib))
-                        {
-                            SetAntLib(antlib);
-                        }
-                        else
-                        {
-                            antlib = new File(".") + File.separator + "libs";
-                            if (CheckAntLib(antlib))
-                            {
-                                SetAntLib(antlib);
-                            }
-                            else
-                            {
-                                antlib = new File("..") + File.separator + "libs";
-                                if (CheckAntLib(antlib))
-                                {
-                                    SetAntLib(antlib);
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.Log("Error setting ant lib!");
-                    e.ToString();
-                }
-            }
+            //// fix ant lib
+            //if (Get(ANT_LIB) == null || !CheckAntLib(GetAntLib()))
+            //{
+            //    try
+            //    {
+            //        string jjar = GetJasonJar();
+            //        if (jjar != null)
+            //        {
+            //            string antlib = new File(jjar).getParentFile().GetParentFile().GetAbsolutePath() + File.separator + "libs";
+            //            if (CheckAntLib(antlib))
+            //            {
+            //                SetAntLib(antlib);
+            //            }
+            //            else
+            //            {
+            //                antlib = new File(".") + File.separator + "libs";
+            //                if (CheckAntLib(antlib))
+            //                {
+            //                    SetAntLib(antlib);
+            //                }
+            //                else
+            //                {
+            //                    antlib = new File("..") + File.separator + "libs";
+            //                    if (CheckAntLib(antlib))
+            //                    {
+            //                        SetAntLib(antlib);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Debug.Log("Error setting ant lib!");
+            //        e.ToString();
+            //    }
+            //}
 
             // font
-            if (Get("font") == null)
-            {
-                Put("font", "Monospaced");
-            }
-            if (Get("fontSize") == null)
-            {
-                Put("fontSize", "14");
-            }
+            //if (Get("font") == null)
+            //{
+            //    Put("font", "Monospaced");
+            //}
+            //if (Get("fontSize") == null)
+            //{
+            //    Put("fontSize", "14");
+            //}
 
-            // shell command
-            if (Get(SHELL_CMD) == null)
-            {
-                if (System.GetProperty("os.name").StartsWith("Windows 9"))
-                {
-                    Put(SHELL_CMD, "command.com /e:1024 /c ");
-                }
-                else if (System.GetProperty("os.name").IndexOf("indows") > 0)
-                {
-                    Put(SHELL_CMD, "cmd /c ");
-                }
-                else
-                {
-                    Put(SHELL_CMD, "/bin/sh ");
-                }
-            }
+            //// shell command
+            //if (Get(SHELL_CMD) == null)
+            //{
+            //    if (System.GetProperty("os.name").StartsWith("Windows 9"))
+            //    {
+            //        Put(SHELL_CMD, "command.com /e:1024 /c ");
+            //    }
+            //    else if (System.GetProperty("os.name").IndexOf("indows") > 0)
+            //    {
+            //        Put(SHELL_CMD, "cmd /c ");
+            //    }
+            //    else
+            //    {
+            //        Put(SHELL_CMD, "/bin/sh ");
+            //    }
+            //}
 
-            // close all
-            if (Get(CLOSEALL) == null)
-            {
-                Put(CLOSEALL, "true");
-            }
+            //// close all
+            //if (Get(CLOSEALL) == null)
+            //{
+            //    Put(CLOSEALL, "true");
+            //}
 
-            if (Get(CHECK_VERSION) == null)
-            {
-                Put(CHECK_VERSION, "true");
-            }
+            //if (Get(CHECK_VERSION) == null)
+            //{
+            //    Put(CHECK_VERSION, "true");
+            //}
 
-            // show annots
-            if (GetProperty(SHOW_ANNOTS) == null)
-            {
-                Put(SHOW_ANNOTS, "true");
-            }
+            //// show annots
+            //if (GetProperty(SHOW_ANNOTS) == null)
+            //{
+            //    Put(SHOW_ANNOTS, "true");
+            //}
 
-            if (GetProperty(START_WEB_MI) == null)
-            {
-                Put(START_WEB_MI, "true");
-            }
+            //if (GetProperty(START_WEB_MI) == null)
+            //{
+            //    Put(START_WEB_MI, "true");
+            //}
 
-            if (GetProperty(NB_TH_SCH) == null)
-            {
-                Put(NB_TH_SCH, "2");
-            }
+            //if (GetProperty(NB_TH_SCH) == null)
+            //{
+            //    Put(NB_TH_SCH, "2");
+            //}
 
-            if (GetProperty(SHORT_UNNAMED_VARS) == null)
-            {
-                Put(SHORT_UNNAMED_VARS, "true");
-            }
+            //if (GetProperty(SHORT_UNNAMED_VARS) == null)
+            //{
+            //    Put(SHORT_UNNAMED_VARS, "true");
+            //}
 
-            if (GetProperty(KQML_RECEIVED_FUNCTOR) == null)
-            {
-                Put(KQML_RECEIVED_FUNCTOR, Message.kqmlReceivedFunctor);
-            }
+            //if (GetProperty(KQML_RECEIVED_FUNCTOR) == null)
+            //{
+            //    Put(KQML_RECEIVED_FUNCTOR, Message.kqmlReceivedFunctor);
+            //}
 
-            if (GetProperty(KQML_PLANS_FILE) == null)
-            {
-                Put(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
-            }
+            //if (GetProperty(KQML_PLANS_FILE) == null)
+            //{
+            //    Put(KQML_PLANS_FILE, Message.kqmlDefaultPlans);
+            //}
 
-            // Default infrastructures
-            SetDefaultInfra();
+            //// Default infrastructures
+            //SetDefaultInfra();
         }
 
         private void SetDefaultInfra()
         {
-            Put("infrastructure.Centralised", typeof(CentralisedFactory).Name);
+            //Put("infrastructure.Centralised", typeof(CentralisedFactory).Name);
         }
 
         public void Store()
         {
-            Store(GetUserConfFile());
+            //Store(GetUserConfFile());
         }
 
-        public void Store(File f)
-        {
-            try
-            {
-                if (!f.GetParentFile().exists())
-                {
-                    f.GetParentFile().mkdirs();
-                }
-                Debug.Log("Storing configuration at " + f.GetAbsolutePath());
-                base.Store(new FileOutputStream(f), getFileConfComment());
-            }
-            catch (Exception e)
-            {
-               Debug.Log("Error writting preferences");
-               e.ToString();
-            }
-        }
+        //public void Store(File f)
+        //{
+        //    try
+        //    {
+        //        if (!f.GetParentFile().exists())
+        //        {
+        //            f.GetParentFile().mkdirs();
+        //        }
+        //        Debug.Log("Storing configuration at " + f.GetAbsolutePath());
+        //        base.Store(new FileOutputStream(f), getFileConfComment());
+        //    }
+        //    catch (Exception e)
+        //    {
+        //       Debug.Log("Error writting preferences");
+        //       e.ToString();
+        //    }
+        //}
 
         public string[] GetAvailableInfrastructures()
         {
-            try
-            {
-                List<string> infras = new List<string>();
-                infras.Add("Centralised"); // set Centralised as the first
-                foreach (object k in keySet())
-                {
-                    string sk = k.ToString();
-                    int p = sk.IndexOf(".");
-                    if (p > 0 && sk.StartsWith("infrastructure") && p == sk.LastIndexOf("."))
-                    { // only one "."
-                        string newinfra = sk.Substring(p + 1);
-                        if (!infras.Contains(newinfra))
-                        {
-                            infras.Add(newinfra);
-                        }
-                    }
-                }
-                if (infras.Count > 0)
-                {
-                    // copy infras to a array
-                    string[] r = new string[infras.Count];
-                    for (int i = 0; i < r.Length; i++)
-                    {
-                        r[i] = infras[i];
-                    }
-                    return r;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Error getting user infrastructures.");
-            }
+            //try
+            //{
+            //    List<string> infras = new List<string>();
+            //    infras.Add("Centralised"); // set Centralised as the first
+            //    foreach (object k in keySet())
+            //    {
+            //        string sk = k.ToString();
+            //        int p = sk.IndexOf(".");
+            //        if (p > 0 && sk.StartsWith("infrastructure") && p == sk.LastIndexOf("."))
+            //        { // only one "."
+            //            string newinfra = sk.Substring(p + 1);
+            //            if (!infras.Contains(newinfra))
+            //            {
+            //                infras.Add(newinfra);
+            //            }
+            //        }
+            //    }
+            //    if (infras.Count > 0)
+            //    {
+            //        // copy infras to a array
+            //        string[] r = new string[infras.Count];
+            //        for (int i = 0; i < r.Length; i++)
+            //        {
+            //            r[i] = infras[i];
+            //        }
+            //        return r;
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Debug.Log("Error getting user infrastructures.");
+            //}
             return new string[] { "Centralised", "Jade" }; //,"JaCaMo"};
         }
 
         public string GetInfrastructureFactoryClass(string infraId)
         {
-            object oClass = Get("infrastructure." + infraId);
-            if (oClass == null)
-            {
-                // try to fix using default configuration
-                SetDefaultInfra();
-                oClass = Get("infrastructure." + infraId);
-            }
-            return oClass.ToString();
+            //object oClass = Get("infrastructure." + infraId);
+            //if (oClass == null)
+            //{
+            //    // try to fix using default configuration
+            //    SetDefaultInfra();
+            //    oClass = Get("infrastructure." + infraId);
+            //}
+            //return oClass.ToString();
+            return "";
         }
 
         public void SetInfrastructureFactoryClass(string infraId, string factory)
         {
-            Put("infrastructure." + infraId, factory);
+            //Put("infrastructure." + infraId, factory);
         }
         public void RemoveInfrastructureFactoryClass(string infraId)
         {
@@ -439,193 +444,193 @@ namespace Assets.Code.Util
 
         public string GetJasonVersion()
         {
-            Package j = Package.getPackage("jason.util");
-            if (j != null && j.getSpecificationVersion() != null)
-            {
-                return j.getSpecificationVersion();
-            }
+            //Package j = Package.getPackage("jason.util");
+            //if (j != null && j.getSpecificationVersion() != null)
+            //{
+            //    return j.getSpecificationVersion();
+            //}
             return "";
         }
 
         public string GetJasonBuiltDate()
         {
-            Package j = Package.getPackage("jason.util");
-            if (j != null)
-            {
-                return j.getImplementationVersion();
-            }
+            //Package j = Package.getPackage("jason.util");
+            //if (j != null)
+            //{
+            //    return j.getImplementationVersion();
+            //}
             return "?";
         }
 
         public bool TryToFixJarFileConf(string jarEntry, string jarFilePrefix, int minSize)
         {
-            string jarFile = GetProperty(jarEntry);
-            if (jarFile == null || !CheckJar(jarFile, minSize))
-            {
-                if (showFixMsgs)
-                    Debug.Log("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
+            //string jarFile = GetProperty(jarEntry);
+            //if (jarFile == null || !CheckJar(jarFile, minSize))
+            //{
+            //    if (showFixMsgs)
+            //        Debug.Log("Wrong configuration for " + jarFilePrefix + ", current is " + jarFile);
 
-                // try to get from classpath (the most common case)
-                jarFile = GetJarFromClassPath(jarFilePrefix);
-                if (CheckJar(jarFile, minSize))
-                {
-                    Put(jarEntry, jarFile);
-                    if (showFixMsgs)
-                        Debug.Log("found at " + jarFile + " by classpath");
-                    return true;
-                }
+            //    // try to get from classpath (the most common case)
+            //    jarFile = GetJarFromClassPath(jarFilePrefix);
+            //    if (CheckJar(jarFile, minSize))
+            //    {
+            //        Put(jarEntry, jarFile);
+            //        if (showFixMsgs)
+            //            Debug.Log("found at " + jarFile + " by classpath");
+            //        return true;
+            //    }
 
-                // try eclipse installation
-                jarFile = GetJarFromEclipseInstallation(jarFilePrefix);
-                if (CheckJar(jarFile, minSize))
-                {
-                    Put(jarEntry, jarFile);
-                    if (showFixMsgs)
-                        Debug.Log("found at " + jarFile + " in eclipse installation");
-                    return true;
-                }
+            //    // try eclipse installation
+            //    jarFile = GetJarFromEclipseInstallation(jarFilePrefix);
+            //    if (CheckJar(jarFile, minSize))
+            //    {
+            //        Put(jarEntry, jarFile);
+            //        if (showFixMsgs)
+            //            Debug.Log("found at " + jarFile + " in eclipse installation");
+            //        return true;
+            //    }
 
-                // try from java web start
-                string jwsDir = System.GetProperty("jnlpx.deployment.user.home");
-                if (jwsDir == null)
-                {
-                    // try another property (windows)
-                    try
-                    {
-                        jwsDir = System.GetProperty("deployment.user.security.trusted.certs");
-                        jwsDir = new File(jwsDir).getParentFile().getParent();
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-                if (jwsDir != null)
-                {
-                    jarFile = FindFile(new File(jwsDir), jarFilePrefix, minSize);
-                    if (showFixMsgs)
-                        Debug.Log("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
-                    if (jarFile != null && CheckJar(jarFile))
-                    {
-                        if (showFixMsgs)
-                           Debug.Log("found at " + jarFile);
-                        Put(jarEntry, jarFile);
-                        return true;
-                    }
-                    else
-                    {
-                        Put(jarEntry, File.separator);
-                    }
-                }
-                if (showFixMsgs)
-                    Debug.Log(jarFilePrefix + " not found");
-                return false;
-            }
+            //    // try from java web start
+            //    string jwsDir = System.GetProperty("jnlpx.deployment.user.home");
+            //    if (jwsDir == null)
+            //    {
+            //        // try another property (windows)
+            //        try
+            //        {
+            //            jwsDir = System.GetProperty("deployment.user.security.trusted.certs");
+            //            jwsDir = new File(jwsDir).getParentFile().getParent();
+            //        }
+            //        catch (Exception e)
+            //        {
+            //        }
+            //    }
+            //    if (jwsDir != null)
+            //    {
+            //        jarFile = FindFile(new File(jwsDir), jarFilePrefix, minSize);
+            //        if (showFixMsgs)
+            //            Debug.Log("Searching " + jarFilePrefix + " in " + jwsDir + " ... ");
+            //        if (jarFile != null && CheckJar(jarFile))
+            //        {
+            //            if (showFixMsgs)
+            //               Debug.Log("found at " + jarFile);
+            //            Put(jarEntry, jarFile);
+            //            return true;
+            //        }
+            //        else
+            //        {
+            //            Put(jarEntry, File.separator);
+            //        }
+            //    }
+            //    if (showFixMsgs)
+            //        Debug.Log(jarFilePrefix + " not found");
+            //    return false;
+            //}
             return true;
         }
 
-        static string FindFile(File p, string file, int minSize)
-        {
-            if (p.IsDirectory())
-            {
-                File[] files = p.ListFiles();
-                for (int i = 0; i < files.Length; i++)
-                {
-                    if (files[i].IsDirectory())
-                    {
-                        string r = FindFile(files[i], file, minSize);
-                        if (r != null)
-                        {
-                            return r;
-                        }
-                    }
-                    else
-                    {
-                        if (files[i].GetName().endsWith(file) && files[i].Length > minSize)
-                        {
-                            return files[i].GetAbsolutePath();
-                        }
-                    }
-                }
-            }
-            return null;
-        }
+        //static string FindFile(File p, string file, int minSize)
+        //{
+        //    if (p.IsDirectory())
+        //    {
+        //        File[] files = p.ListFiles();
+        //        for (int i = 0; i < files.Length; i++)
+        //        {
+        //            if (files[i].IsDirectory())
+        //            {
+        //                string r = FindFile(files[i], file, minSize);
+        //                if (r != null)
+        //                {
+        //                    return r;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                if (files[i].GetName().endsWith(file) && files[i].Length > minSize)
+        //                {
+        //                    return files[i].GetAbsolutePath();
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return null;
+        //}
 
-        public static string FindJarInDirectory(File dir, string prefix)
-        {
-            if (dir.IsDirectory())
-            {
-                foreach (File f in dir.ListFiles())
-                {
-                    if (f.GetType().Name.StartsWith(prefix) && f.GetType().Name.EndsWith(".jar") && 
-                        !f.GetType().Name.EndsWith("-sources.jar") && !f.GetType().Name.EndsWith("-javadoc.jar"))
-                    {
-                        return f.GetAbsolutePath();
-                    }
-                }
-            }
-            return null;
-        }
+        //public static string FindJarInDirectory(File dir, string prefix)
+        //{
+        //    if (dir.IsDirectory())
+        //    {
+        //        foreach (File f in dir.ListFiles())
+        //        {
+        //            if (f.GetType().Name.StartsWith(prefix) && f.GetType().Name.EndsWith(".jar") && 
+        //                !f.GetType().Name.EndsWith("-sources.jar") && !f.GetType().Name.EndsWith("-javadoc.jar"))
+        //            {
+        //                return f.GetAbsolutePath();
+        //            }
+        //        }
+        //    }
+        //    return null;
+        //}
 
-        public static bool CheckJar(string jar)
-        {
-            try
-            {
-                return jar != null && new File(jar).exists() && jar.EndsWith(".jar");
-            }
-            catch (Exception e)
-            {
-            }
-            return false;
-        }
+        //public static bool CheckJar(string jar)
+        //{
+        //    try
+        //    {
+        //        return jar != null && new File(jar).exists() && jar.EndsWith(".jar");
+        //    }
+        //    catch (Exception e)
+        //    {
+        //    }
+        //    return false;
+        //}
 
-        public static bool CheckJar(string jar, int minSize)
-        {
-            try
-            {
-                return CheckJar(jar) && new File(jar).length() > minSize;
-            }
-            catch (Exception e)
-            {
-            }
-            return false;
-        }
+        //public static bool CheckJar(string jar, int minSize)
+        //{
+        //    try
+        //    {
+        //        return CheckJar(jar) && new File(jar).length() > minSize;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //    }
+        //    return false;
+        //}
 
-        public static bool CheckAntLib(string al)
-        {
-            try
-            {
-                if (!al.EndsWith(File.separator))
-                {
-                    al = al + File.separator;
-                }
-                if (FindJarInDirectory(new File(al), "ant") != null) // new File(al + "ant.jar");
-                    return true;
-            }
-            catch (Exception e)
-            {
-            }
-            return false;
-        }
+        //public static bool CheckAntLib(string al)
+        //{
+        //    try
+        //    {
+        //        if (!al.EndsWith(File.separator))
+        //        {
+        //            al = al + File.separator;
+        //        }
+        //        if (FindJarInDirectory(new File(al), "ant") != null) // new File(al + "ant.jar");
+        //            return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //    }
+        //    return false;
+        //}
 
-        public static bool IsWindows()
-        {
-            return System.GetProperty("os.name").StartsWith("Windows");
-        }
+        //public static bool IsWindows()
+        //{
+        //    return System.GetProperty("os.name").StartsWith("Windows");
+        //}
 
         static protected string GetJarFromClassPath(string file)
         {
-            StringTokenizer st = new StringTokenizer(System.GetProperty("java.class.path"), File.pathSeparator);
-            while (st.hasMoreTokens())
-            {
-                string token = st.nextToken();
-                File f = new File(token);
-                if (f.GetType().Name.StartsWith(file) && DigitAfterMinus(f.GetType().Name)
-                    && f.GetType().Name.EndsWith(".jar") 
-                    && !f.GetType().Name.EndsWith("-sources.jar") && !f.GetType().Name.EndsWith("-javadoc.jar"))
-                {
-                    return f.GetAbsolutePath();
-                }
-            }
+            //StringTokenizer st = new StringTokenizer(System.GetProperty("java.class.path"), File.pathSeparator);
+            //while (st.hasMoreTokens())
+            //{
+            //    string token = st.nextToken();
+            //    File f = new File(token);
+            //    if (f.GetType().Name.StartsWith(file) && DigitAfterMinus(f.GetType().Name)
+            //        && f.GetType().Name.EndsWith(".jar") 
+            //        && !f.GetType().Name.EndsWith("-sources.jar") && !f.GetType().Name.EndsWith("-javadoc.jar"))
+            //    {
+            //        return f.GetAbsolutePath();
+            //    }
+            //}
             return null;
         }
 
@@ -644,53 +649,54 @@ namespace Assets.Code.Util
                 if (templateName.Equals("project.mas2j"))
                     templateName = "project";
 
-                string nl = System.getProperty("line.separator");
+                //string nl = System.getProperty("line.separator");
                 // get template
                 TextReader @in;
 
                 // if there is jason/src/xml/build-template.xml, use it; otherwise use the file in jason.jar
-                File bt = new File("src/templates/" + templateName);
-                if (bt.Exists())
-                {
-                    @in = new TextReader(new FileReader(bt));
-                }
-                else
-                {
-                    bt = new File("../src/templates/" + templateName);
-                    if (bt.Exists())
-                    {
-                        @in = new BufferedReader(new FileReader(bt));
-                    }
-                    else
-                    {
-                        bt = new File(getHome() + "/src/templates/" + templateName);
-                        if (bt.Exists())
-                        {
-                            @in = new TextReader(new FileReader(bt));
-                        }
-                        else
-                        {
-                            bt = new File(getHome() + "/src/main/resources/templates/" + templateName);
-                            if (bt.Exists())
-                            {
-                                @in = new TextReader(new FileReader(bt));
-                            }
-                            else
-                            {
-                                @in = new TextReader(new InputStreamReader(getDetaultResource(templateName)));
-                            }
-                        }
-                    }
-                }
+                //File bt = new File("src/templates/" + templateName);
+                //if (bt.Exists())
+                //{
+                //    @in = new TextReader(new FileReader(bt));
+                //}
+                //else
+                //{
+                //    bt = new File("../src/templates/" + templateName);
+                //    if (bt.Exists())
+                //    {
+                //        @in = new BufferedReader(new FileReader(bt));
+                //    }
+                //    else
+                //    {
+                //        bt = new File(getHome() + "/src/templates/" + templateName);
+                //        if (bt.Exists())
+                //        {
+                //            @in = new TextReader(new FileReader(bt));
+                //        }
+                //        else
+                //        {
+                //            bt = new File(getHome() + "/src/main/resources/templates/" + templateName);
+                //            if (bt.Exists())
+                //            {
+                //                @in = new TextReader(new FileReader(bt));
+                //            }
+                //            else
+                //            {
+                //                @in = new TextReader(new InputStreamReader(getDetaultResource(templateName)));
+                //            }
+                //        }
+                //    }
+                //}
 
-                StringBuilder scriptBuf = new StringBuilder();
-                string line = @in.ReadLine();
-                while (line != null)
-                {
-                    scriptBuf.Append(line + nl);
-                    line = @in.ReadLine();
-                }
-                return scriptBuf.ToString();
+                //StringBuilder scriptBuf = new StringBuilder();
+                //string line = @in.ReadLine();
+                //while (line != null)
+                //{
+                //    scriptBuf.Append(line + nl);
+                //    line = @in.ReadLine();
+                //}
+                //return scriptBuf.ToString();
+                return "";
             }
             catch (Exception e)
             {
@@ -707,7 +713,8 @@ namespace Assets.Code.Util
 
         public StreamReader getDetaultResource(string templateName)
         {
-            return Reasoner.GetResource("/templates/"+templateName).openStream();
+            //return Reasoner.GetResource("/templates/"+templateName).openStream();
+            return null;
         }
 
         public static void Main(string[] args)

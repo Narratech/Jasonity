@@ -58,7 +58,7 @@ public class EnvironmentInfraTier{
      * (called by the user environment). If no agent is informed, the notification is sent
      * to all agents.
      */
-    public void InformAgsEnvironmentChanged(string[] agents){
+    public void InformAgsEnvironmentChanged(params string[] agents){
         if (agents.Length == 0) {
             foreach (CentralisedAgArch ag in masRunner.GetAgs().Values) {
                 ag.GetReasoner().GetUserAgArch().WakeUpSense();
@@ -83,12 +83,12 @@ public class EnvironmentInfraTier{
      * @deprecated use the informAgsEnvironmentChanged with string... parameter
      */
     public void InformAgsEnvironmentChanged(List<string> agents){
-        if (agentsToNotify == null)
+        if (agents == null)
         {
             InformAgsEnvironmentChanged();
         } else
         {
-            foreach (string agName in agentsToNotify) {
+            foreach (string agName in agents) {
                 CentralisedAgArch ag = masRunner.GetAg(agName);
                 if (ag != null) {
                     ag.GetReasoner().GetUserAgArch().WakeUpSense();

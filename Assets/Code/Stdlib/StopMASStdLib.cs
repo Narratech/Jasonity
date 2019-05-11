@@ -40,7 +40,7 @@ namespace Assets.Code.Stdlib
         {
             CheckArguments(args);
 
-            RuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
+            IRuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
             rs.StopMAS();
             return true;
         }

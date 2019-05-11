@@ -29,7 +29,7 @@ namespace Assets.Code.stdlib
         public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            RuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
+            IRuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
             IListTerm ln = new ListTermImpl();
             IListTerm tail = ln;
             foreach (string a in rs.GetAgentsNames())

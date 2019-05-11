@@ -13,7 +13,7 @@ public class BaseCentralisedMAS{
     protected static bool            debug         = false;
 
     protected EnvironmentInfraTier        env         = null;
-    //protected CentralisedExecutionControl   control     = null; //No tiene uso?
+    protected GameController   control     = null; //Here we use our game controller to interact with unity
     protected Dictionary<string,CentralisedAgArch> ags         = new Dictionary<string,CentralisedAgArch>();
 
     public bool IsDebug() {
@@ -28,11 +28,11 @@ public class BaseCentralisedMAS{
         return new CentralisedRuntimeServices(runner);
     }
 
-    /* 
-    public CentralisedExecutionControl getControllerInfraTier() {
+    
+    public GameController GetControllerInfraTier() {
         return control;
     }
-*/
+
     public EnvironmentInfraTier GetEnvironmentInfraTier() {
         return env;
     }

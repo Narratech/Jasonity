@@ -47,7 +47,7 @@ namespace Assets.Code.Stdlib
             string name = GetName(args);
             string source = GetSource(args);
 
-            List<string> AgArchClasses = GetAgArchClasses(args);
+            List<string> agArchClasses = GetAgArchClasses(args);
 
             string agClass = null;
             ClassParameters bbPars = null;
@@ -70,8 +70,8 @@ namespace Assets.Code.Stdlib
                     }
                 }
             }
-            RuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
-            name = rs.CreateAgent(name, source, agClass, AgArchClasses, bbPars, GetSettings(), ts.GetAgent());
+            IRuntimeServices rs = ts.GetUserAgArch().GetRuntimeServices();
+            name = rs.CreateAgent(name, source, agClass, agArchClasses, GetSettings(), ts.GetAgent());
             rs.StartAgent(name);
 
             if (args[0].IsVar())

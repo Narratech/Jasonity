@@ -21,7 +21,7 @@ namespace Assets.Code.Infra
     public class CentralisedAgArch : AgentArchitecture, IRunnable
     {
         protected EnvironmentInfraTier infraEnv = null; //Esto va a ser un EnvironmentInfraTier o un Environment, no me acuerdo
-        private CentralisedExecutionControl infraControl = null;
+        private GameController infraControl = null;
         private BaseCentralisedMAS masRunner = BaseCentralisedMAS.GetRunner();
         private string agName = "";
         private volatile bool running = true;
@@ -139,12 +139,12 @@ namespace Assets.Code.Infra
             return infraEnv;
         }
 
-        public void SetControlInfraTier(CentralisedExecutionControl pControl)
+        public void SetControlInfraTier(GameController pControl)
         {
             infraControl = pControl;
         }
 
-        public CentralisedExecutionControl GetControlInfraTier()
+        public GameController GetControlInfraTier()
         {
             return infraControl;
         }

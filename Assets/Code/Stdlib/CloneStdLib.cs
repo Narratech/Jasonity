@@ -15,7 +15,7 @@ namespace Assets.Code.Stdlib
         public override object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             string agName = ((IStringTerm)args[0]).GetString();
-            RuntimeServices services = ts.GetUserAgArch().GetRuntimeServices();
+            IRuntimeServices services = ts.GetUserAgArch().GetRuntimeServices();
             services.Clone(ts.GetAgent(), ts.GetUserAgArch().GetAgArchClassesChain(), agName);
 
             return true;
