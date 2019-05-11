@@ -280,7 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60665f9a3a0cd1f4a880fadc049f8445, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aslPath: 
+  aslPath: Assets/ASL/LightOnAgent.asl
 --- !u!1 &583303214
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ffa009b519dc1c4da3ca6ba8a61684e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aslPath: 
+  aslPath: Assets/ASL/LightOffAgent.asl
 --- !u!1 &1003425252
 GameObject:
   m_ObjectHideFlags: 0
