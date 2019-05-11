@@ -127,8 +127,9 @@ namespace Assets.Code.BDIAgent
 
                     if (asSrc.StartsWith(SourcePath.CRPrefix))
                     {
-                        ParseAs(Agent.GetResource(asSrc.Substring(SourcePath.CRPrefix.Length)).openStream() , asSrc); //I don't know what this is
-                    } else
+                        ParseAs(GetResource(asSrc.Substring(SourcePath.CRPrefix.Length)), asSrc); //I don't know what this is
+                    }
+                    else
                     {
                         parsingOk = ParseAs(new StreamReader(asSrc));
                     }
@@ -998,6 +999,17 @@ namespace Assets.Code.BDIAgent
         internal Event SelectEvent(IEnumerable<Event> enumerable)
         {
             throw new NotImplementedException();
+        }
+
+        public static StreamReader GetResource(string resourceName)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            StreamReader textReader = new StreamReader(assembly.GetManifestResourceStream(resourceName));
+            //string result = textReader.ReadToEnd();
+            textReader.Close();
+
+            //return result;
+            return textReader;
         }
     }
 }

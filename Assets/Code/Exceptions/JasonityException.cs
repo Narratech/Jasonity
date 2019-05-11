@@ -2,7 +2,9 @@
 using Assets.Code.BDIAgent;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,6 +89,17 @@ namespace Assets.Code.Exceptions
             return AsSyntax.AsSyntax.CreateList(
                        AsSyntax.AsSyntax.CreateStructure("error", id),
                        AsSyntax.AsSyntax.CreateStructure("error_msg", AsSyntax.AsSyntax.CreateString(msg)));
+        }
+
+        public static StreamReader GetResource(string resourceName)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            StreamReader textReader = new StreamReader(assembly.GetManifestResourceStream(resourceName));
+            //string result = textReader.ReadToEnd();
+            textReader.Close();
+
+            //return result;
+            return textReader;
         }
     }
 }
