@@ -1,7 +1,7 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
-using Assets.Code.Util;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +42,8 @@ namespace Assets.Code.Stdlib
         override public object Execute(Reasoner ts, Unifier un, ITerm[] args)
         {
             CheckArguments(args);
-            return un.Unifies(args[0], new StringTermImpl(Config.Get().GetJasonVersion()));
+            //return un.Unifies(args[0], new StringTermImpl(Config.Get().GetJasonVersion()));
+            return un.Unifies(args[0], new StringTermImpl("Version 1.0"));
         }
     }
 }

@@ -1,9 +1,10 @@
 ﻿using Assets.Code.AsSyntax;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+public class GameController : Environment
 {
     public GameObject lightbulb;
     public GameObject lightOnAgent;
@@ -21,7 +22,7 @@ public class GameController : MonoBehaviour
     public static readonly Literal sleepLightOff = AsSyntax.ParseLiteral("sleep_light_off(lightOffAgent)");
 
     // Start is called before the first frame update
-    void Start()
+    public override void Start()
     {
         lamp = lightbulb.GetComponent<Lamp>();
         lightOnAgentScript = lightOnAgent.GetComponent<LightOnAgent>();
@@ -40,6 +41,8 @@ public class GameController : MonoBehaviour
         return true;
     }
 
-
-
+    public void ReceiveFinishedCycle(string v, bool breakpoint, int cycle)
+    {
+        throw new NotImplementedException();
+    }
 }

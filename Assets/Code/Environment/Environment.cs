@@ -6,7 +6,7 @@ using Assets.Code.Utilities;
 using Assets.Code.ReasoningCycle;
 using System;
 
-public class Environment : MonoBehaviour {
+public class Environment : MonoBehaviour { //Esto creo que no es un monoBehaviour, tendría que ser una interfaz (?)
 
     private IList<Literal> percepts = new List<Literal>();
     private IDictionary<string,List<Literal>>  agPercepts = new Dictionary<string, List<Literal>>();
@@ -18,7 +18,7 @@ public class Environment : MonoBehaviour {
 
     protected ScheduledExecutor executor; // the thread pool used to execute actions
 
-    public void Start(){
+    public virtual void Start(){
 
     }
 

@@ -16,7 +16,7 @@ using BDIManager.Beliefs;
 using BDIManager.Desires;
 using BDIManager.Intentions;
 using System.Reflection;
-using Assets.Code.Util;
+
 using Assets.Code.AsSemantics;
 using Assets.Code.Utilities;
 
@@ -149,7 +149,7 @@ namespace Assets.Code.BDIAgent
                     FixAgInIAandFunctions(this);
                 }
 
-                LoadKQMLPlans();
+                //LoadKQMLPlans();
                 AddInitialBelsInBB();
                 SetASLSrc(asSrc);
             } catch (Exception e)
@@ -176,30 +176,30 @@ namespace Assets.Code.BDIAgent
             }
         }
 
-        public void LoadKQMLPlans()
-        {
+        //public void LoadKQMLPlans()
+        //{
             
-            Config c = Config.Get();
-            if (c.GetKqmlPlansFile().Equals(Message.kqmlDefaultPlans))
-            {
-                if (c.GetKqmlFunctor().Equals(Message.kqmlReceivedFunctor))
-                {
-                    string file = Message.kqmlDefaultPlans.Substring(Message.kqmlDefaultPlans.IndexOf("/"));
-                    if (typeof(JasonityException).GetResource(file) != null) {
-                        ParseAs(JasonityException.GetResource(file)); //, "kqmlPlans.asl");
-                    } else {
+        //    Config c = Config.Get();
+        //    if (c.GetKqmlPlansFile().Equals(Message.kqmlDefaultPlans))
+        //    {
+        //        if (c.GetKqmlFunctor().Equals(Message.kqmlReceivedFunctor))
+        //        {
+        //            string file = Message.kqmlDefaultPlans.Substring(Message.kqmlDefaultPlans.IndexOf("/"));
+        //            if (typeof(JasonityException).GetResource(file) != null) {
+        //                ParseAs(JasonityException.GetResource(file)); //, "kqmlPlans.asl");
+        //            } else {
                         
-                    }
-                }
-            } else {
-                // load from specified file
-                try {
-                    ParseAs(new StreamReader(c.GetKqmlPlansFile()));
-                } catch (Exception e) {
+        //            }
+        //        }
+        //    } else {
+        //        // load from specified file
+        //        try {
+        //            ParseAs(new StreamReader(c.GetKqmlPlansFile()));
+        //        } catch (Exception e) {
                     
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public void StopAg()
         {

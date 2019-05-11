@@ -5,7 +5,7 @@ using Assets.Code.BDIManager;
 using Assets.Code.Exceptions;
 using Assets.Code.Runtime;
 using Assets.Code.Stdlib;
-using Assets.Code.Util;
+
 using Assets.Code.Utilities;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Beliefs;
@@ -67,7 +67,7 @@ namespace Assets.Code.ReasoningCycle
         private Dictionary<Desire, ICircumstanceListener> listenersMap; //Map the circumstance listeners created for the goal listeners, used in remove goal listeners
 
         // the semantic rules are referred to in comments in the functions below
-        private readonly string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor();
+        //private readonly string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor();
 
         private static readonly Atom aNOCODE = new Atom("no_code");
 
@@ -1491,32 +1491,32 @@ namespace Assets.Code.ReasoningCycle
                         }
 
                         bool added = false;
-                        if (!settings.IsSync() && !ag.GetPL().HasUserKqmlReceivedPlans() && content.IsLiteral() && !content.IsList())
-                        {
-                            //Optimisation to jump kqmlPlans
-                            if (m.GetIlForce().Equals("achieve"))
-                            {
-                                content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
-                                GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt));
-                                added = true;
-                            } else if (m.GetIlForce().Equals("tell"))
-                            {
-                                content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
-                                GetAgent().AddBel((Literal)content);
-                                added = true;
-                            }
+                        //if (!settings.IsSync() && !ag.GetPL().HasUserKqmlReceivedPlans() && content.IsLiteral() && !content.IsList())
+                        //{
+                        //    //Optimisation to jump kqmlPlans
+                        //    if (m.GetIlForce().Equals("achieve"))
+                        //    {
+                        //        content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
+                        //        GetCircumstance().AddEvent(new Event(new Trigger(TEOperator.add, TEType.achieve, (Literal)content), Intention.emptyInt));
+                        //        added = true;
+                        //    } else if (m.GetIlForce().Equals("tell"))
+                        //    {
+                        //        content = AddNestedSourceStdLib.AddAnnotToList(content, new Atom(sender));
+                        //        GetAgent().AddBel((Literal)content);
+                        //        added = true;
+                        //    }
 
-                        }
+                        //}
 
                         if (!added)
                         {
-                            Literal received = new LiteralImpl(kqmlReceivedFunctor).AddTerms(
-                                new Atom(sender),
-                                new Atom(m.GetIlForce()),
-                                content,
-                                new Atom(m.GetMessageId()));
+                        //    Literal received = new LiteralImpl(kqmlReceivedFunctor).AddTerms(
+                        //        new Atom(sender),
+                        //        new Atom(m.GetIlForce()),
+                        //        content,
+                        //        new Atom(m.GetMessageId()));
 
-                            UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.emptyInt));
+                        //    UpdateEvents(new Event(new Trigger(TEOperator.add, TEType.achieve, received), Intention.emptyInt));
                         }
                     } else
                     {

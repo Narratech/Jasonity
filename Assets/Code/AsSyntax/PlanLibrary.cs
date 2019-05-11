@@ -1,5 +1,4 @@
-﻿using Assets.Code.Util;
-using BDIManager.Beliefs;
+﻿using BDIManager.Beliefs;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +24,7 @@ namespace Assets.Code.AsSyntax
 
         private int lastPlanLabel = 0;
 
-        private bool hasUserKqmlReceived = false;
+        //private bool hasUserKqmlReceived = false;
 
         private object lockPL = new object();
 
@@ -81,7 +80,7 @@ namespace Assets.Code.AsSyntax
             Add(p, false);
         }
 
-        private string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor(); 
+        //private string kqmlReceivedFunctor = Config.Get().GetKqmlFunctor(); 
 
         public void Add(Plan p, bool before) //Revisarse el nuevo jason
         {
@@ -113,13 +112,13 @@ namespace Assets.Code.AsSyntax
                 p.GetLabel().AddAnnot(BeliefBase.TSelf);
             }
 
-            if (p.GetTrigger().GetLiteral().GetFunctor().Equals(kqmlReceivedFunctor))
-            {
-                if (!(p.GetSrcInfo() != null && "kmqlPlans.asl".Equals(p.GetSrcInfo()/*.GetSrcFile()*/)))
-                {
-                    hasUserKqmlReceived = true;
-                }
-            }
+            //if (p.GetTrigger().GetLiteral().GetFunctor().Equals(kqmlReceivedFunctor))
+            //{
+            //    if (!(p.GetSrcInfo() != null && "kmqlPlans.asl".Equals(p.GetSrcInfo()/*.GetSrcFile()*/)))
+            //    {
+            //        hasUserKqmlReceived = true;
+            //    }
+            //}
 
             p.SetAsPlanTerm(false); // not a term anymore
 
@@ -232,7 +231,7 @@ namespace Assets.Code.AsSyntax
 
         public bool HasMetaEventPlans() => hasMetaEventPlans;
 
-        public bool HasUserKqmlReceivedPlans() => hasUserKqmlReceived;
+        //public bool HasUserKqmlReceivedPlans() => hasUserKqmlReceived;
 
         private Pred GetUniqueLabel()
         {

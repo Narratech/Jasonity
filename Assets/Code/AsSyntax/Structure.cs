@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.Code.ReasoningCycle;
-using Assets.Code.Util;
+
 
 namespace Assets.Code.AsSyntax
 {
@@ -13,7 +13,7 @@ namespace Assets.Code.AsSyntax
         public static readonly List<ITerm> emptyTermList = new List<ITerm>(0);
         public static readonly ITerm[] emptyTermArray = new ITerm[0];
         private List<ITerm> terms;
-        private static readonly bool useShortUnnamedVars = Config.Get().GetBool(Config.SHORT_UNNAMED_VARS);
+        //private static readonly bool useShortUnnamedVars = Config.Get().GetBool(Config.SHORT_UNNAMED_VARS);
 
 
         public Structure(string functor) : base(DefaultNS, functor)
@@ -356,7 +356,8 @@ namespace Assets.Code.AsSyntax
                 {
                     a = VarToReplace(a, u);
                 }
-                UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.Create(a, t.ToString());
+                //UnnamedVar uv = useShortUnnamedVars ? new UnnamedVar(a) : UnnamedVar.Create(a, t.ToString());
+                UnnamedVar uv = UnnamedVar.Create(a, t.ToString());
                 if (deref.HasAnnot())
                 {
                     uv.SetAnnots(deref.GetAnnots().CloneLT());
