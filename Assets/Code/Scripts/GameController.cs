@@ -1,11 +1,14 @@
-﻿using Assets.Code.AsSyntax;
-using System;
+﻿namespace Assets.Code.Scripts {
+
+    using System;
+    using Code.AsSyntax;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameController : Environment
-{
+public class GameController : Code.Environment.Environment
+    {
     public GameObject lightbulb;
     public GameObject lightOnAgent;
     public GameObject lightOffAgent;
@@ -16,10 +19,12 @@ public class GameController : Environment
 
 
     //Literals
+    /*
     public static readonly Literal lightOn = AsSyntax.ParseLiteral("light_on(lamp)");
     public static readonly Literal lightOff = AsSyntax.ParseLiteral("light_off(lamp)");
     public static readonly Literal sleepLightOn = AsSyntax.ParseLiteral("sleep_light_on(lightOnAgent)");
     public static readonly Literal sleepLightOff = AsSyntax.ParseLiteral("sleep_light_off(lightOffAgent)");
+    */
 
     // Start is called before the first frame update
     public override void Start()
@@ -45,4 +50,5 @@ public class GameController : Environment
     {
         throw new NotImplementedException();
     }
+}
 }

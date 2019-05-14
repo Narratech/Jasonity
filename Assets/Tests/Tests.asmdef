@@ -1,9 +1,12 @@
 ﻿{
     "name": "Tests",
+    "references": ["MainAssembly"],
     "optionalUnityReferences": [
         "TestAssemblies"
     ],
     "includePlatforms": [
         "Editor"
-    ]
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
 }

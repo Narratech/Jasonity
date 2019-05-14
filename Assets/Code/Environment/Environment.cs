@@ -1,3 +1,5 @@
+namespace Assets.Code.Environment { 
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -294,4 +296,5 @@ public class Environment : MonoBehaviour { //Esto creo que no es un monoBehaviou
                 }
             }
     }
+}
 }

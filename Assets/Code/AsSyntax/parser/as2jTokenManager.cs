@@ -297,7 +297,7 @@ private  int curLexState = 0;
 private  int jjmatchedPos;
 private  int jjmatchedKind;
 private  string jjimage = string.Empty;
-private string image = string.Empty;
+        private string image = ""; // string.Empty;
 private int jjimageLen;
 private int lengthOfMatch;
 protected int curChar;
@@ -879,7 +879,8 @@ private static readonly int[] jjnewLexState = {
 void TokenLexicalActions(Token matchedToken) {
   switch(matchedToken.kind) {
     case 26: {
-      if ( image [ 0 ] == '\'' ) matchedToken . image = image . Substring ( 1 , lengthOfMatch - 1 ) ;
+        // Añadido image.Count > 0
+        if ( image.Length > 0 && image [ 0 ] == '\'' ) matchedToken . image = image . Substring ( 1 , lengthOfMatch - 1 ) ;
       break;
     }
     default: break;

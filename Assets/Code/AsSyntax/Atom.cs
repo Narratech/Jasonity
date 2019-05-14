@@ -141,9 +141,11 @@ namespace Assets.Code.AsSyntax
             return base.CompareTo(t);
         }
 
+        // A lo mejor debería llamarse GetHashCode directamente...
         public override int CalcHashCode()
         {
-            return GetFunctor().GetHashCode() + GetNS().GetHashCode();
+            // ToString para evitar llamadas circulares a CalcHashCode de Atom
+            return GetFunctor().GetHashCode() + GetNS().ToString().GetHashCode();
         }
 
         public override string ToString()
@@ -154,7 +156,9 @@ namespace Assets.Code.AsSyntax
             }
             else
             {
-                return GetNS() + "::" + functor;
+                // ToString para evitar llamadas circulares al ToString de Atom
+                // En lugar de namespace habría que mostrar el Atom ns
+                return "namespace" + "::" + functor;
             }
         }
     }

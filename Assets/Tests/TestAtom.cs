@@ -4,7 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Tests
+namespace Assets.Code.functions
 {
     [TestFixture]
     public class TestAtom
@@ -14,8 +14,10 @@ namespace Tests
         public void TestAtomSimplePasses()
         {
             // Use the Assert class to test conditions
+
         }
 
+        /* CREO QUE NO VAMOS A USARLOS
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
@@ -25,5 +27,6 @@ namespace Tests
             // Use yield to skip a frame.
             yield return null;
         }
+        */
     }
 }

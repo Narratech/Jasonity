@@ -59,11 +59,12 @@ namespace Assets.Code.AsSyntax.directives
 
         public IDirective GetInstance(string id)
         {
-            IDirective d = instances[id];
+            IDirective d;
+            instances.TryGetValue(id, out d);
             if (d != null)
                 return d;
 
-            d = singletons[id];
+            singletons.TryGetValue(id, out d);
             if (d != null)
                 return d;
 

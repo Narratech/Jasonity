@@ -13,6 +13,8 @@ using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
 using Assets.Code.AsSemantics;
 using Assets.Code.BDIAgent;
+using Assets.Code.Environment;
+using Assets.Code.Scripts;
 
 
 //This provides an agent architecture where each agent has its own thread. 

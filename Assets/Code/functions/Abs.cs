@@ -5,8 +5,9 @@ using Assets.Code.ReasoningCycle;
 using System;
 
 namespace Assets.Code.functions
-{ 
-    public partial class Abs : ArithFunction
+{
+    //partial 
+    public class Abs : ArithFunction
     {
 
         public override string GetName()
