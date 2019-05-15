@@ -6,7 +6,7 @@ using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class sin : ArithFunction
+    public class sin : ArithFunction
     {
 
         public override string GetName()

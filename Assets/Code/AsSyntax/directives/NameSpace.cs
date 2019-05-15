@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Assets.Code.AsSyntax.directives
 { 
-    public partial class NameSpace : IDirective {
+    public class NameSpace : IDirective {
 
         public const string LOCAL_PREFIX = "#";
 

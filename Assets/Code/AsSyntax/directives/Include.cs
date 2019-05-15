@@ -7,9 +7,8 @@ using System.IO;
 
 namespace Assets.Code.AsSyntax.directives
 {
-    public partial class Include : DefaultDirective, IDirective {
+    public class Include : DefaultDirective, IDirective {
 
-        //HACER: Clase SourcePath de runtime
         private SourcePath aslSourcePath = new SourcePath();
 
         public override Agent Process(Pred directive, Agent outerContent, Agent innerContent)

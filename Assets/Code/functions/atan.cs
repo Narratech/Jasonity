@@ -6,7 +6,7 @@ using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class atan : ArithFunction
+    public class atan : ArithFunction
     {
 
         public override string GetName()

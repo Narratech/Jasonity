@@ -5,8 +5,8 @@ using System;
 using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
-{
-    public partial class floor : ArithFunction
+{ 
+    public  class floor : ArithFunction
     {
 
         public override string GetName()

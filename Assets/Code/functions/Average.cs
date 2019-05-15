@@ -5,7 +5,7 @@ using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class Average : ArithFunction
+    public class Average : ArithFunction
     {
 
         public override string GetName()
