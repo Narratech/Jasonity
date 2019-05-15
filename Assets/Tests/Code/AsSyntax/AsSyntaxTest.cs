@@ -5,42 +5,38 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Assets.Code.functions
+namespace Tests
 {
-    
     [TestFixture]
-    public class AbsTest
+    public class AsSyntaxTest
     {
-        Abs abs;
-        ITerm[] vector;
+        AsSyntax asS;
 
         [SetUp] // El @Before de Java
         public void SetUp()
         {
-            abs = new Abs();
-            vector = new ITerm[1];
-            vector[0] = new NumberTermImpl(-3);
+            asS = new AsSyntax();
+            
         }
 
         [TearDown] // El @After de Java (ahora mismo no lo estoy usando)
         public void TearDown()
         {
         }
-        
 
-        /* Los métodos de test (dentro se utiliza la clase Assert para probar que se cumplen las condiciones) */
+        // A Test behaves as an ordinary method
         [Test]
-        public void TestAbs1()
+        public void ParseLiteralTestSimplePasses()
         {
-            double resultado = abs.Evaluate(null, vector);
-            Assert.AreEqual(8.0d, resultado);
+            // Use the Assert class to test conditions
+            Literal resultado = AsSyntax.ParseLiteral("likes(john, music).");
+            
         }
-
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
         [UnityTest]
-        public IEnumerator TestAtomWithEnumeratorPasses()
+        public IEnumerator ParseLiteralTestWithEnumeratorPasses()
         {
             // Use the Assert class to test conditions.
             // Use yield to skip a frame.
