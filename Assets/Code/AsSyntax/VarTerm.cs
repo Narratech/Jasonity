@@ -352,14 +352,19 @@ namespace Assets.Code.AsSyntax
             return -1;
         }
 
+        // En Jason devuelven null... pero parece más correcto devolver
         public IEnumerator<ITerm> GetEnumerator()
         {
-            return null;
+            // Dicen que lo elegante es hacer un foreach y devolver todos los items de la lista... pero como yo creo que sólo hay uno
+            //foreach (Item item in _itemList) {
+            //    yield return item;
+            //}
+            yield return this;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return null;
+            return GetEnumerator(); // Dicen que lo elegante es llamar al otro método
         }
 
         public IEnumerator<ITerm> ListEnumerator()
