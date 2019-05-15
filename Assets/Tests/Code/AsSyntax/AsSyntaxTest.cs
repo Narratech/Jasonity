@@ -80,7 +80,19 @@ namespace Tests
         //    Trigger t = new Trigger();
         //}
 
-        
+        [Test]
+        public void ParseListTermSimplePasses()
+        {
+            IListTerm lt = new ListTermImpl();
+            IListTerm resultado = AsSyntax.ParseList("[bigfuckinggun]");
+            Assert.AreEqual(lt, resultado);
+        }
+
+        //[Test]
+        //public void ParseRuleSimplePasses()
+        //{
+        //    Rule r = new Rule();
+        //}
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
