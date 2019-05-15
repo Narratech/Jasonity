@@ -11,11 +11,11 @@ namespace Assets.Code.AsSyntax
     */
     public class VarTerm: LiteralImpl, INumberTerm, IListTerm
     {
-        public int Count => throw new NotImplementedException();
+        public int Count { get { return 1;  }  } // Lo hemos implementado nosotros, no creemos que necesite un set.... y creemos que siempre va a ser 1 por ser una variable
+            
+        public bool IsReadOnly { get; set; }  // Lo hemos implementado nosotros, suponemos que puede tener sus get y sus set
 
-        public bool IsReadOnly => throw new NotImplementedException();
-
-        public ITerm this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ITerm this[int index] { get { if (index == 0) return this.GetTerm(); else return null; } set {; } }
 
         public VarTerm(string s):base(s)
         {
@@ -359,7 +359,7 @@ namespace Assets.Code.AsSyntax
             //foreach (Item item in _itemList) {
             //    yield return item;
             //}
-            yield return this;
+            yield return this[0]; // Fede se ha flipado con esto
         }
 
         IEnumerator IEnumerable.GetEnumerator()
