@@ -357,7 +357,11 @@ namespace Assets.Code.AsSyntax
             return null;
         }
 
-        
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return null;
+        }
+
         public IEnumerator<ITerm> ListEnumerator()
         {
             return null;
@@ -462,7 +466,7 @@ namespace Assets.Code.AsSyntax
 
         public override void SetSrcInfo(SourceInfo s)
         {
-            throw new NotImplementedException();
+            base.SetSrcInfo(s);
         }
 
         public override SourceInfo GetSrcInfo()
@@ -512,12 +516,9 @@ namespace Assets.Code.AsSyntax
 
         public bool Remove(ITerm item)
         {
-            throw new NotImplementedException();
+            return default; //null;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

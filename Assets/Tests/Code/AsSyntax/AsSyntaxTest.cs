@@ -47,6 +47,14 @@ namespace Tests
         {
             VarTerm vt = new VarTerm("A");
             VarTerm resultado = AsSyntax.ParseVar("A");
+            Assert.NotNull(resultado);
+            Assert.NotNull(vt);
+            Assert.IsTrue(vt.IsVar());
+            Assert.IsTrue(resultado.IsVar());
+            Assert.IsTrue(vt.Equals(vt));
+            Assert.IsTrue(vt.Equals(vt));
+            Assert.IsTrue(vt.Equals(resultado));
+            Assert.AreNotSame(vt, resultado);
             Assert.AreEqual(vt, resultado);
         }
 
@@ -70,7 +78,7 @@ namespace Tests
         public void ParsePlanSimplePasses()
         {
             Plan p = new Plan();
-            Plan resultado = AsSyntax.ParsePlan("+!clear(X):tower([H | T]) & .member(X, T) < -move(H, table); !clear(X).");
+            Plan resultado = AsSyntax.ParsePlan("+!clear(X):tower([H | T]) & .member(X, T) <- move(H, table); !clear(X).");
             Assert.AreEqual(p, resultado);
         }
 

@@ -33,7 +33,7 @@ namespace Assets.Code.functions
         public void TestAbs1()
         {
             double resultado = abs.Evaluate(null, vector);
-            Assert.AreEqual(vector[0], resultado);
+            Assert.AreEqual(3, resultado);
         }
 
 
