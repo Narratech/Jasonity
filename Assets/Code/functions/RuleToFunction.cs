@@ -7,7 +7,7 @@ using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class RuleToFunction : ArithFunction
+    public class RuleToFunction : ArithFunction
     {
         private string literal;
         private int arity;

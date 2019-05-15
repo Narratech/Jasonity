@@ -5,13 +5,13 @@ using Assets.Code.AsSyntax.parser;
 using Assets.Code.AsSyntax;
 using Assets.Code.AsSyntax.directives;
 using Assets.Code.BDIAgent;
-
 using Assets.Code.AsSemantics;
 using System.Text.RegularExpressions;
 
 namespace Assets.Code.parser
-{ 
-    public partial class as2j : as2jConstants {
+{
+    public partial class as2j : as2jConstants
+    {
 
         private string asSource = "no-asl-source";
         private Agent curAg = null;
@@ -22,7 +22,7 @@ namespace Assets.Code.parser
         private DirectiveProcessor dProcessor = new DirectiveProcessor();
         //private NameSpace nsDirective = (NameSpace)dProcessor.GetInstance("namespace");
         private NameSpace nsDirective;
-        
+
 
 
         private static HashSet<string> parsedFiles = new HashSet<string>();
@@ -31,28 +31,33 @@ namespace Assets.Code.parser
         private static Regex patternUnnamedWithId = new Regex("_(\\d+)(.*)"); //Igual hay que adaptar la expresión a c#
 
         public void SetAg(Agent ag) { curAg = ag; }
-        public void SetNS(Atom  ns) { @namespace = ns; thisnamespace = ns; }
-        public Atom GetNS()         { return @namespace; }
+        public void SetNS(Atom ns) { @namespace = ns; thisnamespace = ns; }
+        public Atom GetNS() { return @namespace; }
 
         public void SetASLSource(string src) { asSource = src; }
-        
-        private string GetSourceRef(SourceInfo s) {
+
+        private string GetSourceRef(SourceInfo s)
+        {
             if (s == null)
                 return "[]";
             else
-                return "["+s.GetSrcFile()+":"+s.GetBeginSrcLine()+"]";
+                return "[" + s.GetSrcFile() + ":" + s.GetBeginSrcLine() + "]";
         }
 
-        private string GetSourceRef(DefaultTerm t) {
-            return GetSourceRef( t.GetSrcInfo());
+        private string GetSourceRef(DefaultTerm t)
+        {
+            return GetSourceRef(t.GetSrcInfo());
         }
 
-        private string GetSourceRef(object t) {
-            if (t.GetType() == typeof(DefaultTerm)) {
+        private string GetSourceRef(object t)
+        {
+            if (t.GetType() == typeof(DefaultTerm))
+            {
                 return GetSourceRef((DefaultTerm)t);
             }
-            
-            else if (t.GetType() == typeof (SourceInfo)) {
+
+            else if (t.GetType() == typeof(SourceInfo))
+            {
                 return GetSourceRef((SourceInfo)t);
             }
 
@@ -60,16 +65,21 @@ namespace Assets.Code.parser
                 return "[]";
         }
 
-        private InternalActionLiteral CheckInternalActionsInContext(ILogicalFormula f, Agent ag) {
-            if (f != null) {
-                if (f.GetType() == typeof(InternalActionLiteral)) {
+        private InternalActionLiteral CheckInternalActionsInContext(ILogicalFormula f, Agent ag)
+        {
+            if (f != null)
+            {
+                if (f.GetType() == typeof(InternalActionLiteral))
+                {
                     InternalActionLiteral ial = (InternalActionLiteral)f;
-                    if (!ial.GetIA(ag).CanBeUsedInContext()) {
+                    if (!ial.GetIA(ag).CanBeUsedInContext())
+                    {
                         return ial;
                     }
-                } 
-                
-                else if (f.GetType() == typeof (LogExpr)) {
+                }
+
+                else if (f.GetType() == typeof(LogExpr))
+                {
                     LogExpr le = (LogExpr)f;
                     InternalActionLiteral ial = CheckInternalActionsInContext(le.GetLHS(), ag);
                     if (ial != null)
@@ -81,30 +91,33 @@ namespace Assets.Code.parser
             return null;
         }
 
-        private ArithFunction GetArithFunction(Literal l) {
+        private ArithFunction GetArithFunction(Literal l)
+        {
             ArithFunction af = null;
             if (curAg != null)
-               // try to find the function in agent register
-               af = curAg.GetFunction(l.GetFunctor(), l.GetArity());
+                // try to find the function in agent register
+                af = curAg.GetFunction(l.GetFunctor(), l.GetArity());
             if (af == null)
-               // try global function
-               af = FunctionRegister.GetFunction(l.GetFunctor(), l.GetArity());
+                // try global function
+                af = FunctionRegister.GetFunction(l.GetFunctor(), l.GetArity());
             return af;
         }
 
-        private ITerm ChangeToAtom(object o) {
+        private ITerm ChangeToAtom(object o)
+        {
             ITerm u = (ITerm)o;
             if (u == Literal.LTrue)
                 return u;
             if (u == Literal.LFalse)
                 return u;
-            if (u.IsAtom()) {
-               if (((Atom)u).GetFunctor().Equals("default"))
-                  return Literal.DefaultNS;
-               else if (((Atom)u).GetFunctor().Equals("this_ns"))
-                  return thisnamespace;
-               else
-                  return new Atom((Literal)u);
+            if (u.IsAtom())
+            {
+                if (((Atom)u).GetFunctor().Equals("default"))
+                    return Literal.DefaultNS;
+                else if (((Atom)u).GetFunctor().Equals("this_ns"))
+                    return thisnamespace;
+                else
+                    return new Atom((Literal)u);
             }
             return u;
         }

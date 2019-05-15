@@ -5,7 +5,7 @@ using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class pi : ArithFunction
+    public class pi : ArithFunction
     {
 
         public override string GetName()

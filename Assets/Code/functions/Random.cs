@@ -5,7 +5,7 @@ using Assets.Code.AsSemantics;
 
 namespace Assets.Code.functions
 {
-    public partial class random : ArithFunction
+    public class random : ArithFunction
     {
 
         public override string GetName()
