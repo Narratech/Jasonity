@@ -10,12 +10,12 @@ namespace Tests
     [TestFixture]
     public class AsSyntaxTest
     {
-        AsSyntax asS;
+        
 
         [SetUp] // El @Before de Java
         public void SetUp()
         {
-            asS = new AsSyntax();
+            
             
         }
 
@@ -29,9 +29,58 @@ namespace Tests
         public void ParseLiteralTestSimplePasses()
         {
             // Use the Assert class to test conditions
+            Literal l = new LiteralImpl("likes");
             Literal resultado = AsSyntax.ParseLiteral("likes(john, music).");
-            
+            Assert.AreEqual(l, resultado);
         }
+
+        [Test]
+        public void ParserNumberTestSimplePasses()
+        {
+            INumberTerm nti = new NumberTermImpl(12.5);
+            INumberTerm resultado = AsSyntax.ParseNumber("12,5");
+            Assert.AreEqual(nti.ToString(), resultado.ToString());
+        }
+
+        [Test]
+        public void ParseVarTermTestSimplePasses()
+        {
+            VarTerm vt = new VarTerm("A");
+            VarTerm resultado = AsSyntax.ParseVar("A");
+            Assert.AreEqual(vt, resultado);
+        }
+
+        [Test]
+        public void ParseStructureSimplePasses()
+        {
+            Structure s = new Structure("hello(brother).");
+            Structure resultado = AsSyntax.ParseStructure("hello(brother).");
+            Assert.AreEqual(s, resultado);
+        }
+
+        [Test]
+        public void ParseTermSimplePasses()
+        {
+            ITerm t = new Atom("sister");
+            ITerm resultado = AsSyntax.ParseTerm("sister");
+            Assert.AreEqual(t, resultado);
+        }
+
+        [Test]
+        public void ParsePlanSimplePasses()
+        {
+            Plan p = new Plan();
+            Plan resultado = AsSyntax.ParsePlan("+!clear(X):tower([H | T]) & .member(X, T) < -move(H, table); !clear(X).");
+            Assert.AreEqual(p, resultado);
+        }
+
+        //[Test]
+        //public void ParseTriggerSimplePasses()
+        //{
+        //    Trigger t = new Trigger();
+        //}
+
+        
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
         // `yield return null;` to skip a frame.
