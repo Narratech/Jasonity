@@ -523,7 +523,5 @@ namespace Assets.Code.AsSyntax
         {
             return default; //null;
         }
-
-        
     }
 }

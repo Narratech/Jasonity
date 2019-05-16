@@ -344,74 +344,74 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public bool HasVar(VarTerm t, Unifier u)
+        public override bool HasVar(VarTerm t, Unifier u)
         {
             throw new NotImplementedException();
         }
 
-        public bool IsArithExpr()
+        public override bool IsArithExpr()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsCyclicTerm()
+        public override bool IsCyclicTerm()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsGround()
+        public override bool IsGround()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsInternalAction()
+        public override bool IsInternalAction()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsList()
+        public override bool IsList()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsLiteral()
+        public override bool IsLiteral()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsNumeric()
+        public override bool IsNumeric()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsPred()
+        public override bool IsPred()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsRule()
+        public override bool IsRule()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsString()
+        public override bool IsString()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsStructure()
+        public override bool IsStructure()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsUnnamedVar()
+        public override bool IsUnnamedVar()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsVar()
+        public override bool IsVar()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public void SetSrcInfo(SourceInfo s)
