@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace Assets.Code.AsSyntax
 {
-    public interface ITerm:ICloneable, IComparable
+
+    public interface ITerm: IComparable<ITerm>
     {
         bool IsVar();
         bool IsUnnamedVar();

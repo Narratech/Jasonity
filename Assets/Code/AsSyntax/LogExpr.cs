@@ -11,7 +11,10 @@ namespace Assets.Code.AsSyntax
         public static List<Unifier> EMPTY_UNIF_LIST = new List<Unifier>();
         private LogicalOp op = LogicalOp.none;
 
-        public LogExpr(ILogicalFormula f1, LogicalOp oper, ILogicalFormula f2) : base(f1, oper.ToString(), f2) => op = oper;
+        public LogExpr(ILogicalFormula f1, LogicalOp oper, ILogicalFormula f2) : base(f1, oper.ToString(), f2)
+        {
+            op = oper;
+        }
 
         public LogExpr(LogicalOp oper, ILogicalFormula f) : base(oper.ToString(), f) => op = oper;
 
@@ -129,10 +132,7 @@ namespace Assets.Code.AsSyntax
 
         public LogicalOp GetOp() => op;
 
-        object ICloneable.Clone()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 
     public class LogicalOp

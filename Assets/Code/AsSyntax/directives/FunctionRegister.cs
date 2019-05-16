@@ -34,7 +34,7 @@ namespace Assets.Code.AsSyntax.directives
             try
             {
                 ArithFunction af = (ArithFunction)Activator.CreateInstance(typeof(ArithFunction));
-                functions[af.GetName()] = af;
+                functions.Add(af.GetName(), af);
             }
             catch (Exception e)
             {
@@ -50,7 +50,7 @@ namespace Assets.Code.AsSyntax.directives
                 ArithFunction af = (ArithFunction)Activator.CreateInstance(typeof(ArithFunction));
                 string error = CheckFunctionName(af.GetName());
                 if (error == null)
-                    functions[af.GetName()] = af; 
+                    functions.Add(af.GetName(), af); 
             }
             catch (Exception)
             {
@@ -60,7 +60,9 @@ namespace Assets.Code.AsSyntax.directives
 
         public static string CheckFunctionName(string fName)
         {
-            if (functions[fName] != null)
+            ArithFunction aux;
+            functions.TryGetValue(fName, out aux);
+            if (aux != null)
                 return "Can not register the function " + fName + "  twice!";
             else if (fName.IndexOf(".") < 0)
                 return "The function " + fName + " was not registered! A function must have a '.' in its name.";
@@ -72,7 +74,8 @@ namespace Assets.Code.AsSyntax.directives
 
         public static ArithFunction GetFunction(string function, int arity)
         {
-            ArithFunction af = functions[function];
+            ArithFunction af;
+            functions.TryGetValue(function, out af);
 
             if (af != null && af.CheckArity(arity))
                 return af;

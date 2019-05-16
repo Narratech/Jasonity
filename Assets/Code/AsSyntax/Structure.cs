@@ -431,39 +431,39 @@ namespace Assets.Code.AsSyntax
 
         public override string ToString()
         {
-            StringBuilder s = new StringBuilder();
+            string s = "";
             if (GetNS() != DefaultNS)
             {
-                s.Append(GetNS());
-                s.Append("::");
+                string.Concat(s, GetNS().ToString());
+                string.Concat(s, "::");
             }
             if (Negated())
             {
-                s.Append("~");
+                string.Concat(s, "~");
             }
             if (GetFunctor() != null)
             {
-                s.Append(GetFunctor());
+                string.Concat(s, GetFunctor());
             }
             if (GetArity() > 0)
             {
-                s.Append("(");
+                string.Concat(s, "(");
                 IEnumerator<ITerm> enumerator = terms.GetEnumerator();
                 while(enumerator.MoveNext())
                 {
-                    s.Append(enumerator.Current);
+                    string.Concat(s, enumerator.Current);
                     if(enumerator.MoveNext())
                     {
-                        s.Append(",");
+                        string.Concat(s, ",");
                     }
                 }
-                s.Append(")");
+                string.Concat(s, ")");
             }
             if (HasAnnot())
             {
-                s.Append(GetAnnots().ToString());
+                string.Concat(s, GetAnnots().ToString());
             }
-            return s.ToString();
+            return s;
         }
     }
 }

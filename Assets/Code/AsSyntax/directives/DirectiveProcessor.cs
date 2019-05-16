@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using Assets.Code.AsSyntax;
+using UnityEngine;
 
 namespace Assets.Code.AsSyntax.directives
 {
@@ -12,19 +13,21 @@ namespace Assets.Code.AsSyntax.directives
 
         public static void RegisterDirective(string id, Type d)
         {
-            directives[id] = d;
+            directives.Add(id, d);
         }
 
         public static IDirective GetDirective(string id)
         {
-            IDirective d = singletons[id];
+            IDirective d;
+            singletons.TryGetValue(id, out d);
 
             if (d != null)
             {
                 return d;
             }
 
-            Type c = directives[id];
+            Type c;
+            directives.TryGetValue(id, out c);
             try
             {
                 d = (IDirective)Activator.CreateInstance(typeof(Type));
@@ -69,20 +72,21 @@ namespace Assets.Code.AsSyntax.directives
                 return d;
 
             // create the instance
-            Type c = directives[id];
+            Type c;
+            directives.TryGetValue(id, out c);
 
             try
             {
-                d = (IDirective)Activator.CreateInstance(typeof(Type));
+                d = (IDirective)Activator.CreateInstance(c);
                 if (d.IsSingleton())
-                    singletons[id] = d;
+                    singletons.Add(id, d);
                 else
-                    instances[id] = d;
+                    instances.Add(id, d);
                 return d;
             }
             catch (Exception e)
             {
-                e.ToString();
+                Debug.Log(e.ToString());
             }
             return null;
         }

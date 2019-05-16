@@ -720,7 +720,7 @@ namespace Assets.Code.AsSyntax
                 return false;
             }
 
-            public new string ToString()
+            public new string ToString() 
             {
                 return GetFunctor();
             }
@@ -733,12 +733,12 @@ namespace Assets.Code.AsSyntax
 
         public override ITerm Clone()
         {
-            throw new NotImplementedException();
+            return (ITerm)MemberwiseClone();
         }
 
         public override int CalcHashCode()
         {
-            throw new NotImplementedException();
+            return base.GetHashCode();
         }
     }
 }

@@ -476,13 +476,10 @@ namespace Assets.Code.AsSyntax
 
         public override SourceInfo GetSrcInfo()
         {
-            throw new NotImplementedException();
+            return base.GetSrcInfo();
         }
 
-        object ICloneable.Clone()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public new int CompareTo(object obj)
         {

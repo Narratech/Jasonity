@@ -424,10 +424,7 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        object ICloneable.Clone()
-        {
-            throw new NotImplementedException();
-        }
+      
 
         ITerm ITerm.Clone()
         {

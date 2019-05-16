@@ -15,7 +15,7 @@ namespace Assets.Code.AsSyntax
 
         public virtual ITerm Capply(Unifier u)
         {
-            return Clone();
+            return (ITerm)MemberwiseClone();
         }
 
         abstract public ITerm Clone();
@@ -23,7 +23,7 @@ namespace Assets.Code.AsSyntax
 
         public virtual ITerm CloneNS(Atom newNamespace)
         {
-            return Clone();
+            return (ITerm)MemberwiseClone();
         }
 
         public virtual int CompareTo(ITerm t)
@@ -62,7 +62,8 @@ namespace Assets.Code.AsSyntax
         {
             if (hashCodeCache == -1)
             {
-                hashCodeCache = CalcHashCode();
+                //hashCodeCache = CalcHashCode(); 
+                hashCodeCache = base.GetHashCode(); 
             }
             return hashCodeCache;
         }
@@ -177,11 +178,7 @@ namespace Assets.Code.AsSyntax
             return false;
         }
         /*****************************/
-
-        object ICloneable.Clone()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public int CompareTo(object obj)
         {

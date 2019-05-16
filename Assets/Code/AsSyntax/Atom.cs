@@ -10,7 +10,7 @@ namespace Assets.Code.AsSyntax
         private readonly string functor; // immutable field
         private readonly Atom   ns; // name space
 
-        public Atom(string functor): this(DefaultNS, functor)
+        public Atom(string functor): this(DefaultNS, functor) //DefaultNS está definido en Literal
         {
             
         }
@@ -22,7 +22,7 @@ namespace Assets.Code.AsSyntax
                 
             }
             this.functor = functor;
-            this.ns = @namespace;
+            ns = @namespace;
         }
 
         public Atom(Literal l): this(l.GetNS(), l)
@@ -37,8 +37,8 @@ namespace Assets.Code.AsSyntax
 
         public Atom(Atom @namespace, Literal l)
         {
-            this.functor = l.GetFunctor();
-            this.ns = @namespace;
+            functor = l.GetFunctor();
+            ns = @namespace;
             srcInfo = l.srcInfo;
         }
 
@@ -49,7 +49,7 @@ namespace Assets.Code.AsSyntax
 
         public override Atom GetNS()
         {
-            return this; //since this object is inmutable
+            return ns; 
         }
 
         public override ITerm Capply(Unifier u)
@@ -145,7 +145,15 @@ namespace Assets.Code.AsSyntax
         public override int CalcHashCode()
         {
             // ToString para evitar llamadas circulares a CalcHashCode de Atom
-            return GetFunctor().GetHashCode() + GetNS().ToString().GetHashCode();
+            //En lugar de 31 debería estar el ns.GetHashCode() pero se mete en llamadas recursivas y da un stack overflow
+            //return functor.GetHashCode() + ns.ToString().GetHashCode();
+            //return functor.GetHashCode() + base.GetHashCode();
+            return functor.GetHashCode() + base.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public override string ToString()
@@ -158,7 +166,8 @@ namespace Assets.Code.AsSyntax
             {
                 // ToString para evitar llamadas circulares al ToString de Atom
                 // En lugar de namespace habría que mostrar el Atom ns
-                return "namespace" + "::" + functor;
+                //return "namespace" + "::" + functor;
+                return functor;
             }
         }
     }

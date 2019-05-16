@@ -20,7 +20,7 @@ namespace Tests
         [SetUp] // El @Before de Java
         public void SetUp()
         {
-            vector = new ITerm[1];
+            vector = new ITerm[3];
             vector[0] = new NumberTermImpl(-3);
             vector[1] = new VarTerm("Daniel");
             vector[2] = new Pred("hello(brother)[nice(brother)]");
@@ -40,16 +40,6 @@ namespace Tests
             AbolishStdLib asl = new AbolishStdLib();
             asl.Execute(new Reasoner(new Agent(), new Circumstance(), new AgentArchitecture(), new Settings()), new Unifier(), vector);
 
-        }
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator AbolishTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
         }
     }
 }

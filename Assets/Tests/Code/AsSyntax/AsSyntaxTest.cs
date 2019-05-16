@@ -26,7 +26,7 @@ namespace Tests
 
         // A Test behaves as an ordinary method
         [Test]
-        public void ParseLiteralTestSimplePasses()
+        public void ParseLiteralTest() 
         {
             // Use the Assert class to test conditions
             Literal l = new LiteralImpl("likes");
@@ -35,7 +35,7 @@ namespace Tests
         }
 
         [Test]
-        public void ParserNumberTestSimplePasses()
+        public void ParserNumberTest()
         {
             INumberTerm nti = new NumberTermImpl(12.5);
             INumberTerm resultado = AsSyntax.ParseNumber("12,5");
@@ -43,7 +43,7 @@ namespace Tests
         }
 
         [Test]
-        public void ParseVarTermTestSimplePasses()
+        public void ParseVarTermTest()
         {
             VarTerm vt = new VarTerm("A");
             VarTerm resultado = AsSyntax.ParseVar("A");
@@ -59,7 +59,7 @@ namespace Tests
         }
 
         [Test]
-        public void ParseStructureSimplePasses()
+        public void ParseStructure()
         {
             Structure s = new Structure("hello(brother).");
             Structure resultado = AsSyntax.ParseStructure("hello(brother).");
@@ -67,18 +67,20 @@ namespace Tests
         }
 
         [Test]
-        public void ParseTermSimplePasses()
+        public void ParseTerm()
         {
             ITerm t = new Atom("sister");
             ITerm resultado = AsSyntax.ParseTerm("sister");
-            Assert.AreEqual(t, resultado);
+            Assert.AreEqual(t.ToString(), resultado.ToString());
+            //StringAssert.AreEqualIgnoringCase(t.ToString(), resultado.ToString());
         }
 
         [Test]
-        public void ParsePlanSimplePasses()
+        public void ParsePlan()
         {
             Plan p = new Plan();
-            Plan resultado = AsSyntax.ParsePlan("+!clear(X):tower([H | T]) & .member(X, T) <- move(H, table); !clear(X).");
+            //Plan resultado = AsSyntax.ParsePlan("+!clear(X):tower([H | T]) & .member(X, T) <- move(H, table); !clear(X).");
+            Plan resultado = AsSyntax.ParsePlan("+!init() <- println(hello world).");
             Assert.AreEqual(p, resultado);
         }
 
@@ -101,15 +103,5 @@ namespace Tests
         //{
         //    Rule r = new Rule();
         //}
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator ParseLiteralTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
-        }
     }
 }

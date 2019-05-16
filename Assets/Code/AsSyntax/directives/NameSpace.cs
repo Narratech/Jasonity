@@ -70,7 +70,8 @@ namespace Assets.Code.AsSyntax.directives
 
         public Atom Map(Atom ns)
         {
-            Atom n = localNSs[ns];
+            Atom n = null; 
+            localNSs.TryGetValue(ns, out n);
             if (n == null)
                 return ns;
             else

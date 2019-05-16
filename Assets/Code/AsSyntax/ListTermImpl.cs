@@ -1044,16 +1044,7 @@ namespace Assets.Code.AsSyntax
 
             return a;
         }
-
-        object ICloneable.Clone()
-        {
-            throw new NotImplementedException();
-        }
-
-        ITerm ITerm.Clone()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public void Add(Pred pred)
         {
@@ -1135,9 +1126,9 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public SourceInfo GetSrcInfo()
+        public override SourceInfo GetSrcInfo()
         {
-            throw new NotImplementedException();
+            return srcInfo;
         }
 
         public bool IsInternalAction()
@@ -1155,9 +1146,9 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public void SetSrcInfo(SourceInfo s)
+        public override void SetSrcInfo(SourceInfo s)
         {
-            throw new NotImplementedException();
+            srcInfo = s;
         }
 
         public bool IsCyclicTerm()
