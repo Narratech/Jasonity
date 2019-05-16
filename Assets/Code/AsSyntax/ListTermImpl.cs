@@ -1081,44 +1081,44 @@ namespace Assets.Code.AsSyntax
             throw new NotImplementedException();
         }
 
-        public bool IsUnnamedVar()
+        public override bool IsUnnamedVar()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsVar()
+        public override bool IsVar()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsNumeric()
+        public override bool IsNumeric()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsPlanBody()
+        public override bool IsPlanBody()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsPred()
+        public override bool IsPred()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsRule()
+        public override bool IsRule()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsString()
+        public override bool IsString()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
-        public bool IsStructure()
+        public override bool IsStructure()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public bool Subsumes(ITerm l)
