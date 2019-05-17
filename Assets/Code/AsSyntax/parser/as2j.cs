@@ -304,17 +304,8 @@ namespace Assets.Code.parser
             object C = null;
             IPlanBody B = null;
             int start = -1, end;
-
-
-
-
-
-
-
-
             int switch_11 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_11 == TK_LABEL_AT)
+            if (false || switch_11 == TK_LABEL_AT)
             {
                 k = jj_consume_token(TK_LABEL_AT);
                 L2 = literal();
@@ -323,13 +314,11 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[10] = jj_gen;
-                ;
             }
             // use literal to allow namespace
             T = trigger();
             int switch_12 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_12 == 39)
+            if (false || switch_12 == 39)
             {
                 k = jj_consume_token(39);
                 C = log_expr();
@@ -338,11 +327,9 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[11] = jj_gen;
-                ;
             }
             int switch_13 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_13 == 40)
+            if (false || switch_13 == 40)
             {
                 k = jj_consume_token(40);
                 B = plan_body();
@@ -351,11 +338,9 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[12] = jj_gen;
-                ;
             }
 
-            k
-               = jj_consume_token(37);
+            k = jj_consume_token(37);
             if (start == -1) start = k.beginLine;
 
             end = k.beginLine;
@@ -380,25 +365,18 @@ namespace Assets.Code.parser
             TEOperator teOp;
             TEType teType = TEType.belief;
             Literal F;
-
-
-
-
             int switch_14 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_14 == 41)
+            if (false || switch_14 == 41)
             {
                 jj_consume_token(41);
                 teOp = TEOperator.add;
             }
-            else if (false
-           || switch_14 == 42)
+            else if (false || switch_14 == 42)
             {
                 jj_consume_token(42);
                 teOp = TEOperator.del;
             }
-            else if (false
-           || switch_14 == 43)
+            else if (false || switch_14 == 43)
             {
                 jj_consume_token(43);
                 teOp = TEOperator.desireState;
@@ -410,19 +388,15 @@ namespace Assets.Code.parser
                 throw new ParseException();
             }
             int switch_16 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_16 == 38
-               || switch_16 == 44)
+            if (false || switch_16 == 38 || switch_16 == 44)
             {
                 int switch_15 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_15 == 38)
+                if (false || switch_15 == 38)
                 {
                     jj_consume_token(38);
                     teType = TEType.achieve;
                 }
-                else if (false
-               || switch_15 == 44)
+                else if (false || switch_15 == 44)
                 {
                     jj_consume_token(44);
                     teType = TEType.test;
@@ -437,7 +411,6 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[15] = jj_gen;
-                ;
             }
 
 
@@ -452,52 +425,29 @@ namespace Assets.Code.parser
         public IPlanBody plan_body()
         {
             Object F; IPlanBody R = null;
-
-            F
-                   = plan_body_term();
+            F = plan_body_term();
             int switch_17 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_17 == 45)
+            if (false || switch_17 == 45)
             {
                 jj_consume_token(45);
             }
             else
             {
                 jj_la1[16] = jj_gen;
-                ;
             }
             int switch_18 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_18 == VAR
-               || switch_18 == TK_TRUE
-               || switch_18 == TK_FALSE
-               || switch_18 == TK_NOT
-               || switch_18 == TK_NEG
-               || switch_18 == TK_BEGIN
-               || switch_18 == TK_END
-               || switch_18 == TK_IF
-               || switch_18 == TK_FOR
-               || switch_18 == TK_WHILE
-               || switch_18 == NUMBER
-               || switch_18 == STRING
-               || switch_18 == ATOM
-               || switch_18 == UNNAMEDVARID
-               || switch_18 == UNNAMEDVAR
-               || switch_18 == 34
-               || switch_18 == 38
-               || switch_18 == 41
-               || switch_18 == 42
-               || switch_18 == 44
-               || switch_18 == 46
-               || switch_18 == 48
-               || switch_18 == 51)
+            if (false || switch_18 == VAR || switch_18 == TK_TRUE || switch_18 == TK_FALSE || switch_18 == TK_NOT 
+                || switch_18 == TK_NEG || switch_18 == TK_BEGIN || switch_18 == TK_END || switch_18 == TK_IF
+                || switch_18 == TK_FOR || switch_18 == TK_WHILE || switch_18 == NUMBER || switch_18 == STRING
+                || switch_18 == ATOM || switch_18 == UNNAMEDVARID || switch_18 == UNNAMEDVAR || switch_18 == 34
+                || switch_18 == 38 || switch_18 == 41 || switch_18 == 42 || switch_18 == 44 || switch_18 == 46
+                || switch_18 == 48 || switch_18 == 51)
             {
                 R = plan_body();
             }
             else
             {
                 jj_la1[17] = jj_gen;
-                ;
             }
 
             if (R != null)
@@ -523,8 +473,7 @@ namespace Assets.Code.parser
             }
             else
             {
-                jj_la1[18] = jj_gen;
-                //; //Aquí había un ; suelto sin nada así que lo he comentado por si acaso 
+                jj_la1[18] = jj_gen; 
             }
             if (R == null)
             {
@@ -558,7 +507,7 @@ namespace Assets.Code.parser
                 }
                 catch (Exception e)
                 {
-                    throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
+                    throw new ParseException(e.Message); //Esto daba error porque estaba vacï¿½o y como es lo que se genera sï¿½lo he puesto una expecion porque no se que tiene que devolver
                 }
             }
         }
@@ -569,8 +518,7 @@ namespace Assets.Code.parser
         {
             object F; IPlanBody R = null;
             int switch_20 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_20 == TK_IF)
+            if (false || switch_20 == TK_IF)
             {
                 F = stmtIF();
             }
@@ -584,27 +532,11 @@ namespace Assets.Code.parser
             {
                 F = stmtWHILE();
             }
-            else if (false
-           || switch_20 == VAR
-           || switch_20 == TK_TRUE
-           || switch_20 == TK_FALSE
-           || switch_20 == TK_NOT
-           || switch_20 == TK_NEG
-           || switch_20 == TK_BEGIN
-           || switch_20 == TK_END
-           || switch_20 == NUMBER
-           || switch_20 == STRING
-           || switch_20 == ATOM
-           || switch_20 == UNNAMEDVARID
-           || switch_20 == UNNAMEDVAR
-           || switch_20 == 34
-           || switch_20 == 38
-           || switch_20 == 41
-           || switch_20 == 42
-           || switch_20 == 44
-           || switch_20 == 46
-           || switch_20 == 48
-           || switch_20 == 51)
+            else if (false || switch_20 == VAR || switch_20 == TK_TRUE || switch_20 == TK_FALSE || switch_20 == TK_NOT
+            || switch_20 == TK_NEG || switch_20 == TK_BEGIN || switch_20 == TK_END || switch_20 == NUMBER 
+            || switch_20 == STRING || switch_20 == ATOM || switch_20 == UNNAMEDVARID || switch_20 == UNNAMEDVAR
+            || switch_20 == 34 || switch_20 == 38 || switch_20 == 41 || switch_20 == 42 || switch_20 == 44
+            || switch_20 == 46 || switch_20 == 48 || switch_20 == 51)
             {
                 F = body_formula();
                 //isControl = false;
@@ -619,8 +551,7 @@ namespace Assets.Code.parser
                 throw new ParseException();
             }
             int switch_21 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_21 == TK_PAND)
+            if (false || switch_21 == TK_PAND)
             {
                 jj_consume_token(TK_PAND);
                 R = plan_body_factor();
@@ -628,7 +559,6 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[20] = jj_gen;
-                ;
             }
 
             if (R == null)
@@ -658,7 +588,7 @@ namespace Assets.Code.parser
             }
             catch (Exception e)
             {
-                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver 
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacï¿½o y como es lo que se genera sï¿½lo he puesto una expecion porque no se que tiene que devolver 
             }
         }
 
@@ -670,8 +600,7 @@ namespace Assets.Code.parser
             IPlanBody B;
             jj_consume_token(TK_IF);
 
-            B
-               = stmtIFCommon();
+            B = stmtIFCommon();
             return B;
         }
 
@@ -682,26 +611,20 @@ namespace Assets.Code.parser
             object B; ITerm T1; ITerm T2 = null; Literal stmtLiteral = null;
             jj_consume_token(46);
 
-            B
-               = log_expr();
+            B = log_expr();
             jj_consume_token(47);
 
-            T1
-                = rule_plan_term();
+            T1 = rule_plan_term();
             int switch_23 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_23 == TK_ELSE
-               || switch_23 == TK_ELIF)
+            if (false || switch_23 == TK_ELSE || switch_23 == TK_ELIF)
             {
                 int switch_22 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_22 == TK_ELIF)
+                if (false || switch_22 == TK_ELIF)
                 {
                     jj_consume_token(TK_ELIF);
                     T2 = stmtIFCommon();
                 }
-                else if (false
-               || switch_22 == TK_ELSE)
+                else if (false || switch_22 == TK_ELSE)
                 {
                     jj_consume_token(TK_ELSE);
                     T2 = rule_plan_term();
@@ -716,7 +639,6 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[22] = jj_gen;
-                ;
             }
             try
             {
@@ -741,7 +663,7 @@ namespace Assets.Code.parser
             }
             catch (Exception e)
             {
-                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacï¿½o y como es lo que se genera sï¿½lo he puesto una expecion porque no se que tiene que devolver
             }
         }
 
@@ -753,12 +675,10 @@ namespace Assets.Code.parser
             jj_consume_token(TK_FOR);
             jj_consume_token(46);
 
-            B
-               = log_expr();
+            B = log_expr();
             jj_consume_token(47);
 
-            T1
-                = rule_plan_term();
+            T1 = rule_plan_term();
 
             try
             {
@@ -772,7 +692,7 @@ namespace Assets.Code.parser
             }
             catch (Exception e)
             {
-                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacï¿½o y como es lo que se genera sï¿½lo he puesto una expecion porque no se que tiene que devolver
             }
         }
 
@@ -784,12 +704,10 @@ namespace Assets.Code.parser
             jj_consume_token(TK_WHILE);
             jj_consume_token(46);
 
-            B
-               = log_expr();
+            B = log_expr();
             jj_consume_token(47);
 
-            T1
-                = rule_plan_term();
+            T1 = rule_plan_term();
 
             try
             {
@@ -803,7 +721,7 @@ namespace Assets.Code.parser
             }
             catch (Exception e)
             {
-                throw new ParseException(e.Message); //Esto daba error porque estaba vacío y como es lo que se genera sólo he puesto una expecion porque no se que tiene que devolver
+                throw new ParseException(e.Message); //Esto daba error porque estaba vacï¿½o y como es lo que se genera sï¿½lo he puesto una expecion porque no se que tiene que devolver
             }
         }
 
@@ -814,58 +732,43 @@ namespace Assets.Code.parser
         {
             BodyType formType = BodyType.action; Object B;
             int switch_29 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_29 == 38
-               || switch_29 == 41
-               || switch_29 == 42
-               || switch_29 == 44
-               || switch_29 == 48)
+            if (false || switch_29 == 38 || switch_29 == 41 || switch_29 == 42 || switch_29 == 44 || switch_29 == 48)
             {
                 int switch_28 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_28 == 38)
+                if (false || switch_28 == 38)
                 {
                     jj_consume_token(38);
                     formType = BodyType.achieve;
                 }
-                else if (false
-               || switch_28 == 48)
+                else if (false || switch_28 == 48)
                 {
                     jj_consume_token(48);
                     formType = BodyType.achieveNF;
                 }
-                else if (false
-               || switch_28 == 44)
+                else if (false || switch_28 == 44)
                 {
                     jj_consume_token(44);
                     formType = BodyType.test;
                 }
-                else if (false
-               || switch_28 == 41)
+                else if (false || switch_28 == 41)
                 {
                     jj_consume_token(41);
                     formType = BodyType.addBel;
                     int switch_25 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                    if (false
-                       || switch_25 == 41
-                       || switch_25 == 49
-                       || switch_25 == 50)
+                    if (false || switch_25 == 41 || switch_25 == 49 || switch_25 == 50)
                     {
                         int switch_24 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                        if (false
-                           || switch_24 == 41)
+                        if (false || switch_24 == 41)
                         {
                             jj_consume_token(41);
                             formType = BodyType.addBelNewFocus;
                         }
-                        else if (false
-                       || switch_24 == 49)
+                        else if (false || switch_24 == 49)
                         {
                             jj_consume_token(49);
                             formType = BodyType.addBel;
                         }
-                        else if (false
-                       || switch_24 == 50)
+                        else if (false || switch_24 == 50)
                         {
                             jj_consume_token(50);
                             formType = BodyType.addBelEnd;
@@ -880,28 +783,22 @@ namespace Assets.Code.parser
                     else
                     {
                         jj_la1[24] = jj_gen;
-                        ;
                     }
                 }
-                else if (false
-               || switch_28 == 42)
+                else if (false || switch_28 == 42)
                 {
                     jj_consume_token(42);
                     formType = BodyType.delBel;
                     int switch_27 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                    if (false
-                       || switch_27 == 41
-                       || switch_27 == 42)
+                    if (false || switch_27 == 41 || switch_27 == 42)
                     {
                         int switch_26 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                        if (false
-                           || switch_26 == 41)
+                        if (false || switch_26 == 41)
                         {
                             jj_consume_token(41);
                             formType = BodyType.delAddBel;
                         }
-                        else if (false
-                       || switch_26 == 42)
+                        else if (false || switch_26 == 42)
                         {
                             jj_consume_token(42);
                             formType = BodyType.delBelNewFocus;
@@ -916,7 +813,6 @@ namespace Assets.Code.parser
                     else
                     {
                         jj_la1[26] = jj_gen;
-                        ;
                     }
                 }
                 else
@@ -929,37 +825,20 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[28] = jj_gen;
-                ;
             }
             int switch_30 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_30 == 34)
+            if (false || switch_30 == 34)
             {
 
-                B
-                   = rule_plan_term();
+                B = rule_plan_term();
             }
-            else if (false
-           || switch_30 == VAR
-           || switch_30 == TK_TRUE
-           || switch_30 == TK_FALSE
-           || switch_30 == TK_NOT
-           || switch_30 == TK_NEG
-           || switch_30 == TK_BEGIN
-           || switch_30 == TK_END
-           || switch_30 == NUMBER
-           || switch_30 == STRING
-           || switch_30 == ATOM
-           || switch_30 == UNNAMEDVARID
-           || switch_30 == UNNAMEDVAR
-           || switch_30 == 41
-           || switch_30 == 42
-           || switch_30 == 46
-           || switch_30 == 51)
+            else if (false || switch_30 == VAR || switch_30 == TK_TRUE || switch_30 == TK_FALSE || switch_30 == TK_NOT 
+            || switch_30 == TK_NEG || switch_30 == TK_BEGIN || switch_30 == TK_END || switch_30 == NUMBER || switch_30 == STRING  || switch_30 == ATOM
+            || switch_30 == UNNAMEDVARID || switch_30 == UNNAMEDVAR || switch_30 == 41 || switch_30 == 42 || switch_30 == 46
+            || switch_30 == 51)
             {
 
-                B
-                   = log_expr();
+                B = log_expr();
             }
             else
             {
@@ -1035,30 +914,19 @@ namespace Assets.Code.parser
             Pred L = null;
             Literal h = null; Object t = null;
 
-
-
-
-
             jj_consume_token(34);
             if (jj_2_2(4))
             {
                 int switch_32 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_32 == TK_LABEL_AT)
+                if (false || switch_32 == TK_LABEL_AT)
                 {
                     jj_consume_token(TK_LABEL_AT);
                     int switch_31 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                    if (false
-                       || switch_31 == TK_BEGIN
-                       || switch_31 == TK_END
-                       || switch_31 == ATOM)
+                    if (false || switch_31 == TK_BEGIN || switch_31 == TK_END || switch_31 == ATOM)
                     {
                         L = pred();
                     }
-                    else if (false
-                   || switch_31 == VAR
-                   || switch_31 == UNNAMEDVARID
-                   || switch_31 == UNNAMEDVAR)
+                    else if (false || switch_31 == VAR || switch_31 == UNNAMEDVARID || switch_31 == UNNAMEDVAR)
                     {
                         L = var(Literal.DefaultNS);
                     }
@@ -1073,15 +941,12 @@ namespace Assets.Code.parser
                 else
                 {
                     jj_la1[31] = jj_gen;
-                    ;
                 }
 
-                T
-                   = trigger();
+                T = trigger();
                 if (T.GetTEType() != TEType.belief) pb = false;
                 int switch_33 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_33 == 39)
+                if (false || switch_33 == 39)
                 {
                     jj_consume_token(39);
                     C = log_expr();
@@ -1090,22 +955,17 @@ namespace Assets.Code.parser
                 else
                 {
                     jj_la1[32] = jj_gen;
-                    ;
                 }
                 int switch_35 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_35 == 40
-                   || switch_35 == 45)
+                if (false || switch_35 == 40 || switch_35 == 45)
                 {
                     int switch_34 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                    if (false
-                       || switch_34 == 40)
+                    if (false || switch_34 == 40)
                     {
                         jj_consume_token(40);
                         pb = false;
                     }
-                    else if (false
-                   || switch_34 == 45)
+                    else if (false || switch_34 == 45)
                     {
                         jj_consume_token(45);
                         if (!pb) throw new ParseException(GetSourceRef(T) + " Wrong place for ';'");
@@ -1120,12 +980,11 @@ namespace Assets.Code.parser
                 else
                 {
                     jj_la1[34] = jj_gen;
-                    ;
                 }
             }
             else
             {
-                ;
+                
             }
             if (jj_2_3(150))
             {
@@ -1133,45 +992,24 @@ namespace Assets.Code.parser
                 h = literal();
                 jj_consume_token(36);
 
-                t
-                   = log_expr();
+                t = log_expr();
             }
             else
             {
-                ;
+                
             }
             int switch_36 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_36 == VAR
-               || switch_36 == TK_TRUE
-               || switch_36 == TK_FALSE
-               || switch_36 == TK_NOT
-               || switch_36 == TK_NEG
-               || switch_36 == TK_BEGIN
-               || switch_36 == TK_END
-               || switch_36 == TK_IF
-               || switch_36 == TK_FOR
-               || switch_36 == TK_WHILE
-               || switch_36 == NUMBER
-               || switch_36 == STRING
-               || switch_36 == ATOM
-               || switch_36 == UNNAMEDVARID
-               || switch_36 == UNNAMEDVAR
-               || switch_36 == 34
-               || switch_36 == 38
-               || switch_36 == 41
-               || switch_36 == 42
-               || switch_36 == 44
-               || switch_36 == 46
-               || switch_36 == 48
-               || switch_36 == 51)
+            if (false || switch_36 == VAR || switch_36 == TK_TRUE || switch_36 == TK_FALSE || switch_36 == TK_NOT
+             || switch_36 == TK_NEG || switch_36 == TK_BEGIN || switch_36 == TK_END || switch_36 == TK_IF || switch_36 == TK_FOR
+             || switch_36 == TK_WHILE || switch_36 == NUMBER || switch_36 == STRING || switch_36 == ATOM || switch_36 == UNNAMEDVARID
+             || switch_36 == UNNAMEDVAR || switch_36 == 34 || switch_36 == 38 || switch_36 == 41 || switch_36 == 42 || switch_36 == 44
+             || switch_36 == 46 || switch_36 == 48 || switch_36 == 51)
             {
                 B = plan_body();
             }
             else
             {
                 jj_la1[35] = jj_gen;
-                ;
             }
             jj_consume_token(35);
 
@@ -1223,33 +1061,19 @@ namespace Assets.Code.parser
             return B;
         }
 
-
-
-
         /* Literal */
         public Literal literal()
         {
             Pred F = null; Pred V; Token k; bool type = Literal.LPos;
             Atom NS = @namespace; Token tns = null; bool explicitAbstractNS = true;
             int switch_41 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_41 == VAR
-               || switch_41 == TK_NEG
-               || switch_41 == TK_BEGIN
-               || switch_41 == TK_END
-               || switch_41 == ATOM
-               || switch_41 == UNNAMEDVARID
-               || switch_41 == UNNAMEDVAR
-               || switch_41 == 51)
+            if (false || switch_41 == VAR || switch_41 == TK_NEG || switch_41 == TK_BEGIN || switch_41 == TK_END
+            || switch_41 == ATOM || switch_41 == UNNAMEDVARID || switch_41 == UNNAMEDVAR || switch_41 == 51)
             {
                 if (jj_2_4(27))
                 {
                     int switch_38 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                    if (false
-                       || switch_38 == VAR
-                       || switch_38 == ATOM
-                       || switch_38 == UNNAMEDVARID
-                       || switch_38 == UNNAMEDVAR)
+                    if (false || switch_38 == VAR || switch_38 == ATOM || switch_38 == UNNAMEDVARID || switch_38 == UNNAMEDVAR)
                     {
                         int switch_37 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
                         if (false || switch_37 == ATOM)
@@ -1377,20 +1201,17 @@ namespace Assets.Code.parser
             // do not replace abstract namespace for terms
 
             int switch_42 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_42 == ATOM)
+            if (false || switch_42 == ATOM)
             {
 
                 K = jj_consume_token(ATOM);
             }
-            else if (false
-           || switch_42 == TK_BEGIN)
+            else if (false || switch_42 == TK_BEGIN)
             {
 
                 K = jj_consume_token(TK_BEGIN);
             }
-            else if (false
-           || switch_42 == TK_END)
+            else if (false || switch_42 == TK_END)
             {
 
                 K = jj_consume_token(TK_END);
@@ -1406,8 +1227,7 @@ namespace Assets.Code.parser
 
 
             int switch_43 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_43 == 46)
+            if (false || switch_43 == 46)
             {
                 jj_consume_token(46);
                 l = terms();
@@ -1417,26 +1237,20 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[42] = jj_gen;
-                ;
             }
             int switch_44 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_44 == 53)
+            if (false || switch_44 == 53)
             {
 
-                lt
-                    = list();
+                lt = list();
                 p.SetAnnots(lt);
             }
             else
             {
                 jj_la1[43] = jj_gen;
-                ;
             }
             @namespace = ons;
             return p;
-
-
         }
 
 
@@ -1452,10 +1266,9 @@ namespace Assets.Code.parser
             while (!hasError)
             {
                 int switch_45 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_45 == 52)
+                if (false || switch_45 == 52)
                 {
-                    ;
+                    
                 }
                 else
                 {
@@ -1469,7 +1282,6 @@ namespace Assets.Code.parser
         end_label_9:;
             listTerms.TrimExcess();
             return listTerms;
-
         }
 
 
@@ -1477,33 +1289,18 @@ namespace Assets.Code.parser
         {
             object o;
             int switch_46 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_46 == 53)
+            if (false || switch_46 == 53)
             {
                 o = list();
             }
-            else if (false
-           || switch_46 == 34)
+            else if (false || switch_46 == 34)
             {
                 o = rule_plan_term();
             }
-            else if (false
-           || switch_46 == VAR
-           || switch_46 == TK_TRUE
-           || switch_46 == TK_FALSE
-           || switch_46 == TK_NOT
-           || switch_46 == TK_NEG
-           || switch_46 == TK_BEGIN
-           || switch_46 == TK_END
-           || switch_46 == NUMBER
-           || switch_46 == STRING
-           || switch_46 == ATOM
-           || switch_46 == UNNAMEDVARID
-           || switch_46 == UNNAMEDVAR
-           || switch_46 == 41
-           || switch_46 == 42
-           || switch_46 == 46
-           || switch_46 == 51)
+            else if (false || switch_46 == VAR || switch_46 == TK_TRUE || switch_46 == TK_FALSE || switch_46 == TK_NOT
+            || switch_46 == TK_NEG || switch_46 == TK_BEGIN || switch_46 == TK_END || switch_46 == NUMBER || switch_46 == STRING || switch_46 == ATOM
+            || switch_46 == UNNAMEDVARID || switch_46 == UNNAMEDVAR || switch_46 == 41 || switch_46 == 42 || switch_46 == 46
+            || switch_46 == 51)
             {
                 o = log_expr();
             }
@@ -1528,24 +1325,10 @@ namespace Assets.Code.parser
 
             jj_consume_token(53);
             int switch_50 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_50 == VAR
-               || switch_50 == TK_TRUE
-               || switch_50 == TK_FALSE
-               || switch_50 == TK_NEG
-               || switch_50 == TK_BEGIN
-               || switch_50 == TK_END
-               || switch_50 == NUMBER
-               || switch_50 == STRING
-               || switch_50 == ATOM
-               || switch_50 == UNNAMEDVARID
-               || switch_50 == UNNAMEDVAR
-               || switch_50 == 34
-               || switch_50 == 41
-               || switch_50 == 42
-               || switch_50 == 46
-               || switch_50 == 51
-               || switch_50 == 53)
+            if (false || switch_50 == VAR || switch_50 == TK_TRUE || switch_50 == TK_FALSE || switch_50 == TK_NEG
+            || switch_50 == TK_BEGIN || switch_50 == TK_END || switch_50 == NUMBER || switch_50 == STRING || switch_50 == ATOM
+            || switch_50 == UNNAMEDVARID || switch_50 == UNNAMEDVAR || switch_50 == 34 || switch_50 == 41 || switch_50 == 42
+            || switch_50 == 46 || switch_50 == 51 || switch_50 == 53)
             {
 
                 f = term_in_list();
@@ -1556,7 +1339,7 @@ namespace Assets.Code.parser
                     if (false
                        || switch_47 == 52)
                     {
-                        ;
+                        
                     }
                     else
                     {
@@ -1569,25 +1352,21 @@ namespace Assets.Code.parser
                 }
             end_label_10:;
                 int switch_49 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_49 == 54)
+                if (false || switch_49 == 54)
                 {
                     jj_consume_token(54);
                     int switch_48 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                    if (false
-                       || switch_48 == VAR)
+                    if (false || switch_48 == VAR)
                     {
                         K = jj_consume_token(VAR);
                         last.SetNext(new VarTerm(K.image));
                     }
-                    else if (false
-                   || switch_48 == UNNAMEDVAR)
+                    else if (false || switch_48 == UNNAMEDVAR)
                     {
                         K = jj_consume_token(UNNAMEDVAR);
                         last.SetNext(UnnamedVar.Create(K.image));
                     }
-                    else if (false
-                   || switch_48 == 53)
+                    else if (false || switch_48 == 53)
                     {
                         f = list();
                         last = last.Concat((IListTerm)f);
@@ -1602,13 +1381,13 @@ namespace Assets.Code.parser
                 else
                 {
                     jj_la1[48] = jj_gen;
-                    ;
+                    
                 }
             }
             else
             {
                 jj_la1[49] = jj_gen;
-                ;
+                
             }
             jj_consume_token(55);
             @namespace = ons; return lt;
@@ -1621,36 +1400,21 @@ namespace Assets.Code.parser
         {
             object o;
             int switch_51 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_51 == 53)
+            if (false || switch_51 == 53)
             {
                 o = list();
             }
-            else if (false
-           || switch_51 == VAR
-           || switch_51 == TK_TRUE
-           || switch_51 == TK_FALSE
-           || switch_51 == TK_NEG
-           || switch_51 == TK_BEGIN
-           || switch_51 == TK_END
-           || switch_51 == NUMBER
-           || switch_51 == ATOM
-           || switch_51 == UNNAMEDVARID
-           || switch_51 == UNNAMEDVAR
-           || switch_51 == 41
-           || switch_51 == 42
-           || switch_51 == 46
-           || switch_51 == 51)
+            else if (false || switch_51 == VAR || switch_51 == TK_TRUE || switch_51 == TK_FALSE || switch_51 == TK_NEG
+            || switch_51 == TK_BEGIN || switch_51 == TK_END || switch_51 == NUMBER || switch_51 == ATOM || switch_51 == UNNAMEDVARID
+            || switch_51 == UNNAMEDVAR || switch_51 == 41 || switch_51 == 42 || switch_51 == 46 || switch_51 == 51)
             {
                 o = arithm_expr();
             }
-            else if (false
-           || switch_51 == STRING)
+            else if (false || switch_51 == STRING)
             {
                 o = stringMethod();
             }
-            else if (false
-           || switch_51 == 34)
+            else if (false || switch_51 == 34)
             {
                 o = rule_plan_term();
             }
@@ -1667,16 +1431,12 @@ namespace Assets.Code.parser
 
 
         /* logical expression */
-
         public Object log_expr()
         {
             object t1, t2;
-
-            t1
-                = log_expr_trm();
+            t1 = log_expr_trm();
             int switch_52 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_52 == 54)
+            if (false || switch_52 == 54)
             {
                 jj_consume_token(54);
                 t2 = log_expr();
@@ -1685,7 +1445,6 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[51] = jj_gen;
-                ;
             }
             return t1;
         }
@@ -1695,12 +1454,9 @@ namespace Assets.Code.parser
         public Object log_expr_trm()
         {
             object t1, t2;
-
-            t1
-                = log_expr_factor();
+            t1 = log_expr_factor();
             int switch_53 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_53 == 56)
+            if (false || switch_53 == 56)
             {
                 jj_consume_token(56);
                 t2 = log_expr_trm();
@@ -1709,7 +1465,6 @@ namespace Assets.Code.parser
             else
             {
                 jj_la1[52] = jj_gen;
-                ;
             }
             return t1;
         }
@@ -1720,33 +1475,19 @@ namespace Assets.Code.parser
         {
             object t;
             int switch_54 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_54 == TK_NOT)
+            if (false || switch_54 == TK_NOT)
             {
                 jj_consume_token(TK_NOT);
                 t = log_expr_factor();
                 return new LogExpr(LogicalOp.not, (ILogicalFormula)t);
             }
-            else if (false
-           || switch_54 == VAR
-           || switch_54 == TK_TRUE
-           || switch_54 == TK_FALSE
-           || switch_54 == TK_NEG
-           || switch_54 == TK_BEGIN
-           || switch_54 == TK_END
-           || switch_54 == NUMBER
-           || switch_54 == STRING
-           || switch_54 == ATOM
-           || switch_54 == UNNAMEDVARID
-           || switch_54 == UNNAMEDVAR
-           || switch_54 == 41
-           || switch_54 == 42
-           || switch_54 == 46
-           || switch_54 == 51)
+            else if (false || switch_54 == VAR || switch_54 == TK_TRUE || switch_54 == TK_FALSE || switch_54 == TK_NEG
+            || switch_54 == TK_BEGIN || switch_54 == TK_END || switch_54 == NUMBER || switch_54 == STRING || switch_54 == ATOM
+            || switch_54 == UNNAMEDVARID || switch_54 == UNNAMEDVAR || switch_54 == 41 || switch_54 == 42 || switch_54 == 46
+            || switch_54 == 51)
             {
 
-                t
-                   = rel_expr();
+                t = rel_expr();
                 return t;
             }
             else
@@ -1773,29 +1514,15 @@ namespace Assets.Code.parser
             object op2 = null;
             RelationalOp operatorR = RelationalOp.none;
 
-
-
             int switch_55 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_55 == VAR
-               || switch_55 == TK_TRUE
-               || switch_55 == TK_FALSE
-               || switch_55 == TK_NEG
-               || switch_55 == TK_BEGIN
-               || switch_55 == TK_END
-               || switch_55 == NUMBER
-               || switch_55 == ATOM
-               || switch_55 == UNNAMEDVARID
-               || switch_55 == UNNAMEDVAR
-               || switch_55 == 41
-               || switch_55 == 42
-               || switch_55 == 46
-               || switch_55 == 51)
+            if (false || switch_55 == VAR || switch_55 == TK_TRUE || switch_55 == TK_FALSE || switch_55 == TK_NEG
+            || switch_55 == TK_BEGIN || switch_55 == TK_END || switch_55 == NUMBER || switch_55 == ATOM
+            || switch_55 == UNNAMEDVARID || switch_55 == UNNAMEDVAR || switch_55 == 41 || switch_55 == 42 || switch_55 == 46
+            || switch_55 == 51)
             {
                 op1 = arithm_expr();
             }
-            else if (false
-           || switch_55 == STRING)
+            else if (false || switch_55 == STRING)
             {
                 op1 = stringMethod();
             }
@@ -1806,61 +1533,46 @@ namespace Assets.Code.parser
                 throw new ParseException();
             }
             int switch_58 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_58 == 49
-               || switch_58 == 50
-               || switch_58 == 57
-               || switch_58 == 58
-               || switch_58 == 59
-               || switch_58 == 60
-               || switch_58 == 61
-               || switch_58 == 62)
+            if (false || switch_58 == 49 || switch_58 == 50 || switch_58 == 57 || switch_58 == 58 || switch_58 == 59 
+            || switch_58 == 60 || switch_58 == 61 || switch_58 == 62)
             {
                 int switch_56 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_56 == 49)
+                if (false || switch_56 == 49)
                 {
                     jj_consume_token(49);
                     operatorR = RelationalOp.lt;
                 }
-                else if (false
-               || switch_56 == 57)
+                else if (false || switch_56 == 57)
                 {
                     jj_consume_token(57);
                     operatorR = RelationalOp.lte;
                 }
-                else if (false
-               || switch_56 == 50)
+                else if (false || switch_56 == 50)
                 {
                     jj_consume_token(50);
                     operatorR = RelationalOp.gt;
                 }
-                else if (false
-               || switch_56 == 58)
+                else if (false || switch_56 == 58)
                 {
                     jj_consume_token(58);
                     operatorR = RelationalOp.gte;
                 }
-                else if (false
-               || switch_56 == 59)
+                else if (false || switch_56 == 59)
                 {
                     jj_consume_token(59);
                     operatorR = RelationalOp.eq;
                 }
-                else if (false
-               || switch_56 == 60)
+                else if (false || switch_56 == 60)
                 {
                     jj_consume_token(60);
                     operatorR = RelationalOp.dif;
                 }
-                else if (false
-               || switch_56 == 61)
+                else if (false || switch_56 == 61)
                 {
                     jj_consume_token(61);
                     operatorR = RelationalOp.unify;
                 }
-                else if (false
-               || switch_56 == 62)
+                else if (false || switch_56 == 62)
                 {
                     jj_consume_token(62);
                     operatorR = RelationalOp.literalBuilder;
@@ -1872,36 +1584,22 @@ namespace Assets.Code.parser
                     throw new ParseException();
                 }
                 int switch_57 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_57 == VAR
-                   || switch_57 == TK_TRUE
-                   || switch_57 == TK_FALSE
-                   || switch_57 == TK_NEG
-                   || switch_57 == TK_BEGIN
-                   || switch_57 == TK_END
-                   || switch_57 == NUMBER
-                   || switch_57 == ATOM
-                   || switch_57 == UNNAMEDVARID
-                   || switch_57 == UNNAMEDVAR
-                   || switch_57 == 41
-                   || switch_57 == 42
-                   || switch_57 == 46
-                   || switch_57 == 51)
+                if (false || switch_57 == VAR || switch_57 == TK_TRUE || switch_57 == TK_FALSE || switch_57 == TK_NEG 
+                || switch_57 == TK_BEGIN || switch_57 == TK_END || switch_57 == NUMBER || switch_57 == ATOM
+                || switch_57 == UNNAMEDVARID || switch_57 == UNNAMEDVAR || switch_57 == 41 || switch_57 == 42 || switch_57 == 46
+                || switch_57 == 51)
                 {
                     op2 = arithm_expr();
                 }
-                else if (false
-               || switch_57 == STRING)
+                else if (false || switch_57 == STRING)
                 {
                     op2 = stringMethod();
                 }
-                else if (false
-               || switch_57 == 53)
+                else if (false || switch_57 == 53)
                 {
                     op2 = list();
                 }
-                else if (false
-               || switch_57 == 34)
+                else if (false || switch_57 == 34)
                 {
                     op2 = rule_plan_term();
                 }
@@ -1919,42 +1617,26 @@ namespace Assets.Code.parser
                     throw new ParseException(GetSourceRef(op2) + " RelExpr: operand '" + op2 + "' can not be an internal action.");
 
                 return new RelExpr((ITerm)op1, operatorR, (ITerm)op2);
-
-
-
-
-
-
-
-
             }
             else
             {
                 jj_la1[57] = jj_gen;
-                ;
             }
             return op1;
         }
-
-
-
 
         /* arithmetic expression */
         public Object arithm_expr()
         {
             object t1, t2; ArithmeticOp op;
-
-            t1
-                = arithm_expr_trm();
+            t1 = arithm_expr_trm();
             op = ArithmeticOp.none;
             while (!hasError)
             {
                 int switch_59 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_59 == 41
-                   || switch_59 == 42)
+                if (false || switch_59 == 41 || switch_59 == 42)
                 {
-                    ;
+                    
                 }
                 else
                 {
@@ -1962,14 +1644,12 @@ namespace Assets.Code.parser
                     goto end_label_11;
                 }
                 int switch_60 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_60 == 41)
+                if (false || switch_60 == 41)
                 {
                     jj_consume_token(41);
                     op = ArithmeticOp.plus;
                 }
-                else if (false
-               || switch_60 == 42)
+                else if (false || switch_60 == 42)
                 {
                     jj_consume_token(42);
                     op = ArithmeticOp.minus;
@@ -1981,8 +1661,7 @@ namespace Assets.Code.parser
                     throw new ParseException();
                 }
 
-                t2
-                    = arithm_expr_trm();
+                t2 = arithm_expr_trm();
 
                 if (!(t1.GetType() == typeof(INumberTerm)))
                 {
@@ -1994,39 +1673,22 @@ namespace Assets.Code.parser
                     throw new ParseException(GetSourceRef(t2) + " ArithExpr: second operand '" + t2 + "' is not numeric or variable.");
                 }
                 t1 = new ArithExpr((INumberTerm)t1, op, (INumberTerm)t2);
-
-
-
-
-
-
-
-
-
             }
         end_label_11:;
             return t1;
         }
 
-
-
         public Object arithm_expr_trm()
         {
             object t1, t2; ArithmeticOp op;
-
-            t1
-                = arithm_expr_factor();
+            t1 = arithm_expr_factor();
             op = ArithmeticOp.none;
             while (!hasError)
             {
                 int switch_61 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_61 == TK_INTDIV
-                   || switch_61 == TK_INTMOD
-                   || switch_61 == 63
-                   || switch_61 == 64)
+                if (false || switch_61 == TK_INTDIV || switch_61 == TK_INTMOD || switch_61 == 63 || switch_61 == 64)
                 {
-                    ;
+                    
                 }
                 else
                 {
@@ -2034,26 +1696,22 @@ namespace Assets.Code.parser
                     goto end_label_12;
                 }
                 int switch_62 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-                if (false
-                   || switch_62 == 63)
+                if (false || switch_62 == 63)
                 {
                     jj_consume_token(63);
                     op = ArithmeticOp.times;
                 }
-                else if (false
-               || switch_62 == 64)
+                else if (false || switch_62 == 64)
                 {
                     jj_consume_token(64);
                     op = ArithmeticOp.div;
                 }
-                else if (false
-               || switch_62 == TK_INTDIV)
+                else if (false || switch_62 == TK_INTDIV)
                 {
                     jj_consume_token(TK_INTDIV);
                     op = ArithmeticOp.intdiv;
                 }
-                else if (false
-               || switch_62 == TK_INTMOD)
+                else if (false || switch_62 == TK_INTMOD)
                 {
                     jj_consume_token(TK_INTMOD);
                     op = ArithmeticOp.mod;
@@ -2065,8 +1723,7 @@ namespace Assets.Code.parser
                     throw new ParseException();
                 }
 
-                t2
-                    = arithm_expr_factor();
+                t2 = arithm_expr_factor();
 
                 if (!(t1.GetType() == typeof(INumberTerm)))
                 {
@@ -2077,37 +1734,24 @@ namespace Assets.Code.parser
                     throw new ParseException(GetSourceRef(t2) + " ArithTerm: second operand '" + t2 + "' is not numeric or variable.");
                 }
                 t1 = new ArithExpr((INumberTerm)t1, op, (INumberTerm)t2);
-
-
-
-
-
-
-
-
             }
         end_label_12:;
             return t1;
         }
 
-
-
         public Object arithm_expr_factor()
         {
             object t1, t2; ArithmeticOp op;
 
-            t1
-                = arithm_expr_simple();
+            t1 = arithm_expr_simple();
             op = ArithmeticOp.none;
             int switch_63 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_63 == 65)
+            if (false || switch_63 == 65)
             {
                 jj_consume_token(65);
                 op = ArithmeticOp.pow;
 
-                t2
-                    = arithm_expr_factor();
+                t2 = arithm_expr_factor();
 
                 if (!(t1.GetType() == typeof(INumberTerm)))
                 {
@@ -2119,26 +1763,13 @@ namespace Assets.Code.parser
                     throw new ParseException(GetSourceRef(t2) + " ArithFactor: second operand '" + t2 + "' is not numeric or variable.");
                 }
                 return new ArithExpr((INumberTerm)t1, op, (INumberTerm)t2);
-
-
-
-
-
-
-
-
-
             }
             else
             {
                 jj_la1[62] = jj_gen;
-                ;
             }
             return t1;
         }
-
-
-
 
         public Object arithm_expr_simple()
         {
@@ -2151,12 +1782,8 @@ namespace Assets.Code.parser
                 INumberTerm ni = AsSyntax.AsSyntax.ParseNumber(K.image);
                 ni.SetSrcInfo(new SourceInfo(asSource, K.beginLine));
                 return ni;
-
-
-
             }
-            else if (false
-           || switch_64 == 42)
+            else if (false || switch_64 == 42)
             {
                 jj_consume_token(42);
                 t = arithm_expr_simple();
@@ -2166,14 +1793,8 @@ namespace Assets.Code.parser
                     throw new ParseException(GetSourceRef(t) + " The argument '" + t + "' of operator '-' is not numeric or variable.");
                 }
                 return new ArithExpr(ArithmeticOp.minus, (INumberTerm)t);
-
-
-
-
-
             }
-            else if (false
-           || switch_64 == 41)
+            else if (false || switch_64 == 41)
             {
                 jj_consume_token(41);
                 t = arithm_expr_simple();
@@ -2189,25 +1810,16 @@ namespace Assets.Code.parser
 
 
             }
-            else if (false
-           || switch_64 == 46)
+            else if (false || switch_64 == 46)
             {
                 jj_consume_token(46);
                 t = log_expr();
                 jj_consume_token(47);
                 return t;
             }
-            else if (false
-           || switch_64 == VAR
-           || switch_64 == TK_TRUE
-           || switch_64 == TK_FALSE
-           || switch_64 == TK_NEG
-           || switch_64 == TK_BEGIN
-           || switch_64 == TK_END
-           || switch_64 == ATOM
-           || switch_64 == UNNAMEDVARID
-           || switch_64 == UNNAMEDVAR
-           || switch_64 == 51)
+            else if (false || switch_64 == VAR || switch_64 == TK_TRUE || switch_64 == TK_FALSE || switch_64 == TK_NEG
+            || switch_64 == TK_BEGINn|| switch_64 == TK_END || switch_64 == ATOM || switch_64 == UNNAMEDVARID || switch_64 == UNNAMEDVAR
+            || switch_64 == 51)
             {
                 t = function();
                 return t;
@@ -2270,12 +1882,6 @@ namespace Assets.Code.parser
                 {
                     v = UnnamedVar.Create(ns, K.image);
                 }
-
-
-
-
-
-
             }
             else if (false || switch_65 == UNNAMEDVAR)
             {
@@ -2289,21 +1895,17 @@ namespace Assets.Code.parser
                 throw new ParseException();
             }
             int switch_66 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
-            if (false
-               || switch_66 == 53)
+            if (false || switch_66 == 53)
             {
 
-                lt
-                    = list();
+                lt = list();
                 v.SetAnnots(lt);
             }
             else
             {
                 jj_la1[65] = jj_gen;
-                ;
             }
             return v;
-
         }
 
 
@@ -4263,12 +3865,12 @@ namespace Assets.Code.parser
             }
         }
 
-        /*FUNCIÓN AÑADIDA PARA PODER COMPILAR
-         LA FUNCIÓN ORIGINALK DE JASON ESTÁ EN OTRO FICHERO LLAMADO MAS2J
+        /*FUNCIï¿½N Aï¿½ADIDA PARA PODER COMPILAR
+         LA FUNCIï¿½N ORIGINALK DE JASON ESTï¿½ EN OTRO FICHERO LLAMADO MAS2J
          */
         public Dictionary<string, object> ASoptions()
         {
-            /*Esto está MAL ,debería devolver un diccionario con las opciones*/
+            /*Esto estï¿½ MAL ,deberï¿½a devolver un diccionario con las opciones*/
             return new Dictionary<string, object>();
         }
     }
