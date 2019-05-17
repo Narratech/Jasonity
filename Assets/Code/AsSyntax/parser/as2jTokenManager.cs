@@ -1,7 +1,6 @@
 /* as2jTokenManager.cs */
 namespace Assets.Code.AsSyntax.parser
 {
-
     public class as2jConstants
     {
         public const int EOF = 0;
@@ -141,8 +140,6 @@ null,
 
         public void ReInit(ICharStream stream)
         {
-
-
             jjmatchedPos = 0;
             curLexState = defaultLexState;
             input_stream = stream;
