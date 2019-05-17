@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 namespace Assets.Code.Stdlib
 {
@@ -43,7 +44,7 @@ namespace Assets.Code.Stdlib
                 IPlanBody pb = i.Peek().GetPlan().GetBody();
                 while (pb != null)
                 {
-                    if (pb.GetBodyType() == BodyType.achieve || pb.GetBodyType() == BodyType.achieveNF)
+                    if (pb.GetBodyType() == BodyType.Body_Type.achieve || pb.GetBodyType() == BodyType.Body_Type.achieveNF)
                     {
                         if (un.Unifies(pb.GetBodyTerm(), goal))
                         {

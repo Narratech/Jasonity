@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 namespace Assets.Code.Stdlib
 {
@@ -67,7 +68,7 @@ namespace Assets.Code.Stdlib
                 if (allsol.Count == 0)
                     return true;
                 iu = allsol.GetEnumerator();
-                foria = new PlanBodyImpl(BodyType.internalAction, foria.GetBodyTerm().Clone());
+                foria = new PlanBodyImpl(BodyType.Body_Type.internalAction, foria.GetBodyTerm().Clone());
                 foria.Add(im.GetCurrentStep().GetBodyNext());
                 Structure forstructure = (Structure)foria.GetBodyTerm();
                 forstructure.AddTerm(new ObjectTermImpl(iu));         // store all solutions

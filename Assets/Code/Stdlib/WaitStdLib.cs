@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 /**
   <p>Internal action: <b><code>.wait(<i>E</i>,<i>T</i>)</code></b>.
@@ -311,7 +312,7 @@ namespace Assets.Code.Stdlib
                             if (si.IsSuspended())
                             { // if the intention was suspended by .suspend
                                 IPlanBody body = si.Peek().GetPlan().GetBody();
-                                body.Add(1, new PlanBodyImpl(BodyType.internalAction, new InternalActionLiteral(".fail")));
+                                body.Add(1, new PlanBodyImpl(BodyType.Body_Type.internalAction, new InternalActionLiteral(".fail")));
                                 c.AddPendingIntention(SuspendStdLib.SUSPENDED_INT + si.GetID(), si);
                             }
                             else

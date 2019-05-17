@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 /**
 Implementation of <b>while</b>.
@@ -80,7 +81,7 @@ namespace Assets.Code.Stdlib
                 // first execution of while
                 CheckArguments(args);
                 // add backup unifier in the IA
-                whileia = new PlanBodyImpl(BodyType.internalAction, whileia.GetBodyTerm().Clone());
+                whileia = new PlanBodyImpl(BodyType.Body_Type.internalAction, whileia.GetBodyTerm().Clone());
                 whileia.Add(ip.GetCurrentStep().GetBodyNext());
                 ((Structure)whileia.GetBodyTerm()).AddTerm(new ObjectTermImpl(un.Clone()));
             }

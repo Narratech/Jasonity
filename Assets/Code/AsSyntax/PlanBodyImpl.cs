@@ -12,30 +12,30 @@ namespace Assets.Code.AsSyntax
     {
         private ITerm term = null;
         private IPlanBody next = null;
-        private BodyType formType = BodyType.none;
+        private BodyType.Body_Type formType = BodyType.Body_Type.none;
 
         private bool isTerm = false;    // True when the plan body is used as a term instead of an element of a plan
 
         // Constructor for empty plan body
-        public PlanBodyImpl(): this(BodyType.none)
+        public PlanBodyImpl(): this(BodyType.Body_Type.none)
         {
         }
 
-        public PlanBodyImpl(BodyType t):base(t.ToString(), 0)
+        public PlanBodyImpl(BodyType.Body_Type t):base(t.ToString(), 0)
         {
             formType = t;
         }
 
-        public PlanBodyImpl(BodyType t, bool planTerm):this(t)
+        public PlanBodyImpl(BodyType.Body_Type t, bool planTerm):this(t)
         {
             SetAsBodyTerm(planTerm);
         }
 
-        public PlanBodyImpl(BodyType t, ITerm b):this(t, b, false)
+        public PlanBodyImpl(BodyType.Body_Type t, ITerm b):this(t, b, false)
         {
         }
 
-        public PlanBodyImpl(BodyType t, ITerm b, bool planTerm):this(t, planTerm)
+        public PlanBodyImpl(BodyType.Body_Type t, ITerm b, bool planTerm):this(t, planTerm)
         {
             formType = t;
             if (b != null)
@@ -51,9 +51,9 @@ namespace Assets.Code.AsSyntax
 
         public bool IsEmptyBody() => term == null;
 
-        public BodyType GetBodyType() => formType;
+        public BodyType.Body_Type GetBodyType() => formType;
 
-        public void SetBodyType(BodyType bt) => formType = bt;
+        public void SetBodyType(BodyType.Body_Type bt) => formType = bt;
 
         public ITerm GetBodyTerm() => term;
 
@@ -233,7 +233,7 @@ namespace Assets.Code.AsSyntax
 
         private void Swap(IPlanBody bl)
         {
-            BodyType bt = formType;
+            BodyType.Body_Type bt = formType;
             formType = bl.GetBodyType();
             bl.SetBodyType(bt);
 
@@ -460,6 +460,95 @@ namespace Assets.Code.AsSyntax
             }
 
             public void Reset() { }
+        }
+
+        public class BodyType : PlanBodyImpl
+        {
+            public enum Body_Type{
+                none,
+                action,
+                internalAction,
+                achieve,
+                test,
+                addBel,
+                addBelNewFocus,
+                addBelBegin,
+                addBelEnd,
+                delBel,
+                delBelNewFocus,
+                delAddBel,
+                achieveNF,
+                constraint
+            }
+
+            public readonly static Body_Type bodyType = default;
+
+
+            public override string ToString()
+            {
+                switch(bodyType)
+                {
+                    case Body_Type.none:
+                    case Body_Type.action:
+                    case Body_Type.constraint:
+                    case Body_Type.internalAction:
+                        return "";
+                    case Body_Type.achieve:
+                        return "!";
+                    case Body_Type.test:
+                        return "?";
+                    case Body_Type.addBel:
+                        return "+";
+                    case Body_Type.addBelNewFocus:
+                        return "++";
+                    case Body_Type.addBelBegin:
+                        return "+<";
+                    case Body_Type.addBelEnd:
+                        return "+>";
+                    case Body_Type.delBel:
+                        return "-";
+                    case Body_Type.delBelNewFocus:
+                        return "--";
+                    case Body_Type.delAddBel:
+                        return "-+";
+                    case Body_Type.achieveNF:
+                        return "!!";
+                    default:
+                        return null;
+                }
+            }
+
+
+            //public readonly static BodyType none = new BodyType();
+            //public readonly static BodyType action = new BodyType();
+            //public readonly static BodyType internalAction = new BodyType();
+            //public readonly static BodyType achieve = new BodyType();
+            //public readonly static BodyType test = new BodyType();
+            //public readonly static BodyType addBel = new BodyType();
+            //public readonly static BodyType addBelNewFocus = new BodyType();
+            //public readonly static BodyType addBelBegin = new BodyType();
+            //public readonly static BodyType addBelEnd = new BodyType();
+            //public readonly static BodyType delBel = new BodyType();
+            //public readonly static BodyType delBelNewFocus = new BodyType();
+            //public readonly static BodyType delAddBel = new BodyType();
+            //public readonly static BodyType achieveNF = new BodyType();
+            //public readonly static BodyType constraint = new BodyType();
+
+            //public override string ToString()
+            //{
+            //    if (this == none || this == action || this == internalAction || this == constraint) return "";
+            //    else if (this == achieve) return "!";
+            //    else if (this == test) return "?";
+            //    else if (this == addBel) return "+";
+            //    else if (this == addBelNewFocus) return "++";
+            //    else if (this == addBelBegin) return "+<";
+            //    else if (this == addBelEnd) return "+>";
+            //    else if (this == delBel) return "-";
+            //    else if (this == delBelNewFocus) return "--";
+            //    else if (this == delAddBel) return "-+";
+            //    else if (this == achieveNF) return "!!";
+            //    else return null;
+            //}
         }
     }
 }

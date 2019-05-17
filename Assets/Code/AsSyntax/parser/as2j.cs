@@ -11,6 +11,7 @@ using static Assets.Code.AsSyntax.ArithExpr;
 using System.Collections.Generic;
 using Assets.Code.AsSemantics;
 using System.Text.RegularExpressions;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 namespace Assets.Code.parser
 {
@@ -424,7 +425,7 @@ namespace Assets.Code.parser
         /* Plan body */
         public IPlanBody plan_body()
         {
-            Object F; IPlanBody R = null;
+            object F; IPlanBody R = null;
             F = plan_body_term();
             int switch_17 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
             if (false || switch_17 == 45)
@@ -503,7 +504,7 @@ namespace Assets.Code.parser
 
                     Literal stmtLiteral = new InternalActionLiteral(s, curAg);
                     stmtLiteral.SetSrcInfo(((ITerm)F).GetSrcInfo());
-                    return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+                    return new PlanBodyImpl(BodyType.Body_Type.internalAction, stmtLiteral);
                 }
                 catch (Exception e)
                 {
@@ -584,7 +585,7 @@ namespace Assets.Code.parser
                 }
                 Literal stmtLiteral = new InternalActionLiteral(s, curAg);
                 stmtLiteral.SetSrcInfo(((ITerm)F).GetSrcInfo());
-                return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+                return new PlanBodyImpl(BodyType.Body_Type.internalAction, stmtLiteral);
             }
             catch (Exception e)
             {
@@ -659,7 +660,7 @@ namespace Assets.Code.parser
                     stmtLiteral = new InternalActionLiteral(AsSyntax.AsSyntax.CreateStructure(".if_then_else", (ITerm)B, T1, T2), curAg);
                 }
                 stmtLiteral.SetSrcInfo(((ITerm)B).GetSrcInfo());
-                return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+                return new PlanBodyImpl(BodyType.Body_Type.internalAction, stmtLiteral);
             }
             catch (Exception e)
             {
@@ -688,7 +689,7 @@ namespace Assets.Code.parser
                 }
                 stmtLiteral = new InternalActionLiteral(AsSyntax.AsSyntax.CreateStructure(".foreach", (ITerm)B, T1), curAg);
                 stmtLiteral.SetSrcInfo(((ITerm)B).GetSrcInfo());
-                return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+                return new PlanBodyImpl(BodyType.Body_Type.internalAction, stmtLiteral);
             }
             catch (Exception e)
             {
@@ -717,7 +718,7 @@ namespace Assets.Code.parser
                 }
                 stmtLiteral = new InternalActionLiteral(AsSyntax.AsSyntax.CreateStructure(".loop", (ITerm)B, T1), curAg);
                 stmtLiteral.SetSrcInfo(((ITerm)B).GetSrcInfo());
-                return new PlanBodyImpl(BodyType.internalAction, stmtLiteral);
+                return new PlanBodyImpl(BodyType.Body_Type.internalAction, stmtLiteral);
             }
             catch (Exception e)
             {
@@ -728,9 +729,9 @@ namespace Assets.Code.parser
 
 
 
-        public Object body_formula()
+        public object body_formula()
         {
-            BodyType formType = BodyType.action; Object B;
+            BodyType.Body_Type formType = BodyType.Body_Type.action; object B;
             int switch_29 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
             if (false || switch_29 == 38 || switch_29 == 41 || switch_29 == 42 || switch_29 == 44 || switch_29 == 48)
             {
@@ -738,22 +739,22 @@ namespace Assets.Code.parser
                 if (false || switch_28 == 38)
                 {
                     jj_consume_token(38);
-                    formType = BodyType.achieve;
+                    formType = BodyType.Body_Type.achieve;
                 }
                 else if (false || switch_28 == 48)
                 {
                     jj_consume_token(48);
-                    formType = BodyType.achieveNF;
+                    formType = BodyType.Body_Type.achieveNF;
                 }
                 else if (false || switch_28 == 44)
                 {
                     jj_consume_token(44);
-                    formType = BodyType.test;
+                    formType = BodyType.Body_Type.test;
                 }
                 else if (false || switch_28 == 41)
                 {
                     jj_consume_token(41);
-                    formType = BodyType.addBel;
+                    formType = BodyType.Body_Type.addBel;
                     int switch_25 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
                     if (false || switch_25 == 41 || switch_25 == 49 || switch_25 == 50)
                     {
@@ -761,17 +762,17 @@ namespace Assets.Code.parser
                         if (false || switch_24 == 41)
                         {
                             jj_consume_token(41);
-                            formType = BodyType.addBelNewFocus;
+                            formType = BodyType.Body_Type.addBelNewFocus;
                         }
                         else if (false || switch_24 == 49)
                         {
                             jj_consume_token(49);
-                            formType = BodyType.addBel;
+                            formType = BodyType.Body_Type.addBel;
                         }
                         else if (false || switch_24 == 50)
                         {
                             jj_consume_token(50);
-                            formType = BodyType.addBelEnd;
+                            formType = BodyType.Body_Type.addBelEnd;
                         }
                         else
                         {
@@ -788,7 +789,7 @@ namespace Assets.Code.parser
                 else if (false || switch_28 == 42)
                 {
                     jj_consume_token(42);
-                    formType = BodyType.delBel;
+                    formType = BodyType.Body_Type.delBel;
                     int switch_27 = ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk);
                     if (false || switch_27 == 41 || switch_27 == 42)
                     {
@@ -796,12 +797,12 @@ namespace Assets.Code.parser
                         if (false || switch_26 == 41)
                         {
                             jj_consume_token(41);
-                            formType = BodyType.delAddBel;
+                            formType = BodyType.Body_Type.delAddBel;
                         }
                         else if (false || switch_26 == 42)
                         {
                             jj_consume_token(42);
-                            formType = BodyType.delBelNewFocus;
+                            formType = BodyType.Body_Type.delBelNewFocus;
                         }
                         else
                         {
@@ -847,9 +848,9 @@ namespace Assets.Code.parser
                 throw new ParseException();
             }
 
-            if (formType == BodyType.action && (B.GetType() == typeof(RelExpr)))
+            if (formType == BodyType.Body_Type.action && (B.GetType() == typeof(RelExpr)))
             {
-                return new PlanBodyImpl(BodyType.constraint, (RelExpr)B); // constraint
+                return new PlanBodyImpl(BodyType.Body_Type.constraint, (RelExpr)B); // constraint
             }
 
             if (B.GetType() == typeof(Plan))
@@ -858,15 +859,15 @@ namespace Assets.Code.parser
                 {
                     InternalActionLiteral ia = null;
                     string ias = "";
-                    if (formType == BodyType.delBel)
+                    if (formType == BodyType.Body_Type.delBel)
                     {
                         ia = new InternalActionLiteral(AsSyntax.AsSyntax.CreateStructure(".remove_plan", (ITerm)B), curAg);
                     }
-                    else if (formType == BodyType.addBel)
+                    else if (formType == BodyType.Body_Type.addBel)
                     {
                         ia = new InternalActionLiteral(AsSyntax.AsSyntax.CreateStructure(".add_plan", (ITerm)B, BeliefBase.ASelf, new Atom("begin")), curAg);
                     }
-                    else if (formType == BodyType.addBelEnd)
+                    else if (formType == BodyType.Body_Type.addBelEnd)
                     {
                         ia = new InternalActionLiteral(AsSyntax.AsSyntax.CreateStructure(".add_plan", (ITerm)B, BeliefBase.ASelf, new Atom("end")), curAg);
                     }
@@ -874,7 +875,7 @@ namespace Assets.Code.parser
                     {
                         throw new ParseException(GetSourceRef(B) + " Wrong combination of operator " + formType + " and plan.");
                     }
-                    return new PlanBodyImpl(BodyType.internalAction, ia);
+                    return new PlanBodyImpl(BodyType.Body_Type.internalAction, ia);
                 }
                 catch (Exception e)
                 {
@@ -885,16 +886,16 @@ namespace Assets.Code.parser
             if (B.GetType() == typeof(Literal))
             {
                 if (((Literal)B).IsInternalAction())
-                    formType = BodyType.internalAction;
+                    formType = BodyType.Body_Type.internalAction;
 
                 return new PlanBodyImpl(formType, (Literal)B);
             }
             else
             {
-                if (formType == BodyType.test)
+                if (formType == BodyType.Body_Type.test)
                 {
                     if (B.GetType() == typeof(ILogicalFormula))
-                        return new PlanBodyImpl(BodyType.test, (ITerm)B);  // used in ?(a & b)
+                        return new PlanBodyImpl(BodyType.Body_Type.test, (ITerm)B);  // used in ?(a & b)
                     else
                         throw new ParseException(GetSourceRef(B) + " The argument for ? is not a logical formula.");
                 }
@@ -1029,9 +1030,9 @@ namespace Assets.Code.parser
                 if (pb && L == null)
                 {
                     if (T.IsAddition())
-                        B1 = new PlanBodyImpl(BodyType.addBel, T.GetLiteral(), true);
+                        B1 = new PlanBodyImpl(BodyType.Body_Type.addBel, T.GetLiteral(), true);
                     else
-                        B1 = new PlanBodyImpl(BodyType.delBel, T.GetLiteral(), true);
+                        B1 = new PlanBodyImpl(BodyType.Body_Type.delBel, T.GetLiteral(), true);
 
                     if (B != null)
                         B1.SetBodyNext(B);

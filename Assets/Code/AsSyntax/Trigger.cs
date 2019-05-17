@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 namespace Assets.Code.AsSyntax
 {
@@ -184,11 +185,11 @@ namespace Assets.Code.AsSyntax
                 if (p.GetPlanSize() == 1)
                 {
                     TEOperator op = null;
-                    if (p.GetBodyType() == BodyType.addBel)
+                    if (p.GetBodyType() == BodyType.Body_Type.addBel)
                     {
                         op = TEOperator.add;
                     } 
-                    else if (p.GetBodyType() == BodyType.delBel)
+                    else if (p.GetBodyType() == BodyType.Body_Type.delBel)
                     {
                         op = TEOperator.del;
                     }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 namespace Assets.Code.Stdlib
 {
@@ -71,7 +72,7 @@ namespace Assets.Code.Stdlib
                 // adds the .join in the plan
                 InternalActionLiteral joinL = new InternalActionLiteral(joinS, ts.GetAgent());
                 joinL.AddTerm(new ObjectTermImpl(fd));
-                IPlanBody joinPB = new PlanBodyImpl(BodyType.internalAction, joinL);
+                IPlanBody joinPB = new PlanBodyImpl(BodyType.Body_Type.internalAction, joinL);
                 joinPB.SetBodyNext(im.GetCurrentStep().GetBodyNext());
 
                 // adds the argument in the plan (before join)

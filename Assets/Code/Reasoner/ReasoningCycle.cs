@@ -15,6 +15,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 using static BDIManager.Desires.Desire;
 
 /*
@@ -401,13 +402,13 @@ namespace Assets.Code.ReasoningCycle
                 if (ip.GetTrigger().IsDesire() && !ip.GetTrigger().IsAddition() && !i.IsFinished())
                 {
                     ip = i.Peek();
-                    if (ip.IsFinished() || !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve) ||
+                    if (ip.IsFinished() || !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.Body_Type.achieve) ||
                         ip.GetCurrentStep().GetBodyTerm().GetType() == typeof(VarTerm))
                     {
                         ip.Pop();
                     }
                     while (!i.IsFinished() && !(ip.GetUnif().Unifies(ip.GetTrigger().GetLiteral(), topLiteral) && ip.GetTrigger().IsDesire())
-                        && !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.achieve)) {
+                        && !(ip.GetUnif().Unifies(ip.GetCurrentStep().GetBodyTerm(), topLiteral) && ip.GetCurrentStep().GetBodyType() == BodyType.Body_Type.achieve)) {
                         ip = i.Pop();
                     }
                 }
@@ -486,7 +487,7 @@ namespace Assets.Code.ReasoningCycle
                 }
                 if (bTerm.IsPlanBody())
                 {
-                    if (h.GetBodyType() != BodyType.action)
+                    if (h.GetBodyType() != BodyType.Body_Type.action)
                     {
                         string msg = h.GetSrcInfo() + ": " + "The operator '" + h.GetBodyType() + "' is lost with the variable '" + bTerm + "' unified with a plan body. ";
                         if (!GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("body_var_with_op", msg)))
@@ -516,13 +517,13 @@ namespace Assets.Code.ReasoningCycle
                 body = (Literal)bTerm;
             }
 
-            if (h.GetBodyType() == BodyType.none)
+            if (h.GetBodyType() == BodyType.Body_Type.none)
             {
 
-            } else if (h.GetBodyType() == BodyType.action) {
+            } else if (h.GetBodyType() == BodyType.Body_Type.action) {
                 body = (Literal)body.Capply(u);
                 confP.GetCircumstance().SetAction(new ExecuteAction(body, curInt));
-            } else if (h.GetBodyType() == BodyType.internalAction) {
+            } else if (h.GetBodyType() == BodyType.Body_Type.internalAction) {
 
                 bool ok = false;
                 List<ITerm> errorAnnots = null;
@@ -600,7 +601,7 @@ namespace Assets.Code.ReasoningCycle
                 {
                     GenerateDesireDeletion(curInt, errorAnnots);
                 }
-            } else if (h.GetBodyType() == BodyType.constraint)
+            } else if (h.GetBodyType() == BodyType.Body_Type.constraint)
             {
 
                 IEnumerator<Unifier> iu = (((ILogicalFormula)bTerm).LogicalConsequence(ag, u));
@@ -614,20 +615,20 @@ namespace Assets.Code.ReasoningCycle
                     GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots(new Atom("constraint_failed"), msg));
                     //logger.fine(msg);
                 }
-            } else if (h.GetBodyType() == BodyType.achieve)
+            } else if (h.GetBodyType() == BodyType.Body_Type.achieve)
             {
                 body = PrepareBodyForEvent(body, u, curInt.Peek());
                 Event evt = conf.GetCircumstance().AddAchieveDesire(body, curInt);
                 confP.stepAct = State.StartRC;
                 CheckHardDeadline(evt);
 
-            } else if (h.GetBodyType() == BodyType.achieveNF)
+            } else if (h.GetBodyType() == BodyType.Body_Type.achieveNF)
             {
                 body = PrepareBodyForEvent(body, u, null);
                 Event evt = conf.GetCircumstance().AddAchieveDesire(body, Intention.emptyInt);
                 CheckHardDeadline(evt);
                 UpdateIntention(curInt);
-            } else if (h.GetBodyType() == BodyType.test)
+            } else if (h.GetBodyType() == BodyType.Body_Type.test)
             {
                 ILogicalFormula f = (ILogicalFormula)bTerm;
                 if (conf.GetAgent().Believes(f, u))
@@ -664,7 +665,7 @@ namespace Assets.Code.ReasoningCycle
                         GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("test_goal_failed", "Failed to test '" + bTerm + "'"));
                     }
                 }
-            } else if (h.GetBodyType() == BodyType.delAddBel) {
+            } else if (h.GetBodyType() == BodyType.Body_Type.delAddBel) {
                 Literal b2 = PrepareBodyForEvent(body, u, curInt.Peek());
                 b2.MakeTermsAnnon();
                 try
@@ -678,10 +679,10 @@ namespace Assets.Code.ReasoningCycle
                 {
                     GenerateDesireDeletion(curInt, (List<ITerm>)JasonityException.CreateBasicErrorAnnots("belief_revision_failed", "BRF failed for '" + body + "'"));
                 }
-            } else if (h.GetBodyType() == BodyType.addBel || h.GetBodyType() == BodyType.addBelBegin || h.GetBodyType() == BodyType.addBelEnd || h.GetBodyType() == BodyType.addBelNewFocus)
+            } else if (h.GetBodyType() == BodyType.Body_Type.addBel || h.GetBodyType() == BodyType.Body_Type.addBelBegin || h.GetBodyType() == BodyType.Body_Type.addBelEnd || h.GetBodyType() == BodyType.Body_Type.addBelNewFocus)
             {
                 Intention newFocus = Intention.emptyInt;
-                bool isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.addBelNewFocus;
+                bool isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.Body_Type.addBelNewFocus;
                 if (isSameFocus)
                 {
                     newFocus = curInt;
@@ -694,7 +695,7 @@ namespace Assets.Code.ReasoningCycle
                 try
                 {
                     List<Literal>[] result;
-                    if (h.GetBodyType() == BodyType.addBelEnd)
+                    if (h.GetBodyType() == BodyType.Body_Type.addBelEnd)
                     {
                         result = GetAgent().Brf(body, null, curInt, true);
                     }
@@ -718,9 +719,9 @@ namespace Assets.Code.ReasoningCycle
                     GenerateDesireDeletion(curInt, null);
                 }
 
-            } else if (h.GetBodyType() == BodyType.delBelNewFocus || h.GetBodyType() == BodyType.delBel) {
+            } else if (h.GetBodyType() == BodyType.Body_Type.delBelNewFocus || h.GetBodyType() == BodyType.Body_Type.delBel) {
                 Intention newFocus = Intention.emptyInt; 
-                bool isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.delBelNewFocus;
+                bool isSameFocus = GetSettings().SameFocus() && h.GetBodyType() != BodyType.Body_Type.delBelNewFocus;
                 if (isSameFocus)
                 {
                     newFocus = curInt;
