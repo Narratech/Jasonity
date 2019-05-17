@@ -31,23 +31,23 @@ namespace Tests
         public void ParseLiteralTest()
         {
             // Use the Assert class to test conditions
-            Literal l = new LiteralImpl("likes");
-            string s = "likes(john, music).";
+            Literal l = new LiteralImpl("tall");
+            string s = "tall(john)";
             //string eof = "^Z";
 
             //string.Concat(s, (char)26);
-            byte[] b = Encoding.ASCII.GetBytes(s);
-            byte[] array = new byte[b.Length + 1];
-            byte eof = 0x1A;
-            for (int i = 0; i < b.Length; i++)
-            {
-                array[i] = b[i];
-            }
-            array[b.Length] = eof; 
+            //byte[] b = Encoding.ASCII.GetBytes(s);
+            //byte[] array = new byte[b.Length + 1];
+            //byte eof = 0x1A;
+            //for (int i = 0; i < b.Length; i++)
+            //{
+            //    array[i] = b[i];
+            //}
+            //array[b.Length] = eof; 
 
-            s = Encoding.ASCII.GetString(array, 0, array.Length);
+            //s = Encoding.ASCII.GetString(array, 0, array.Length);
             Literal resultado = AsSyntax.ParseLiteral(s);
-            Assert.AreEqual(l, resultado);
+            Assert.AreEqual(l.ToString(), resultado.ToString());
         }
 
         [Test]
@@ -77,10 +77,12 @@ namespace Tests
         [Test]
         public void ParseStructure()
         {
-            Structure s = new Structure("hello(brother).");
-            Structure resultado = AsSyntax.ParseStructure("hello(brother).");
-            Assert.AreEqual(s, resultado);
+            Structure s = new Structure("hello(brother)");
+            Structure resultado = AsSyntax.ParseStructure("hello(brother)");
+            Assert.AreEqual(s.ToString(), resultado.ToString());
         }
+
+        
 
         [Test]
         public void ParseTerm()
@@ -96,13 +98,26 @@ namespace Tests
         {
             Plan p = new Plan();
             //Plan resultado = AsSyntax.ParsePlan("+!clear(X):tower([H | T]) & .member(X, T) <- move(H, table); !clear(X).");
-            string s = "+!init() < -println(hello world).";
+            string s = "+!init() <-.println(hello world)";
             byte b = 0x1A;
             string.Concat(s, b);
 
             Plan resultado = AsSyntax.ParsePlan(s);
             Assert.AreEqual(p, resultado);
         }
+
+        [Test]
+        public void ParsePlanBody()
+        {
+            IPlanBody planBody = new PlanBodyImpl();
+        }
+
+        [Test]
+        public void ParseTrigger()
+        {
+
+        }
+       
 
         //[Test]
         //public void ParseTriggerSimplePasses()

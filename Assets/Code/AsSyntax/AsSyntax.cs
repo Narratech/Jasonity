@@ -262,7 +262,7 @@ namespace Assets.Code.AsSyntax
             return r;
         }
 
-        public static Object TermToObject(ITerm t)
+        public static object TermToObject(ITerm t)
         {
             if (t.IsAtom())
             {

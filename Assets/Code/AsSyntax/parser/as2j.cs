@@ -1818,7 +1818,7 @@ namespace Assets.Code.parser
                 return t;
             }
             else if (false || switch_64 == VAR || switch_64 == TK_TRUE || switch_64 == TK_FALSE || switch_64 == TK_NEG
-            || switch_64 == TK_BEGINn|| switch_64 == TK_END || switch_64 == ATOM || switch_64 == UNNAMEDVARID || switch_64 == UNNAMEDVAR
+            || switch_64 == TK_BEGIN|| switch_64 == TK_END || switch_64 == ATOM || switch_64 == UNNAMEDVARID || switch_64 == UNNAMEDVAR
             || switch_64 == 51)
             {
                 t = function();

@@ -146,7 +146,7 @@ namespace Assets.Code.AsSyntax
 
         public override int CalcHashCode()
         {
-            return formType.GetHashCode() + base.CalcHashCode(); // ???
+            return formType.GetHashCode() + base.CalcHashCode(); 
         }
 
 
