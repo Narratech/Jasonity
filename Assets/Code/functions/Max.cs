@@ -19,7 +19,7 @@ namespace Assets.Code.functions
             if (args[0].IsNumeric() && args[1].IsNumeric())
             {
                 double n0 = ((INumberTerm)args[0]).Solve();
-                double n1 = ((INumberTerm)args[0]).Solve();
+                double n1 = ((INumberTerm)args[1]).Solve();
                 return Math.Max(n0, n1);
             }
 
