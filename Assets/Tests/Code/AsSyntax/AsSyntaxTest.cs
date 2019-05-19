@@ -128,9 +128,9 @@ namespace Tests
         [Test]
         public void ParseListTermSimplePasses()
         {
-            IListTerm lt = new ListTermImpl();
+            IListTerm lt = new ListTermImpl(new Atom("s1"), new Atom("s2"));
             IListTerm resultado = AsSyntax.ParseList("[bigfuckinggun]");
-            Assert.AreEqual(lt, resultado);
+            Assert.AreEqual(lt.ToString(), resultado.ToString());
         }
 
         //[Test]
