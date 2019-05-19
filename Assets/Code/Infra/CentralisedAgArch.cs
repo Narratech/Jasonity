@@ -11,7 +11,7 @@ using Assets.Code.AsSyntax;
 using Assets.Code.BDIManager;
 using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
-using Assets.Code.AsSemantics;
+
 using Assets.Code.BDIAgent;
 using Assets.Code.Environment;
 using Assets.Code.Scripts;

@@ -1,8 +1,9 @@
 /* as2j.cs */
-using Assets.Code.AsSemantics;
+
 using Assets.Code.AsSyntax;
 using Assets.Code.AsSyntax.directives;
 using Assets.Code.BDIAgent;
+using Assets.Code.functions;
 using BDIManager.Beliefs;
 using System;
 using System.Collections.Generic;

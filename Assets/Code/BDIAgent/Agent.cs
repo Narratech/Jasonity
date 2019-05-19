@@ -17,7 +17,7 @@ using BDIManager.Desires;
 using BDIManager.Intentions;
 using System.Reflection;
 
-using Assets.Code.AsSemantics;
+
 using Assets.Code.Utilities;
 
 /**

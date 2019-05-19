@@ -1,7 +1,7 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.ReasoningCycle;
 
-namespace Assets.Code.AsSemantics
+namespace Assets.Code.functions
 {
     public class ArithFunction
     {
