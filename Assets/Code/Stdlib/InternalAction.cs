@@ -2,7 +2,7 @@
 using Assets.Code.Exceptions;
 using Assets.Code.ReasoningCycle;
 
-namespace Assets.Code.BDIAgent
+namespace Assets.Code.Stdlib
 {
     public class InternalAction
     {
