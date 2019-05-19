@@ -1,6 +1,7 @@
 ﻿using Assets.Code.AsSyntax;
 using Assets.Code.BDIAgent;
 using Assets.Code.Exceptions;
+using Assets.Code.parser;
 using Assets.Code.ReasoningCycle;
 using BDIManager.Intentions;
 using System;

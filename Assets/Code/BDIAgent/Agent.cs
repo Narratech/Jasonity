@@ -367,7 +367,7 @@ namespace Assets.Code.BDIAgent
         {
             as2j parser = new as2j(asIn);
             parser.SetASLSource(sourceId);
-            parser.agent(this);
+            parser.AgentMethod(this);
         }
 
         public InternalAction GetIA(string iaName) {

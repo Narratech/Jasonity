@@ -10,7 +10,7 @@ using Assets.Code.functions;
 using Assets.Code.ReasoningCycle;
 using Assets.Code.Runtime;
 
-namespace Tests
+namespace Assets.Code.functions
 {
     public class LengthTest
     {

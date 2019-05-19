@@ -11,7 +11,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Tests
+namespace Assets.Code.functions
 {
     public class SqrtTest
     {
@@ -48,16 +48,6 @@ namespace Tests
             double aux = ((INumberTerm)args[0]).Solve();
 
             Assert.AreEqual(Math.Sqrt(aux), a.Evaluate(r, args));
-        }
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator SqrtTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
         }
     }
 }

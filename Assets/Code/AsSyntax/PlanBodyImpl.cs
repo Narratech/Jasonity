@@ -517,38 +517,6 @@ namespace Assets.Code.AsSyntax
                         return null;
                 }
             }
-
-
-            //public readonly static BodyType none = new BodyType();
-            //public readonly static BodyType action = new BodyType();
-            //public readonly static BodyType internalAction = new BodyType();
-            //public readonly static BodyType achieve = new BodyType();
-            //public readonly static BodyType test = new BodyType();
-            //public readonly static BodyType addBel = new BodyType();
-            //public readonly static BodyType addBelNewFocus = new BodyType();
-            //public readonly static BodyType addBelBegin = new BodyType();
-            //public readonly static BodyType addBelEnd = new BodyType();
-            //public readonly static BodyType delBel = new BodyType();
-            //public readonly static BodyType delBelNewFocus = new BodyType();
-            //public readonly static BodyType delAddBel = new BodyType();
-            //public readonly static BodyType achieveNF = new BodyType();
-            //public readonly static BodyType constraint = new BodyType();
-
-            //public override string ToString()
-            //{
-            //    if (this == none || this == action || this == internalAction || this == constraint) return "";
-            //    else if (this == achieve) return "!";
-            //    else if (this == test) return "?";
-            //    else if (this == addBel) return "+";
-            //    else if (this == addBelNewFocus) return "++";
-            //    else if (this == addBelBegin) return "+<";
-            //    else if (this == addBelEnd) return "+>";
-            //    else if (this == delBel) return "-";
-            //    else if (this == delBelNewFocus) return "--";
-            //    else if (this == delAddBel) return "-+";
-            //    else if (this == achieveNF) return "!!";
-            //    else return null;
-            //}
         }
     }
 }

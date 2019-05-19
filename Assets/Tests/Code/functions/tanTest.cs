@@ -11,7 +11,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Tests
+namespace Assets.Code.functions
 {
     public class tanTest
     {
@@ -46,16 +46,6 @@ namespace Tests
             args[0] = new NumberTermImpl();
 
             Assert.AreEqual(Math.Tan(((INumberTerm)args[0]).Solve()), a.Evaluate(r, args));
-        }
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator tanTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
         }
     }
 }

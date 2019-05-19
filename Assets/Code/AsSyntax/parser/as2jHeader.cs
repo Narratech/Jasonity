@@ -1,34 +1,28 @@
-using System;
-using System.Collections.Generic;
-
-using Assets.Code.AsSyntax.parser;
-using Assets.Code.AsSyntax;
-using Assets.Code.AsSyntax.directives;
-using Assets.Code.BDIAgent;
-using Assets.Code.AsSemantics;
-using System.Text.RegularExpressions;
+//Esto es la clase parcial
 
 namespace Assets.Code.parser
 {
+
+    using Assets.Code.AsSemantics;
+    using Assets.Code.AsSyntax;
+    using Assets.Code.BDIAgent;
+    using Assets.Code.AsSyntax.directives;
+    using System.Text.RegularExpressions;
+    using System.Collections.Generic;
+
     public partial class as2j : as2jConstants
     {
-
         private string asSource = "no-asl-source";
         private Agent curAg = null;
 
         private Atom @namespace = Literal.DefaultNS;
         private Atom thisnamespace = Literal.DefaultNS;
 
-        private DirectiveProcessor dProcessor = new DirectiveProcessor();
-        //private NameSpace nsDirective = (NameSpace)dProcessor.GetInstance("namespace");
+        private DirectiveProcessor dProcesor = new DirectiveProcessor();
         private NameSpace nsDirective;
 
-
-
         private static HashSet<string> parsedFiles = new HashSet<string>();
-        //private static Config config = Config.Get(false);
-        //private static Pattern patternUnnamedWithId = Pattern.compile("_(\\d+)(.*)");
-        private static Regex patternUnnamedWithId = new Regex("_(\\d+)(.*)"); //Igual hay que adaptar la expresión a c#
+        private static Regex patternUnnamedWithId = new Regex("_(\\d+)(.*)");
 
         public void SetAg(Agent ag) { curAg = ag; }
         public void SetNS(Atom ns) { @namespace = ns; thisnamespace = ns; }
@@ -48,19 +42,12 @@ namespace Assets.Code.parser
         {
             return GetSourceRef(t.GetSrcInfo());
         }
-
         private string GetSourceRef(object t)
         {
             if (t.GetType() == typeof(DefaultTerm))
-            {
                 return GetSourceRef((DefaultTerm)t);
-            }
-
             else if (t.GetType() == typeof(SourceInfo))
-            {
                 return GetSourceRef((SourceInfo)t);
-            }
-
             else
                 return "[]";
         }
@@ -69,17 +56,12 @@ namespace Assets.Code.parser
         {
             if (f != null)
             {
-                if (f.GetType() == typeof(InternalActionLiteral))
-                {
+                if (f.GetType() == typeof(InternalActionLiteral)) {
                     InternalActionLiteral ial = (InternalActionLiteral)f;
                     if (!ial.GetIA(ag).CanBeUsedInContext())
-                    {
                         return ial;
-                    }
                 }
-
-                else if (f.GetType() == typeof(LogExpr))
-                {
+                else if (f.GetType() == typeof(LogExpr)) {
                     LogExpr le = (LogExpr)f;
                     InternalActionLiteral ial = CheckInternalActionsInContext(le.GetLHS(), ag);
                     if (ial != null)
@@ -121,5 +103,6 @@ namespace Assets.Code.parser
             }
             return u;
         }
+
     }
 }

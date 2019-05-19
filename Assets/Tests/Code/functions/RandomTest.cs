@@ -10,7 +10,7 @@ using Assets.Code.Runtime;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace Tests
+namespace Assets.Code.functions
 {
     public class RandomTest
     {
@@ -53,16 +53,6 @@ namespace Tests
             args[0] = new StringTermImpl();
             aux = rAux.Next();
             Assert.AreEqual(aux, a.Evaluate(r, args));
-        }
-
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator RandomTestWithEnumeratorPasses()
-        {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
         }
     }
 }

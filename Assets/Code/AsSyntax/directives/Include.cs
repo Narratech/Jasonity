@@ -133,7 +133,7 @@ namespace Assets.Code.AsSyntax.directives
                 as2j sparser = new as2j(input);
                 sparser.SetASLSource(file);
                 sparser.SetNS(ns);
-                sparser.agent(ag);
+                sparser.AgentMethod(ag);
             
                 return ag;
             }

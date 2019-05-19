@@ -17,9 +17,9 @@ namespace Assets.Code.AsSyntax
         private ITerm term;
         private ITerm next;
 
-        public int Count => throw new NotImplementedException();
+        public int Count => this.Size();
 
-        public bool IsReadOnly => throw new NotImplementedException();
+        public bool IsReadOnly => false;
 
         public ITerm this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -32,6 +32,11 @@ namespace Assets.Code.AsSyntax
         {
             term = t;
             next = n;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         /**
@@ -469,6 +474,11 @@ namespace Assets.Code.AsSyntax
 
             public void Dispose() { }
 
+            public void Reset()
+            {
+                
+            }
+
             private class SubSetSearchState
             {
                 int pos;
@@ -520,12 +530,7 @@ namespace Assets.Code.AsSyntax
                 }
             }
 
-            object IEnumerator.Current => throw new NotImplementedException();
-
-            public void Reset()
-            {
-                throw new NotImplementedException();
-            }
+            object IEnumerator.Current => this.Current;
         }
 
         /** returns a new (cloned) list representing the 
@@ -638,19 +643,29 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        private abstract class ListTermIterator<T>: IEnumerator<T> where T : ITerm
+        private abstract class ListTermIterator<T> : IEnumerator<IListTerm>
         {
             public IListTerm nextLT;
             public IListTerm current = null;
+
+            public IListTerm Current
+            {
+                get
+                {
+                    return current;
+                }
+            }
+
+            object IEnumerator.Current => this.Current;
+
             public ListTermIterator(T lt)
             {
                 //Probable que explote, trabajar con ITerm
                 nextLT = (IListTerm)lt;
             }
 
-            public T Current => throw new NotImplementedException();
+           
 
-            object IEnumerator.Current => throw new NotImplementedException();
 
             public ListTermIterator(IListTerm lt)
             {
@@ -673,15 +688,7 @@ namespace Assets.Code.AsSyntax
                 nextLT = nextLT.GetNext();
             }
 
-            bool IEnumerator.MoveNext()
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Reset()
-            {
-                throw new NotImplementedException();
-            }
+            
 
             public void Dispose()
             {
@@ -691,6 +698,11 @@ namespace Assets.Code.AsSyntax
                     current.SetNext(nextLT.GetNext());
                     nextLT = current;
                 }
+            }
+
+            public void Reset()
+            {
+                
             }
         }
 
@@ -731,7 +743,8 @@ namespace Assets.Code.AsSyntax
                     return (ITerm)Get(last);
                 }
             }
-            object IEnumerator.Current => throw new NotImplementedException();
+
+            object IEnumerator.Current => this.Current;
 
             public void Add(ITerm o)
             {
@@ -788,7 +801,7 @@ namespace Assets.Code.AsSyntax
 
             public void Reset()
             {
-                throw new NotImplementedException();
+                
             }
         }
 
@@ -1046,40 +1059,7 @@ namespace Assets.Code.AsSyntax
         }
         
 
-        public void Add(Pred pred)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(ILogicalFormula logicalFormula)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(Trigger trigger)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(IPlanBody planBody)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ITerm CloneNS(Atom Newnamespace)
-        {
-            throw new NotImplementedException();
-        }
-
-        public VarTerm GetCyclicVar()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CountVars(Dictionary<VarTerm, int?> c)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public override bool IsUnnamedVar()
         {
@@ -1121,9 +1101,9 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public bool Subsumes(ITerm l)
+        public override bool Subsumes(ITerm l)
         {
-            throw new NotImplementedException();
+            return base.Subsumes(l);
         }
 
         public override SourceInfo GetSrcInfo()
@@ -1131,19 +1111,19 @@ namespace Assets.Code.AsSyntax
             return srcInfo;
         }
 
-        public bool IsInternalAction()
+        public override bool IsInternalAction()
         {
-            throw new NotImplementedException();
+            return base.IsInternalAction();
         }
 
-        public bool HasVar(VarTerm t, Unifier u)
+        public override bool HasVar(VarTerm t, Unifier u)
         {
-            throw new NotImplementedException();
+            return base.HasVar(t, u);
         }
 
-        public bool IsArithExpr()
+        public override bool IsArithExpr()
         {
-            throw new NotImplementedException();
+            return base.IsArithExpr();
         }
 
         public override void SetSrcInfo(SourceInfo s)
@@ -1151,9 +1131,9 @@ namespace Assets.Code.AsSyntax
             srcInfo = s;
         }
 
-        public bool IsCyclicTerm()
+        public override bool IsCyclicTerm()
         {
-            throw new NotImplementedException();
+            return base.IsCyclicTerm();
         }
 
         IEnumerator<IListTerm> IListTerm.ListTermIterator()

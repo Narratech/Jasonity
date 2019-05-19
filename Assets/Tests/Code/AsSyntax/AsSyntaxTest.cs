@@ -1,11 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using Assets.Code.AsSyntax;
-using Assets.Code.AsSyntax.parser;
+﻿using Assets.Code.AsSyntax;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
+using static Assets.Code.AsSyntax.PlanBodyImpl;
 
 namespace Tests
 {
@@ -109,7 +104,12 @@ namespace Tests
         [Test]
         public void ParsePlanBody()
         {
-            IPlanBody planBody = new PlanBodyImpl();
+            string pb = "<- .println(hello world)";
+            string pb2 = "<- jejeculo";
+            ITerm t = new Atom(pb);
+            IPlanBody planBody = new PlanBodyImpl(BodyType.Body_Type.internalAction, t);
+            IPlanBody planBody2 = AsSyntax.ParsePlanBody(pb2);
+            Assert.AreEqual(planBody.ToString(), planBody2.ToString());
         }
 
         [Test]
