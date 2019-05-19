@@ -1,4 +1,4 @@
-﻿namespace Assets.Code.AsSemantics
+﻿namespace Assets.Code.BDIAgent
 {
     public class Message
     {

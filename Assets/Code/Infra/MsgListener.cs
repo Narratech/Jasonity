@@ -1,4 +1,5 @@
-﻿using Assets.Code.AsSemantics;
+﻿
+using Assets.Code.BDIAgent;
 using System;
 using System.Collections.Generic;
 using System.Linq;

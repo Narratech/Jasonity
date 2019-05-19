@@ -1,5 +1,6 @@
-﻿using Assets.Code.AsSemantics;
+﻿
 using Assets.Code.AsSyntax;
+using Assets.Code.BDIAgent;
 using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using BDIManager.Intentions;

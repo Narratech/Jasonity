@@ -8,7 +8,7 @@ using Assets.Code.ReasoningCycle;
 using BDIMaAssets.Code.ReasoningCycle;
 using Assets.Code.AsSyntax;
 using Assets.Code.Runtime;
-using Assets.Code.AsSemantics;
+
 
 /*
     This is the agent architecture class, defines the agent architecture. 

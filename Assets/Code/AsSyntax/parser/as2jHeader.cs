@@ -3,12 +3,13 @@
 namespace Assets.Code.parser
 {
 
-    using Assets.Code.AsSemantics;
+
     using Assets.Code.AsSyntax;
     using Assets.Code.BDIAgent;
     using Assets.Code.AsSyntax.directives;
     using System.Text.RegularExpressions;
     using System.Collections.Generic;
+    using Assets.Code.functions;
 
     public partial class as2j : as2jConstants
     {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System;
 using Assets.Code.functions;
-using Assets.Code.AsSemantics;
 using Assets.Code.BDIAgent;
 
 namespace Assets.Code.AsSyntax.directives
