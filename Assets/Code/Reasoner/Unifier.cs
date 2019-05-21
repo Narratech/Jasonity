@@ -154,11 +154,11 @@ namespace Assets.Code.ReasoningCycle
         {
             if (term.IsArithExpr())
             {
-                term = term.Capply(this);
+                term = term.CApply(this);
             }
             if (term2.IsArithExpr())
             {
-                term2 = term2.Capply(this);
+                term2 = term2.CApply(this);
             }
 
             bool termIsVar = term.IsVar();

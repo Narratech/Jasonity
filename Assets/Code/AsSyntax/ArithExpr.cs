@@ -127,11 +127,11 @@ namespace Assets.Code.AsSyntax
             op = ae.op;
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             try
             {
-                double l = ((INumberTerm)GetTerm(0).Capply(u)).Solve();
+                double l = ((INumberTerm)GetTerm(0).CApply(u)).Solve();
                 if (IsUnary())
                 {
                     if (op == ArithmeticOp.minus)
@@ -145,7 +145,7 @@ namespace Assets.Code.AsSyntax
                 }
                 else
                 {
-                    double r = ((INumberTerm)GetTerm(1).Capply(u)).Solve();
+                    double r = ((INumberTerm)GetTerm(1).CApply(u)).Solve();
                     value = new NumberTermImpl(op.Eval(l, r));
                 }
                 return value;

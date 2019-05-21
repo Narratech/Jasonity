@@ -171,7 +171,7 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public override ITerm Capply(Unifier u) //I dont understand why theres an error here yay 
+        public override ITerm CApply(Unifier u) //I dont understand why theres an error here yay 
         {
             return new Structure(this, u);
         }

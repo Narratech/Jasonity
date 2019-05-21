@@ -57,7 +57,7 @@ namespace Assets.Code.AsSyntax
             return this;
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             ITerm v = u.Get(cyclicVar);
             u.Remove(cyclicVar);

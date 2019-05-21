@@ -66,7 +66,7 @@ namespace Assets.Code.AsSyntax
         }
 
         /** computes the value for this arithmetic function (as defined in the NumberTerm interface) */
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             if(function == null)
             {
@@ -74,7 +74,7 @@ namespace Assets.Code.AsSyntax
             }
             else
             {
-                ITerm v = base.Capply(u);
+                ITerm v = base.CApply(u);
                 if (function.AllowUngroundTerms() || v.IsGround())
                 {
                     try
@@ -98,7 +98,7 @@ namespace Assets.Code.AsSyntax
         public double Solve()
         {
             if (value == null) //try to solve without unifier
-                Capply(null);
+                CApply(null);
             if (value == null)
                 throw new Exception("Error evaluating " + this + "." + (IsGround() ? "" : " It is not ground."));
             else

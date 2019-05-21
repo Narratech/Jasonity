@@ -242,7 +242,7 @@ namespace Assets.Code.AsSyntax
             bl.SetBodyTerm(l);
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             PlanBodyImpl c;
             if (term == null)
@@ -252,7 +252,7 @@ namespace Assets.Code.AsSyntax
             }
             else
             {
-                c = new PlanBodyImpl(formType, term.Capply(u), isTerm);
+                c = new PlanBodyImpl(formType, term.CApply(u), isTerm);
                 if (c.term.IsPlanBody())
                 {
                     c.formType = ((IPlanBody)c.term).GetBodyType();
@@ -263,7 +263,7 @@ namespace Assets.Code.AsSyntax
 
             if (next != null)
             {
-                c.Add((IPlanBody)next.Capply(u));
+                c.Add((IPlanBody)next.CApply(u));
             }
 
             return c;

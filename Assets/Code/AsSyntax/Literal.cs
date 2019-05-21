@@ -463,7 +463,7 @@ namespace Assets.Code.AsSyntax
                         rule = (Rule)belInBB;
                         if (cloneAnnon == null)
                         {
-                            cloneAnnon = (Literal)lit.Capply(un);
+                            cloneAnnon = (Literal)lit.CApply(un);
                             cloneAnnon.MakeVarsAnnon();
                         }
 
@@ -637,7 +637,7 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public override ITerm Capply(Unifier u)
+            public override ITerm CApply(Unifier u)
             {
                 return this;
             }
@@ -665,7 +665,7 @@ namespace Assets.Code.AsSyntax
                 return this;
             }
 
-            public override ITerm Capply(Unifier u)
+            public override ITerm CApply(Unifier u)
             {
                 return this;
             }
@@ -693,7 +693,7 @@ namespace Assets.Code.AsSyntax
                 return GetFunctor().GetHashCode();
             }
 
-            public override ITerm Capply(Unifier u)
+            public override ITerm CApply(Unifier u)
             {
                 return this;
             }

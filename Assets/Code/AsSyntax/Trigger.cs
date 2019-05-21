@@ -126,7 +126,7 @@ namespace Assets.Code.AsSyntax
 
         public new Trigger Capply(Unifier u)
         {
-            Trigger c = new Trigger(op, type, (Literal)literal.Capply(u));
+            Trigger c = new Trigger(op, type, (Literal)literal.CApply(u));
             c.predicateIndicatorCache = predicateIndicatorCache;
             c.isTerm = isTerm;
             return c;

@@ -37,7 +37,7 @@ namespace Assets.Code.AsSyntax
             
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             if (u != null)
             {
@@ -47,7 +47,7 @@ namespace Assets.Code.AsSyntax
                     if (!vl.IsCyclicTerm() && vl.HasVar(this, u))
                     {
                         u.Remove(this);
-                        ITerm tempVl = vl.Capply(u);
+                        ITerm tempVl = vl.CApply(u);
                         u.Bind(this, vl);
 
                         CyclicTerm ct = new CyclicTerm(tempVl as Literal, this);
@@ -58,13 +58,13 @@ namespace Assets.Code.AsSyntax
                         vl = ct;
                     }
 
-                    vl = vl.Capply(u);
+                    vl = vl.CApply(u);
 
                     if (vl.IsLiteral())
                     {
                         if (GetNS() != Literal.DefaultNS)
                         {
-                            vl = (vl.CloneNS(GetNS().Capply(u) as Atom) as Literal);
+                            vl = (vl.CloneNS(GetNS().CApply(u) as Atom) as Literal);
                         }
                         if (Negated())
                         {
@@ -74,7 +74,7 @@ namespace Assets.Code.AsSyntax
 
                     if (vl.IsLiteral() && this.HasAnnot())
                     {
-                        vl = ((Literal)vl).ForceFullLiteralImpl().AddAnnots((IListTerm)this.GetAnnots().Capply(u));
+                        vl = ((Literal)vl).ForceFullLiteralImpl().AddAnnots((IListTerm)this.GetAnnots().CApply(u));
                     }
                     return vl;
                 }
@@ -154,7 +154,7 @@ namespace Assets.Code.AsSyntax
 
         public override IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
         {
-            ITerm t = this.Capply(un);
+            ITerm t = this.CApply(un);
             if (t.Equals(this))
             {
                 return base.LogicalConsequence(ag, un);

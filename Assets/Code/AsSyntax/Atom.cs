@@ -30,7 +30,7 @@ namespace Assets.Code.AsSyntax
             
         }
 
-        public Atom(Literal l, Unifier u): this(l.GetNS().Capply(u) as Atom, l)
+        public Atom(Literal l, Unifier u): this(l.GetNS().CApply(u) as Atom, l)
         {
             
         }
@@ -52,7 +52,7 @@ namespace Assets.Code.AsSyntax
             return ns; 
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             if (ns.IsVar())
             {

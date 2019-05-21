@@ -436,7 +436,7 @@ namespace Assets.Code.ReasoningCycle
                     ITerm vl = values.GetFunction()[vt];
                     if (vl != null)
                     {
-                        vl = vl.Capply(values);
+                        vl = vl.CApply(values);
                         if (vl.IsLiteral())
                         {
                             ((Literal)vl).MakeVarsAnnon();
@@ -475,7 +475,7 @@ namespace Assets.Code.ReasoningCycle
 
             if (bTerm.GetType() == typeof(VarTerm))
             {
-                bTerm = bTerm.Capply(u);
+                bTerm = bTerm.CApply(u);
                 if (bTerm.IsVar())
                 {
                     string msg = h.GetSrcInfo() + ": " + "Variable '" + bTerm + "' must be ground.";
@@ -521,7 +521,7 @@ namespace Assets.Code.ReasoningCycle
             {
 
             } else if (h.GetBodyType() == BodyType.Body_Type.action) {
-                body = (Literal)body.Capply(u);
+                body = (Literal)body.CApply(u);
                 confP.GetCircumstance().SetAction(new ExecuteAction(body, curInt));
             } else if (h.GetBodyType() == BodyType.Body_Type.internalAction) {
 
@@ -783,7 +783,7 @@ namespace Assets.Code.ReasoningCycle
 
         private Literal PrepareBodyForEvent(Literal body, Unifier u, IntendedPlan ipRenamedVars)
         {
-            body = (Literal)body.Capply(u);
+            body = (Literal)body.CApply(u);
             Unifier renamedVars = new Unifier();
             body.MakeVarsAnnon(renamedVars);
             if (ipRenamedVars != null)
@@ -875,7 +875,7 @@ namespace Assets.Code.ReasoningCycle
                 failEvent = new Event(ip.GetTrigger().Clone(), i);
             }
 
-            ITerm bodyPart = ip.GetCurrentStep().GetBodyTerm().Capply(ip.GetUnif());
+            ITerm bodyPart = ip.GetCurrentStep().GetBodyTerm().CApply(ip.GetUnif());
             SetDefaultFailureAnnots(failEvent, bodyPart, errorAnnots);
             if (ip.IsDesireAdd())
             {
@@ -1094,7 +1094,7 @@ namespace Assets.Code.ReasoningCycle
                                 {
                                     if (t.GetType() == typeof(Literal))
                                     {
-                                        Literal l = (Literal)t.Capply(top.GetUnif());
+                                        Literal l = (Literal)t.CApply(top.GetUnif());
                                         l.MakeVarsAnnon(top.GetRenamedVars());
                                         ip.GetUnif().GetFunction().Add(vl, l);
                                     } else
@@ -1458,7 +1458,7 @@ namespace Assets.Code.ReasoningCycle
 
                     //Test the case of sync ask with many receivers
                     Unifier un = intention.Peek().GetUnif();
-                    ITerm rec = send.GetTerm(0).Capply(un);
+                    ITerm rec = send.GetTerm(0).CApply(un);
                     if (rec.IsList()) //Send to many receivers
                     {
                         //Put the answers in the unifier

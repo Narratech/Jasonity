@@ -235,7 +235,7 @@ namespace BDIManager.Beliefs
                     Atom ns = l.GetNS();
                     if (ns.IsVar())
                     {
-                        l = (Literal)l.Capply(u);
+                        l = (Literal)l.CApply(u);
                         ns = l.GetNS();
                     }
                     if (ns.IsVar()) return GetEnumerator();

@@ -127,7 +127,7 @@ namespace Assets.Code.AsSyntax
             return "Error in internal action '" + this + "'" + src;
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             return new InternalActionLiteral(this, u);
         }

@@ -110,7 +110,7 @@ namespace Assets.Code.AsSyntax
             return l;
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             return new LiteralImpl(this, u);
         }

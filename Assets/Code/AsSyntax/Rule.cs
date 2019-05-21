@@ -31,7 +31,7 @@ namespace Assets.Code.AsSyntax
         public Rule(Rule r, Unifier u) : base(r, u)
         {
             isTerm = r.isTerm;
-            body = (ILogicalFormula)r.body.Capply(u);
+            body = (ILogicalFormula)r.body.CApply(u);
             predicateIndicatorCache = null;
         }
 
@@ -93,7 +93,7 @@ namespace Assets.Code.AsSyntax
             return base.MakeVarsAnnon(un);
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             return new Rule(this, u);
         }
@@ -114,7 +114,7 @@ namespace Assets.Code.AsSyntax
 
         public Literal HeadCApply(Unifier u)
         {
-            return (Literal)base.Capply(u);
+            return (Literal)base.CApply(u);
         }
 
         public override string ToString()

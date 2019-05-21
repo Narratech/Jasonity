@@ -530,7 +530,7 @@ namespace Assets.Code.BDIAgent
                 GetBB().Add(b);
             } else
             {
-                b = (Literal) b.Capply(null); 
+                b = (Literal) b.CApply(null); 
                 AddBel(b);
             }
         }
@@ -876,7 +876,7 @@ namespace Assets.Code.BDIAgent
                                     if (u.Unifies(linBB, beliefToDel))
                                     {
                                         il.Dispose();
-                                        beliefToDel = (Literal)beliefToDel.Capply(u);
+                                        beliefToDel = (Literal)beliefToDel.CApply(u);
                                         removed = true;
                                         break;
                                     }

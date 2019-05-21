@@ -200,7 +200,7 @@ namespace Assets.Code.AsSyntax
             Plan p = new Plan();
             if (label != null)
             {
-                p.label = (Pred)label.Capply(u);
+                p.label = (Pred)label.CApply(u);
                 p.isAtomic = isAtomic;
                 p.hasBreakpoint = hasBreakpoint;
                 p.isAllUnifs = isAllUnifs;
@@ -209,9 +209,9 @@ namespace Assets.Code.AsSyntax
             p.tevent = tevent.Capply(u);
             if (context != null)
             {
-                p.context = (ILogicalFormula)context.Capply(u);
+                p.context = (ILogicalFormula)context.CApply(u);
             }
-            p.body = (IPlanBody)body.Capply(u);
+            p.body = (IPlanBody)body.CApply(u);
             p.SetSrcInfo(srcInfo); // ???
             p.isTerm = isTerm;
             return p;

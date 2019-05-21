@@ -13,7 +13,7 @@ namespace Assets.Code.AsSyntax
         public int hashCodeCache = -1;
         public SourceInfo srcInfo = null;
 
-        public virtual ITerm Capply(Unifier u)
+        public virtual ITerm CApply(Unifier u)
         {
             return (ITerm)MemberwiseClone();
         }

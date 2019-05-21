@@ -58,11 +58,11 @@ namespace Assets.Code.AsSyntax
         }
 
         /** make a hard copy of the terms */
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             ListTermImpl t = new ListTermImpl();
-            if (term != null) t.term = this.term.Capply(u);
-            if (next != null) t.next = this.next.Capply(u);
+            if (term != null) t.term = this.term.CApply(u);
+            if (next != null) t.next = this.next.CApply(u);
             return t;
         }
 

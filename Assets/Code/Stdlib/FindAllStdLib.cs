@@ -46,7 +46,7 @@ namespace Assets.Code.Stdlib
             IEnumerator<Unifier> iu = logExpr.LogicalConsequence(reasoner.GetAgent(), un);
             while (iu.MoveNext())
             {
-                tail = tail.Append(var.Capply(iu.Current));
+                tail = tail.Append(var.CApply(iu.Current));
             }
             return un.Unifies(args[2], all);
         }

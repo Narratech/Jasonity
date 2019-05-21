@@ -13,8 +13,8 @@ public class RelExpr : BinaryStructure, ILogicalFormula
 
     public new IEnumerator<Unifier> LogicalConsequence(Agent ag, Unifier un)
     {
-        ITerm xp = GetTerm(0).Capply(un);
-        ITerm yp = GetTerm(1).Capply(un);
+        ITerm xp = GetTerm(0).CApply(un);
+        ITerm yp = GetTerm(1).CApply(un);
 
         if (op.GetType() == RelationalOp.none.GetType()) { }
 
@@ -103,7 +103,7 @@ public class RelExpr : BinaryStructure, ILogicalFormula
         return LogExpr.EMPTY_UNIF_LIST.GetEnumerator();
     }
 
-    public override ITerm Capply(Unifier u) => new RelExpr(GetTerm(0).Capply(u), op, GetTerm(1).Capply(u));
+    public override ITerm CApply(Unifier u) => new RelExpr(GetTerm(0).CApply(u), op, GetTerm(1).CApply(u));
 
     // Make a hard copy of the terms
     public new ILogicalFormula Clone() => new RelExpr(GetTerm(0).Clone(), op, GetTerm(1).Clone());

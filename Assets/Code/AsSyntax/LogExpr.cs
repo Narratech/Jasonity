@@ -112,10 +112,10 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
-            if (IsUnary()) return new LogExpr(op, (ILogicalFormula)GetTerm(0).Capply(u));
-            else return new LogExpr((ILogicalFormula)GetTerm(0).Capply(u), op, (ILogicalFormula)GetTerm(1).Capply(u));
+            if (IsUnary()) return new LogExpr(op, (ILogicalFormula)GetTerm(0).CApply(u));
+            else return new LogExpr((ILogicalFormula)GetTerm(0).CApply(u), op, (ILogicalFormula)GetTerm(1).CApply(u));
         }
 
         public new ILogicalFormula Clone()

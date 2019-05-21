@@ -42,7 +42,7 @@ namespace Assets.Code.Stdlib
             ISet<ITerm> all = new HashSet<ITerm>();
             IEnumerator<Unifier> iu = logExpr.LogicalConsequence(ts.GetAgent(), un);
             while (iu.MoveNext()) {
-                all.Add(var.Capply(iu.Current));
+                all.Add(var.CApply(iu.Current));
             }
             return un.Unifies(args[2], SetToList(all));
         }

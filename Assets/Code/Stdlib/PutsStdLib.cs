@@ -134,7 +134,7 @@ namespace Assets.Code.Stdlib
                         {
                             t = AsSyntax.AsSyntax.ParseTerm(sVar);
                         }
-                        t = t.Capply(un);
+                        t = t.CApply(un);
                         //Hacer Regex.Replace(sb, t.IsString() ?....) serría una opción para hacerlo más compacto pero no sabemos
                         //matcher.appendReplacement(sb, t.IsString() ? ((IStringTerm)t).GetString() : t.ToString());
                        

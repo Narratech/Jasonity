@@ -37,7 +37,7 @@ namespace Assets.Code.Stdlib
             ITerm[] terms = new ITerm[body.GetArity()];
             for (int i = 0; i < terms.Length; i++)
             {
-                terms[i] = body.GetTerm(i).Capply(un);
+                terms[i] = body.GetTerm(i).CApply(un);
             }
             return terms;
         }

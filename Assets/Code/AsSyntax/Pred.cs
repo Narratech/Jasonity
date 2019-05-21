@@ -42,7 +42,7 @@ namespace Assets.Code.AsSyntax
         {
             if (l.HasAnnot())
             {
-                SetAnnots((IListTerm)l.GetAnnots().Capply(u));
+                SetAnnots((IListTerm)l.GetAnnots().CApply(u));
             } else
             {
                 annotations = null;
@@ -629,7 +629,7 @@ namespace Assets.Code.AsSyntax
             return 0;
         } 
     
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             return new Pred(this, u);
         }
@@ -661,7 +661,7 @@ namespace Assets.Code.AsSyntax
             return this;
         }
         
-        public override ITerm Capply(Unifier u)
+        public override ITerm CApply(Unifier u)
         {
             return this;
         }
