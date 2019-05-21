@@ -217,7 +217,8 @@ namespace Assets.Code.AsSyntax
             return p;
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             Plan p = new Plan();
             if (label != null)

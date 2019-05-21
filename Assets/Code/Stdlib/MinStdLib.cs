@@ -79,7 +79,7 @@ namespace Assets.Code.Stdlib
                     min = t;
                 }
             }
-            return un.Unifies(args[1], min.Clone());
+            return un.Unifies(args[1], (ITerm)min.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
         }
 
         protected virtual bool Compare(ITerm a, ITerm t)

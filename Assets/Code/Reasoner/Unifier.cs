@@ -356,7 +356,7 @@ namespace Assets.Code.ReasoningCycle
             IListTerm tail = lf;
             foreach (VarTerm k in function.Keys)
             {
-                ITerm vl = function[k].Clone();
+                ITerm vl = (ITerm)function[k].Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 if (vl is Literal) ((Literal)vl).MakeVarsAnnon();
                 // Variable must be changed to avoid cyclic references later
                 Structure pair = AsSyntax.AsSyntax.CreateStructure("dictionary", UnnamedVar.Create(k.ToString()), vl);
@@ -375,7 +375,7 @@ namespace Assets.Code.ReasoningCycle
                 ITerm kValue = u.function[k];
                 // Current unifier has the new var
                 if (current != null && (current.IsVar() || kValue.IsVar())) Unifies(kValue, current);
-                else function.Add((VarTerm)k.Clone(), kValue.Clone());
+                else function.Add((VarTerm)k.Clone(), (ITerm)kValue.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             }
         }
 

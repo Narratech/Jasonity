@@ -103,7 +103,8 @@ namespace Assets.Code.AsSyntax
             return base.CompareTo(t);
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             Literal l = new LiteralImpl(this);
             l.hashCodeCache = hashCodeCache;

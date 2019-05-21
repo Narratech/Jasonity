@@ -53,7 +53,7 @@ namespace Assets.Code.Stdlib
             IListTerm result = new ListTermImpl();
             IListTerm tail = result;
             foreach (ITerm t in set)
-                tail = tail.Append(t.Clone());
+                tail = tail.Append((ITerm)t.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             return result;
         }
     }

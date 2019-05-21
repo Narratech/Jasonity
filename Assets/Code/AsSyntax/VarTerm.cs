@@ -79,10 +79,11 @@ namespace Assets.Code.AsSyntax
                     return vl;
                 }
             }
-            return Clone();
+            return (ITerm)Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             return new VarTerm(this.GetNS(), this);
         }

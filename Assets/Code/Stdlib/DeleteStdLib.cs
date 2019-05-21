@@ -85,7 +85,7 @@ namespace Assets.Code.Stdlib
                 }
                 else
                 {
-                    last = last.Append(t.Clone());
+                    last = last.Append((ITerm)t.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 }
             }
             return r;
@@ -100,7 +100,7 @@ namespace Assets.Code.Stdlib
             {
                 if (i < index || i>= end)
                 {
-                    last = last.Append(t.Clone());
+                    last = last.Append((ITerm)t.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 }
                 i++;
             }

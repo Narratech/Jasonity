@@ -32,9 +32,10 @@ namespace Assets.Code.AsSyntax
             return value;
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
-            return this;
+            return this; // Uy, que peligroso es no clonar sino devolver lo mismo. Hacer aunque sea un wisemember clone...
         }
 
         public override bool IsNumeric()

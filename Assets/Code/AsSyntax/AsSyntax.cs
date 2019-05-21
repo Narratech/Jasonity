@@ -129,7 +129,7 @@ namespace Assets.Code.AsSyntax
             IListTerm tail = l;
             foreach (ITerm t in terms)
             {
-                tail = tail.Append(t.Clone());
+                tail = tail.Append((ITerm)t.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             }
             return l;
         }

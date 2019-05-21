@@ -81,7 +81,7 @@ namespace Assets.Code.Stdlib
                 // first execution of while
                 CheckArguments(args);
                 // add backup unifier in the IA
-                whileia = new PlanBodyImpl(BodyType.Body_Type.internalAction, whileia.GetBodyTerm().Clone());
+                whileia = new PlanBodyImpl(BodyType.Body_Type.internalAction, (ITerm)whileia.GetBodyTerm().Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 whileia.Add(ip.GetCurrentStep().GetBodyNext());
                 ((Structure)whileia.GetBodyTerm()).AddTerm(new ObjectTermImpl(un.Clone()));
             }

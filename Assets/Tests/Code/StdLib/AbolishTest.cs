@@ -39,6 +39,7 @@ namespace Tests
             // Use the Assert class to test conditions
             AbolishStdLib asl = new AbolishStdLib();
             asl.Execute(new Reasoner(new Agent(), new Circumstance(), new AgentArchitecture(), new Settings()), new Unifier(), vector);
+            // Uff, aquí es que se crean muchas cosas... es mejor empezar probando a meter nulls donde se pueda
 
         }
     }

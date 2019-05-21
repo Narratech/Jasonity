@@ -269,9 +269,15 @@ namespace Assets.Code.AsSyntax
             return c;
         }
 
-        public new IPlanBody Clone()
+        /* Tal vez este sea un punto importante donde implementar el clone (no hace falta optar por usar el clone superficial de C# porque aquí se especifica cómo se hace el Clone)
+        public override ITerm Clone()
         {
-            PlanBodyImpl c = term == null ? new PlanBodyImpl() : new PlanBodyImpl(formType, term.Clone(), isTerm);
+            return (ITerm)MemberwiseClone();
+        } */
+
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone() { // En vez de devolver IPlanBody podría devolver algo más genérico como ITerm... seguramente necesitaría ambas versiones de Clone, no sé
+            PlanBodyImpl c = term == null ? new PlanBodyImpl() : new PlanBodyImpl(formType, (ITerm)term.Clone(), isTerm); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             c.isTerm = isTerm;
             if (next != null)
             {
@@ -280,7 +286,7 @@ namespace Assets.Code.AsSyntax
             return c;
         }
 
-        public IPlanBody ClonePB() => Clone();
+        public IPlanBody ClonePB() => (IPlanBody)Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
 
         public new ITerm CloneNS(Atom Newnamespace)
         {
@@ -426,10 +432,8 @@ namespace Assets.Code.AsSyntax
 
       
 
-        ITerm ITerm.Clone()
-        {
-            throw new NotImplementedException();
-        }
+
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {

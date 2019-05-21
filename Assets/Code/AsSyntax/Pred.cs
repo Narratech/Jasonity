@@ -260,7 +260,7 @@ namespace Assets.Code.AsSyntax
                 while (en.MoveNext())
                 {
                     ITerm t = en.Current;
-                    if (AddAnnot(t.Clone()))
+                    if (AddAnnot((ITerm)t.Clone())) // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                     {
                         imported = true;
                     }
@@ -414,7 +414,7 @@ namespace Assets.Code.AsSyntax
                             pAnnotsTail = (IListTerm)u.Get(pTail);
                         }
                     }
-                    pAnnotsTail.Add(annot.Clone());
+                    pAnnotsTail.Add((ITerm)annot.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                     ok = true;
                 }
                 if (!ok)
@@ -634,7 +634,8 @@ namespace Assets.Code.AsSyntax
             return new Pred(this, u);
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             return new Pred(this);
         }
@@ -656,7 +657,8 @@ namespace Assets.Code.AsSyntax
         {
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             return this;
         }

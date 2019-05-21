@@ -34,7 +34,7 @@ namespace Assets.Code.AsSyntax
                 terms = new List<ITerm>(tss);
                 for (int i = 0; i < tss; i++)
                 {
-                    terms.Add(l.GetTerm(i).Clone());
+                    terms.Add((ITerm)l.GetTerm(i).Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 }
             }
         }
@@ -52,7 +52,7 @@ namespace Assets.Code.AsSyntax
                 terms = new List<ITerm>(tss);
                 for (int i = 0; i < tss; i++)
                 {
-                    terms.Add(l.GetTerm(i).Clone());
+                    terms.Add((ITerm)l.GetTerm(i).Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 }
             }
             ResetHashCodeCache();
@@ -176,7 +176,8 @@ namespace Assets.Code.AsSyntax
             return new Structure(this, u);
         }
 
-        public override ITerm Clone() //i dont know if this is override or not yay again
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone() 
         {
             Structure s = new Structure(this);
             s.hashCodeCache = this.hashCodeCache;

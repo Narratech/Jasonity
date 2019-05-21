@@ -731,7 +731,9 @@ namespace Assets.Code.AsSyntax
             }
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner override object Clone()
+        // Una softcopy
+        public override object Clone()
         {
             return (ITerm)MemberwiseClone();
         }

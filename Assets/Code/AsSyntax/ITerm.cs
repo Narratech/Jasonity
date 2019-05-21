@@ -18,9 +18,9 @@ namespace Assets.Code.AsSyntax { // Change to Narratech.Jasonity.AsSyntax
     /**
      * Common interface for all kind of terms.
      */
-    public interface ITerm: IEquatable<ITerm>, IComparable<ITerm>, IComparable {
-        // Not only IComparable<ITerm> interface is needed, but also IEquatable<ITerm> and IComparable. 
-        // Indeed more interfaces should be implemented: something similar to Java Cloneable, Serializable and ToDOM
+    public interface ITerm: IEquatable<ITerm>, IComparable<ITerm>, IComparable, ICloneable {
+        // Not only IComparable<ITerm> interface is needed, but also IEquatable<ITerm> and IComparable. And also ICloneable... which is not a good interface in C#
+        // Indeed more interfaces should be implemented: something similar to Java ToDOM... and ISerializable (only if the class needs control over the serialization process)
 
         /* Returns true only if this term is a variable (or a variable term?). */
         bool IsVar();
@@ -88,7 +88,7 @@ namespace Assets.Code.AsSyntax { // Change to Narratech.Jasonity.AsSyntax
         void CountVars(Dictionary<VarTerm, int?> c);
 
         /*
-         * Clone this term. We have to implement a ICloneable or even our own IDeepCloneable interface!
+         * Returns a clone of this term. We have to implement a ICloneable or even our own IDeepCloneable interface!
          */
         //ITerm Clone();
 
@@ -104,19 +104,19 @@ namespace Assets.Code.AsSyntax { // Change to Narratech.Jasonity.AsSyntax
         */
         bool Subsumes(ITerm l);
 
-        /** 
+        /* 
          * There is no apply method, which replaces variables by their values in the unifier, returning true if some variable was applied 
          */
         //public bool Apply(Unifier u);
         
-        /** 
+        /* 
          * Returns a clone of this term with changes applied (it replaces variables by their value in the unifier), both operations together.
          * This double operation should be faster than 'Clone' and then 'Apply'. 
          * u - The unifier
          */
         ITerm CApply(Unifier u);
 
-        /** 
+        /* 
          * Returns a clone of this term in another namespace. 
          * ns - The new namespace
          */
@@ -126,13 +126,13 @@ namespace Assets.Code.AsSyntax { // Change to Narratech.Jasonity.AsSyntax
         // These two methods should be transformed in a single property
         //object SrcInfo { get; set;  }
 
-        /** 
+        /* 
          * Sets the source info of this term. 
          * s - The source info
          */  
         void SetSrcInfo(SourceInfo s);
 
-        /** 
+        /* 
           * Gets the source info of this term. 
           */
         SourceInfo GetSrcInfo();

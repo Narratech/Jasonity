@@ -106,7 +106,8 @@ public class RelExpr : BinaryStructure, ILogicalFormula
     public override ITerm CApply(Unifier u) => new RelExpr(GetTerm(0).CApply(u), op, GetTerm(1).CApply(u));
 
     // Make a hard copy of the terms
-    public new ILogicalFormula Clone() => new RelExpr(GetTerm(0).Clone(), op, GetTerm(1).Clone());
+    // En vez de new ILogicalFormula Clone() voy a poner override object Clone()
+    public override object Clone() => new RelExpr((ITerm)GetTerm(0).Clone(), op, (ITerm)GetTerm(1).Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
 
     public override ITerm CloneNS(Atom newnamespace) => new RelExpr(GetTerm(0).CloneNS(newnamespace), op, GetTerm(1).CloneNS(newnamespace));
 

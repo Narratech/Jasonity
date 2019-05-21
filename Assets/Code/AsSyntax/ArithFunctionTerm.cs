@@ -92,7 +92,7 @@ namespace Assets.Code.AsSyntax
                     }
                 }
             }
-            return Clone();
+            return (ITerm)Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
         }
 
         public double Solve()
@@ -132,7 +132,8 @@ namespace Assets.Code.AsSyntax
             return "Error in '" + this + "' (" + base.GetErrorMsg() + ")";
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             return new ArithFunctionTerm(this);
         }

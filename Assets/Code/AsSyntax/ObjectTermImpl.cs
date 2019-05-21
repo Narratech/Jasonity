@@ -40,7 +40,8 @@ namespace Assets.Code.AsSyntax
             return false;
         }
 
-        public override ITerm Clone()
+        // En vez de ITerm Clone() voy a poner object Clone()
+        public override object Clone()
         {
             try
             {

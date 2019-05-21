@@ -70,8 +70,8 @@ namespace Assets.Code.AsSyntax
         public new IListTerm Clone()
         {
             ListTermImpl t = new ListTermImpl();
-            if (term != null) t.term = this.term.Clone();
-            if (next != null) t.next = this.next.Clone();
+            if (term != null) t.term = (ITerm) this.term.Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
+            if (next != null) t.next = (ITerm) this.next.Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             t.hashCodeCache = this.hashCodeCache;
             return t;
         }
@@ -87,7 +87,7 @@ namespace Assets.Code.AsSyntax
         {
             ListTermImpl t = new ListTermImpl();
             if (term != null) t.term = this.term;
-            if (next != null) t.next = this.next.Clone();
+            if (next != null) t.next = (ITerm) this.next.Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             return t;
         }
 
@@ -355,13 +355,13 @@ namespace Assets.Code.AsSyntax
             }
             else if (IsTail())
             {
-                r = new ListTermImpl(term.Clone(), r);
+                r = new ListTermImpl((ITerm)term.Clone(), r); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 r.SetTail((VarTerm)next.Clone());
                 return r;
             }
             else
             {
-                return ((ListTermImpl)next).ReverseInternal(new ListTermImpl(term.Clone(), r));
+                return ((ListTermImpl)next).ReverseInternal(new ListTermImpl((ITerm)term.Clone(), r)); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             }
         }
 
@@ -565,7 +565,7 @@ namespace Assets.Code.AsSyntax
             IListTerm tail = result;
             foreach (ITerm t in set)
             {
-                tail = tail.Append(t.Clone());
+                tail = tail.Append((ITerm)t.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
             }
             return result;
         }

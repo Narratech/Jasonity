@@ -68,7 +68,7 @@ namespace Assets.Code.Stdlib
                 if (allsol.Count == 0)
                     return true;
                 iu = allsol.GetEnumerator();
-                foria = new PlanBodyImpl(BodyType.Body_Type.internalAction, foria.GetBodyTerm().Clone());
+                foria = new PlanBodyImpl(BodyType.Body_Type.internalAction, (ITerm)foria.GetBodyTerm().Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 foria.Add(im.GetCurrentStep().GetBodyNext());
                 Structure forstructure = (Structure)foria.GetBodyTerm();
                 forstructure.AddTerm(new ObjectTermImpl(iu));         // store all solutions
