@@ -105,7 +105,7 @@ namespace Tests
         public void ParsePlanBody()
         {
             string pb = "<- .println(hello world)";
-            string pb2 = "<- jejeculo";
+            string pb2 = "<- glhjanusa";
             ITerm t = new Atom(pb);
             IPlanBody planBody = new PlanBodyImpl(BodyType.Body_Type.internalAction, t);
             IPlanBody planBody2 = AsSyntax.ParsePlanBody(pb2);

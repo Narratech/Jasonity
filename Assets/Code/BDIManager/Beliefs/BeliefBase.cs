@@ -31,10 +31,10 @@ namespace BDIManager.Beliefs
             nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);
         }
 
-        public void Init(Agent ag, string[] args)
-        {
-            if (ag != null) { /* logger */}
-        }
+        //public void Init(Agent ag)
+        //{
+        //    if (ag != null) { /* logger */}
+        //}
 
         // Returns the namespaces
         public HashSet<Atom> GetNameSpaces()
