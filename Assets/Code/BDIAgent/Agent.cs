@@ -376,7 +376,8 @@ namespace Assets.Code.BDIAgent
             {
                 iaName = "jason.stdlib" + iaName;
             }
-            InternalAction objIA = internalActions[iaName];
+            InternalAction objIA;
+            internalActions.TryGetValue(iaName, out objIA);
             if (objIA == null)
             {
                 try
@@ -465,7 +466,8 @@ namespace Assets.Code.BDIAgent
             {
                 return null;
             }
-            ArithFunction af = functions[function];
+            ArithFunction af;
+            functions.TryGetValue(function, out af);
             if (af == null || !af.CheckArity(arity))
             {
                 af = FunctionRegister.GetFunction(function, arity);
