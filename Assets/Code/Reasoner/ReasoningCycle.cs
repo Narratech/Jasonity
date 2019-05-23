@@ -138,7 +138,9 @@ namespace Assets.Code.ReasoningCycle
 
         public bool RemoveDesireListener(Desire desire)
         {
-            ICircumstanceListener cl = listenersMap[desire];
+
+            ICircumstanceListener cl;
+            listenersMap.TryGetValue(desire, out cl);
             if (cl != null)
             {
                 circumstance.RemoveEventListener(cl);

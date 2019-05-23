@@ -22,7 +22,8 @@ namespace Assets.Code.ReasoningCycle
 
         public ITerm Get(VarTerm var)
         {
-            ITerm vl = function[var];
+            ITerm vl;
+            function.TryGetValue(var, out vl);
             if (vl != null && vl.IsVar())
             {
                 return Get((VarTerm)vl);
@@ -34,7 +35,8 @@ namespace Assets.Code.ReasoningCycle
         {
             foreach (VarTerm v in function.Keys)
             {
-                ITerm vvl = function[v];
+                ITerm vvl;
+                function.TryGetValue(v, out vvl);
                 if (vvl.Equals(vl)) return v;
             }
             return null;
@@ -127,7 +129,8 @@ namespace Assets.Code.ReasoningCycle
                 if (term.IsVar() && ((Pred)term).HasAnnot())
                 {
                     term = Deref((VarTerm)term); // ???
-                    ITerm termvl = function[(VarTerm)term];
+                    ITerm termvl;
+                    function.TryGetValue((VarTerm)term, out termvl);
                     if (termvl != null && termvl.IsPred())
                     {
                         Pred pvl = (Pred)termvl.Clone();
@@ -138,7 +141,8 @@ namespace Assets.Code.ReasoningCycle
                 if (term2.IsVar() && ((Pred)term2).HasAnnot())
                 {
                     term2 = Deref((VarTerm)term2);
-                    ITerm term2vl = function[(VarTerm)term2];
+                    ITerm term2vl;
+                    function.TryGetValue((VarTerm)term2, out term2vl);
                     if (term2vl != null && term2vl.IsPred())
                     {
                         Pred pvl = (Pred)term2vl.Clone();
@@ -292,12 +296,13 @@ namespace Assets.Code.ReasoningCycle
 
         public VarTerm Deref(VarTerm term)
         {
-            ITerm vl = function[term];
+            ITerm vl;
+            function.TryGetValue(term, out vl);
             VarTerm first = term;
             while (vl != null && term.IsVar())
             {
                 term = (VarTerm)vl;
-                vl = function[term];
+                function.TryGetValue(term, out vl);
             }
             if (first != term)
             {
@@ -356,7 +361,9 @@ namespace Assets.Code.ReasoningCycle
             IListTerm tail = lf;
             foreach (VarTerm k in function.Keys)
             {
-                ITerm vl = (ITerm)function[k].Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
+                ITerm vl;
+                function.TryGetValue(k, out vl);
+                vl.Clone(); // Como uso el Clone de C# lo que clono son object que luego hay que castear...
                 if (vl is Literal) ((Literal)vl).MakeVarsAnnon();
                 // Variable must be changed to avoid cyclic references later
                 Structure pair = AsSyntax.AsSyntax.CreateStructure("dictionary", UnnamedVar.Create(k.ToString()), vl);
@@ -372,7 +379,8 @@ namespace Assets.Code.ReasoningCycle
             foreach (VarTerm k in u.function.Keys)
             {
                 ITerm current = Get(k);
-                ITerm kValue = u.function[k];
+                ITerm kValue;
+                u.function.TryGetValue(k, out kValue);
                 // Current unifier has the new var
                 if (current != null && (current.IsVar() || kValue.IsVar())) Unifies(kValue, current);
                 else function.Add((VarTerm)k.Clone(), (ITerm)kValue.Clone()); // Como uso el Clone de C# lo que clono son object que luego hay que castear...

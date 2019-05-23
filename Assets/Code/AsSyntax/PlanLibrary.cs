@@ -153,7 +153,8 @@ namespace Assets.Code.AsSyntax
             }
             else
             {
-                List<Plan> codesList = relPlans[pte.GetPredicateIndicator()];
+                List<Plan> codesList;
+                relPlans.TryGetValue(pte.GetPredicateIndicator(), out codesList);
                 if (codesList == null)
                 {
                     codesList = new List<Plan>();
@@ -247,7 +248,12 @@ namespace Assets.Code.AsSyntax
         // Returns a plan for a label
         public Plan Get(string label) => Get(new Atom(label));
 
-        private Plan Get(Literal label) => planLabels[GetStringForLabel(label)];
+        private Plan Get(Literal label)
+        {
+            Plan plan;
+            planLabels.TryGetValue(GetStringForLabel(label), out plan);
+            return plan;
+        }
 
         public int Size() => plans.Count;
 

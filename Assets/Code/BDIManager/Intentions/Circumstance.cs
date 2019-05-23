@@ -366,7 +366,8 @@ namespace Assets.Code.BDIManager
 
         public Intention RemovePendingIntention(string pendingID)
         {
-            Intention i = PI[pendingID];
+            Intention i;
+            PI.TryGetValue(pendingID, out i);
             PI.Remove(pendingID);
             if (i != null && i.IsAtomic()) atomicIntSuspended = false;
             return i;
@@ -375,7 +376,8 @@ namespace Assets.Code.BDIManager
         {
             foreach (string key in PI.Keys)
             {
-                Intention pii = PI[key];
+                Intention pii;
+                PI.TryGetValue(key, out pii);
                 if (pii.GetID() == intentionID) return RemovePendingIntention(key);
             }
             return null;
@@ -386,7 +388,8 @@ namespace Assets.Code.BDIManager
         {
             foreach (string key in PI.Keys)
             {
-                Intention pii = PI[key];
+                Intention pii;
+                PI.TryGetValue(key, out pii);
                 if (pii.Equals(i))
                 {
                     RemovePendingIntention(key);
@@ -428,7 +431,8 @@ namespace Assets.Code.BDIManager
 
         public Event RemovePendingEvent(string pendingID)
         {
-            Event e = PE[pendingID];
+            Event e;
+            PE.TryGetValue(pendingID, out e);
             PE.Remove(pendingID);
             if (e != null && listeners != null && e.GetIntention() != null)
                 foreach (ICircumstanceListener el in listeners)
@@ -509,7 +513,8 @@ namespace Assets.Code.BDIManager
 
         public ExecuteAction RemovePendingAction(int intentionID)
         {
-            ExecuteAction a = PA[intentionID];
+            ExecuteAction a;
+            PA.TryGetValue(intentionID, out a);
             PA.Remove(intentionID);
             if (a != null && a.GetIntention().IsAtomic()) atomicIntSuspended = false;
             return a;
@@ -576,11 +581,23 @@ namespace Assets.Code.BDIManager
             foreach (Message m in MB)
                 c.MB.Enqueue(m.Clone());
             foreach (int k in PA.Keys)
-                c.PA.Add(k, PA[k].Clone());
+            {
+                ExecuteAction aux;
+                PA.TryGetValue(k, out aux);
+                c.PA.Add(k, aux.Clone());
+            }
             foreach (string k in PI.Keys)
-                c.PI.Add(k, PI[k].Clone());
+            {
+                Intention aux;
+                PI.TryGetValue(k, out aux);
+                c.PI.Add(k, aux.Clone());
+            }
             foreach (string k in PE.Keys)
-                c.PE.Add(k, PE[k].Clone());
+            {
+                Event aux;
+                PE.TryGetValue(k, out aux);
+                c.PE.Add(k, aux.Clone());
+            }
             foreach (ExecuteAction ae in FA)
                 c.FA.Add(ae.Clone());
             return c;
