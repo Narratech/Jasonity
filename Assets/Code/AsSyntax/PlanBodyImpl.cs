@@ -469,6 +469,7 @@ namespace Assets.Code.AsSyntax
         public class BodyType : PlanBodyImpl
         {
             public enum Body_Type{
+
                 none,
                 action,
                 internalAction,

@@ -48,36 +48,27 @@ namespace Assets.Code.BDIAgent
         }
 
 
-        public static Agent Create(AgentArchitecture agArch, string agClass, ClassParameters bbPars, string asSrc, Settings stts)  
+        public static Agent Create(AgentArchitecture agArch, string asSrc, Settings stts)  
         {
             try
             {
-                //Agent ag = (Agent) Class.forName(agClass).newInstance(); //???
                 Agent ag = new Agent();
                 Reasoner r = new Reasoner(ag, null, agArch, stts);
                 BeliefBase bb = null;
-                if (bbPars == null)
-                {
-                    bb = new BeliefBase();
-                } else
-                {
-                    //bb = (BeliefBase) Class.forName(bbPars.getClassName()).newInstance();
-                }
+                bb = new BeliefBase();
+                
 
                 ag.SetBB(bb);
                 ag.InitAg();
 
-                if (bbPars != null)
-                {
-                    bb.Init(ag, bbPars.GetParametersArray());
-                }
-
+                //bb.Init(ag);
+                
                 ag.Load(asSrc);
                 return ag;
             }
             catch (Exception e)
             {
-                throw new JasonityException("as2j: error creating the customised Agent class! - " + agClass, e);
+                throw new JasonityException(e.Message);
             }
         }
 
@@ -128,7 +119,7 @@ namespace Assets.Code.BDIAgent
 
                     if (asSrc.StartsWith(SourcePath.CRPrefix))
                     {
-                        ParseAs(GetResource(asSrc.Substring(SourcePath.CRPrefix.Length)), asSrc); //I don't know what this is
+                        ParseAs(GetResource(asSrc.Substring(SourcePath.CRPrefix.Length)), asSrc);
                     }
                     else
                     {
@@ -376,7 +367,8 @@ namespace Assets.Code.BDIAgent
             {
                 iaName = "jason.stdlib" + iaName;
             }
-            InternalAction objIA = internalActions[iaName];
+            InternalAction objIA;
+            internalActions.TryGetValue(iaName, out objIA);
             if (objIA == null)
             {
                 try
@@ -465,7 +457,8 @@ namespace Assets.Code.BDIAgent
             {
                 return null;
             }
-            ArithFunction af = functions[function];
+            ArithFunction af;
+            functions.TryGetValue(function, out af);
             if (af == null || !af.CheckArity(arity))
             {
                 af = FunctionRegister.GetFunction(function, arity);
@@ -503,10 +496,10 @@ namespace Assets.Code.BDIAgent
             {
                 try
                 {
-                    foreach (ITerm t in AsSyntax.AsSyntax.ParseList("[" + sBels + "]"))
-                    {
-                        AddInitBel(((Literal)t).ForceFullLiteralImpl());
-                    }
+                    //foreach (ITerm t in AsSyntax.AsSyntax.ParseList("[" + sBels + "]"))
+                    //{
+                    //    AddInitBel(((Literal)t).ForceFullLiteralImpl());
+                    //}
                 }
                 catch (Exception e)
                 {

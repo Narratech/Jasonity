@@ -85,3 +85,11 @@ The following packages were removed:
   com.unity.test-framework@1.0.12
   com.unity.xr.legacyinputhelpers@2.0.2
   com.unity.modules.androidjni@1.0.0
+
+=== Fri May 24 09:51:59 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.xr.legacyinputhelpers@2.0.2

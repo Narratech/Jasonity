@@ -31,10 +31,10 @@ namespace BDIManager.Beliefs
             nameSpaces.Add(Literal.DefaultNS, belsMapDefaultNS);
         }
 
-        public void Init(Agent ag, string[] args)
-        {
-            if (ag != null) { /* logger */}
-        }
+        //public void Init(Agent ag)
+        //{
+        //    if (ag != null) { /* logger */}
+        //}
 
         // Returns the namespaces
         public HashSet<Atom> GetNameSpaces()
@@ -114,7 +114,7 @@ namespace BDIManager.Beliefs
             Dictionary<PredicateIndicator, BelEntry> belsMap = belsMapDefaultNS;
             if (l.GetNS() != Literal.DefaultNS)
             {
-                belsMap = nameSpaces[l.GetNS()];
+                nameSpaces.TryGetValue(l.GetNS(), out belsMap);
                 if (belsMap == null)
                 {
                     belsMap = new Dictionary<PredicateIndicator, BelEntry>();
@@ -157,7 +157,9 @@ namespace BDIManager.Beliefs
             }
             else
             {
-                Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : nameSpaces[l.GetNS()];
+                Dictionary<PredicateIndicator, BelEntry> aux;
+                nameSpaces.TryGetValue(l.GetNS(), out aux);
+                Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : aux;
                 PredicateIndicator key = l.GetPredicateIndicator();
                 BelEntry entry = belsMap[key];
                 entry.Remove(l);
@@ -178,9 +180,12 @@ namespace BDIManager.Beliefs
 
         public bool Abolish(Atom nameSpace, PredicateIndicator pi)
         {
-            
-            BelEntry entry = nameSpaces[nameSpace][pi];
-            nameSpaces[nameSpace].Remove(pi);
+            Dictionary<PredicateIndicator, BelEntry> aux;
+            nameSpaces.TryGetValue(nameSpace, out aux);
+            BelEntry entry;
+            aux.TryGetValue(pi, out entry);
+            nameSpaces.TryGetValue(nameSpace, out aux);
+            aux.Remove(pi);
             if (entry != null)
             {
                 size -= entry.Size();
@@ -198,7 +203,9 @@ namespace BDIManager.Beliefs
         // Checks if the belief base contains a specific literal
         public Literal Contains(Literal l)
         {
-            Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : nameSpaces[l.GetNS()];
+            Dictionary<PredicateIndicator, BelEntry> aux;
+            nameSpaces.TryGetValue(l.GetNS(), out aux);
+            Dictionary<PredicateIndicator, BelEntry> belsMap = l.GetNS() == Literal.DefaultNS ? belsMapDefaultNS : aux;
             if (belsMap == null)
             {
                 return null;
@@ -216,7 +223,8 @@ namespace BDIManager.Beliefs
 
         public IEnumerator<Literal> GetCandidateBeliefs(PredicateIndicator pi)
         {
-            Dictionary<PredicateIndicator, BelEntry> pi2entry = nameSpaces[pi.GetNS()];
+            Dictionary<PredicateIndicator, BelEntry> pi2entry;
+            nameSpaces.TryGetValue(pi.GetNS(), out pi2entry);
             if (pi2entry == null) return null;
 
             BelEntry entry = pi2entry[pi];
@@ -239,7 +247,7 @@ namespace BDIManager.Beliefs
                         ns = l.GetNS();
                     }
                     if (ns.IsVar()) return GetEnumerator();
-                    belsMap = nameSpaces[ns];
+                    nameSpaces.TryGetValue(ns, out belsMap);
                 }
                 if (belsMap == null) return null;
                 BelEntry entry = belsMap[l.GetPredicateIndicator()];

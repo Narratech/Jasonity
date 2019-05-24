@@ -61,12 +61,12 @@ namespace Assets.Code.Infra
          * jason.architecture.AgArch. The arch will create the agent that creates
          * the TS.
          */
-        public void CreateArchs(List<string> agArchClasses, string agClass, ClassParameters bbPars, string asSrc, Settings stts, BaseCentralisedMAS masRunner)
+        public void CreateArchs(List<string> agArchClasses, string asSrc, Settings stts, BaseCentralisedMAS masRunner)
         {
             try
             {
                     this.masRunner = masRunner;
-                    Agent.Create(this, agClass, bbPars, asSrc, stts);
+                    Agent.Create(this, asSrc, stts);
                     InsertAgentArchitecture(this);
 
                     CreateCustomArchs(agArchClasses);

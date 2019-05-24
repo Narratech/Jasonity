@@ -20,7 +20,6 @@ namespace Assets.Code.AsSyntax { // Change to Narratech.Jasonity.AsSyntax
      *
      * (this class may be renamed to AbstractTerm in the future, so avoid using it -- use ASSyntax class to create new terms)
      */
-    [Serializable]
     public abstract class DefaultTerm: ITerm {
 
         // Cached hash code for not recalculating it

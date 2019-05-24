@@ -258,7 +258,10 @@ namespace Assets.Code.Runtime
 
         public string GetUserParameter(string key)
         {
-            string vl = (string)userParameters[key];
+            object aux;
+            string vl;
+            userParameters.TryGetValue(key, out aux);
+            vl = (string)aux;
             if (vl != null && vl.StartsWith("\"") && vl.EndsWith("\""))
             {
                 vl = vl.Substring(1, vl.Length - 1);
