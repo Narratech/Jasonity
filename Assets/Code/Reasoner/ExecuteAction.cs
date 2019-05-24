@@ -6,7 +6,6 @@ using BDIManager.Intentions;
 
 namespace BDIMaAssets.Code.ReasoningCycle
 {
-    [Serializable]
     public class ExecuteAction
     {
         private Literal action;

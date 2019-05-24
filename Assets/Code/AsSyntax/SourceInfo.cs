@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.AsSyntax
 {
-    [Serializable]
     public class SourceInfo
     {
         private readonly string source;
