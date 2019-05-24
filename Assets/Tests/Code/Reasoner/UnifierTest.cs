@@ -25,13 +25,14 @@ namespace Tests
         [Test]
         public void GetStringTest()
         {
-            //Tengo probar con el diccionario function pero no me deja tocarlo
             un.function.Add(new VarTerm("key"), new VarTerm("value"));
-            string v = "key";
+            string s = "key";
 
-            ITerm resultado = un.Get(v);
+            ITerm resultado = un.Get(s);
 
-            Assert.AreEqual("value", resultado);
+            VarTerm v = new VarTerm("value");
+
+            Assert.AreEqual(v, resultado);
         }
 
         [Test]
@@ -58,12 +59,15 @@ namespace Tests
         [Test]
         public void GetVarTermTest()
         {
-            //Tengo probar con el diccionario function pero no me deja tocarlo
             un.function.Add(new VarTerm("key"), new VarTerm("value"));
 
-            string v = "value";
+            VarTerm k = new VarTerm("key");
 
-            Assert.AreEqual();
+            VarTerm v = new VarTerm("value");
+
+            ITerm resultado = un.Get(k);
+
+            Assert.AreEqual(v, resultado);
         }
 
         [Test]
@@ -72,11 +76,13 @@ namespace Tests
             //Tengo probar con el diccionario function pero no me deja tocarlo
             un.function.Add(new VarTerm("key"), new VarTerm("value"));
 
-            ITerm t = new VarTerm("value");
+            ITerm v = new VarTerm("value");
 
-            VarTerm resultado = un.GetVarFromValue(t);
+            ITerm k = new VarTerm("key");
 
-            Assert.AreEqual("key", resultado);
+            VarTerm resultado = un.GetVarFromValue(v);
+
+            Assert.AreEqual(k, resultado);
         }
 
         [Test]
@@ -92,6 +98,7 @@ namespace Tests
         [Test]
         public void UnifiesNoUndoTriggerTest()
         {
+            //HACER pruebas mas severas
             Trigger t = new Trigger(TEOperator.add, TEType.belief, new LiteralImpl("literal"));
 
             bool resultado = un.UnifiesNoUndo(t, t);
@@ -112,7 +119,6 @@ namespace Tests
         [Test]
         public void CloneFunctionTest()
         {
-            //Comprobar que el clon es igual que el diccionario functions al que no me deja acceder
             Dictionary<VarTerm, ITerm> diccionario = un.CloneFunction();
 
             Assert.AreEqual(diccionario, un.function);
@@ -145,20 +151,23 @@ namespace Tests
         [Test]
         public void DerefTest()
         {
-            //Necesito el diccionario function de Unifier que no me deja tocarlo
-            VarTerm v = new VarTerm("variable");
+            un.function.Add(new VarTerm("key"), new VarTerm("value"));
 
-            VarTerm resultado = un.Deref(v);
+            VarTerm v = new VarTerm("key");
 
-            Assert.AreEqual();
+            VarTerm funcion = un.Deref(v);
+
+            bool resultado = un.function.ContainsKey(v);
+
+            Assert.AreEqual(true, resultado);
         }
 
         [Test]
         public void BindTest()
         {
-            VarTerm v = new VarTerm("variable");
-            ITerm t = new VarTerm("termino");
-
+            VarTerm v = new VarTerm("key");
+            ITerm t = new LiteralImpl(false, "value");
+            
             bool resultado = un.Bind(v, t);
 
             Assert.AreEqual(true, resultado);
@@ -176,17 +185,13 @@ namespace Tests
         [Test]
         public void ClearTest()
         {
-            //Clear del diccionario function que no me deja tocar
+            un.function.Add(new VarTerm("key"), new VarTerm("value"));
 
-            Assert.AreEqual();
-        }
+            un.Clear();
 
-        [Test]
-        public void ToStringTest()
-        {
-            //ToString del diccionario function que no me deja tocar
+            bool resultado = un.function.ContainsKey(new VarTerm("key"));
 
-            Assert.AreEqual();
+            Assert.AreEqual(false, resultado);
         }
 
         [Test]
@@ -201,44 +206,46 @@ namespace Tests
         [Test]
         public void SizeTest()
         {
-            //Count a diccionario function que no me deja tocar
-            Assert.AreEqual();
-        }
+            un.function.Add(new VarTerm("key1"), new VarTerm("value1"));
+            un.function.Add(new VarTerm("key2"), new VarTerm("value2"));
+            un.function.Add(new VarTerm("key3"), new VarTerm("value3"));
 
-        [Test]
-        public void ComposeTest()
-        {
-            Assert.AreEqual();
+            int resultado = un.Size();
+
+            Assert.AreEqual(3, resultado);
         }
 
         [Test]
         public void CloneTest()
         {
-            Assert.AreEqual();
-        }
+            Unifier resultado = un.Clone();
 
-        [Test]
-        public void HashCodeTest()
-        {
-            Assert.AreEqual();
+            Assert.AreEqual(un, resultado);
         }
 
         [Test]
         public void EqualsTest()
         {
-            Assert.AreEqual();
+            Unifier unifier = new Unifier();
+
+            un.function.Add(new VarTerm("key1"), new VarTerm("value1"));
+            unifier.function.Add(new VarTerm("key1"), new VarTerm("value1"));
+
+            bool resultado = un.Equals(unifier);
+
+            Assert.AreEqual(true, resultado);
         }
 
         [Test]
         public void SetDictionaryTest()
         {
-            Assert.AreEqual();
-        }
+            Dictionary<VarTerm, ITerm> diccionario = new Dictionary<VarTerm, ITerm>();
 
-        [Test]
-        public void GetFunctionTest()
-        {
-            Assert.AreEqual();
+            diccionario.Add(new VarTerm("key1"), new VarTerm("value1"));
+
+            un.SetDictionary(diccionario);
+
+            Assert.AreEqual(un, diccionario);
         }
 
         [Test]

@@ -12,7 +12,6 @@ namespace Assets.Code.ReasoningCycle
     {
         public Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
 
-
         // Gets the value for a variable
         // If it is unified with another variable, gets that value
         public ITerm Get(string var) => Get(new VarTerm(var));
@@ -62,7 +61,7 @@ namespace Assets.Code.ReasoningCycle
             }
         }
 
-        private Dictionary<VarTerm, ITerm> CloneFunction()
+        public Dictionary<VarTerm, ITerm> CloneFunction()
         {
             Dictionary<VarTerm, ITerm> clone = new Dictionary<VarTerm, ITerm>(function);
             return clone;
@@ -282,7 +281,7 @@ namespace Assets.Code.ReasoningCycle
             return true;
         }
 
-        private bool UnifiesNamespace(Literal t1s, Literal t2s)
+        public bool UnifiesNamespace(Literal t1s, Literal t2s)
         {
             // If both are the default NS
             if (t1s == Literal.DefaultNS && t2s == Literal.DefaultNS) return true;
