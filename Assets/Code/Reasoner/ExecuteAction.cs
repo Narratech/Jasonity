@@ -14,6 +14,7 @@ namespace BDIMaAssets.Code.ReasoningCycle
         private Literal failureReason;
         private string failureMsg;
 
+
         public ExecuteAction(Literal ac, Intention i)
         {
             action = ac;

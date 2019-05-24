@@ -8,13 +8,12 @@ namespace Tests
     [TestFixture]
     public class UnifierTest
     {
-
+        private Unifier un; 
 
         [SetUp] // El @Before de Java
         public void SetUp()
         {
-
-
+            un = new Unifier();
         }
 
         [TearDown] // El @After de Java (ahora mismo no lo estoy usando)
@@ -27,11 +26,10 @@ namespace Tests
         public void GetStringTest()
         {
             //Tengo probar con el diccionario function pero no me deja tocarlo
-            Unifier.function.Add(new VarTerm("key"), new VarTerm("value"));
-
+            un.function.Add(new VarTerm("key"), new VarTerm("value"));
             string v = "key";
 
-            ITerm resultado = Unifier.Get(v);
+            ITerm resultado = un.Get(v);
 
             Assert.AreEqual("value", resultado);
         }
@@ -52,7 +50,7 @@ namespace Tests
         public void EnumeratorTest()
         {
             //No se que debería devolver el GetEnumerator de function.Key
-            IEnumerator<VarTerm> e = Unifier.Enumerator();
+            IEnumerator<VarTerm> e = un.Enumerator();
 
             Assert.AreEqual();
         }
@@ -61,7 +59,7 @@ namespace Tests
         public void GetVarTermTest()
         {
             //Tengo probar con el diccionario function pero no me deja tocarlo
-            Unifier.function.Add(new VarTerm("key"), new VarTerm("value"));
+            un.function.Add(new VarTerm("key"), new VarTerm("value"));
 
             string v = "value";
 
@@ -72,11 +70,11 @@ namespace Tests
         public void GetVarFromValueTest()
         {
             //Tengo probar con el diccionario function pero no me deja tocarlo
-            Unifier.function.Add(new VarTerm("key"), new VarTerm("value"));
+            un.function.Add(new VarTerm("key"), new VarTerm("value"));
 
             ITerm t = new VarTerm("value");
 
-            VarTerm resultado = Unifier.GetVarFromValue(t);
+            VarTerm resultado = un.GetVarFromValue(t);
 
             Assert.AreEqual("key", resultado);
         }
@@ -86,7 +84,7 @@ namespace Tests
         {
             Trigger t = new Trigger(TEOperator.add, TEType.belief, new LiteralImpl("literal"));
 
-            bool resultado = Unifier.Unifies(t, t);
+            bool resultado = un.Unifies(t, t);
 
             Assert.AreEqual(true, resultado);
         }
@@ -96,7 +94,7 @@ namespace Tests
         {
             Trigger t = new Trigger(TEOperator.add, TEType.belief, new LiteralImpl("literal"));
 
-            bool resultado = Unifier.UnifiesNoUndo(t, t);
+            bool resultado = un.UnifiesNoUndo(t, t);
 
             Assert.AreEqual(true, resultado);
         }
@@ -106,7 +104,7 @@ namespace Tests
         {
             ITerm t = null;
 
-            bool resultado = Unifier.Unifies(t, t);
+            bool resultado = un.Unifies(t, t);
 
             Assert.AreEqual(true, resultado);
         }
@@ -115,9 +113,9 @@ namespace Tests
         public void CloneFunctionTest()
         {
             //Comprobar que el clon es igual que el diccionario functions al que no me deja acceder
-            Dictionary<VarTerm, ITerm> diccionario = Unifier.CloneFunction();
+            Dictionary<VarTerm, ITerm> diccionario = un.CloneFunction();
 
-            Assert.AreEqual(diccionario, Unifier.function);
+            Assert.AreEqual(diccionario, un.function);
         }
 
 
@@ -139,7 +137,7 @@ namespace Tests
         public void UnifiesNamespaceTest()
         {
             Literal l = new LiteralImpl("literal");
-            bool resultado = Unifier.UnifiesNamespace(l, l);
+            bool resultado = un.UnifiesNamespace(l, l);
 
             Assert.AreEqual(true, resultado);
         }
@@ -150,7 +148,7 @@ namespace Tests
             //Necesito el diccionario function de Unifier que no me deja tocarlo
             VarTerm v = new VarTerm("variable");
 
-            VarTerm resultado = Unifier.Deref(v);
+            VarTerm resultado = un.Deref(v);
 
             Assert.AreEqual();
         }
@@ -161,7 +159,7 @@ namespace Tests
             VarTerm v = new VarTerm("variable");
             ITerm t = new VarTerm("termino");
 
-            bool resultado = Unifier.Bind(v, t);
+            bool resultado = un.Bind(v, t);
 
             Assert.AreEqual(true, resultado);
         }
@@ -170,7 +168,7 @@ namespace Tests
         public void GetVarForUnifierTest()
         {
             //Funcion mal hecha
-            VarTerm v = Unifier.GetVarForUnifier(new VarTerm("term"));
+            VarTerm v = un.GetVarForUnifier(new VarTerm("term"));
 
             Assert.AreEqual();
         }
@@ -194,7 +192,7 @@ namespace Tests
         [Test]
         public void GetAsTermTest()
         {
-            ITerm resultado = Unifier.GetAsTerm();
+            ITerm resultado = un.GetAsTerm();
 
             //Tiene que hacer esto?
             Assert.AreEqual(new ListTermImpl(), resultado);

@@ -142,7 +142,7 @@ namespace Assets.Code.AsSyntax
         }
 
         // A lo mejor debería llamarse GetHashCode directamente...
-        public override int CalcHashCode()
+        public override int CalcHashCode() //Bucle infinito. 
         {
             // ToString para evitar llamadas circulares a CalcHashCode de Atom
             //En lugar de 31 debería estar el ns.GetHashCode() pero se mete en llamadas recursivas y da un stack overflow

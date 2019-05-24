@@ -23,7 +23,7 @@
         //public static readonly literal sleeplighton = assyntax.parseliteral("sleep_light_on(lightonagent)");
         //public static readonly literal sleeplightoff = assyntax.parseliteral("sleep_light_off(lightoffagent)");
 
-        //public Agent bob; //aqui de alguna manera creo un agente que diga hola
+        public Agent bob; //aqui de alguna manera creo un agente que diga hola
 
         public BeliefBase bb;
         public PlanLibrary pl;
@@ -31,7 +31,7 @@
         // Start is called before the first frame update
         public override void Start()
         {
-            //bob = Agent.Create(new AgentArchitecture(), "", new Runtime.Settings()); //aqui de alguna manera creo un agente que diga hola
+            bob = Agent.Create(new AgentArchitecture(), "", new Runtime.Settings()); //aqui de alguna manera creo un agente que diga hola
             bb = new BeliefBase();
             pl = new PlanLibrary();
             lamp = lightbulb.GetComponent<Lamp>();

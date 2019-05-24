@@ -131,8 +131,8 @@ namespace Assets.Code.AsSyntax { // Change to Narratech.Jasonity.AsSyntax
          */
         public override int GetHashCode()
         {
-            if (hashCodeCache == -1)
-                hashCodeCache = CalcHashCode(); // Not calling base.GetHashCode() but calculating the hash code if it has not been calculated yet
+            if (hashCodeCache == -1) //Bucle infinito
+                hashCodeCache = base.GetHashCode(); //If we calculate the hash code we have infinite loops // Not calling base.GetHashCode() but calculating the hash code if it has not been calculated yet
             return hashCodeCache;
         }
 

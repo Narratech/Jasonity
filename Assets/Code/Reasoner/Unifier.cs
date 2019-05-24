@@ -10,7 +10,8 @@ namespace Assets.Code.ReasoningCycle
 {
     public class Unifier : IEnumerable<VarTerm>
     {
-        Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
+        public Dictionary<VarTerm, ITerm> function = new Dictionary<VarTerm, ITerm>();
+
 
         // Gets the value for a variable
         // If it is unified with another variable, gets that value
