@@ -342,6 +342,7 @@ namespace Assets.Code.ReasoningCycle
         public VarTerm GetVarForUnifier(VarTerm term)
         {
             term = (VarTerm)Deref(term).CloneNS(Literal.DefaultNS);
+            //Esta funcion debe devolver un literal
             term.SetNegated(Literal.LPos);
             return term;
         }
