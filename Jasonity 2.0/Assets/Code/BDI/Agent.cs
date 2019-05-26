@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Assets.Code.BDI
 {
@@ -13,6 +11,9 @@ namespace Assets.Code.BDI
         private string aslSourcePath;
         private Reasoner reasoner;
 
+        private Intention currentPlan;
+        private Desire currentDesire;
+
         public Agent(string name, string asl)
         {
             beliefBase = new List<Belief>();
@@ -22,8 +23,16 @@ namespace Assets.Code.BDI
             aslSourcePath = asl;
             reasoner = new Reasoner();
         }
-        
+
         //Getters and setters for the list
+        public List<Belief> GetBeliefBase() => beliefBase;
+        public void SetBeliefBase(List<Belief> bb) => beliefBase = bb;
+
+        public List<Intention> GetPlanLibrary() => planLibrary;
+        public void SetPlanLibrary(List<Intention> pl) => planLibrary = pl;
+
+        public List<Desire> GetDesires() => desires;
+        public void SetDesires(List<Desire> ds) => desires = ds;
 
         public void Act()
         {
@@ -31,14 +40,18 @@ namespace Assets.Code.BDI
             //Irene will do it
         }
 
+        // Gets the first plan in the list
         public void SelectPlan()
         {
-            //This gets the first plan in the list
+            currentPlan = planLibrary[0];
+            // Should this remove the plan from the list afterwards?
         }
 
+        // Gets the first desire in the list
         public void SelectDesire()
         {
-            //This gets the first desire in the list
+            currentDesire = desires[0];
+            // Same, should this remove the desire afterwards?
         }
 
         public void Perceive(Dictionary<string, string> percept)
@@ -50,11 +63,17 @@ namespace Assets.Code.BDI
         {
             //With the perceptions checks the belief base and deletes the beliefs that are
             //no longer correct and adds the new ones
+
         }
 
+        // Calls the parser and retrieves the lists
         public void Parse()
         {
-            //This calls the parser and retrieves the lists
+            // Call parser somehow
+
+            SetBeliefBase(/*parser*/);
+            SetPlanLibrary(/*parser*/);
+            SetDesires(/*parser*/);
         }
 
         //There are more methods here but we don't know them yet
