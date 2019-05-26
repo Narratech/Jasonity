@@ -21,7 +21,7 @@ namespace Assets.Code.BDI
             desires = new List<Desire>();
             agentName = name;
             aslSourcePath = asl;
-            reasoner = new Reasoner();
+            reasoner = new Reasoner(this);  // We think Reasoner needs an Agent, maybe?
         }
 
         //Getters and setters for the list
@@ -33,6 +33,9 @@ namespace Assets.Code.BDI
 
         public List<Desire> GetDesires() => desires;
         public void SetDesires(List<Desire> ds) => desires = ds;
+
+        public Intention GetCurrentPlan => currentPlan;
+        public Desire GetCurrentDesire => currentDesire;
 
         public void Act()
         {
