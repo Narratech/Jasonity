@@ -3,4 +3,6 @@
 
 +moverALampara : true <- !accionBombilla.
 
-+accionBombilla : light_off(lamp) <- !light_on(lamp).
++accionBombilla : light_off(lamp) 
+	<- !light_on(lamp);
+	+moverPosicionAgenteEncender().
