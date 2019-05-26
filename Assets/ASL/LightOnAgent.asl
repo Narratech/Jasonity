@@ -1,5 +1,6 @@
 +light_off(lamp) : true
-	<- .send(lamp, achive,light_on(lamp)).
+	<- +moverALampara.
 
-//-light_off(lamp) : true
-//  <- .print("Thanks for turn on the lamp!").
++moverALampara : true <- !accionBombilla.
+
++accionBombilla : light_off(lamp) <- !light_on(lamp).
