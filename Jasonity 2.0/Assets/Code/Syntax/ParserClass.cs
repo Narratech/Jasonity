@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pruebas
+namespace Assets.Code.Syntax
 {
     public class ParserClass
     {
@@ -28,12 +28,12 @@ namespace Pruebas
             this.PlansList = new List<Plan>();
         }
 
-        public void Parser()
+        public void Parser(string route)
         {
             int i = 0;
             Dictionary<int, string> data = new Dictionary<int, string>();
 
-            foreach(string line in File.ReadLines(@"E:\VisualStudio\Pruebas\Pruebas\lightoffagent.txt"))
+            foreach(string line in File.ReadLines(@route))
             {
                 //The plan, belief or goal definition ends here
                 if (line.EndsWith("."))

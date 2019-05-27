@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pruebas
+namespace Assets.Code.Syntax
 {
     public class Variable : Term
     {
