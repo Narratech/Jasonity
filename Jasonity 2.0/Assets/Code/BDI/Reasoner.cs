@@ -15,7 +15,6 @@ namespace Assets.Code.BDI
         public void Perceive()
         {
             //Makes the agent perceive the environment
-            ag.GetBeliefBase(); //??
         }
 
         public void UpdateBeliefs()
@@ -30,13 +29,12 @@ namespace Assets.Code.BDI
             //Retrieves the relevant plans, determines the applicable plan
             //Selects one plan. 
 
-            return ag.getCurrentPlan(); ;
+            return ag.GetCurrentPlan(); // ???
         }
 
         public void Act(Intention plan)
         {
             //Gets the plan body of the plan, and enqueues the actions in the executor
-            plan.GetPlanBody();
         }
 
         public void Run()

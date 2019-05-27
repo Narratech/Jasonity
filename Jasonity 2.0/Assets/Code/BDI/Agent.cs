@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Pruebas;
+using System.Collections.Generic;
 
 namespace Assets.Code.BDI
 {
@@ -21,7 +22,8 @@ namespace Assets.Code.BDI
             desires = new List<Desire>();
             agentName = name;
             aslSourcePath = asl;
-            reasoner = new Reasoner(this);  // We think Reasoner needs an Agent, maybe?
+            reasoner = new Reasoner(this);
+            Parse();
         }
 
         //Getters and setters for the list
@@ -34,8 +36,8 @@ namespace Assets.Code.BDI
         public List<Desire> GetDesires() => desires;
         public void SetDesires(List<Desire> ds) => desires = ds;
 
-        public Intention GetCurrentPlan => currentPlan;
-        public Desire GetCurrentDesire => currentDesire;
+        public Intention GetCurrentPlan() => currentPlan;
+        public Desire GetCurrentDesire() => currentDesire;
 
         public void Act()
         {
@@ -44,18 +46,23 @@ namespace Assets.Code.BDI
         }
 
         // Gets the first plan in the list
-        public void SelectPlan()
+        public Intention SelectPlan()
         {
-            currentPlan = planLibrary[0];
-            // Should this remove the plan from the list afterwards?
+            return currentPlan = planLibrary[0];
         }
 
         // Gets the first desire in the list
-        public void SelectDesire()
+        public Desire SelectDesire()
         {
-            currentDesire = desires[0];
+            return currentDesire = desires[0];
             // Same, should this remove the desire afterwards?
         }
+
+        public void RemovePlan(Intention plan) { }
+
+        public void RemoveDesire(Desire desire) { }
+
+        public void RemoveBelief(Belief belief) { }
 
         public void Perceive(Dictionary<string, string> percept)
         {
@@ -73,10 +80,11 @@ namespace Assets.Code.BDI
         public void Parse()
         {
             // Call parser somehow
-
-            SetBeliefBase(/*parser*/);
-            SetPlanLibrary(/*parser*/);
-            SetDesires(/*parser*/);
+            ParserClass parser = new ParserClass();
+            parser.Parser();
+            beliefBase = parser.GetBeliefsList();
+            planLibrary = parser.GetPlansList();
+            desires = parser.GetDesireList();
         }
 
         //There are more methods here but we don't know them yet
