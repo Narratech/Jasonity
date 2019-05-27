@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Pruebas
 {
-    public class Trigger:Literal
+    public class Trigger:Term
     {
+        private Term trigger;
         private readonly char @operator;
 
-        public Trigger(char @operator, bool believes, Literal literal):
-            base(literal.Functor, believes)
+        public Trigger(char @operator, bool believes, Term trigger)
         {
             this.@operator = @operator;
+            this.trigger = trigger;
         }
 
         public override bool IsTrigger()
@@ -22,5 +23,7 @@ namespace Pruebas
         }
 
         public char Operator { get => @operator; }
+
+        public Term Triggerr { get => trigger; }
     }
 }

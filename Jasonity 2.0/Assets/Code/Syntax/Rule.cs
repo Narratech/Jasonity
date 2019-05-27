@@ -10,14 +10,14 @@ namespace Pruebas
     {
         private bool agentBelievesThisIsTrue;
         private Dictionary<Literal, string> conditions;
-        private Literal belief;
+        private Literal objective;
 
         //Constructor for beliefs and objectives rules 
         public Rule(Dictionary<Literal, string> terms, bool believes)
         {
             this.agentBelievesThisIsTrue = believes;
-            this.belief = terms.First().Key;
-            terms.Remove(belief);
+            this.objective = terms.First().Key;
+            terms.Remove(objective);
             this.conditions = terms;
         }
 
@@ -26,7 +26,7 @@ namespace Pruebas
             return true;
         }
 
-        public Literal Belief { get => this.belief; }
+        public Literal Objective { get => this.objective; }
 
         public Dictionary<Literal, string> Conditions { get => this.conditions; }
     }

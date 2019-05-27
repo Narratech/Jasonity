@@ -19,14 +19,13 @@ namespace Pruebas
 
         private List<Belief> BeliefsList;
         private List<Desire> DesireList;
-        private Dictionary<Term, string> DesireLis;
-        private Dictionary<Term, string> PlansList;
+        private List<Plan> PlansList;
 
         public ParserClass()
         {
             this.BeliefsList = new List<Belief>();
             this.DesireList = new List<Desire>();
-            this.PlansList = new Dictionary<Term, string>();
+            this.PlansList = new List<Plan>();
         }
 
         public void Parser()
@@ -34,7 +33,7 @@ namespace Pruebas
             int i = 0;
             Dictionary<int, string> data = new Dictionary<int, string>();
 
-            foreach(string line in File.ReadLines(@"E:\VisualStudio\Pruebas\Pruebas\miner.txt"))
+            foreach(string line in File.ReadLines(@"E:\VisualStudio\Pruebas\Pruebas\lightoffagent.txt"))
             {
                 //The plan, belief or goal definition ends here
                 if (line.EndsWith("."))
@@ -62,17 +61,17 @@ namespace Pruebas
                             //A goal
                             if (data.First().Value.Contains("!"))
                             {
-                                this.PlansList.Add(PlanParser(data, true), "RealObjective");
+                                this.PlansList.Add(new Plan(PlanParser(data, true), "RealObjective"));
                             }
                             //A test goal
                             else if (data.First().Value.Contains("?"))
                             {
-                                this.PlansList.Add(PlanParser(data, true), "TestObjective");
+                                this.PlansList.Add(new Plan(PlanParser(data, true), "TestObjective"));
                             }
                             //A belief
                             else
                             {
-                                this.PlansList.Add(PlanParser(data, false), "Belief");
+                                this.PlansList.Add(new Plan(PlanParser(data, false), "Belief"));
                             }
                             break;
                         //It's a plan for delete
@@ -80,17 +79,17 @@ namespace Pruebas
                             //A goal
                             if (data.First().Value.Contains("!"))
                             {
-                                this.PlansList.Add(PlanParser(data, true), "RealObjective");
+                                this.PlansList.Add(new Plan(PlanParser(data, true), "RealObjective"));
                             }
                             //A test goal
                             else if (data.First().Value.Contains("?"))
                             {
-                                this.PlansList.Add(PlanParser(data, true), "TestObjective");
+                                this.PlansList.Add(new Plan(PlanParser(data, true), "TestObjective"));
                             }
                             //A belief
                             else
                             {
-                                this.PlansList.Add(PlanParser(data, false), "Belief");
+                                this.PlansList.Add(new Plan(PlanParser(data, false), "Belief"));
                             }
                             break;
                         default:
@@ -164,13 +163,15 @@ namespace Pruebas
             if (data.First().Value.Contains("~"))
                 belives = false;
             
-            trigger = new Trigger(@operator, belives, (Literal)t);
+            trigger = new Trigger(@operator, belives, t);
             aux.Clear();
 
             #endregion
 
             #region CONTEXT
-            
+
+            Dictionary<Term, string> context = new Dictionary<Term, string>();
+
             //Check if the plan have a context
             if (triggerForTheParser.Contains(":"))
             {
@@ -186,8 +187,6 @@ namespace Pruebas
                         break;
                     }
                 }
-
-                Dictionary<Term, string> context = new Dictionary<Term, string>();
 
                 foreach (KeyValuePair<int, string> entry in aux)
                 {
@@ -210,11 +209,40 @@ namespace Pruebas
 
             #region PLANBODY
 
-            
+            List<Action> actions = new List<Action>();
+
+            string name;
+            string[] parameters;
+            char symbol;
+
+            foreach (KeyValuePair<int, string> entry in data)
+            {
+                switch (entry.Value[0])
+                {
+                    case '?':
+                        //WORK IN PROGRESS
+                        break;
+                    case '!':
+                        //WORK IN PROGRESS
+                        break;
+                    case '#':
+                        name = entry.Value.Substring(entry.Value.IndexOf("#") + 1, entry.Value.IndexOf("(") - 1);
+                        parameters = CheckActionBrakets(entry.Value.
+                            Substring(entry.Value.IndexOf("(") + 1, (entry.Value.IndexOf(")") - entry.Value.IndexOf("(")) - 1));
+                        symbol = (char)entry.Value[(entry.Value.Length - 1)];
+                        actions.Add(new Action(name, parameters, symbol));
+                        break;
+                    default:
+                        //WORK IN PROGRESS
+                        break;
+                }
+            }
+
+            PlanBody planBody = new PlanBody(actions);
 
             #endregion
 
-            return new Literal("", false);
+            return new PlanPartsUnifier(trigger, context, planBody);
         }
 
         /*
@@ -425,6 +453,35 @@ namespace Pruebas
                     }
                 }
             }
+        }
+
+        /*
+            IN: string
+            OUT: string[]
+        */
+        private string[] CheckActionBrakets(string parameters)
+        {
+            if (!parameters.Equals(""))
+            {
+                int nArgs = parameters.Split(',').Length;
+                string[] result = new string[nArgs];
+                for (int i = 0; i < nArgs; i++)
+                {
+                    if (parameters.Contains(","))
+                    {
+                        string aux = parameters.Substring(0, parameters.IndexOf(","));
+                        result[i] = aux;
+                        parameters = parameters.Substring(parameters.IndexOf(",") + 1);
+                    }
+                    else
+                    {
+                        result[i] = parameters;
+                    }
+                }
+                return result;
+            }
+            else
+                return new string[0];
         }
     }
 }
