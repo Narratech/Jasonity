@@ -9,7 +9,7 @@ namespace Assets.Code.Syntax
     public class Plan: Term
     {
         private Term plan;
-        private string typeOfPlan;
+        private string typeOfPlan; //A Belief or a Desire(test or not)
 
         public Plan(Term plan, string typeOfPlan)
         {

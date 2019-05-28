@@ -8,18 +8,20 @@ namespace Assets.Code.Syntax
 {
     public class Action
     {
-        private string action;
+        private string actionName;
         private string[] arguments;
+        //Symbol can be a ",", ";","&" or a "|".
+        //Is the last character of the line.
         private char symbol;
 
         public Action(string a, string[] args, char symbol)
         {
-            this.action = a;
+            this.actionName = a;
             this.arguments = args;
             this.symbol = symbol;
         }
 
-        public string Actiom { get => action; }
+        public string ActionName { get => actionName; }
         public string[] Arguments { get => arguments; }
         public char Symbol { get => symbol; }
     }

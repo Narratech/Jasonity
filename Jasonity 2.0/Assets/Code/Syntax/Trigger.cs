@@ -9,7 +9,7 @@ namespace Assets.Code.Syntax
     public class Trigger:Term
     {
         private Term trigger;
-        private readonly char @operator;
+        private readonly char @operator; //+ or -
 
         public Trigger(char @operator, bool believes, Term trigger)
         {

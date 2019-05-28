@@ -461,8 +461,10 @@ namespace Assets.Code.Syntax
         */
         private string[] CheckActionBrakets(string parameters)
         {
+            //If there's a string to split, then ther're parameters
             if (!parameters.Equals(""))
             {
+                //Each part of the split means a character
                 int nArgs = parameters.Split(',').Length;
                 string[] result = new string[nArgs];
                 for (int i = 0; i < nArgs; i++)
@@ -480,6 +482,7 @@ namespace Assets.Code.Syntax
                 }
                 return result;
             }
+            //If there isn't string, then there aren't parameters
             else
                 return new string[0];
         }

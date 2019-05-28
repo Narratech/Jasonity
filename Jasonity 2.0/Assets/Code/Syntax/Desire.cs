@@ -9,12 +9,12 @@ namespace Assets.Code.Syntax
     public class Desire
     {
         Term desire;
-        string typeOfTest;
+        string typeOfDesire; //Test or not
 
         public Desire(Term d, string s)
         {
             this.desire = d;
-            this.typeOfTest = s;
+            this.typeOfDesire = s;
         }
     }
 }

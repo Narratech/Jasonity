@@ -29,5 +29,7 @@ namespace Assets.Code.Syntax
         public Literal Objective { get => this.objective; }
 
         public Dictionary<Literal, string> Conditions { get => this.conditions; }
+
+        public bool AgentBelievesThisIsTrue { get => this.agentBelievesThisIsTrue; }
     }
 }
