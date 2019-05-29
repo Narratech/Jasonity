@@ -86,6 +86,8 @@
     <Compile Include="Assets\Scripts\LIGHTmaster.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <None Include="Assets\ASLCode\LightOffAgent.txt" />
+    <None Include="Assets\ASLCode\LightOnAgent.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/Github/Jasonity/Jasonity 2.0/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
