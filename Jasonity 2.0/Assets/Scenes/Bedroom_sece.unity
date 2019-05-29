@@ -711,10 +711,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29a96ed83a6ca184188dabb275390240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  environment:
-  - {fileID: 0}
-  lightOnAgent: {fileID: 774036574}
-  lightOffAgent: {fileID: 661818043}
+  environment: []
+  lightOnAgent_GO: {fileID: 774036574}
+  lightOffAgent_GO: {fileID: 661818043}
 --- !u!4 &660822713
 Transform:
   m_ObjectHideFlags: 0
@@ -772,6 +771,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab2aaaa84e95bf44b743b93e22da08b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ASLSource: Assets/ASLCode/LightOffAgent.txt
+  agName: light_off_agent
 --- !u!1 &774036574
 GameObject:
   m_ObjectHideFlags: 0
@@ -1040,6 +1041,7 @@ GameObject:
   - component: {fileID: 1235685757}
   - component: {fileID: 1235685756}
   - component: {fileID: 1235685755}
+  - component: {fileID: 1235685759}
   m_Layer: 0
   m_Name: LampPlaceholder
   m_TagString: Demo
@@ -1113,12 +1115,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1235685754}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.271842, y: 4.315882, z: -3.6182904}
+  m_LocalPosition: {x: 7.4, y: 1.88, z: -3.6182904}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1235685759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1235685754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ec9f34a221cf2e45a7ae5b7231bcf92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nameLamp: 
 --- !u!1 &1297650280
 GameObject:
   m_ObjectHideFlags: 0

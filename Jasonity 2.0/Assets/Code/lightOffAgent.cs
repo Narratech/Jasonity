@@ -1,18 +1,21 @@
-﻿using System.Collections;
+﻿using Assets.Code.BDI;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class lightOffAgent : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public string ASLSource;
+    public string agName;
+    private Agent agent;
+
     void Start()
     {
-        
+        agent = new Agent(agName, ASLSource);
     }
 
-    // Update is called once per frame
-    void Update()
+    public Agent GetAgent()
     {
-        
+        return agent;
     }
 }

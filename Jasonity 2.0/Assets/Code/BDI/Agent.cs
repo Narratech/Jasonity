@@ -59,20 +59,20 @@ namespace Assets.Code.BDI
         {
             //Here the agent acts in the environment. Since this has a lot to do with unity, 
             //Irene will do it
-            Debug.Log("Estoy actuando");
+            Debug.Log(ToString() + ": Estoy actuando");
         }
 
         // Gets the first plan in the list
         public Plan SelectPlan()
         {
-            Debug.Log("Estoy seleccionando un plan");
+            Debug.Log(ToString() + ": Estoy seleccionando un plan");
             return currentPlan = planLibrary[0];
         }
 
         // Gets the first desire in the list
         public Desire SelectDesire()
         {
-            Debug.Log("Estoy seleccionando un deseo");
+            Debug.Log(ToString() + ": Estoy seleccionando un deseo");
             //return currentDesire = desires[0];
             // Same, should this remove the desire afterwards
             return null;
@@ -87,7 +87,7 @@ namespace Assets.Code.BDI
         public Dictionary<string, string> Perceive()
         {
             Dictionary<string, string> percepts = new Dictionary<string, string>();
-            Debug.Log("Estoy percibiendo");
+            Debug.Log(ToString() + ": Estoy percibiendo");
             return percepts;
         }
 
@@ -95,7 +95,7 @@ namespace Assets.Code.BDI
         {
             //With the perceptions checks the belief base and deletes the beliefs that are
             //no longer correct and adds the new ones
-            Debug.Log("Estoy actualizando la base de creencias");
+            Debug.Log(ToString() + ": Estoy actualizando la base de creencias");
         }
 
         // Calls the parser and retrieves the lists
@@ -114,6 +114,13 @@ namespace Assets.Code.BDI
         public void Run()
         {
             reasoner.Run();
+        }
+
+        public override string ToString()
+        {
+            if (string.IsNullOrWhiteSpace(agentName))
+                agentName = "Agent";
+            return agentName;
         }
     }
 }

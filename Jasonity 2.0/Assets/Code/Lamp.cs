@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Lamp : MonoBehaviour
 {
-    // Start is called before the first frame update
+    private bool lightOn;
+    public string nameLamp;
+
     void Start()
     {
-        
+        lightOn = true;
     }
 
-    // Update is called once per frame
-    void Update()
+    public override string ToString()
     {
-        
+        if (string.IsNullOrWhiteSpace(nameLamp))
+            nameLamp = "Lampara";
+        return nameLamp + ":" + lightOn.ToString();
     }
 }
