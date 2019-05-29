@@ -1,9 +1,12 @@
 ﻿using Assets.Code.Syntax;
+using Assets.Code.Utilities;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Code.BDI
 {
-    public class Agent
+    public class Agent:IRunnable
     {
         private List<Belief> beliefBase;
         private List<Plan> planLibrary;
@@ -14,6 +17,7 @@ namespace Assets.Code.BDI
 
         private Plan currentPlan;
         private Desire currentDesire;
+        private bool isReasoning;
 
         public Agent(string name, string asl)
         {
@@ -23,7 +27,13 @@ namespace Assets.Code.BDI
             agentName = name;
             aslSourcePath = asl;
             reasoner = new Reasoner(this);
+            isReasoning = false;
             Parse();
+        }
+
+        public bool IsReasoning()
+        {
+            return isReasoning;
         }
 
         //Getters and setters for the list
@@ -31,6 +41,12 @@ namespace Assets.Code.BDI
         public void SetBeliefBase(List<Belief> bb) => beliefBase = bb;
 
         public List<Plan> GetPlanLibrary() => planLibrary;
+
+        public void SetReasoning(bool reasoning)
+        {
+            isReasoning = reasoning;
+        }
+
         public void SetPlanLibrary(List<Plan> pl) => planLibrary = pl;
 
         public List<Desire> GetDesires() => desires;
@@ -43,19 +59,23 @@ namespace Assets.Code.BDI
         {
             //Here the agent acts in the environment. Since this has a lot to do with unity, 
             //Irene will do it
+            Debug.Log("Estoy actuando");
         }
 
         // Gets the first plan in the list
         public Plan SelectPlan()
         {
+            Debug.Log("Estoy seleccionando un plan");
             return currentPlan = planLibrary[0];
         }
 
         // Gets the first desire in the list
         public Desire SelectDesire()
         {
-            return currentDesire = desires[0];
-            // Same, should this remove the desire afterwards?
+            Debug.Log("Estoy seleccionando un deseo");
+            //return currentDesire = desires[0];
+            // Same, should this remove the desire afterwards
+            return null;
         }
 
         public void RemovePlan(Plan plan) { }
@@ -64,16 +84,18 @@ namespace Assets.Code.BDI
 
         public void RemoveBelief(Belief belief) { }
 
-        public void Perceive(Dictionary<string, string> percept)
+        public Dictionary<string, string> Perceive()
         {
-            //This has a lot to do with unity. Ask Irene.
+            Dictionary<string, string> percepts = new Dictionary<string, string>();
+            Debug.Log("Estoy percibiendo");
+            return percepts;
         }
 
         public void UpdateBeliefBase()
         {
             //With the perceptions checks the belief base and deletes the beliefs that are
             //no longer correct and adds the new ones
-
+            Debug.Log("Estoy actualizando la base de creencias");
         }
 
         // Calls the parser and retrieves the lists
@@ -88,5 +110,10 @@ namespace Assets.Code.BDI
         }
 
         //There are more methods here but we don't know them yet
+
+        public void Run()
+        {
+            reasoner.Run();
+        }
     }
 }

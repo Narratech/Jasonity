@@ -16,6 +16,7 @@ namespace Assets.Code.BDI
         public void Perceive()
         {
             //Makes the agent perceive the environment
+            ag.Perceive();
         }
 
         public void UpdateBeliefs()
@@ -25,8 +26,9 @@ namespace Assets.Code.BDI
 
         }
 
-        public Plan SelectPlan()
+        public Plan SelectPlan(Desire d)
         {
+            //with the selected desire checks for a plan that matches (?)
             //Retrieves the relevant plans, determines the applicable plan
             //Selects one plan. 
 
@@ -36,14 +38,18 @@ namespace Assets.Code.BDI
         public void Act(Plan plan)
         {
             //Gets the plan body of the plan, and enqueues the actions in the executor
+            ag.Act();
         }
 
         public void Run()
         {
+            ag.SetReasoning(true);
             Perceive();
             UpdateBeliefs();
-            Plan i = SelectPlan();
+            Desire d = ag.SelectDesire();
+            Plan i = SelectPlan(d);
             Act(i);
+            ag.SetReasoning(false);
         }
 
         //This maybe needs more methods but we don't know them yet
