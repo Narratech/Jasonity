@@ -10,8 +10,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <ProjectGuid>{E0FCCEB5-1C52-40FD-F5F9-FB00CAF1F170}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -67,9 +66,21 @@
     <Compile Include="Assets\Code\BDI\Agent.cs" />
     <Compile Include="Assets\Code\BDI\Belief.cs" />
     <Compile Include="Assets\Code\BDI\Desire.cs" />
-    <Compile Include="Assets\Code\BDI\Intention.cs" />
     <Compile Include="Assets\Code\BDI\Reasoner.cs" />
     <Compile Include="Assets\Code\Controller.cs" />
+    <Compile Include="Assets\Code\Syntax\Action.cs" />
+    <Compile Include="Assets\Code\Syntax\Atom.cs" />
+    <Compile Include="Assets\Code\Syntax\Literal.cs" />
+    <Compile Include="Assets\Code\Syntax\ParserClass.cs" />
+    <Compile Include="Assets\Code\Syntax\Plan.cs" />
+    <Compile Include="Assets\Code\Syntax\PlanBody.cs" />
+    <Compile Include="Assets\Code\Syntax\PlanPartsUnifier.cs" />
+    <Compile Include="Assets\Code\Syntax\Predicate.cs" />
+    <Compile Include="Assets\Code\Syntax\Rule.cs" />
+    <Compile Include="Assets\Code\Syntax\Structure.cs" />
+    <Compile Include="Assets\Code\Syntax\Term.cs" />
+    <Compile Include="Assets\Code\Syntax\Trigger.cs" />
+    <Compile Include="Assets\Code\Syntax\Variable.cs" />
     <Compile Include="Assets\Code\Utilities\Executor.cs" />
     <Compile Include="Assets\Code\Utilities\IRunnable.cs" />
     <Compile Include="Assets\Scripts\LIGHTmaster.cs" />

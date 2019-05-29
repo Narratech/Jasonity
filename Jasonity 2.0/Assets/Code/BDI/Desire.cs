@@ -1,7 +1,16 @@
-﻿namespace Assets.Code.BDI
+﻿using Assets.Code.Syntax;
+
+namespace Assets.Code.BDI
 {
     public class Desire
     {
-        //I dont know if this is already done
+        private Term desire;
+        string typeOfTest;
+
+        public Desire(Term d, string s)
+        {
+            this.desire = d;
+            this.typeOfTest = s;
+        }
     }
 }

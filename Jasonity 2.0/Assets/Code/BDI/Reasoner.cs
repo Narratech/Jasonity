@@ -1,4 +1,5 @@
-﻿using Assets.Code.Utilities;
+﻿using Assets.Code.Syntax;
+using Assets.Code.Utilities;
 
 namespace Assets.Code.BDI
 {
@@ -24,7 +25,7 @@ namespace Assets.Code.BDI
 
         }
 
-        public Intention SelectPlan()
+        public Plan SelectPlan()
         {
             //Retrieves the relevant plans, determines the applicable plan
             //Selects one plan. 
@@ -32,7 +33,7 @@ namespace Assets.Code.BDI
             return ag.GetCurrentPlan(); // ???
         }
 
-        public void Act(Intention plan)
+        public void Act(Plan plan)
         {
             //Gets the plan body of the plan, and enqueues the actions in the executor
         }
@@ -41,7 +42,7 @@ namespace Assets.Code.BDI
         {
             Perceive();
             UpdateBeliefs();
-            Intention i = SelectPlan();
+            Plan i = SelectPlan();
             Act(i);
         }
 

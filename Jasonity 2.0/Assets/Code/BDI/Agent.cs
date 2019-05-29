@@ -1,4 +1,4 @@
-﻿using Pruebas;
+﻿using Assets.Code.Syntax;
 using System.Collections.Generic;
 
 namespace Assets.Code.BDI
@@ -6,19 +6,19 @@ namespace Assets.Code.BDI
     public class Agent
     {
         private List<Belief> beliefBase;
-        private List<Intention> planLibrary;
+        private List<Plan> planLibrary;
         private List<Desire> desires;
         private string agentName;
         private string aslSourcePath;
         private Reasoner reasoner;
 
-        private Intention currentPlan;
+        private Plan currentPlan;
         private Desire currentDesire;
 
         public Agent(string name, string asl)
         {
             beliefBase = new List<Belief>();
-            planLibrary = new List<Intention>();
+            planLibrary = new List<Plan>();
             desires = new List<Desire>();
             agentName = name;
             aslSourcePath = asl;
@@ -30,13 +30,13 @@ namespace Assets.Code.BDI
         public List<Belief> GetBeliefBase() => beliefBase;
         public void SetBeliefBase(List<Belief> bb) => beliefBase = bb;
 
-        public List<Intention> GetPlanLibrary() => planLibrary;
-        public void SetPlanLibrary(List<Intention> pl) => planLibrary = pl;
+        public List<Plan> GetPlanLibrary() => planLibrary;
+        public void SetPlanLibrary(List<Plan> pl) => planLibrary = pl;
 
         public List<Desire> GetDesires() => desires;
         public void SetDesires(List<Desire> ds) => desires = ds;
 
-        public Intention GetCurrentPlan() => currentPlan;
+        public Plan GetCurrentPlan() => currentPlan;
         public Desire GetCurrentDesire() => currentDesire;
 
         public void Act()
@@ -46,7 +46,7 @@ namespace Assets.Code.BDI
         }
 
         // Gets the first plan in the list
-        public Intention SelectPlan()
+        public Plan SelectPlan()
         {
             return currentPlan = planLibrary[0];
         }
@@ -58,7 +58,7 @@ namespace Assets.Code.BDI
             // Same, should this remove the desire afterwards?
         }
 
-        public void RemovePlan(Intention plan) { }
+        public void RemovePlan(Plan plan) { }
 
         public void RemoveDesire(Desire desire) { }
 
@@ -81,10 +81,10 @@ namespace Assets.Code.BDI
         {
             // Call parser somehow
             ParserClass parser = new ParserClass();
-            parser.Parser();
-            beliefBase = parser.GetBeliefsList();
-            planLibrary = parser.GetPlansList();
-            desires = parser.GetDesireList();
+            parser.Parser(aslSourcePath);
+            beliefBase = parser.GetBeliefs();
+            planLibrary = parser.GetPlans();
+            desires = parser.GetDesires();
         }
 
         //There are more methods here but we don't know them yet
