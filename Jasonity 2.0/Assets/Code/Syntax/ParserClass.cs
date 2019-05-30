@@ -110,7 +110,7 @@ namespace Assets.Code.Syntax
                             }
                             break;
                         default:
-                            this.BeliefsList.Add(new Belief(BeliefParser(data)));
+                            //this.BeliefsList.Add(new Belief(BeliefParser(data)));
                             //Reset all the dictionary data ofr the next iteration 
                             data.Clear();
                             i = 0;

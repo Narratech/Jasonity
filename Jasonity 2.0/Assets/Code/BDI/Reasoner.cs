@@ -1,13 +1,17 @@
 ﻿using Assets.Code.Syntax;
-using Assets.Code.Utilities;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Code.BDI
 {
-    public class Reasoner //This might not be a runnable 
+    public class Reasoner
     {
+        private void Start()
+        {
+            
+        }
+
         private Agent ag;
 
         //Constructora del razonador con el agente???
@@ -29,7 +33,7 @@ namespace Assets.Code.BDI
 
         }
 
-        public Plan SelectPlan(Desire d)
+        public Plan SelectPlan()
         {
             //with the selected desire checks for a plan that matches (?)
             //Retrieves the relevant plans, determines the applicable plan
@@ -44,18 +48,14 @@ namespace Assets.Code.BDI
             ag.Act();
         }
 
-        public void Run()
-        {
-            ag.SetReasoning(true);
-            Dictionary<string, string> p = Perceive();
-            UpdateBeliefs(p);
-            Desire d = ag.SelectDesire();
-            Plan i = SelectPlan(d);
-            Act(i);
-            ag.SetReasoning(false);
-        }
+        
+
+        
+        
+
+        
 
 
-        //This maybe needs more methods but we don't know them yet
+                //This maybe needs more methods but we don't know them yet
     }   
 }

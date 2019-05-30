@@ -1,5 +1,3 @@
 +light_on(lamp):
 true<-
-.moverALampara(),
-.TurnOffLight(),
-.volverACama().
+.TurnOffLight(Lamp).

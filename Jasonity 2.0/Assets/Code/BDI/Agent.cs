@@ -1,4 +1,5 @@
-﻿using Assets.Code.Actions;
+﻿
+using Assets.Code.Actions;
 using Assets.Code.Syntax;
 using Assets.Code.Utilities;
 using System;
@@ -48,6 +49,11 @@ namespace Assets.Code.BDI
             isReasoning = reasoning;
         }
 
+        public string GetName()
+        {
+            return agentName;
+        }
+
         public void SetPlanLibrary(List<Plan> pl) => planLibrary = pl;
 
         public List<Desire> GetDesires() => desires;
@@ -58,20 +64,32 @@ namespace Assets.Code.BDI
 
         public void Act()
         {
-            //Here the agent acts in the environment. Since this has a lot to do with unity, 
-            //Irene will do it
             Debug.Log(ToString() + ": Estoy actuando");
             Plan p = planLibrary[0];
-            
-            //TO TEST THE ACTIONS
-            if(agentName.Equals("light_on_agent"))
+
+            List<Syntax.Action> actions = p.PlanBody.Actions;
+            foreach (Syntax.Action a in actions)
             {
-                TurnOnLight act = new TurnOnLight(GameObject.Find("LampPlaceholder"));
-                act.Run();
-            } else
-            {
-                TurnOffLight act = new TurnOffLight(GameObject.Find("LampPlaceholder"));
-                act.Run();
+                string function = a.ActionName;
+                string[] arguments = a.Arguments;
+                switch (function)
+                {
+                    case "TurnOnLight":
+                        TurnOnLight t = new TurnOnLight();
+                        GameObject g = GameObject.Find(arguments[0]);
+                        Light l = g.GetComponent<Light>();
+                        l.intensity = 1;
+                        t.Run(g);
+                        break;
+                    case "TurnOffLight":
+                        TurnOffLight tl = new TurnOffLight();
+                        GameObject go = GameObject.Find(arguments[0]);
+                        
+                        tl.Run(go);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -103,12 +121,12 @@ namespace Assets.Code.BDI
             Dictionary<string, string> percepts = new Dictionary<string, string>();
             Debug.Log(ToString() + ": Estoy percibiendo el entorno");
 
-            //foreach(GameObject g in gc.environment)
-            //{
-            //    string s = g.GetComponent<IEnvironmentObject>().GetPercepts();
-            //    string[] aux = s.Split(':');
-            //    percepts.Add(aux[0], aux[1]);
-            //}
+            foreach (GameObject g in GameController.environment)
+            {
+                string s = g.GetComponent<IEnvironmentObject>().GetPercepts();
+                string[] aux = s.Split(':');
+                percepts.Add(aux[0], aux[1]);
+            }
 
             return percepts;
         }
@@ -118,15 +136,30 @@ namespace Assets.Code.BDI
             //With the perceptions checks the belief base and deletes the beliefs that are
             //no longer correct and adds the new ones
             Debug.Log(ToString() + ": Estoy actualizando la base de creencias");
-            foreach (string obj in percepts.Keys)
+            foreach (string obj in percepts.Keys)//check if all the new perceptions are in the belief base and add them if theyre not
             {
+                bool encontrado = false;
                 foreach (Belief bel in beliefBase)
                 {
                     string[] aux = bel.GetBelief().Split(':');
                     if (obj.Equals(aux[0])){
-
+                        bel.UpdateValue(aux[1]);
+                        encontrado = true;
                     }
-                    Debug.Log("Actualizo creencia");
+                }
+                if(!encontrado)
+                {
+                    string s;
+                    percepts.TryGetValue(obj, out s);
+                    beliefBase.Add(new Belief(obj, s));
+                }
+            }
+
+            foreach (Belief bel in beliefBase)//Checks the belief base in case there are beliefs no longer perceived
+            {
+                if(!percepts.ContainsKey(bel.GetPercepts()))
+                {
+                    beliefBase.Remove(bel);
                 }
             }
         }
@@ -144,16 +177,21 @@ namespace Assets.Code.BDI
 
         //There are more methods here but we don't know them yet
 
-        public void Run()
-        {
-            reasoner.Run();
-        }
+        //public void Run()
+        //{
+        //    reasoner.Run();
+        //}
 
         public override string ToString()
         {
             if (string.IsNullOrWhiteSpace(agentName))
                 agentName = "Agent";
             return agentName;
+        }
+
+        public Reasoner GetReasoner()
+        {
+            return reasoner;
         }
     }
 }

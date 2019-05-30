@@ -7,15 +7,4 @@ public class lightOffAgent : MonoBehaviour
 {
     public string ASLSource;
     public string agName;
-    private Agent agent;
-
-    void Start()
-    {
-        agent = new Agent(agName, ASLSource);
-    }
-
-    public Agent GetAgent()
-    {
-        return agent;
-    }
 }

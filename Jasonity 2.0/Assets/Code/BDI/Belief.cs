@@ -13,14 +13,39 @@ namespace Assets.Code.BDI
             return percept + ":" + value;
         }
 
-        public Belief(Term b)
+        //public Belief(Term b)
+        //{
+        //    this.belief = b;
+        //}
+        public Belief(string s)
         {
-            this.belief = b;
+
         }
 
-        public Belief(string b)
+        public Belief(string p, string v)
         {
+            percept = p;
+            value = v;
+        }
+        
+        public void UpdatePercept(string s)
+        {
+            percept = s;
+        }
 
+        public void UpdateValue(string s)
+        {
+            value = s;
+        }
+
+        public string GetPercepts()
+        {
+            return percept;
+        }
+
+        public string GetValue()
+        {
+            return value;
         }
     }
 }

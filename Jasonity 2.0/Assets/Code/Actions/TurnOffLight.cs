@@ -4,19 +4,14 @@ using Assets.Code.Utilities;
 
 namespace Assets.Code.Actions
 {
-    public class TurnOffLight : IRunnable
+    public class TurnOffLight
     {
-        private GameObject lamp;
-
-        public TurnOffLight(GameObject l)
+        public void Run(GameObject lamp)
         {
-            lamp = l;
-        }
-
-        public void Run()
-        {
-            Renderer r = lamp.GetComponent<Renderer>();
-            r.material.color = Color.grey;
+            Lamp l = lamp.GetComponent<Lamp>();
+            Light li = lamp.GetComponent<Light>();
+            li.intensity = 0;
+            l.SetLightOff();
         }
     }
 }

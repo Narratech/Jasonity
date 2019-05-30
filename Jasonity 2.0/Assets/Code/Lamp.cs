@@ -19,6 +19,16 @@ public class Lamp : MonoBehaviour, IEnvironmentObject
         return nameLamp;
     }
 
+    public void SetLightOn()
+    {
+        lightOn = true;
+    }
+
+    public void SetLightOff()
+    {
+        lightOn = false;
+    }
+
     public string GetPercepts()
     {
         return ToString() + ":" + lightOn.ToString();

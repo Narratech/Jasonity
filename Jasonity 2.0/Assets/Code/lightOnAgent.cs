@@ -6,18 +6,6 @@ using UnityEngine;
 
 public class lightOnAgent : MonoBehaviour
 {
-
     public string ASLSource;
     public string agName;
-    private Agent agent;
-
-    void Start()
-    {
-        agent = new Agent(agName, ASLSource);
-    }
-
-    public Agent GetAgent()
-    {
-        return agent;
-    }
 }
