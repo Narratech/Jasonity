@@ -1,9 +1,12 @@
 ﻿using Assets.Code.Syntax;
 using Assets.Code.Utilities;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Code.BDI
 {
-    public class Reasoner:IRunnable //This might not be a runnable 
+    public class Reasoner //This might not be a runnable 
     {
         private Agent ag;
 
@@ -13,16 +16,16 @@ namespace Assets.Code.BDI
             ag = agent;
         }
         
-        public void Perceive()
+        public Dictionary<string, string> Perceive(GameController gc)
         {
             //Makes the agent perceive the environment
-            ag.Perceive();
+            return ag.Perceive(gc);
         }
 
-        public void UpdateBeliefs()
+        public void UpdateBeliefs(Dictionary<string, string> percepts)
         {
             //Makes the agent update it's belief base
-            ag.UpdateBeliefBase();
+            ag.UpdateBeliefBase(percepts);
 
         }
 
@@ -41,16 +44,17 @@ namespace Assets.Code.BDI
             ag.Act();
         }
 
-        public void Run()
+        public void Run(GameController gc)
         {
             ag.SetReasoning(true);
-            Perceive();
-            UpdateBeliefs();
+            Dictionary<string, string> p = Perceive(gc);
+            UpdateBeliefs(p);
             Desire d = ag.SelectDesire();
             Plan i = SelectPlan(d);
             Act(i);
             ag.SetReasoning(false);
         }
+
 
         //This maybe needs more methods but we don't know them yet
     }   

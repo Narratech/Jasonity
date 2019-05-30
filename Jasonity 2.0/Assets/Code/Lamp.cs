@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lamp : MonoBehaviour
+public class Lamp : MonoBehaviour, IEnvironmentObject
 {
     private bool lightOn;
     public string nameLamp;
@@ -16,6 +16,11 @@ public class Lamp : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(nameLamp))
             nameLamp = "Lampara";
-        return nameLamp + ":" + lightOn.ToString();
+        return nameLamp;
+    }
+
+    public string GetPercepts()
+    {
+        return ToString() + ":" + lightOn.ToString();
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-
     public List<GameObject> environment = new List<GameObject>();
     public GameObject lightOnAgent_GO;
     public GameObject lightOffAgent_GO;
@@ -15,6 +14,8 @@ public class GameController : MonoBehaviour
     private Agent agLightOn;
     private Agent agLightOff;
     private bool lightOnReasonedLastCycle;
+    private float time = 5;
+    private float maxTime = 5;
 
     // Start is called before the first frame update
     void Start()
@@ -26,21 +27,32 @@ public class GameController : MonoBehaviour
         lightOnReasonedLastCycle = false;
     }
 
+    IEnumerator Sleep()
+    {
+        yield return new WaitForSeconds(5);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (lightOnReasonedLastCycle)
+        if (time >= maxTime)
         {
-            Debug.Log("---------------------------");
-            Debug.Log("Agente luz encendida espera");
-            agLightOff.Run();
-            lightOnReasonedLastCycle = false;
-        } else
-        {
-            Debug.Log("---------------------------");
-            Debug.Log("Agente luz apagada espera");
-            agLightOn.Run();
-            lightOnReasonedLastCycle = true;
+            if (lightOnReasonedLastCycle)
+            {
+                Debug.Log("---------------------------");
+                Debug.Log("Agente luz encendida espera");
+                agLightOff.Run(this);
+                lightOnReasonedLastCycle = false;
+            }
+            else
+            {
+                Debug.Log("---------------------------");
+                Debug.Log("Agente luz apagada espera");
+                agLightOn.Run(this);
+                lightOnReasonedLastCycle = true;
+            }
+            time = 0;
         }
+        time += Time.deltaTime;
     }
 }

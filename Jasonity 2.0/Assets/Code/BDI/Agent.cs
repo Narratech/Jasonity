@@ -1,4 +1,5 @@
-﻿using Assets.Code.Syntax;
+﻿using Assets.Code.Actions;
+using Assets.Code.Syntax;
 using Assets.Code.Utilities;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Code.BDI
 {
-    public class Agent:IRunnable
+    public class Agent
     {
         private List<Belief> beliefBase;
         private List<Plan> planLibrary;
@@ -60,11 +61,24 @@ namespace Assets.Code.BDI
             //Here the agent acts in the environment. Since this has a lot to do with unity, 
             //Irene will do it
             Debug.Log(ToString() + ": Estoy actuando");
+            Plan p = planLibrary[0];
+            
+            //TO TEST THE ACTIONS
+            if(agentName.Equals("light_on_agent"))
+            {
+                TurnOnLight act = new TurnOnLight(GameObject.Find("LampPlaceholder"));
+                act.Run();
+            } else
+            {
+                TurnOffLight act = new TurnOffLight(GameObject.Find("LampPlaceholder"));
+                act.Run();
+            }
         }
 
         // Gets the first plan in the list
-        public Plan SelectPlan()
+        public Plan SelectPlan(Desire d)
         {
+            //Para el deseo d
             Debug.Log(ToString() + ": Estoy seleccionando un plan");
             return currentPlan = planLibrary[0];
         }
@@ -84,18 +98,33 @@ namespace Assets.Code.BDI
 
         public void RemoveBelief(Belief belief) { }
 
-        public Dictionary<string, string> Perceive()
+        public Dictionary<string, string> Perceive(GameController gc)
         {
             Dictionary<string, string> percepts = new Dictionary<string, string>();
-            Debug.Log(ToString() + ": Estoy percibiendo");
+            Debug.Log(ToString() + ": Estoy percibiendo el entorno");
+
+            foreach(GameObject g in gc.environment)
+            {
+                string s = g.GetComponent<IEnvironmentObject>().GetPercepts();
+                string[] aux = s.Split(':');
+                percepts.Add(aux[0], aux[1]);
+            }
+
             return percepts;
         }
 
-        public void UpdateBeliefBase()
+        public void UpdateBeliefBase(Dictionary<string, string> percepts)
         {
             //With the perceptions checks the belief base and deletes the beliefs that are
             //no longer correct and adds the new ones
             Debug.Log(ToString() + ": Estoy actualizando la base de creencias");
+            foreach (string obj in percepts.Keys)
+            {
+                foreach (Belief bel in beliefBase)
+                {
+                    Debug.Log("Actualizo creencia");
+                }
+            }
         }
 
         // Calls the parser and retrieves the lists
@@ -111,9 +140,9 @@ namespace Assets.Code.BDI
 
         //There are more methods here but we don't know them yet
 
-        public void Run()
+        public void Run(GameController gc)
         {
-            reasoner.Run();
+            reasoner.Run(gc);
         }
 
         public override string ToString()
