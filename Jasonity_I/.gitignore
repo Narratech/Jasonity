@@ -1,18 +1,10 @@
 [Ll]ibrary/
-Jasonity_I/[Ll]ibrary/
-Jasonity 2.0/[Ll]ibrary/
 [Tt]emp/
 Jasonity_I/[Tt]emp/
 Jasonity 2.0/[Tt]emp/
 [Oo]bj/
-Jasonity_I/[Oo]bj/
-Jasonity 2.0/[Oo]bj/
 [Bb]uild/
-Jasonity_I/[Bb]uild/
-Jasonity 2.0/[Bb]uild/
 [Bb]uilds/
-Jasonity_I/[Bb]uilds/
-Jasonity 2.0/[Bb]uilds/
 Assets/AssetStoreTools*
 
 # Visual Studio cache directory
@@ -44,8 +36,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-*.info
-*.meta	
-*.graph
-*/Library/*
-*/ProjectSettings/*

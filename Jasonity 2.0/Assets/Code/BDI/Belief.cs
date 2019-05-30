@@ -1,7 +1,14 @@
-﻿namespace Assets.Code.BDI
+﻿using Assets.Code.Syntax;
+
+namespace Assets.Code.BDI
 {
     public class Belief
     {
-        //I dont know if this is already done
+        private Term belief;
+
+        public Belief(Term b)
+        {
+            this.belief = b;
+        }
     }
 }

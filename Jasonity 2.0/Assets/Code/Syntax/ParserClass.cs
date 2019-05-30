@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Code.BDI;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,22 @@ namespace Assets.Code.Syntax
         private List<Belief> BeliefsList;
         private List<Desire> DesireList;
         private List<Plan> PlansList;
+
+        public List<Belief> GetBeliefs()
+        {
+            return BeliefsList;
+        }
+
+        public List<Desire> GetDesires()
+        {
+            return DesireList;
+        }
+
+        public List<Plan> GetPlans()
+        {
+            return PlansList;
+        }
+
 
         public ParserClass()
         {

@@ -1,0 +1,5 @@
++light_on(lamp):
+true<-
+#moverALampara(),
+#TurnOffLight(),
+#volverACama().

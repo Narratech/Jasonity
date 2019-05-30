@@ -1,8 +1,12 @@
-﻿using Assets.Code.Utilities;
+﻿using Assets.Code.Syntax;
+using Assets.Code.Utilities;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Code.BDI
 {
-    public class Reasoner:IRunnable //This might not be a runnable 
+    public class Reasoner //This might not be a runnable 
     {
         private Agent ag;
 
@@ -12,38 +16,45 @@ namespace Assets.Code.BDI
             ag = agent;
         }
         
-        public void Perceive()
+        public Dictionary<string, string> Perceive(GameController gc)
         {
             //Makes the agent perceive the environment
+            return ag.Perceive(gc);
         }
 
-        public void UpdateBeliefs()
+        public void UpdateBeliefs(Dictionary<string, string> percepts)
         {
             //Makes the agent update it's belief base
-            ag.UpdateBeliefBase();
+            ag.UpdateBeliefBase(percepts);
 
         }
 
-        public Intention SelectPlan()
+        public Plan SelectPlan(Desire d)
         {
+            //with the selected desire checks for a plan that matches (?)
             //Retrieves the relevant plans, determines the applicable plan
             //Selects one plan. 
 
             return ag.GetCurrentPlan(); // ???
         }
 
-        public void Act(Intention plan)
+        public void Act(Plan plan)
         {
             //Gets the plan body of the plan, and enqueues the actions in the executor
+            ag.Act();
         }
 
-        public void Run()
+        public void Run(GameController gc)
         {
-            Perceive();
-            UpdateBeliefs();
-            Intention i = SelectPlan();
+            ag.SetReasoning(true);
+            Dictionary<string, string> p = Perceive(gc);
+            UpdateBeliefs(p);
+            Desire d = ag.SelectDesire();
+            Plan i = SelectPlan(d);
             Act(i);
+            ag.SetReasoning(false);
         }
+
 
         //This maybe needs more methods but we don't know them yet
     }   
