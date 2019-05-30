@@ -47,3 +47,5 @@ sysinfo.txt
 *.info
 *.meta	
 *.graph
+*/Library/*
+*/ProjectSettings/*
