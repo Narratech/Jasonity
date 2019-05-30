@@ -16,10 +16,10 @@ namespace Assets.Code.BDI
             ag = agent;
         }
         
-        public Dictionary<string, string> Perceive(GameController gc)
+        public Dictionary<string, string> Perceive()
         {
             //Makes the agent perceive the environment
-            return ag.Perceive(gc);
+            return ag.Perceive();
         }
 
         public void UpdateBeliefs(Dictionary<string, string> percepts)
@@ -44,10 +44,10 @@ namespace Assets.Code.BDI
             ag.Act();
         }
 
-        public void Run(GameController gc)
+        public void Run()
         {
             ag.SetReasoning(true);
-            Dictionary<string, string> p = Perceive(gc);
+            Dictionary<string, string> p = Perceive();
             UpdateBeliefs(p);
             Desire d = ag.SelectDesire();
             Plan i = SelectPlan(d);

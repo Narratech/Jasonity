@@ -26,12 +26,7 @@ public class GameController : MonoBehaviour
         agLightOff = lightOffAgent.GetAgent();
         lightOnReasonedLastCycle = false;
     }
-
-    IEnumerator Sleep()
-    {
-        yield return new WaitForSeconds(5);
-    }
-
+    
     // Update is called once per frame
     void Update()
     {
@@ -41,14 +36,14 @@ public class GameController : MonoBehaviour
             {
                 Debug.Log("---------------------------");
                 Debug.Log("Agente luz encendida espera");
-                agLightOff.Run(this);
+                agLightOff.Run();
                 lightOnReasonedLastCycle = false;
             }
             else
             {
                 Debug.Log("---------------------------");
                 Debug.Log("Agente luz apagada espera");
-                agLightOn.Run(this);
+                agLightOn.Run();
                 lightOnReasonedLastCycle = true;
             }
             time = 0;

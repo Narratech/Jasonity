@@ -8,22 +8,39 @@ namespace Assets.Code.Syntax
 {
     public class Plan: Term
     {
-        private Term plan;
-        private string typeOfPlan; //A Belief or a Desire(test or not)
+        //private Term plan;
+        //private string typeOfPlan; //A Belief or a Desire(test or not)
 
-        public Plan(Term plan, string typeOfPlan)
+        //public Plan(Term plan, string typeOfPlan)
+        //{
+        //    this.plan = plan;
+        //    this.typeOfPlan = typeOfPlan;
+        //}
+
+        //public Term Plam { get => this.plan; }
+
+        //public string TypeOfPlan { get => this.typeOfPlan; }
+
+        //public override bool IsPlan()
+        //{
+        //    return true;
+        //}
+
+        private Trigger trigger;
+        private string context;
+        private PlanBody planBody;
+
+        public Plan(Trigger trigger, string context, PlanBody planBody)
         {
-            this.plan = plan;
-            this.typeOfPlan = typeOfPlan;
+            this.trigger = trigger;
+            this.context = context;
+            this.planBody = planBody;
         }
 
-        public Term Plam { get => this.plan; }
+        public Trigger Trigger { get => trigger; }
 
-        public string TypeOfPlan { get => this.typeOfPlan; }
+        public string Context { get => context; }
 
-        public override bool IsPlan()
-        {
-            return true;
-        }
+        public PlanBody PlanBody { get => planBody; }
     }
 }

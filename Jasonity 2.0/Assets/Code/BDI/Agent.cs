@@ -98,17 +98,17 @@ namespace Assets.Code.BDI
 
         public void RemoveBelief(Belief belief) { }
 
-        public Dictionary<string, string> Perceive(GameController gc)
+        public Dictionary<string, string> Perceive()
         {
             Dictionary<string, string> percepts = new Dictionary<string, string>();
             Debug.Log(ToString() + ": Estoy percibiendo el entorno");
 
-            foreach(GameObject g in gc.environment)
-            {
-                string s = g.GetComponent<IEnvironmentObject>().GetPercepts();
-                string[] aux = s.Split(':');
-                percepts.Add(aux[0], aux[1]);
-            }
+            //foreach(GameObject g in gc.environment)
+            //{
+            //    string s = g.GetComponent<IEnvironmentObject>().GetPercepts();
+            //    string[] aux = s.Split(':');
+            //    percepts.Add(aux[0], aux[1]);
+            //}
 
             return percepts;
         }
@@ -122,6 +122,10 @@ namespace Assets.Code.BDI
             {
                 foreach (Belief bel in beliefBase)
                 {
+                    string[] aux = bel.GetBelief().Split(':');
+                    if (obj.Equals(aux[0])){
+
+                    }
                     Debug.Log("Actualizo creencia");
                 }
             }
@@ -131,8 +135,8 @@ namespace Assets.Code.BDI
         public void Parse()
         {
             // Call parser somehow
-            ParserClass parser = new ParserClass();
-            parser.Parser(aslSourcePath);
+            Parser parser = new Parser();
+            parser.Parse(aslSourcePath);
             beliefBase = parser.GetBeliefs();
             planLibrary = parser.GetPlans();
             desires = parser.GetDesires();
@@ -140,9 +144,9 @@ namespace Assets.Code.BDI
 
         //There are more methods here but we don't know them yet
 
-        public void Run(GameController gc)
+        public void Run()
         {
-            reasoner.Run(gc);
+            reasoner.Run();
         }
 
         public override string ToString()

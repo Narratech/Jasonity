@@ -78,17 +78,17 @@ namespace Assets.Code.Syntax
                             //A goal
                             if (data.First().Value.Contains("!"))
                             {
-                                this.PlansList.Add(new Plan(PlanParser(data, true), "RealObjective"));
+                                //this.PlansList.Add(new Plan(PlanParser(data, true), "RealObjective"));
                             }
                             //A test goal
                             else if (data.First().Value.Contains("?"))
                             {
-                                this.PlansList.Add(new Plan(PlanParser(data, true), "TestObjective"));
+                                //this.PlansList.Add(new Plan(PlanParser(data, true), "TestObjective"));
                             }
                             //A belief
                             else
                             {
-                                this.PlansList.Add(new Plan(PlanParser(data, false), "Belief"));
+                                //this.PlansList.Add(new Plan(PlanParser(data, false), "Belief"));
                             }
                             break;
                         //It's a plan for delete
@@ -96,17 +96,17 @@ namespace Assets.Code.Syntax
                             //A goal
                             if (data.First().Value.Contains("!"))
                             {
-                                this.PlansList.Add(new Plan(PlanParser(data, true), "RealObjective"));
+                               // this.PlansList.Add(new Plan(PlanParser(data, true), "RealObjective"));
                             }
                             //A test goal
                             else if (data.First().Value.Contains("?"))
                             {
-                                this.PlansList.Add(new Plan(PlanParser(data, true), "TestObjective"));
+                                //this.PlansList.Add(new Plan(PlanParser(data, true), "TestObjective"));
                             }
                             //A belief
                             else
                             {
-                                this.PlansList.Add(new Plan(PlanParser(data, false), "Belief"));
+                                //this.PlansList.Add(new Plan(PlanParser(data, false), "Belief"));
                             }
                             break;
                         default:
@@ -180,7 +180,7 @@ namespace Assets.Code.Syntax
             if (data.First().Value.Contains("~"))
                 belives = false;
             
-            trigger = new Trigger(@operator, belives, t);
+            //trigger = new Trigger(@operator, belives, t);
             aux.Clear();
 
             #endregion
@@ -259,7 +259,8 @@ namespace Assets.Code.Syntax
 
             #endregion
 
-            return new PlanPartsUnifier(trigger, context, planBody);
+            //return new PlanPartsUnifier(trigger, context, planBody);
+            return null;
         }
 
         /*
