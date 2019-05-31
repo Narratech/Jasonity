@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Syntax
 {
-    public class PlanBody:Term
+    public class PlanBody
     {
         List<Action> actions;
 
@@ -17,9 +17,5 @@ namespace Assets.Code.Syntax
 
         public List<Action> Actions { get => actions; }
 
-        public override bool IsPlanBody()
-        {
-            return true;
-        }
     }
 }

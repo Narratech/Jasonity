@@ -46,51 +46,7 @@ public class GameController : MonoBehaviour
         {
             StartCoroutine(Run());
         }
-       
-        //if (lightOnReasonedLastCycle)
-        //{
-        //    Reasoner r = agLightOff.GetReasoner();
-        //    textMeshS.text = agLightOff.GetName() + ": Voy a percibir mi entorno";
-        //    Dictionary<string, string> p = r.Perceive();
-        //    Wait();
-        //    GameController.textMeshS.text = agLightOff.GetName() + ": Voy a actualizar mi base de creencias";
-        //    r.UpdateBeliefs(p);
-        //    //Desire d = ag.SelectDesire();
-        //    Wait();
-        //    textMeshS.text = agLightOff.GetName() + ": Voy a seleccionar un plan";
-        //    Plan i = r.SelectPlan();
-        //    Wait();
-        //    textMeshS.text = agLightOff.GetName() + ": Voy a actuar";
-        //    r.Act(i);
-        //    lightOnReasonedLastCycle = false;
-        //}
-        //else
-        //{
-        //    Reasoner r = agLightOn.GetReasoner();
-        //    textMeshS.text = agLightOn.GetName() + ": Voy a percibir mi entorno";
-        //    Dictionary<string, string> p = r.Perceive();
-        //    Wait();
-        //    GameController.textMeshS.text = agLightOn.GetName() + ": Voy a actualizar mi base de creencias";
-        //    r.UpdateBeliefs(p);
-        //    //Desire d = ag.SelectDesire();
-        //    Wait();
-        //    textMeshS.text = agLightOn.GetName() + ": Voy a seleccionar un plan";
-        //    Plan i = r.SelectPlan();
-        //    Wait();
-        //    textMeshS.text = agLightOn.GetName() + ": Voy a actuar";
-        //    r.Act(i);
-        //    lightOnReasonedLastCycle = true;
-        //}
     }
-
-    private void Wait()
-    {
-        while(time < maxTime)
-        {
-            time += Time.deltaTime;
-        }
-    }
-
 
     private IEnumerator Run()
     {
@@ -134,21 +90,3 @@ public class GameController : MonoBehaviour
         }
     }
 }
-//IEnumerator RunWithDelay()
-//{
-
-//    GameController.textMeshS.text = ag.GetName() + ": Voy a percibir mi entorno";
-//    Dictionary<string, string> p = Perceive();
-//    yield return new WaitForSeconds(3);
-//    GameController.textMeshS.text = ag.GetName() + ": Voy a actualizar mi base de creencias";
-//    UpdateBeliefs(p);
-//    //Desire d = ag.SelectDesire();
-//    yield return new WaitForSeconds(3);
-//    GameController.textMeshS.text = ag.GetName() + ": Voy a seleccionar un plan";
-//    Plan i = SelectPlan();
-//    yield return new WaitForSeconds(3);
-//    GameController.textMeshS.text = ag.GetName() + ": Voy a actuar";
-//    Act(i);
-//    ag.SetReasoning(false);
-//    //yield return new WaitForSeconds(3);
-//}

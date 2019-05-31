@@ -89,7 +89,7 @@ namespace Assets.Code.Syntax
                             }
                             break;
                         default:
-                            beliefList.Add(new Belief(ParserBelief(data)));
+                            
                             data.Clear();
                             break;
                     }
@@ -101,11 +101,7 @@ namespace Assets.Code.Syntax
             }
         }
 
-        private string ParserBelief(List<string> data)
-        {
-            return "";
-        } 
-
+        
         private Plan ParsePlan(List<string> data)
         {
             Plan p = null;

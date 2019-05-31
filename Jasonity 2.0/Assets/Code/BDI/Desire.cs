@@ -4,13 +4,22 @@ namespace Assets.Code.BDI
 {
     public class Desire
     {
-        private Term desire;
-        string typeOfTest;
+        private string desire;
+        
 
-        public Desire(Term d, string s)
+        public Desire(string d)
         {
             this.desire = d;
-            this.typeOfTest = s;
+        }
+
+        public string GetDesire()
+        {
+            return desire;
+        }
+
+        public void SetDesire(string d)
+        {
+            desire = d;
         }
     }
 }

@@ -4,33 +4,23 @@ namespace Assets.Code.BDI
 {
     public class Belief
     {
-        private Term belief;
-        private string percept;
+        private string name;
         private string value;
 
         public string GetBelief()
         {
-            return percept + ":" + value;
-        }
-
-        //public Belief(Term b)
-        //{
-        //    this.belief = b;
-        //}
-        public Belief(string s)
-        {
-
+            return name + ":" + value;
         }
 
         public Belief(string p, string v)
         {
-            percept = p;
+            name = p;
             value = v;
         }
         
-        public void UpdatePercept(string s)
+        public void UpdateName(string s)
         {
-            percept = s;
+            name = s;
         }
 
         public void UpdateValue(string s)
@@ -38,9 +28,9 @@ namespace Assets.Code.BDI
             value = s;
         }
 
-        public string GetPercepts()
+        public string GetName()
         {
-            return percept;
+            return name;
         }
 
         public string GetValue()

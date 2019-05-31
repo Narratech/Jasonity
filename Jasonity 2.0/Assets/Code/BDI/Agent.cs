@@ -109,13 +109,7 @@ namespace Assets.Code.BDI
             // Same, should this remove the desire afterwards
             return null;
         }
-
-        public void RemovePlan(Plan plan) { }
-
-        public void RemoveDesire(Desire desire) { }
-
-        public void RemoveBelief(Belief belief) { }
-
+        
         public Dictionary<string, string> Perceive()
         {
             Dictionary<string, string> percepts = new Dictionary<string, string>();
@@ -157,7 +151,7 @@ namespace Assets.Code.BDI
 
             foreach (Belief bel in beliefBase)//Checks the belief base in case there are beliefs no longer perceived
             {
-                if(!percepts.ContainsKey(bel.GetPercepts()))
+                if(!percepts.ContainsKey(bel.GetName()))
                 {
                     beliefBase.Remove(bel);
                 }
@@ -174,13 +168,7 @@ namespace Assets.Code.BDI
             planLibrary = parser.GetPlans();
             desires = parser.GetDesires();
         }
-
-        //There are more methods here but we don't know them yet
-
-        //public void Run()
-        //{
-        //    reasoner.Run();
-        //}
+        
 
         public override string ToString()
         {

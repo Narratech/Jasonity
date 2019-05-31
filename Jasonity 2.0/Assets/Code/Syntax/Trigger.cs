@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Assets.Code.Syntax
 {
-    public class Trigger:Term
+    public class Trigger
     {
         private string trigger;
         private readonly char @operator; //+ or -
@@ -18,11 +18,6 @@ namespace Assets.Code.Syntax
             this.@operator = @operator;
             this.trigger = trigger;
             this.parameters = parameters.ToList();
-        }
-
-        public override bool IsTrigger()
-        {
-            return true;
         }
 
         public char Operator { get => @operator; }
