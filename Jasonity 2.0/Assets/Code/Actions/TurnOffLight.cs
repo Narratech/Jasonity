@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using Assets.Code.Utilities;
 
 namespace Assets.Code.Actions
 {

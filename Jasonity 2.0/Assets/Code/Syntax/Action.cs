@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Code.Syntax
+﻿namespace Assets.Code.Syntax
 {
     public class Action
     {
@@ -16,8 +10,8 @@ namespace Assets.Code.Syntax
 
         public Action(string a, string[] args, char symbol)
         {
-            this.actionName = a;
-            this.arguments = args;
+            actionName = a;
+            arguments = args;
             this.symbol = symbol;
         }
 

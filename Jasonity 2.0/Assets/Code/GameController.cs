@@ -16,8 +16,6 @@ public class GameController : MonoBehaviour
     private Agent agLightOn;
     private Agent agLightOff;
     private bool lightOnReasonedLastCycle;
-    private float time = 5;
-    private float maxTime = 5;
 
     public TextMesh textMesh;
     public static TextMesh textMeshS;
