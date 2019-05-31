@@ -1,2 +1,0 @@
-# Jasonity
-TFG Jasonity
